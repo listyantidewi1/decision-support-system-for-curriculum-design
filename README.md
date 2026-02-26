@@ -10,9 +10,18 @@ This repository contains a full **research AI pipeline** designed to:
 * Evaluate **curriculum coverage**
 * Integrate **future-of-job forecasts** (WEF / McKinsey style)
 * Generate **competency statements** for curriculum development
-* Support **expert review** through structured exports
+* Support **expert review** via a web UI with multi-reviewer feedback
 
 The system is modular, reproducible, and supports multi-run **experimental aggregation**.
+
+---
+
+# 📖 Documentation
+
+| Document | Purpose |
+|----------|---------|
+| **README.md** (this file) | Overview, quick start, high-level workflow |
+| **[PIPELINE.md](PIPELINE.md)** | Detailed pipeline documentation: phases, data flow, file dependencies, troubleshooting |
 
 ---
 
@@ -27,27 +36,46 @@ skill-extraction/
 ├── verify_skills.py                 # Skill verification tiers
 ├── generate_competencies.py         # Future-aware competency generator (LLM)
 ├── export_for_review.py             # Human-in-the-loop review tables
+├── export_competencies_for_review.py # Competency review export
 ├── enrich_with_dates.py             # Attach job_date → extraction outputs
 ├── skill_time_trend_analysis.py     # Time-series trend analysis
 ├── future_weight_mapping.py         # Maps knowledge → future domains
+├── import_feedback.py               # Merge feedback_store → feedback artifacts
+├── apply_feedback.py                # Apply Bloom/type corrections
 ├── aggregate_results.py             # Aggregates multiple experiment runs
+├── preprocess_jobs_pipeline.py      # Raw jobs → jobs_sentences.csv, jobs_metadata.csv
 │
-├── data/
-│   ├── preprocessing/
-│   │   ├── jobs_english_only_dataset.csv
-│   │   ├── job_sentences_with_dates_clean.csv
-│   │   ├── jobs_metadata.csv
-│   │   └── ...
-│   └── future_domains_dummy.csv     # Dummy WEF/McKinsey-style dataset
+├── review_ui/                       # Web UI for expert review
+│   ├── app.py                       # FastAPI backend
+│   ├── static/app.js                # Frontend logic
+│   └── templates/index.html
+│
+├── feedback_store/                  # Per-reviewer feedback (auto-saved)
+│   ├── skill_feedback.csv
+│   ├── knowledge_feedback.csv
+│   └── competency_feedback.csv
+│
+├── DATA/preprocessing/data_prepared/
+│   ├── jobs_sentences.csv           # Pipeline input
+│   └── jobs_metadata.csv            # job_id → job_date
 │
 ├── results/                         # Output of a single run
 ├── results_run1/                    # Snapshot of run 1
-├── results_run2/
-├── results_run3/
 ├── results_aggregated/              # Aggregated results across runs
 │
-└── run.bat                          # Automated execution pipeline
+├── run.bat                          # Phase 1: Full pipeline
+└── run_phase_2.bat                  # Phase 2: Post-review pipeline
 ```
+
+---
+
+# ⚡ Quick Start
+
+1. **Phase 1** — Run full pipeline: `run.bat`
+2. **Review** — Start UI: `uvicorn review_ui.app:app --reload`, open `http://127.0.0.1:8000/?reviewer_id=alice`
+3. **Phase 2** — After review: `run_phase_2.bat`
+
+See [PIPELINE.md](PIPELINE.md) for detailed steps, data flow, and troubleshooting.
 
 ---
 
@@ -116,14 +144,24 @@ This project introduces a **multi-layer curriculum intelligence pipeline** combi
   * related skills
   * future relevance notes
 
-### **7. Export for Review**
+### **7. Export for Review & Human-in-the-Loop**
 
-Creates CSVs for expert validation:
+Creates sampled CSVs for expert validation (500 skills, 200 knowledge, 100 competencies):
 
 * `expert_review_jobs.csv`
-* `expert_review_skills.csv`
-* `expert_review_knowledge.csv`
-  (with future weight + domain relevance)
+* `expert_review_skills.csv` (with human_valid, human_bloom, human_notes columns)
+* `expert_review_knowledge.csv` (with future weight + human_valid, human_notes)
+* `expert_review_competencies.csv` (with human_quality, human_relevant, human_notes)
+
+**Review workflow (single or multi-reviewer):**
+1. Run `export_for_review.py` and `export_competencies_for_review.py`
+2. Start the review web app: `uvicorn review_ui.app:app --reload`
+3. **Multi-reviewer:** Each reviewer opens the app with a unique ID in the URL, e.g. `http://localhost:8000/?reviewer_id=alice` or `?reviewer_id=r1`. All reviewers see the same set; feedback is stored per reviewer.
+4. Review in browser; feedback auto-saves to `feedback_store/`
+5. Run `import_feedback.py` to merge feedback (uses majority vote when multiple reviewers)
+6. Run `apply_feedback.py` to apply Bloom overrides and filtering
+7. Run `generate_competencies.py --comprehensive` (or `--human_verified_only` for conservative mode)
+8. Run `evaluate_competency_generation.py` to assess competency quality
 
 ---
 
@@ -255,7 +293,6 @@ All diagrams can be generated using the provided prompts in `/docs/prompts/`
 
 * Incorporate **real** WEF/McKinsey datasets instead of dummy files
 * Train a **domain-specific SBERT** model for improved matching
-* Build a small **web interface** for expert review
 * Add **semantic search** over extracted competencies
 * Testing with >10,000 job postings
 

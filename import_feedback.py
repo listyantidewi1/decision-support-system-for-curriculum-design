@@ -1,0 +1,346 @@
+"""
+import_feedback.py
+
+Reads feedback from feedback_store/ (multi-reviewer format) or expert_review_*.csv (legacy).
+Merges multi-reviewer feedback using majority vote. Validates human_valid, human_bloom, etc.
+
+Outputs to feedback_store/:
+    - human_verified_skills.csv
+    - human_verified_knowledge.csv
+    - competency_assessments.json
+    - bloom_corrections.json
+"""
+
+import argparse
+import json
+from collections import Counter
+from pathlib import Path
+
+import pandas as pd
+
+import config
+
+VALID_HUMAN_VALID = {"valid", "invalid", ""}
+VALID_HUMAN_BLOOM = {"Remember", "Understand", "Apply", "Analyze", "Evaluate", "Create", "N/A", ""}
+VALID_HUMAN_QUALITY = {"1", "2", "3", "4", "5", "poor", "fair", "good", "excellent", ""}
+VALID_HUMAN_RELEVANT = {"yes", "no", "partial", ""}
+
+
+def _normalize(val: str) -> str:
+    """Strip and lowercase for comparison."""
+    if pd.isna(val):
+        return ""
+    return str(val).strip().lower()
+
+
+def _majority(votes: list) -> str:
+    """Return majority vote, or first non-empty if tie."""
+    votes = [str(v).strip() for v in votes if v and str(v).strip()]
+    if not votes:
+        return ""
+    c = Counter(votes)
+    best = c.most_common(1)[0]
+    return best[0]
+
+
+def _load_skill_feedback(output_dir: Path, feedback_dir: Path) -> pd.DataFrame:
+    """Load skill feedback: prefer feedback_store/skill_feedback.csv, else legacy expert_review_skills.csv.
+    Migrates legacy data to feedback_store on first import."""
+    fb_path = feedback_dir / "skill_feedback.csv"
+    template_path = output_dir / "expert_review_skills.csv"
+    if fb_path.exists():
+        fb = pd.read_csv(fb_path)
+        if not fb.empty and "review_id" in fb.columns and "reviewer_id" in fb.columns:
+            if template_path.exists():
+                tpl = pd.read_csv(template_path)
+                if "skill" in tpl.columns and "job_id" in tpl.columns:
+                    merged = fb.merge(tpl[["review_id", "skill", "job_id"]], on="review_id", how="left")
+                    return merged
+            return fb
+    # Legacy: read from expert_review_skills.csv and migrate to feedback_store
+    if template_path.exists():
+        df = pd.read_csv(template_path)
+        if "human_valid" in df.columns:
+            hv = df["human_valid"].astype(str).str.strip()
+            if hv.isin(["valid", "invalid"]).any() or (df["human_bloom"].astype(str).str.strip() != "").any():
+                # Migrate to feedback_store for future UI loads
+                mig = df[["review_id", "human_valid", "human_type", "human_bloom", "human_notes"]].copy()
+                mig["reviewer_id"] = "default"
+                mig.to_csv(fb_path, index=False, encoding="utf-8-sig")
+                print(f"[INFO] Migrated legacy skill feedback to {fb_path}")
+            df["reviewer_id"] = "default"
+            return df
+    return pd.DataFrame()
+
+
+def import_skills_feedback(output_dir: Path, feedback_dir: Path) -> None:
+    """Import skill feedback from feedback_store or legacy expert_review_skills.csv."""
+    filled = _load_skill_feedback(output_dir, feedback_dir)
+    if filled.empty:
+        print("[INFO] No skill feedback found.")
+        return
+
+    # Aggregate by review_id (multi-reviewer: majority vote)
+    valid_bloom = {v for v in VALID_HUMAN_BLOOM if v}
+    valid_types = {"Hard", "Soft", "Both"}
+
+    bloom_corrections = {}
+    type_corrections = {}
+    verified_rows = []
+
+    for review_id, grp in filled.groupby("review_id"):
+        hv_list = grp["human_valid"].astype(str).str.strip().str.lower().tolist()
+        hb_list = grp["human_bloom"].astype(str).str.strip().tolist()
+        ht_list = grp["human_type"].astype(str).str.strip().tolist()
+        hv = _majority([v for v in hv_list if v in ("valid", "invalid")])
+        hb = _majority([v for v in hb_list if v in valid_bloom])
+        ht = _majority([v for v in ht_list if v in valid_types])
+
+        if not hv and not hb and not ht:
+            continue
+
+        row = grp.iloc[0].to_dict()
+        row["human_valid"] = hv
+        row["human_bloom"] = hb
+        row["human_type"] = ht
+        if "skill" in row and hb:
+            bloom_corrections[str(row["skill"]).strip()] = hb
+        if "skill" in row and ht:
+            type_corrections[str(row["skill"]).strip()] = ht
+        if hv == "valid":
+            verified_rows.append(row)
+
+    if not verified_rows and not bloom_corrections and not type_corrections:
+        print("[INFO] No skill feedback found.")
+        return
+
+    # Build human_verified_skills.csv
+    if verified_rows:
+        verified = pd.DataFrame(verified_rows)
+        out_cols = [c for c in ["review_id", "job_id", "skill", "type", "bloom"] if c in verified.columns]
+        if out_cols:
+            verified[out_cols].to_csv(feedback_dir / "human_verified_skills.csv", index=False, encoding="utf-8-sig")
+            print(f"[INFO] Saved {len(verified)} verified skills to human_verified_skills.csv")
+
+    if bloom_corrections:
+        (feedback_dir / "bloom_corrections.json").write_text(
+            json.dumps(bloom_corrections, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+        print(f"[INFO] Saved {len(bloom_corrections)} Bloom corrections")
+    if type_corrections:
+        (feedback_dir / "type_corrections.json").write_text(
+            json.dumps(type_corrections, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+        print(f"[INFO] Saved {len(type_corrections)} type corrections")
+
+
+def _load_knowledge_feedback(output_dir: Path, feedback_dir: Path) -> pd.DataFrame:
+    """Load knowledge feedback: prefer feedback_store, else legacy. Migrates legacy on first import."""
+    fb_path = feedback_dir / "knowledge_feedback.csv"
+    template_path = output_dir / "expert_review_knowledge.csv"
+    if fb_path.exists():
+        fb = pd.read_csv(fb_path)
+        if not fb.empty:
+            if template_path.exists():
+                tpl = pd.read_csv(template_path)
+                if "knowledge" in tpl.columns:
+                    return fb.merge(tpl[["review_id", "knowledge"]], on="review_id", how="left")
+            return fb
+    if template_path.exists():
+        df = pd.read_csv(template_path)
+        if "human_valid" in df.columns and df["human_valid"].astype(str).str.strip().isin(["valid", "invalid"]).any():
+            mig = df[["review_id", "human_valid", "human_notes"]].copy()
+            mig["reviewer_id"] = "default"
+            mig.to_csv(fb_path, index=False, encoding="utf-8-sig")
+            print(f"[INFO] Migrated legacy knowledge feedback to {fb_path}")
+        if "human_valid" in df.columns:
+            df["reviewer_id"] = "default"
+            return df
+    return pd.DataFrame()
+
+
+def import_knowledge_feedback(output_dir: Path, feedback_dir: Path) -> None:
+    """Import knowledge feedback from feedback_store or legacy."""
+    filled = _load_knowledge_feedback(output_dir, feedback_dir)
+    if filled.empty:
+        print("[INFO] No knowledge feedback found.")
+        return
+
+    verified_rows = []
+    for review_id, grp in filled.groupby("review_id"):
+        hv_list = grp["human_valid"].astype(str).str.strip().str.lower().tolist()
+        hv = _majority([v for v in hv_list if v in ("valid", "invalid")])
+        if hv == "valid":
+            verified_rows.append(grp.iloc[0].to_dict())
+
+    if verified_rows:
+        verified = pd.DataFrame(verified_rows)
+        out_cols = [c for c in ["review_id", "knowledge"] if c in verified.columns]
+        if out_cols:
+            verified[out_cols].to_csv(feedback_dir / "human_verified_knowledge.csv", index=False, encoding="utf-8-sig")
+            print(f"[INFO] Saved {len(verified)} verified knowledge items")
+
+
+def _load_competency_feedback(output_dir: Path, feedback_dir: Path) -> pd.DataFrame:
+    """Load competency feedback: prefer feedback_store, else legacy. Migrates legacy on first import."""
+    fb_path = feedback_dir / "competency_feedback.csv"
+    path = output_dir / "expert_review_competencies.csv"
+    if fb_path.exists():
+        fb = pd.read_csv(fb_path)
+        if not fb.empty:
+            return fb
+    if path.exists():
+        df = pd.read_csv(path)
+        has_feedback = (
+            ("human_quality" in df.columns and df["human_quality"].astype(str).str.strip().ne("").any())
+            or ("human_relevant" in df.columns and df["human_relevant"].astype(str).str.strip().ne("").any())
+        )
+        if ("human_quality" in df.columns or "human_relevant" in df.columns) and has_feedback:
+            mig = df[["competency_id", "human_quality", "human_relevant", "human_notes"]].copy()
+            mig["reviewer_id"] = "default"
+            mig.to_csv(fb_path, index=False, encoding="utf-8-sig")
+            print(f"[INFO] Migrated legacy competency feedback to {fb_path}")
+        if "human_quality" in df.columns or "human_relevant" in df.columns:
+            df["reviewer_id"] = "default"
+            return df
+    return pd.DataFrame()
+
+
+def import_competency_feedback(output_dir: Path, feedback_dir: Path) -> None:
+    """Import competency assessment from feedback_store or legacy."""
+    filled = _load_competency_feedback(output_dir, feedback_dir)
+    if filled.empty:
+        print("[INFO] No competency feedback found.")
+        return
+
+    assessments = {}
+    for cid, grp in filled.groupby("competency_id"):
+        cid = str(cid).strip()
+        if not cid:
+            continue
+        hq_list = grp["human_quality"].astype(str).str.strip().tolist()
+        hr_list = grp["human_relevant"].astype(str).str.strip().tolist()
+        hn_list = grp["human_notes"].astype(str).str.strip().tolist()
+        hq = _majority([v for v in hq_list if v])
+        hr = _majority([v for v in hr_list if v])
+        hn = _majority([v for v in hn_list if v])
+        if hq or hr or hn:
+            assessments[cid] = {"quality": hq, "relevant": hr, "notes": hn}
+
+    if assessments:
+        (feedback_dir / "competency_assessments.json").write_text(
+            json.dumps(assessments, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+        print(f"[INFO] Saved {len(assessments)} competency assessments")
+
+
+def _cohens_kappa(labels1, labels2) -> float:
+    """Compute Cohen's Kappa for two lists of labels."""
+    if len(labels1) != len(labels2) or len(labels1) == 0:
+        return 0.0
+    all_labels = sorted(set(labels1) | set(labels2))
+    n = len(labels1)
+    if n == 0:
+        return 0.0
+    observed_agree = sum(1 for a, b in zip(labels1, labels2) if a == b) / n
+    freq1 = {l: labels1.count(l) / n for l in all_labels}
+    freq2 = {l: labels2.count(l) / n for l in all_labels}
+    expected_agree = sum(freq1.get(l, 0) * freq2.get(l, 0) for l in all_labels)
+    if expected_agree >= 1.0:
+        return 1.0
+    return (observed_agree - expected_agree) / (1.0 - expected_agree)
+
+
+def compute_inter_rater_reliability(output_dir: Path, feedback_dir: Path) -> None:
+    """Compute IRR (Cohen's Kappa) when multiple reviewers assessed the same items."""
+    report = {}
+
+    for fb_name, id_col, label_col in [
+        ("skill_feedback.csv", "review_id", "human_valid"),
+        ("knowledge_feedback.csv", "review_id", "human_valid"),
+        ("competency_feedback.csv", "competency_id", "human_quality"),
+    ]:
+        path = feedback_dir / fb_name
+        if not path.exists():
+            continue
+        df = pd.read_csv(path)
+        if "reviewer_id" not in df.columns or label_col not in df.columns:
+            continue
+
+        df["reviewer_id"] = df["reviewer_id"].astype(str).str.strip()
+        df[label_col] = df[label_col].astype(str).str.strip().str.lower()
+        df = df[(df["reviewer_id"] != "") & (df[label_col] != "")].copy()
+
+        reviewers = sorted(df["reviewer_id"].unique())
+        if len(reviewers) < 2:
+            continue
+
+        r1_df = df[df["reviewer_id"] == reviewers[0]]
+        r2_df = df[df["reviewer_id"] == reviewers[1]]
+        shared = set(r1_df[id_col]) & set(r2_df[id_col])
+        if len(shared) < 5:
+            continue
+
+        r1_map = dict(zip(r1_df[id_col], r1_df[label_col]))
+        r2_map = dict(zip(r2_df[id_col], r2_df[label_col]))
+        shared_ids = sorted(shared)
+        labels1 = [r1_map[sid] for sid in shared_ids]
+        labels2 = [r2_map[sid] for sid in shared_ids]
+
+        kappa = _cohens_kappa(labels1, labels2)
+        pct_agree = sum(1 for a, b in zip(labels1, labels2) if a == b) / len(labels1) * 100
+        disagreed = [sid for sid, a, b in zip(shared_ids, labels1, labels2) if a != b]
+
+        report[fb_name] = {
+            "reviewers": reviewers[:2],
+            "shared_items": len(shared_ids),
+            "cohens_kappa": round(kappa, 4),
+            "pct_agreement": round(pct_agree, 1),
+            "disagreed_ids": disagreed[:20],
+        }
+
+    if report:
+        out_path = feedback_dir / "inter_rater_report.json"
+        out_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(f"[INFO] Inter-rater reliability report saved to {out_path}")
+        for fb_name, r in report.items():
+            print(f"  {fb_name}: kappa={r['cohens_kappa']:.3f}, "
+                  f"agree={r['pct_agreement']:.1f}% ({r['shared_items']} shared items)")
+    else:
+        print("[INFO] No multi-reviewer data found; skipping inter-rater report.")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Import human feedback from expert_review CSVs into feedback_store."
+    )
+    parser.add_argument(
+        "--output_dir",
+        type=str,
+        default=str(config.OUTPUT_DIR),
+        help="Directory containing expert_review_*.csv (default: config.OUTPUT_DIR)",
+    )
+    parser.add_argument(
+        "--feedback_dir",
+        type=str,
+        default=None,
+        help="Feedback store directory (default: PROJECT_ROOT/feedback_store)",
+    )
+
+    args = parser.parse_args()
+    out_dir = Path(args.output_dir)
+    feedback_dir = Path(args.feedback_dir) if args.feedback_dir else Path(config.PROJECT_ROOT) / "feedback_store"
+    feedback_dir.mkdir(parents=True, exist_ok=True)
+
+    print(f"[INFO] Reading from {out_dir}, writing to {feedback_dir}")
+
+    import_skills_feedback(out_dir, feedback_dir)
+    import_knowledge_feedback(out_dir, feedback_dir)
+    import_competency_feedback(out_dir, feedback_dir)
+    compute_inter_rater_reliability(out_dir, feedback_dir)
+
+    print("[INFO] Import complete.")
+
+
+if __name__ == "__main__":
+    main()

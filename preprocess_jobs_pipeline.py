@@ -228,9 +228,15 @@ def main():
     sents_df.to_csv(full_path, index=False, encoding="utf-8-sig")
     print(f"[INFO] Saved: {full_path}")
 
-    pipe_df = sents_df[["job_id", "job_date", "sentence_en"]].rename(columns={"sentence_en": "sentence"})
+    # Pipeline expects: job_id, sentence_text (and optionally job_date)
+    pipe_df = sents_df[["job_id", "job_date", "sentence_en"]].rename(columns={"sentence_en": "sentence_text"})
     pipe_path = out_dir / "job_sentences_for_pipeline.csv"
     pipe_df.to_csv(pipe_path, index=False, encoding="utf-8-sig")
     print(f"[INFO] Saved pipeline-ready file: {pipe_path}")
+
+    # Also save as jobs_sentences.csv for pipeline compatibility (matches INPUT_CSV)
+    jobs_sent_path = out_dir / "jobs_sentences.csv"
+    pipe_df.to_csv(jobs_sent_path, index=False, encoding="utf-8-sig")
+    print(f"[INFO] Saved: {jobs_sent_path} (pipeline input)")
 
     print("[INFO] Preprocessing completed successfully.")
