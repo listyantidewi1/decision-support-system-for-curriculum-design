@@ -41,6 +41,9 @@ class ResearchJobBERT(nn.Module):
             tags_skill = self.crf_skill.decode(logits_skill, mask=mask)
             tags_knowledge = self.crf_knowledge.decode(logits_knowledge, mask=mask)
             
-            # The pipeline expects dictionary output for logits.
-            # Since CRF returns hard predictions (integers), we wrap them.
-            return {'logits_skill': tags_skill, 'logits_knowledge': tags_knowledge}
+            return {
+                'logits_skill': tags_skill,
+                'logits_knowledge': tags_knowledge,
+                'emissions_skill': logits_skill,
+                'emissions_knowledge': logits_knowledge,
+            }

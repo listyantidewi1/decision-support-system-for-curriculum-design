@@ -1,51 +1,44 @@
 """
 skill_time_trend_analysis.py
 
-Compute simple time trends for skills using advanced_skills_with_dates.csv.
+Compute statistically rigorous time trends for skills using
+advanced_skills_with_dates.csv.  Uses scipy.stats.linregress for
+slope, p-value, and R-squared.
 
 Output:
-    skill_time_trends.csv
+    skill_time_trends.csv  (with slope, p_value, r_squared, trend_label)
 """
 
 import argparse
 from pathlib import Path
+from typing import Tuple
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from scipy import stats as sp_stats
 
-import config  # uses config.OUTPUT_DIR
-
-
-def compute_trend_group(grp: pd.DataFrame) -> float:
-    """
-    Compute a simple linear slope of monthly frequency over time.
-
-    grp: DataFrame with columns ['month_idx', 'freq']
-    """
-    x = grp["month_idx"].values
-    y = grp["freq"].values
-
-    if len(x) < 2:
-        return 0.0
-
-    # least squares slope
-    slope = np.polyfit(x, y, 1)[0]
-    return slope
+import config
 
 
-def label_trend(slope: float, eps: float = 0.01) -> str:
-    """
-    Convert slope into categorical trend label.
-    eps is a small threshold to treat near-zero as stable.
-    """
-    if slope > eps:
-        return "Emerging"
-    elif slope < -eps:
-        return "Declining"
-    else:
+def compute_trend_group(grp: pd.DataFrame) -> Tuple[float, float, float]:
+    """Return (slope, p_value, r_squared) from linear regression."""
+    x = grp["month_idx"].values.astype(float)
+    y = grp["freq"].values.astype(float)
+
+    if len(x) < 3:
+        return 0.0, 1.0, 0.0
+
+    result = sp_stats.linregress(x, y)
+    return float(result.slope), float(result.pvalue), float(result.rvalue ** 2)
+
+
+def label_trend(slope: float, p_value: float, alpha: float = 0.05) -> str:
+    """Label trend based on slope direction *and* statistical significance."""
+    if p_value > alpha:
         return "Stable"
+    return "Emerging" if slope > 0 else "Declining"
 
 
 def main():
@@ -101,9 +94,9 @@ def main():
     df["job_date"] = pd.to_datetime(df["job_date"], errors="coerce")
     df = df[df["job_date"].notna()].copy()
 
-    # Optionally restrict to hard skills
+    # Optionally restrict to hard skills (include "Both" as hybrid skills are often curriculum-relevant)
     if args.only_hard and "type" in df.columns:
-        df = df[df["type"].str.lower() == "hard"].copy()
+        df = df[df["type"].astype(str).str.lower().isin(["hard", "both"])].copy()
 
     # Month string and month index
     df["year_month"] = df["job_date"].dt.to_period("M").astype(str)
@@ -129,22 +122,26 @@ def main():
         print("[WARN] No skills passed the min_jobs filter; nothing to analyze.")
         return
 
-    # Compute slope per skill
+    # Compute slope, p-value, R-squared per skill
     trend_rows = []
     for skill, g in grp.groupby("skill"):
         g_sorted = g.sort_values("month_idx")
-        slope = compute_trend_group(g_sorted)
+        slope, p_value, r_squared = compute_trend_group(g_sorted)
         trend_rows.append(
             {
                 "skill": skill,
                 "total_freq": g_sorted["freq"].sum(),
                 "n_months": g_sorted["year_month"].nunique(),
                 "slope": slope,
+                "p_value": p_value,
+                "r_squared": r_squared,
             }
         )
 
     trends = pd.DataFrame(trend_rows)
-    trends["trend_label"] = trends["slope"].apply(label_trend)
+    trends["trend_label"] = trends.apply(
+        lambda r: label_trend(r["slope"], r["p_value"]), axis=1
+    )
 
     out_path = out_dir / args.output
     trends.to_csv(out_path, index=False, encoding="utf-8-sig")

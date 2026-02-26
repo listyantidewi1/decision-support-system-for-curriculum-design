@@ -58,13 +58,23 @@ def main():
     parser.add_argument(
         "--jobs_meta",
         type=str,
-        default="jobs_metadata.csv",
-        help="Path to jobs_metadata.csv (job_id + job_date).",
+        default=None,
+        help="Path to jobs_metadata.csv (job_id + job_date). Default: DATA/preprocessing/data_prepared/jobs_metadata.csv",
     )
     args = parser.parse_args()
 
     out_dir = Path(args.output_dir)
-    jobs_meta_path = Path(args.jobs_meta)
+    default_meta = "DATA/preprocessing/data_prepared/jobs_metadata.csv"
+    jobs_meta_path = Path(args.jobs_meta) if args.jobs_meta else Path(default_meta)
+    # Resolve relative to project root if not found in cwd
+    if not jobs_meta_path.exists() and not jobs_meta_path.is_absolute():
+        try:
+            root = Path(config.PROJECT_ROOT)
+            candidate = root / default_meta
+            if candidate.exists():
+                jobs_meta_path = candidate
+        except Exception:
+            pass
 
     if not jobs_meta_path.exists():
         raise FileNotFoundError(f"jobs_metadata.csv not found at {jobs_meta_path}")

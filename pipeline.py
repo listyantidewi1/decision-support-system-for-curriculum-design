@@ -242,9 +242,32 @@ class AdvancedPipelineConfig:
         'min_overlap_ratio': 0.6  # Minimum overlap for partial matches
     }
     
+    # --- Confidence scoring weights (BERT skills) ---
+    BERT_RAW_CONFIDENCE_WEIGHT = 0.7    # CRF emission probability contribution
+    BERT_TYPE_CONFIDENCE_WEIGHT = 0.3   # Hard/soft type classification contribution
+    BERT_BLOOM_FACTOR_BASE = 0.5        # Minimum Bloom confidence factor (floor)
+    BERT_DENSITY_FACTOR_BASE = 0.8      # Minimum semantic-density factor (floor)
+    BERT_STANDALONE_PENALTY = 0.8       # Penalty when BERT skill has no GPT match
+
+    # --- Confidence scoring weights (GPT skills) ---
+    GPT_BASE_CONFIDENCE = 0.8           # Base confidence for GPT extractions
+    GPT_TYPE_FACTOR_BASE = 0.6          # Minimum type-confidence factor
+    GPT_BLOOM_FACTOR_BASE = 0.7         # Minimum Bloom factor for GPT
+    GPT_DENSITY_FACTOR_BASE = 0.8       # Minimum density factor for GPT
+
+    # --- Fusion weights ---
+    FUSION_MATCH_BONUS_WEIGHT = 0.2     # How much match score boosts confidence
+    FUSION_TYPE_DISAGREEMENT = 0.8      # Multiplier when BERT/GPT types disagree
+    FUSION_BLOOM_CONFIDENCE_SCALE = 0.7 # Scale for Bloom confidence in fusion
+
+    # --- Agreement thresholds ---
+    AGREEMENT_EXACT_THRESHOLD = 0.85    # Cosine sim for exact model agreement
+    AGREEMENT_PARTIAL_THRESHOLD = 0.5   # Minimum partial match confidence
+    FUSION_OVERLAP_THRESHOLD = 0.6      # Substring overlap ratio for partial fusion
+
     # File paths
     INPUT_CSV = 'DATA\\preprocessing\\data_prepared\\jobs_sentences.csv'
-    SAMPLE_SIZE = 20000
+    SAMPLE_SIZE = 1000
     
     # Output files
     OUTPUT_FILES = {
@@ -362,15 +385,19 @@ class ModelManager:
                 inputs['attention_mask']
             )
         
-        # Decode predictions
+        # Decode predictions (tags are CRF-decoded integers, emissions are raw logits)
         skill_preds = outputs['logits_skill'][0]
         knowledge_preds = outputs['logits_knowledge'][0]
+        skill_emissions = outputs.get('emissions_skill')
+        knowledge_emissions = outputs.get('emissions_knowledge')
         
         skills = self._decode_crf_predictions(
-            skill_preds, inputs, words, self.skill_label_map
+            skill_preds, inputs, words, self.skill_label_map,
+            emissions=skill_emissions[0] if skill_emissions is not None else None,
         )
         knowledge = self._decode_crf_predictions(
-            knowledge_preds, inputs, words, self.knowledge_label_map
+            knowledge_preds, inputs, words, self.knowledge_label_map,
+            emissions=knowledge_emissions[0] if knowledge_emissions is not None else None,
         )
         
         # Refine skills (split compounds)
@@ -391,8 +418,13 @@ class ModelManager:
                     refined.append({'text': p, 'confidence': conf})
         return refined
     
-    def _decode_crf_predictions(self, predictions, inputs, words, label_map):
-        """Decode CRF predictions to extract entities."""
+    def _decode_crf_predictions(self, predictions, inputs, words, label_map,
+                                emissions=None):
+        """Decode CRF predictions to extract entities.
+        
+        Uses emission softmax probabilities for per-token confidence when
+        emissions are available, instead of a hardcoded placeholder.
+        """
         extracted = []
         current_entity = []
         current_confidences = []
@@ -406,7 +438,12 @@ class ModelManager:
                 break
             
             label = label_map.get(predictions[i], 'O')
-            confidence = float(0.95)  # Placeholder for CRF
+            
+            if emissions is not None and i < emissions.shape[0]:
+                probs = torch.softmax(emissions[i], dim=-1)
+                confidence = float(probs[predictions[i]].item())
+            else:
+                confidence = 0.5
             
             if 'B' in label:
                 if current_entity:
@@ -433,7 +470,7 @@ class ModelManager:
         if current_entity:
             extracted.append({
                 "text": " ".join(current_entity),
-                "confidence": np.mean(current_confidences)
+                "confidence": float(np.mean(current_confidences))
             })
         
         return extracted
@@ -734,6 +771,144 @@ class AdvancedTaxonomyManager:
         
         return 0.0
 
+
+# ============================================================
+# 4b. HYBRID BLOOM CLASSIFIER (SBERT + LLM)
+# ============================================================
+
+class BloomClassifier:
+    """Two-stage Bloom classifier: SBERT exemplar matching + LLM fallback."""
+
+    BLOOM_EXEMPLARS = {
+        'Remember': [
+            "identify key terms in the documentation",
+            "list programming languages used",
+            "recall software version numbers",
+            "recognize common error codes",
+            "name database management systems",
+            "define API endpoints",
+        ],
+        'Understand': [
+            "explain how the authentication system works",
+            "describe the software architecture",
+            "summarize project requirements",
+            "interpret error messages and logs",
+            "classify different types of security threats",
+            "discuss trade-offs between approaches",
+        ],
+        'Apply': [
+            "use Python for data processing",
+            "implement REST API endpoints",
+            "deploy applications to cloud servers",
+            "configure CI/CD pipelines",
+            "execute database queries",
+            "manage project timelines",
+        ],
+        'Analyze': [
+            "analyze system performance bottlenecks",
+            "debug complex multi-threaded applications",
+            "compare alternative software architectures",
+            "investigate root causes of production failures",
+            "examine code for security vulnerabilities",
+            "diagnose network connectivity issues",
+        ],
+        'Evaluate': [
+            "evaluate the effectiveness of testing strategies",
+            "assess code quality through peer review",
+            "recommend technology stack improvements",
+            "validate compliance with security standards",
+            "prioritize feature requests based on impact",
+            "judge the scalability of proposed solutions",
+        ],
+        'Create': [
+            "design a microservices architecture",
+            "develop a machine learning pipeline",
+            "build a real-time data streaming platform",
+            "architect a distributed computing system",
+            "create automated testing frameworks",
+            "engineer a scalable cloud infrastructure",
+        ],
+    }
+
+    SBERT_HIGH_CONFIDENCE = 0.65
+    SBERT_AMBIGUOUS_LOW = 0.45
+
+    def __init__(self, embedder: SentenceTransformer = None,
+                 openai_client=None, model_name: str = None):
+        self.embedder = embedder
+        self.openai_client = openai_client
+        self.model_name = model_name or AdvancedPipelineConfig.GPT_MODEL
+        self._exemplar_embeddings = {}
+        self._bloom_levels = list(self.BLOOM_EXEMPLARS.keys())
+
+        if self.embedder is not None:
+            self._precompute_exemplar_embeddings()
+
+    def _precompute_exemplar_embeddings(self):
+        for level, exemplars in self.BLOOM_EXEMPLARS.items():
+            self._exemplar_embeddings[level] = self.embedder.encode(
+                exemplars, convert_to_tensor=True, normalize_embeddings=True
+            )
+
+    def classify(self, skill_text: str, context: str = "",
+                 skill_type: SkillType = SkillType.HARD) -> Tuple[BloomLevel, float]:
+        if skill_type == SkillType.SOFT:
+            return BloomLevel.NA, 1.0
+
+        # Stage 1: SBERT exemplar matching
+        if self.embedder is not None and self._exemplar_embeddings:
+            best_level, best_sim = self._sbert_classify(skill_text)
+            if best_sim >= self.SBERT_HIGH_CONFIDENCE:
+                return BloomLevel(best_level), float(best_sim)
+            if best_sim >= self.SBERT_AMBIGUOUS_LOW and self.openai_client:
+                llm_level = self._llm_classify(skill_text, context)
+                if llm_level:
+                    confidence = 0.7 * best_sim + 0.3 * 0.85
+                    return BloomLevel(llm_level), float(confidence)
+            if best_sim >= self.SBERT_AMBIGUOUS_LOW:
+                return BloomLevel(best_level), float(best_sim)
+
+        # Fallback to keyword matching
+        return AdvancedTaxonomyManager.get_bloom_with_confidence(skill_text, skill_type)
+
+    def _sbert_classify(self, skill_text: str) -> Tuple[str, float]:
+        skill_emb = self.embedder.encode(
+            [skill_text], convert_to_tensor=True, normalize_embeddings=True
+        )
+        best_level = 'Apply'
+        best_avg_sim = 0.0
+        for level in self._bloom_levels:
+            sims = util.cos_sim(skill_emb, self._exemplar_embeddings[level])[0]
+            avg_sim = float(sims.mean().item())
+            if avg_sim > best_avg_sim:
+                best_avg_sim = avg_sim
+                best_level = level
+        return best_level, best_avg_sim
+
+    def _llm_classify(self, skill_text: str, context: str = "") -> Optional[str]:
+        ctx_block = f' extracted from: "{context[:200]}"' if context else ""
+        prompt = (
+            f'Given the skill "{skill_text}"{ctx_block}, '
+            f'classify its Bloom\'s Taxonomy level. '
+            f'Respond with ONLY one of: Remember, Understand, Apply, Analyze, Evaluate, Create'
+        )
+        try:
+            resp = self.openai_client.chat.completions.create(
+                model=self.model_name,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0,
+                max_tokens=20,
+            )
+            answer = resp.choices[0].message.content.strip()
+            valid = {'Remember', 'Understand', 'Apply', 'Analyze', 'Evaluate', 'Create'}
+            for v in valid:
+                if v.lower() in answer.lower():
+                    return v
+        except Exception as e:
+            logger.debug(f"BloomClassifier LLM fallback failed: {e}")
+        return None
+
+
 # ============================================================
 # 5. GPT EXTRACTOR
 # ============================================================
@@ -863,6 +1038,11 @@ class ContextAwareExtractor:
         self.model_manager = model_manager
         self.gpt_extractor = gpt_extractor
         self.embedder = model_manager.embedder
+        self.bloom_classifier = BloomClassifier(
+            embedder=model_manager.embedder,
+            openai_client=model_manager.openai_client,
+            model_name=AdvancedPipelineConfig.GPT_MODEL,
+        )
         
     def extract_with_context_awareness(self, text: str) -> Dict[str, List[SkillItem]]:
         """Extract skills with context awareness and model agreement analysis."""
@@ -912,15 +1092,24 @@ class ContextAwareExtractor:
                 text, context=[context]
             )
             
-            # Get Bloom level with confidence
-            bloom_level, bloom_confidence = AdvancedTaxonomyManager.get_bloom_with_confidence(
-                text, skill_type
+            # Get Bloom level with hybrid classifier (SBERT + LLM fallback)
+            bloom_level, bloom_confidence = self.bloom_classifier.classify(
+                text, context=context, skill_type=skill_type
             )
             
-            # Calculate overall confidence
-            base_confidence = raw_confidence * 0.7 + type_confidence * 0.3
-            adjusted_confidence = base_confidence * (0.5 + bloom_confidence * 0.5)
-            final_confidence = adjusted_confidence * (0.8 + semantic_density * 0.2)
+            # Calculate overall confidence using named config weights
+            base_confidence = (
+                raw_confidence * AdvancedPipelineConfig.BERT_RAW_CONFIDENCE_WEIGHT
+                + type_confidence * AdvancedPipelineConfig.BERT_TYPE_CONFIDENCE_WEIGHT
+            )
+            adjusted_confidence = base_confidence * (
+                AdvancedPipelineConfig.BERT_BLOOM_FACTOR_BASE
+                + bloom_confidence * (1.0 - AdvancedPipelineConfig.BERT_BLOOM_FACTOR_BASE)
+            )
+            final_confidence = adjusted_confidence * (
+                AdvancedPipelineConfig.BERT_DENSITY_FACTOR_BASE
+                + semantic_density * (1.0 - AdvancedPipelineConfig.BERT_DENSITY_FACTOR_BASE)
+            )
             
             skill_item = SkillItem(
                 text=text,
@@ -930,7 +1119,7 @@ class ContextAwareExtractor:
                 confidence_tier=AdvancedTaxonomyManager.get_confidence_tier(final_confidence),
                 source="BERT",
                 semantic_density=semantic_density,
-                context_agreement=1.0  # Will be adjusted later
+                context_agreement=1.0
             )
             processed.append(skill_item)
         
@@ -946,7 +1135,6 @@ class ContextAwareExtractor:
                 continue
             
             gpt_type = skill.get('type', 'Hard')
-            gpt_bloom = skill.get('bloom', 'Apply')
             
             # Calculate semantic density
             semantic_density = AdvancedTaxonomyManager.calculate_semantic_density(text)
@@ -956,20 +1144,25 @@ class ContextAwareExtractor:
                 text, gpt_type, context=[context]
             )
             
-            # Convert GPT bloom to enum
-            try:
-                bloom_level = BloomLevel(gpt_bloom)
-                bloom_confidence = 0.8  # Base confidence for GPT's bloom assignment
-            except:
-                bloom_level, bloom_confidence = AdvancedTaxonomyManager.get_bloom_with_confidence(
-                    text, skill_type
-                )
+            # Use hybrid Bloom classifier instead of trusting GPT label
+            bloom_level, bloom_confidence = self.bloom_classifier.classify(
+                text, context=context, skill_type=skill_type
+            )
             
-            # Calculate overall confidence
-            base_confidence = 0.8  # Base for GPT
-            adjusted_confidence = base_confidence * (0.6 + type_confidence * 0.4)
-            final_confidence = adjusted_confidence * (0.7 + bloom_confidence * 0.3)
-            final_confidence *= (0.8 + semantic_density * 0.2)
+            # Calculate overall confidence using named config weights
+            base_confidence = AdvancedPipelineConfig.GPT_BASE_CONFIDENCE
+            adjusted_confidence = base_confidence * (
+                AdvancedPipelineConfig.GPT_TYPE_FACTOR_BASE
+                + type_confidence * (1.0 - AdvancedPipelineConfig.GPT_TYPE_FACTOR_BASE)
+            )
+            final_confidence = adjusted_confidence * (
+                AdvancedPipelineConfig.GPT_BLOOM_FACTOR_BASE
+                + bloom_confidence * (1.0 - AdvancedPipelineConfig.GPT_BLOOM_FACTOR_BASE)
+            )
+            final_confidence *= (
+                AdvancedPipelineConfig.GPT_DENSITY_FACTOR_BASE
+                + semantic_density * (1.0 - AdvancedPipelineConfig.GPT_DENSITY_FACTOR_BASE)
+            )
             
             skill_item = SkillItem(
                 text=text,
@@ -1008,7 +1201,7 @@ class ContextAwareExtractor:
                 similarity = similarity_matrix[i][j].item()
                 
                 # Check for various match types
-                if similarity > 0.85:
+                if similarity > AdvancedPipelineConfig.AGREEMENT_EXACT_THRESHOLD:
                     matches.append({
                         'bert_idx': i,
                         'gpt_idx': j,
@@ -1016,11 +1209,10 @@ class ContextAwareExtractor:
                         'type': 'exact'
                     })
                 else:
-                    # Check for partial matches
                     partial_confidence = AdvancedTaxonomyManager.calculate_partial_match_confidence(
                         bert_skill.text, gpt_skill.text, 'substring'
                     )
-                    if partial_confidence > 0.5:
+                    if partial_confidence > AdvancedPipelineConfig.AGREEMENT_PARTIAL_THRESHOLD:
                         matches.append({
                             'bert_idx': i,
                             'gpt_idx': j,
@@ -1184,7 +1376,7 @@ class AdvancedFusionEngine:
                             overlap = min(len(bert_skill.text), len(gpt_skill.text)) / \
                                      max(len(bert_skill.text), len(gpt_skill.text), 1)
                             
-                            if overlap > 0.6:  # Significant overlap
+                            if overlap > AdvancedPipelineConfig.FUSION_OVERLAP_THRESHOLD:
                                 partial_score = overlap * 0.8
                                 if partial_score > best_match_score:
                                     best_match_score = partial_score
@@ -1207,7 +1399,7 @@ class AdvancedFusionEngine:
             if not matched:
                 bert_skill = bert_skills[i]
                 # Adjust confidence for standalone BERT skill
-                adjusted_confidence = ensure_float(bert_skill.confidence_score) * 0.8  # Penalty for no GPT match
+                adjusted_confidence = ensure_float(bert_skill.confidence_score) * AdvancedPipelineConfig.BERT_STANDALONE_PENALTY
                 
                 fused_skill = SkillItem(
                     text=bert_skill.text,
@@ -1256,15 +1448,15 @@ class AdvancedFusionEngine:
             
             if bert_bloom_value > gpt_bloom_value:
                 fused_bloom = bert_skill.bloom
-                bloom_confidence = ensure_float(bert_skill.confidence_score) * 0.7
+                bloom_confidence = ensure_float(bert_skill.confidence_score) * AdvancedPipelineConfig.FUSION_BLOOM_CONFIDENCE_SCALE
             else:
                 fused_bloom = gpt_skill.bloom
-                bloom_confidence = ensure_float(gpt_skill.confidence_score) * 0.7
+                bloom_confidence = ensure_float(gpt_skill.confidence_score) * AdvancedPipelineConfig.FUSION_BLOOM_CONFIDENCE_SCALE
         
         # Calculate fused confidence
         base_confidence = (ensure_float(bert_skill.confidence_score) + ensure_float(gpt_skill.confidence_score)) / 2
-        match_bonus = match_score * 0.2
-        type_agreement = 1.0 if bert_skill.type == gpt_skill.type else 0.8
+        match_bonus = match_score * AdvancedPipelineConfig.FUSION_MATCH_BONUS_WEIGHT
+        type_agreement = 1.0 if bert_skill.type == gpt_skill.type else AdvancedPipelineConfig.FUSION_TYPE_DISAGREEMENT
         
         fused_confidence = min(1.0, base_confidence * (1.0 + match_bonus) * type_agreement)
         

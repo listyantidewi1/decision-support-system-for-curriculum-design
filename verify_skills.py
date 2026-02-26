@@ -1,63 +1,99 @@
 """
 verify_skills.py
 
-Reads advanced_skills.csv (Hybrid fused skills) and assigns
-verification categories based on confidence_score.
+Reads advanced_skills.csv and assigns verification categories using a
+multi-factor composite score (confidence, model agreement, frequency,
+semantic density).  Falls back to confidence-only when additional
+columns are not available.
+
+Thresholds are percentile-based: top 20 % = HIGH, next 30 % = MEDIUM.
 
 Outputs:
-    verified_skills.csv  (same folder as advanced_skills.csv by default)
+    verified_skills.csv
 """
 
 import argparse
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
-import config  # uses config.OUTPUT_DIR
+import config
+
+# --- configurable weights ---------------------------------------------------
+
+W_CONFIDENCE = 0.40
+W_AGREEMENT = 0.30
+W_FREQUENCY = 0.15
+W_DENSITY = 0.15
+FREQ_CAP = 20          # frequency above this is treated as 1.0
+HIGH_PERCENTILE = 80   # top 20 %
+MEDIUM_PERCENTILE = 50 # top 50 %
 
 
-# --- thresholds and labels ----------------------------------------------------
+def compute_composite(df: pd.DataFrame) -> pd.Series:
+    """Compute a composite verification score per row."""
+    conf = pd.to_numeric(df["confidence_score"], errors="coerce").fillna(0.0)
 
-def verification_level(conf: float) -> str:
-    """
-    Map a confidence score in [0,1] to a verification level.
-    Adjust thresholds here if needed.
-    """
-    if pd.isna(conf):
-        return "Unknown"
-
-    if conf >= 0.85:
-        return "Verified_HIGH"
-    elif conf >= 0.65:
-        return "Verified_MEDIUM"
+    if "model_agreement_score" in df.columns:
+        agree = pd.to_numeric(df["model_agreement_score"], errors="coerce").fillna(conf)
     else:
+        agree = conf.copy()
+
+    if "semantic_density" in df.columns:
+        density = pd.to_numeric(df["semantic_density"], errors="coerce").fillna(0.5)
+    else:
+        density = pd.Series(0.5, index=df.index)
+
+    freq = df["_freq"] if "_freq" in df.columns else pd.Series(1.0, index=df.index)
+    freq_norm = (freq / FREQ_CAP).clip(upper=1.0)
+
+    composite = (
+        W_CONFIDENCE * conf
+        + W_AGREEMENT * agree
+        + W_FREQUENCY * freq_norm
+        + W_DENSITY * density
+    )
+    return composite
+
+
+def assign_levels(composite: pd.Series) -> pd.Series:
+    """Percentile-based verification levels."""
+    valid = composite.dropna()
+    if valid.empty:
+        return pd.Series("Unknown", index=composite.index)
+
+    high_thresh = float(np.percentile(valid, HIGH_PERCENTILE))
+    med_thresh = float(np.percentile(valid, MEDIUM_PERCENTILE))
+
+    def _level(val):
+        if pd.isna(val):
+            return "Unknown"
+        if val >= high_thresh:
+            return "Verified_HIGH"
+        if val >= med_thresh:
+            return "Verified_MEDIUM"
         return "Low_Confidence"
+
+    return composite.apply(_level)
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Assign verification categories to advanced skills."
+        description="Assign multi-factor verification categories to advanced skills."
     )
     parser.add_argument(
-        "--output_dir",
-        type=str,
-        default=str(config.OUTPUT_DIR),
-        help="Directory containing advanced_skills.csv (default: config.OUTPUT_DIR)",
+        "--output_dir", type=str, default=str(config.OUTPUT_DIR),
+        help="Directory containing advanced_skills.csv",
     )
     parser.add_argument(
-        "--input",
-        type=str,
-        default="advanced_skills.csv",
-        help="Input skills file name (default: advanced_skills.csv)",
+        "--input", type=str, default="advanced_skills.csv",
     )
     parser.add_argument(
-        "--output",
-        type=str,
-        default="verified_skills.csv",
-        help="Output file name (default: verified_skills.csv)",
+        "--output", type=str, default="verified_skills.csv",
     )
-
     args = parser.parse_args()
+
     output_dir = Path(args.output_dir)
     input_path = output_dir / args.input
     output_path = output_dir / args.output
@@ -71,19 +107,28 @@ def main():
     if "confidence_score" not in df.columns:
         raise ValueError("advanced_skills.csv must contain 'confidence_score' column.")
 
-    # Ensure numeric
     df["confidence_score"] = pd.to_numeric(df["confidence_score"], errors="coerce")
 
-    # Add verification category
-    df["verification_level"] = df["confidence_score"].apply(verification_level)
+    # Per-skill frequency (how many jobs mention this skill)
+    if "skill" in df.columns:
+        freq_map = df.groupby("skill").size()
+        df["_freq"] = df["skill"].map(freq_map).fillna(1).astype(float)
+    else:
+        df["_freq"] = 1.0
 
-    # Convenience boolean: is this considered 'verified'?
+    df["composite_score"] = compute_composite(df)
+    df["verification_level"] = assign_levels(df["composite_score"])
     df["is_verified"] = df["verification_level"].isin(
         ["Verified_HIGH", "Verified_MEDIUM"]
     )
 
+    df = df.drop(columns=["_freq"], errors="ignore")
+
     print("[INFO] Verification distribution:")
     print(df["verification_level"].value_counts())
+    print(f"[INFO] Composite score stats: "
+          f"mean={df['composite_score'].mean():.3f}, "
+          f"std={df['composite_score'].std():.3f}")
 
     output_dir.mkdir(parents=True, exist_ok=True)
     df.to_csv(output_path, index=False, encoding="utf-8-sig")

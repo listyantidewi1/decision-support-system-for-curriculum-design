@@ -1,0 +1,299 @@
+# Pipeline Documentation — Comprehensive Project State
+
+This document describes the current pipeline architecture, data flow, and usage as of the latest implementation.
+
+### Environment
+
+- Python 3.x with dependencies (pandas, fastapi, uvicorn, transformers, etc.)
+- Review UI: `pip install -r review_ui/requirements.txt` (or project-wide deps)
+- `config.py`: Set `PROJECT_ROOT` and `OUTPUT_DIR` for your machine
+
+---
+
+## 1. Overview
+
+The **Future-Aware Hybrid Skill Extraction Pipeline** is a two-phase system:
+
+| Phase | Purpose | Entry Point |
+|-------|---------|-------------|
+| **Phase 1** | Extract skills/knowledge, generate competencies, export for review | `run.bat` |
+| **Phase 2** | Import human feedback, apply corrections, re-generate competencies | `run_phase_2.bat` |
+
+---
+
+## 2. Prerequisites & Data
+
+### Input Data
+
+| File | Location | Purpose |
+|------|----------|---------|
+| `jobs_sentences.csv` | `DATA/preprocessing/data_prepared/` | Pipeline input: job_id, sentence_text, job_date |
+| `jobs_metadata.csv` | `DATA/preprocessing/data_prepared/` | job_id → job_date mapping for enrich_with_dates |
+| `future_domains_dummy.csv` | Project root or data dir | Future-of-work domains with trend_score |
+
+### Creating Input Data (Optional)
+
+If you have raw job postings:
+
+```bat
+python preprocess_jobs_pipeline.py --input DATA/preprocessing/jobs_rpl_id_raw_2.csv
+```
+
+This produces:
+- `jobs_metadata.csv` (job_id, job_date)
+- `jobs_sentences.csv` (job_id, job_date, sentence_text)
+- `job_sentences_for_pipeline.csv`, `job_sentences_full.csv`
+
+---
+
+## 3. Phase 1 — Full Pipeline (`run.bat`)
+
+### Step-by-Step
+
+| Step | Script | Input | Output |
+|------|--------|-------|--------|
+| 1 | `pipeline.py` | jobs_sentences.csv | advanced_skills.csv, advanced_knowledge.csv, comprehensive_analysis.csv, model_comparison.csv, coverage_report.csv |
+| 2 | `plot_generator.py` | model_comparison, coverage_report, etc. | Plots in results/ |
+| 3 | `verify_skills.py` | advanced_skills.csv | verified_skills.csv |
+| 4 | `future_weight_mapping.py` | advanced_knowledge.csv | future_skill_weights_dummy.csv |
+| 5 | `future_weight_mapping.py --input_type skills` | advanced_skills.csv | future_skill_weights.csv |
+| 6 | `generate_competencies.py` | verified_skills.csv | competency_proposals.json |
+| 7 | `enrich_with_dates.py` | advanced_skills.csv, jobs_metadata.csv | advanced_skills_with_dates.csv, advanced_knowledge_with_dates.csv, etc. |
+| 8 | `export_for_review.py` | comprehensive_analysis, verified_skills, advanced_knowledge | expert_review_jobs.csv, expert_review_skills.csv, expert_review_knowledge.csv |
+| 9 | `export_competencies_for_review.py` | competency_proposals.json | expert_review_competencies.csv |
+| 10 | `skill_time_trend_analysis.py --only_hard` | advanced_skills_with_dates.csv | skill_trends.csv |
+
+### Key Outputs (results/)
+
+| File | Description |
+|------|-------------|
+| `advanced_skills.csv` | Extracted skills with type, bloom, confidence |
+| `advanced_knowledge.csv` | Extracted knowledge items |
+| `verified_skills.csv` | Skills with verification_level (Verified_HIGH, etc.) |
+| `future_skill_weights.csv` | Skill → future domain mapping |
+| `future_skill_weights_dummy.csv` | Knowledge → future domain mapping |
+| `advanced_skills_with_dates.csv` | Skills + job_date (for trend analysis) |
+| `competency_proposals.json` | LLM-generated competencies |
+| `expert_review_skills.csv` | Sampled skills for review (500 default) |
+| `expert_review_knowledge.csv` | Sampled knowledge for review (200 default) |
+| `expert_review_competencies.csv` | Sampled competencies for review (100 default) |
+
+---
+
+## 4. Expert Review Workflow
+
+### Starting the Review UI
+
+```bat
+uvicorn review_ui.app:app --reload
+```
+
+Then open:
+- Single reviewer: `http://127.0.0.1:8000/` (uses reviewer_id=default)
+- Multi-reviewer: `http://127.0.0.1:8000/?reviewer_id=alice` (or bob, dewi, etc.)
+
+### Multi-Reviewer Design
+
+- **Same set**: All reviewers see the same sampled items.
+- **Independent feedback**: Each reviewer's feedback is stored separately in `feedback_store/`.
+- **Storage**: `feedback_store/skill_feedback.csv`, `knowledge_feedback.csv`, `competency_feedback.csv` — one row per (item_id, reviewer_id).
+
+### Review Tasks
+
+| Panel | Fields | Purpose |
+|-------|--------|---------|
+| Skills | Valid?, Type (corrected), Bloom (corrected), Notes | Validate extraction, correct Hard/Soft/Both, correct Bloom |
+| Knowledge | Valid?, Notes | Validate extraction (ignore Domain, Trend, Weight) |
+| Competencies | Quality (1–5), Relevant?, Notes | Assess competency quality |
+
+### Feedback Storage
+
+Feedback is saved to `feedback_store/` (not the template CSVs):
+
+- `skill_feedback.csv` — review_id, reviewer_id, human_valid, human_type, human_bloom, human_notes
+- `knowledge_feedback.csv` — review_id, reviewer_id, human_valid, human_notes
+- `competency_feedback.csv` — competency_id, reviewer_id, human_quality, human_relevant, human_notes
+
+---
+
+## 5. Phase 2 — Post-Review (`run_phase_2.bat`)
+
+### Step-by-Step
+
+| Step | Script | Input | Output |
+|------|--------|-------|--------|
+| 1 | `import_feedback.py` | feedback_store/*.csv | human_verified_skills.csv, bloom_corrections.json, type_corrections.json, competency_assessments.json, inter_rater_report.json |
+| 2 | `apply_feedback.py` | advanced_skills.csv, bloom/type corrections | advanced_skills_human_filtered.csv |
+| 3 | `validate_parameters.py` | expert_review_skills.csv, human_verified_skills | parameter_validation_report.json |
+| 4 | `generate_competencies.py --comprehensive` | advanced_skills_human_filtered.csv | competency_proposals.json (with all_skills_human_verified per competency) |
+| 5 | `export_competencies_for_review.py` | competency_proposals.json | expert_review_competencies.csv |
+| 6 | `evaluate_competency_generation.py` | competency_proposals, competency_assessments | competency_evaluation_report.json |
+| 7 | `skill_time_trend_analysis.py --only_hard` | advanced_skills_with_dates.csv | skill_trends.csv |
+
+### Merge Rules (Multi-Reviewer)
+
+- **human_valid, bloom, type**: Majority vote across reviewers.
+- **human_verified_skills**: Skills where majority said "valid".
+- **Inter-rater reliability**: Cohen's Kappa computed when ≥2 reviewers; saved to `inter_rater_report.json`.
+
+### Key Outputs (feedback_store/)
+
+| File | Description |
+|------|-------------|
+| `human_verified_skills.csv` | Skills marked valid by reviewers |
+| `bloom_corrections.json` | skill → correct Bloom level |
+| `type_corrections.json` | skill → correct type (Hard/Soft/Both) |
+| `competency_assessments.json` | competency_id → quality, relevant, notes |
+| `inter_rater_report.json` | Cohen's Kappa, agreement %, disagreed items |
+
+---
+
+## 6. Competency Generation Modes
+
+| Mode | Flag | Input | Use Case |
+|------|------|-------|----------|
+| **Comprehensive** | `--comprehensive` | advanced_skills_human_filtered.csv (all skills) | Full coverage; some competencies from unverified skills |
+| **Human-verified only** | `--human_verified_only` | human_verified_skills.csv | Conservative; only reviewed skills |
+
+Comprehensive mode tags each competency with `all_skills_human_verified: true/false`.
+
+---
+
+## 7. File Dependencies
+
+```
+jobs_sentences.csv (pipeline input)
+    ↓
+pipeline.py → advanced_skills.csv, advanced_knowledge.csv, comprehensive_analysis.csv, ...
+    ↓
+verify_skills.py → verified_skills.csv
+future_weight_mapping.py → future_skill_weights.csv, future_skill_weights_dummy.csv
+    ↓
+jobs_metadata.csv + enrich_with_dates.py → advanced_skills_with_dates.csv
+    ↓
+export_for_review.py → expert_review_skills.csv, expert_review_knowledge.csv
+generate_competencies.py → competency_proposals.json
+export_competencies_for_review.py → expert_review_competencies.csv
+    ↓
+[Human review → feedback_store/]
+    ↓
+import_feedback.py → human_verified_skills.csv, bloom_corrections.json, type_corrections.json
+apply_feedback.py → advanced_skills_human_filtered.csv
+    ↓
+generate_competencies.py --comprehensive → competency_proposals.json (updated)
+```
+
+---
+
+## 8. Configuration
+
+| Config | Location | Purpose |
+|--------|----------|---------|
+| `PROJECT_ROOT` | config.py | Project root path |
+| `OUTPUT_DIR` | config.py | results/ — pipeline outputs |
+| `MULTITASK_MODEL_DIR` | config.py | JobBERT model weights |
+| `INPUT_CSV` | pipeline.py (AdvancedPipelineConfig) | DATA/preprocessing/data_prepared/jobs_sentences.csv |
+
+### Paths
+
+- **results/**: All pipeline outputs (config.OUTPUT_DIR)
+- **feedback_store/**: Human feedback (PROJECT_ROOT/feedback_store)
+- **DATA/preprocessing/data_prepared/**: Preprocessed job data
+
+---
+
+## 9. Script Reference
+
+| Script | Purpose |
+|--------|---------|
+| `pipeline.py` | Hybrid JobBERT+GPT extraction |
+| `plot_generator.py` | Visual analytics |
+| `verify_skills.py` | Assign verification tiers (confidence, agreement, etc.) |
+| `future_weight_mapping.py` | Map skills/knowledge to future domains |
+| `generate_competencies.py` | LLM competency generation |
+| `enrich_with_dates.py` | Add job_date from jobs_metadata |
+| `export_for_review.py` | Create expert_review_*.csv |
+| `export_competencies_for_review.py` | Sample competencies for review |
+| `skill_time_trend_analysis.py` | Emerging/declining skill trends |
+| `import_feedback.py` | Merge feedback_store → feedback artifacts |
+| `apply_feedback.py` | Apply Bloom/type corrections to skills |
+| `validate_parameters.py` | AUC-ROC, thresholds vs human judgments |
+| `evaluate_competency_generation.py` | Competency quality metrics |
+| `preprocess_jobs_pipeline.py` | Raw jobs → jobs_sentences.csv, jobs_metadata.csv |
+| `aggregate_results.py` | Concatenate multiple run directories |
+
+---
+
+## 10. Experimental / Multi-Run Workflow
+
+For multiple experimental runs:
+
+1. Run `run.bat`, then rename `results` → `results_run1`
+2. Repeat for run2, run3, etc.
+3. Aggregate: `python aggregate_results.py --run_dirs results_run1 results_run2 results_run3 --output_dir results_aggregated`
+4. Set `OUTPUT_DIR = "results_aggregated"` in config.py, then run downstream steps
+
+---
+
+## 11. Troubleshooting
+
+| Issue | Check |
+|-------|-------|
+| 0/0 reviewed in UI | Run from project root; hard refresh (Ctrl+Shift+R); verify expert_review_skills.csv exists |
+| Reviewers see same data | Each reviewer must use unique ?reviewer_id= in URL |
+| enrich_with_dates fails | jobs_metadata.csv at DATA/preprocessing/data_prepared/; or pass --jobs_meta path |
+| Pipeline input not found | jobs_sentences.csv at DATA/preprocessing/data_prepared/; columns: job_id, sentence_text |
+| Competencies from unverified skills | Expected in comprehensive mode; check all_skills_human_verified in JSON |
+
+---
+
+## 12. Sample Sizes (Export for Review)
+
+| Artifact | Default | Override |
+|----------|---------|----------|
+| Skills | 500 | `--max_skills 200` |
+| Knowledge | 200 | `--max_knowledge 100` |
+| Competencies | 100 | `--max_competencies 50` |
+
+---
+
+---
+
+## 13. Implementation Progress (Changelog)
+
+### Multi-Reviewer Support
+- Feedback stored per `(item_id, reviewer_id)` in `feedback_store/`
+- Each reviewer uses unique URL: `?reviewer_id=alice`
+- `import_feedback.py` merges with majority vote; computes inter-rater reliability (Cohen's Kappa)
+
+### Knowledge Review Clarification
+- Instruction: "Judge extraction correctness only—ignore Domain, Trend, and Weight"
+
+### Comprehensive Competency Mode
+- `--comprehensive` uses all skills (with corrections), not only human-verified
+- Competencies tagged with `all_skills_human_verified: true/false`
+- Review UI shows "Skills verified" / "Skills not yet verified" on competency cards
+
+### Skill Type "Both"
+- Skills can be Hard, Soft, or Both (hybrid)
+- `import_feedback.py`, `skill_time_trend_analysis.py`, `plot_generator.py` support Both
+
+### Review UI Fixes
+- Fixed 0/0 reviewed bug (duplicate `const rid` causing SyntaxError)
+- Template feedback columns cleared before merge so each reviewer sees only their own feedback
+
+### Preprocessing & Data Paths
+- `enrich_with_dates.py` defaults to `DATA/preprocessing/data_prepared/jobs_metadata.csv`
+- `preprocess_jobs_pipeline.py` outputs `jobs_sentences.csv` and `jobs_metadata.csv` aligned with pipeline expectations
+
+### Batch Scripts
+- `run.bat`: Phase 1 with error handling; `enrich_with_dates` before `export_for_review`
+- `run_phase_2.bat`: Full post-review flow with `import_feedback`, `apply_feedback`, `generate_competencies --comprehensive`
+
+### Data Notes
+- `advanced_skills.csv` has empty `date_posted`; use `advanced_skills_with_dates.csv` for trend analysis
+- `aggregate_results.py`: Optional; add new output files if needed; supports `--output_dir`
+
+---
+
+*Last updated: Project state as of pipeline implementation with multi-reviewer support, comprehensive competency mode, and feedback_store integration.*

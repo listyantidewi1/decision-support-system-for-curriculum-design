@@ -11,13 +11,46 @@ Output:
 import argparse
 import json
 import os
+import re
+import time
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 import pandas as pd
 from openai import OpenAI
 
 import config  # uses config.OUTPUT_DIR
+
+COMPETENCY_REQUIRED_FIELDS = {"id", "title", "description", "related_skills", "future_relevance"}
+MAX_RETRIES = 2
+RETRY_BACKOFF_BASE = 2  # seconds
+
+
+def load_skill_future_weights(
+    output_dir: Path,
+    weights_file: str = "future_skill_weights.csv",
+) -> Dict[str, Dict]:
+    """
+    Load skill -> {best_future_domain, trend_label, future_weight} from
+    future_skill_weights.csv. Returns empty dict if file missing.
+    """
+    path = output_dir / weights_file
+    if not path.exists():
+        return {}
+    df = pd.read_csv(path)
+    required = {"skill", "best_future_domain", "trend_label", "future_weight"}
+    if required - set(df.columns):
+        return {}
+    # Keep first occurrence per skill (file is sorted by future_weight desc)
+    df = df.drop_duplicates(subset=["skill"], keep="first")
+    return {
+        str(row["skill"]).strip(): {
+            "best_future_domain": str(row["best_future_domain"]),
+            "trend_label": str(row["trend_label"]),
+            "future_weight": float(row["future_weight"]),
+        }
+        for _, row in df.iterrows()
+    }
 
 
 def build_future_context(output_dir: Path,
@@ -109,11 +142,68 @@ def load_openrouter_client() -> OpenAI:
 
 
 # ----------------------------------------------------------------------
+# Few-shot examples from human assessments
+# ----------------------------------------------------------------------
+
+def load_few_shot_examples(
+    output_dir: Path,
+    feedback_dir: Path,
+    proposals_file: str = "competency_proposals.json",
+    assessments_file: str = "competency_assessments.json",
+    min_quality: int = 4,
+    max_examples: int = 3,
+) -> List[Dict]:
+    """
+    Load high-quality competencies (human_quality >= min_quality, human_relevant=yes)
+    as few-shot examples for prompt tuning.
+    """
+    proposals_path = output_dir / proposals_file
+    assessments_path = feedback_dir / assessments_file
+    if not proposals_path.exists() or not assessments_path.exists():
+        return []
+
+    proposals = json.loads(proposals_path.read_text(encoding="utf-8"))
+    comps = proposals.get("competencies", [])
+    assessments = json.loads(assessments_path.read_text(encoding="utf-8"))
+
+    examples = []
+    for c in comps:
+        cid = c.get("id", "")
+        bid = c.get("batch_id", 0)
+        key = f"{cid}_b{bid}" if bid else cid
+        a = assessments.get(key, {})
+        q = str(a.get("quality", "")).strip()
+        r = str(a.get("relevant", "")).lower().strip()
+        q_num = {"1": 1, "2": 2, "3": 3, "4": 4, "5": 5}.get(q, 0)
+        if q_num >= min_quality and r == "yes":
+            examples.append(c)
+            if len(examples) >= max_examples:
+                break
+    return examples
+
+
+# ----------------------------------------------------------------------
 # Prompt template
 # ----------------------------------------------------------------------
 
-def build_prompt(skills: List[str], future_context: str = "") -> str:
-    bullet_list = "\n".join(f"- {s}" for s in skills)
+def build_prompt(
+    skills: List[str],
+    future_context: str = "",
+    few_shot_examples: Optional[List[Dict]] = None,
+    skill_future_weights: Optional[Dict[str, Dict]] = None,
+) -> str:
+    # Annotate skills with future_weight when available
+    def format_skill(s: str) -> str:
+        s_stripped = s.strip()
+        if skill_future_weights and s_stripped in skill_future_weights:
+            w = skill_future_weights[s_stripped]
+            fw = w.get("future_weight", 0)
+            domain = w.get("best_future_domain", "")
+            trend = w.get("trend_label", "")
+            return f"- {s} (future_weight={fw:.2f}, domain={domain}, trend={trend})"
+        return f"- {s}"
+
+    bullet_list = "\n".join(format_skill(s) for s in skills)
 
     future_block = ""
     if future_context.strip():
@@ -122,6 +212,35 @@ Additional context about future-critical domains and technologies:
 
 {future_context}
 """
+
+    few_shot_block = ""
+    if few_shot_examples:
+        ex_str = json.dumps(
+            [{"id": e.get("id"), "title": e.get("title"), "description": e.get("description"),
+              "related_skills": e.get("related_skills", []), "future_relevance": e.get("future_relevance", "")}
+             for e in few_shot_examples],
+            indent=2,
+            ensure_ascii=False,
+        )
+        few_shot_block = f"""
+Here are examples of HIGH-QUALITY competencies (use similar style and structure):
+
+{ex_str}
+
+"""
+
+    future_weighting_block = ""
+    if skill_future_weights:
+        future_weighting_block = """
+8. FUTURE WEIGHTING (important): Skills are annotated with future_weight, domain, and trend.
+   - PRIORITIZE competencies that cover skills with HIGH future_weight (Strong_Growth, Moderate_Growth).
+   - Give emerging skills more prominence in competency titles and descriptions.
+   - DEPRIORITIZE competencies built mainly around skills with NEGATIVE future_weight (Decline).
+   - Do not create competencies that focus primarily on declining skills.
+
+"""
+    else:
+        future_weighting_block = ""
 
     return f"""
 You are an expert in competency-based education and vocational curriculum design.
@@ -148,7 +267,8 @@ Please follow these rules:
 6. Give slightly higher priority and more detail to skills and themes that appear
    in future-critical domains (AI, data, cloud, security, human–AI collaboration),
    if such context is provided.
-
+{future_weighting_block}
+{few_shot_block}
 {future_block}
 
 Here are the verified skills:
@@ -161,67 +281,102 @@ Here are the verified skills:
 # LLM call
 # ----------------------------------------------------------------------
 
-import re
-import json
-from typing import List, Dict
-from openai import OpenAI
-
-def call_llm_for_competencies(client: OpenAI,
-                              skills: List[str],
-                              model_name: str,
-                              future_context: str = "") -> Dict:
-    prompt = build_prompt(skills, future_context=future_context)
-
-    resp = client.chat.completions.create(
-        model=model_name,
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You are a precise curriculum designer. "
-                    "Always respond with VALID JSON only. "
-                    "Do NOT include any markdown fences or commentary."
-                ),
-            },
-            {"role": "user", "content": prompt},
-        ],
-        temperature=0.3,
-        max_tokens=1500,
+def _validate_competency(c: dict) -> bool:
+    """Check that a competency dict has all required fields."""
+    return (
+        isinstance(c, dict)
+        and all(k in c for k in COMPETENCY_REQUIRED_FIELDS)
+        and isinstance(c.get("related_skills"), list)
     )
 
 
-    content = resp.choices[0].message.content or ""
-    # strip possible ```json ... ``` fences
+def _parse_llm_json(content: str) -> Optional[Dict]:
+    """Parse LLM response JSON with fallback strategies."""
     content = content.strip()
     if content.startswith("```"):
         content = re.sub(r"^```[a-zA-Z]*\n?", "", content)
         content = re.sub(r"\n```$", "", content)
     content = content.strip()
 
-    # 1st attempt: direct parse
-    # 1st attempt: direct parse
     try:
         return json.loads(content)
-    except json.JSONDecodeError as e:
-        # 2nd attempt: truncate at last closing brace/bracket
-        last_brace = max(content.rfind("}"), content.rfind("]"))
-        if last_brace != -1:
-            truncated = content[: last_brace + 1]
-            try:
-                return json.loads(truncated)
-            except json.JSONDecodeError:
-                pass
+    except json.JSONDecodeError:
+        pass
 
-        # 3rd: save raw to file for debugging and return empty result instead of crashing
-        with open("last_competency_raw_response.txt", "w", encoding="utf-8") as f:
-            f.write(content)
+    last_brace = max(content.rfind("}"), content.rfind("]"))
+    if last_brace != -1:
+        try:
+            return json.loads(content[: last_brace + 1])
+        except json.JSONDecodeError:
+            pass
 
-        print(
-            "[WARN] Failed to parse LLM JSON response for this batch. "
-            f"Error: {e}. Raw content saved to last_competency_raw_response.txt. "
-            "Continuing with an empty 'competencies' list for this batch."
-        )
-        return {"competencies": []}
+    return None
+
+
+def call_llm_for_competencies(client: OpenAI,
+                              skills: List[str],
+                              model_name: str,
+                              future_context: str = "",
+                              few_shot_examples: Optional[List[Dict]] = None,
+                              skill_future_weights: Optional[Dict[str, Dict]] = None) -> Dict:
+    prompt = build_prompt(
+        skills,
+        future_context=future_context,
+        few_shot_examples=few_shot_examples,
+        skill_future_weights=skill_future_weights,
+    )
+
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "You are a precise curriculum designer. "
+                "Always respond with VALID JSON only. "
+                "Do NOT include any markdown fences or commentary."
+            ),
+        },
+        {"role": "user", "content": prompt},
+    ]
+
+    last_error = None
+    for attempt in range(1 + MAX_RETRIES):
+        try:
+            resp = client.chat.completions.create(
+                model=model_name,
+                messages=messages,
+                temperature=0.3,
+                max_tokens=4000,
+            )
+            content = resp.choices[0].message.content or ""
+            data = _parse_llm_json(content)
+
+            if data is not None:
+                comps = data.get("competencies", [])
+                valid = [c for c in comps if _validate_competency(c)]
+                invalid_count = len(comps) - len(valid)
+                if invalid_count > 0:
+                    print(f"[WARN] Dropped {invalid_count} competencies "
+                          f"with missing fields (attempt {attempt + 1})")
+                data["competencies"] = valid
+                return data
+
+            last_error = "JSON parse failed"
+        except Exception as e:
+            last_error = str(e)
+
+        if attempt < MAX_RETRIES:
+            wait = RETRY_BACKOFF_BASE ** (attempt + 1)
+            print(f"[WARN] Attempt {attempt + 1} failed ({last_error}), "
+                  f"retrying in {wait}s...")
+            time.sleep(wait)
+
+    raw = content if 'content' in locals() else f"Error: {last_error}"
+    with open("last_competency_raw_response.txt", "w", encoding="utf-8") as f:
+        f.write(raw)
+
+    print(f"[WARN] All {1 + MAX_RETRIES} attempts failed. "
+          f"Raw content saved to last_competency_raw_response.txt.")
+    return {"competencies": []}
 
 
 
@@ -263,12 +418,25 @@ def main():
         default=30,
         help="Number of skills per LLM call (default: 30)",
     )
+    parser.add_argument(
+        "--human_verified_only",
+        action="store_true",
+        help="Use only human-verified skills from feedback_store/human_verified_skills.csv",
+    )
+    parser.add_argument(
+        "--comprehensive",
+        action="store_true",
+        help="Use all skills (with Bloom/type corrections) from advanced_skills_human_filtered.csv. "
+             "Tags each competency with all_skills_human_verified. Some competencies may be from unverified skills.",
+    )
 
     args = parser.parse_args()
+    if args.human_verified_only and args.comprehensive:
+        raise ValueError("Cannot use both --human_verified_only and --comprehensive. Choose one.")
 
     out_dir = Path(args.output_dir)
-    verified_path = out_dir / args.verified_file
     output_path = out_dir / args.output_json
+    feedback_dir = Path(config.PROJECT_ROOT) / "feedback_store"
 
     # Build future-of-work context from future_skill_weights_dummy.csv (if available)
     future_context = build_future_context(out_dir)
@@ -277,27 +445,82 @@ def main():
     else:
         print("[INFO] No future context available; generating competencies from skills only.")
 
+    # Load human-verified skill set (for tagging in comprehensive mode)
+    human_verified_skills: set = set()
+    human_path = feedback_dir / "human_verified_skills.csv"
+    if human_path.exists():
+        hv_df = pd.read_csv(human_path)
+        if "skill" in hv_df.columns:
+            human_verified_skills = {
+                str(s).strip().lower() for s in hv_df["skill"].dropna().unique()
+            }
+            print(f"[INFO] Loaded {len(human_verified_skills)} human-verified skills for tagging")
 
-    if not verified_path.exists():
-        raise FileNotFoundError(f"verified_skills.csv not found: {verified_path}")
+    if args.human_verified_only:
+        human_path = feedback_dir / "human_verified_skills.csv"
+        if not human_path.exists():
+            raise FileNotFoundError(
+                f"human_verified_skills.csv not found at {human_path}. "
+                "Run export_for_review, review in web app, then import_feedback first."
+            )
+        print(f"[INFO] Using human-verified skills from {human_path}")
+        df = pd.read_csv(human_path)
+        if "skill" not in df.columns:
+            raise ValueError("human_verified_skills.csv must contain 'skill' column")
+        grp = df.groupby("skill").size().reset_index()
+        grp.columns = ["skill", "freq"]
+        skills_sorted = grp.sort_values("freq", ascending=False)["skill"].tolist()
+    elif args.comprehensive:
+        comp_path = out_dir / "advanced_skills_human_filtered.csv"
+        if not comp_path.exists():
+            comp_path = out_dir / "advanced_skills.csv"
+        if not comp_path.exists():
+            raise FileNotFoundError(
+                f"Neither advanced_skills_human_filtered.csv nor advanced_skills.csv found in {out_dir}. "
+                "Run apply_feedback first (without --filter_only) to apply Bloom/type corrections."
+            )
+        print(f"[INFO] Comprehensive mode: using all skills from {comp_path.name}")
+        df = pd.read_csv(comp_path)
+        if "skill" not in df.columns:
+            raise ValueError(f"{comp_path.name} must contain 'skill' column")
+        grp = df.groupby("skill").size().reset_index()
+        grp.columns = ["skill", "freq"]
+        skills_sorted = grp.sort_values("freq", ascending=False)["skill"].tolist()
+    else:
+        verified_path = out_dir / args.verified_file
+        if not verified_path.exists():
+            raise FileNotFoundError(f"verified_skills.csv not found: {verified_path}")
+        print(f"[INFO] Reading verified skills from {verified_path}")
+        df = pd.read_csv(verified_path)
+        if "is_verified" not in df.columns:
+            raise ValueError("verified_skills.csv must contain 'is_verified' column")
+        df_v = df[df["is_verified"] == True].copy()
+        if df_v.empty:
+            raise RuntimeError("No verified skills found (is_verified == True).")
+        grp = df_v.groupby("skill").size().reset_index()
+        grp.columns = ["skill", "freq"]
+        skills_sorted = grp.sort_values("freq", ascending=False)["skill"].tolist()
 
-    print(f"[INFO] Reading verified skills from {verified_path}")
-    df = pd.read_csv(verified_path)
+    print(f"[INFO] Total unique skills for competency generation: {len(skills_sorted)}")
 
-    if "is_verified" not in df.columns:
-        raise ValueError("verified_skills.csv must contain 'is_verified' column")
+    # Load skill future weights (for annotation and reordering)
+    skill_future_weights = load_skill_future_weights(out_dir)
+    if skill_future_weights:
+        print(f"[INFO] Loaded future weights for {len(skill_future_weights)} skills")
+        # Reorder skills by future_weight descending (emerging first)
+        def sort_key(s: str) -> float:
+            w = skill_future_weights.get(s.strip(), {})
+            return w.get("future_weight", -999.0)  # unannotated at end
 
-    # Use only high + medium verified skills
-    df_v = df[df["is_verified"] == True].copy()
+        skills_sorted = sorted(skills_sorted, key=sort_key, reverse=True)
+        print("[INFO] Skills reordered by future_weight (emerging first)")
+    else:
+        print("[INFO] No future_skill_weights.csv; skills unannotated and unsorted by future weight")
 
-    if df_v.empty:
-        raise RuntimeError("No verified skills found (is_verified == True).")
-
-    # Aggregate unique skill phrases with frequency (for info only)
-    grp = df_v.groupby("skill").size().reset_index(name="freq")
-    skills_sorted = grp.sort_values("freq", ascending=False)["skill"].tolist()
-
-    print(f"[INFO] Total unique verified skills: {len(skills_sorted)}")
+    # Load few-shot examples from human assessments (if available)
+    few_shot = load_few_shot_examples(out_dir, feedback_dir, max_examples=3)
+    if few_shot:
+        print(f"[INFO] Using {len(few_shot)} few-shot examples from human assessments")
 
     client = load_openrouter_client()
 
@@ -315,6 +538,8 @@ def main():
             chunk,
             args.model,
             future_context=future_context,
+            few_shot_examples=few_shot or [],
+            skill_future_weights=skill_future_weights or None,
         )
 
         # Expecting {"competencies": [ ... ]}
@@ -326,10 +551,36 @@ def main():
 
         batch_id += 1
 
+    # Tag competencies with human verification status (comprehensive mode)
+    if args.comprehensive and human_verified_skills:
+        for c in all_competencies:
+            related = c.get("related_skills") or []
+            if not related:
+                c["all_skills_human_verified"] = False
+            else:
+                related_lower = [str(s).strip().lower() for s in related]
+                c["all_skills_human_verified"] = all(
+                    r in human_verified_skills for r in related_lower
+                )
+    elif args.comprehensive:
+        for c in all_competencies:
+            c["all_skills_human_verified"] = False  # no human feedback loaded
+
     print(f"[INFO] Total competencies generated: {len(all_competencies)}")
 
+    # Build output with metadata for comprehensive mode
+    output_obj = {"competencies": all_competencies}
+    if args.comprehensive:
+        verified_count = sum(1 for c in all_competencies if c.get("all_skills_human_verified"))
+        output_obj["generation_mode"] = "comprehensive"
+        output_obj["note"] = (
+            "Some competencies in this file are generated from skills not yet human-verified. "
+            "Check the 'all_skills_human_verified' field per competency. "
+            f"{verified_count}/{len(all_competencies)} competencies have all related skills human-verified."
+        )
+
     output_path.write_text(
-        json.dumps({"competencies": all_competencies}, indent=2, ensure_ascii=False),
+        json.dumps(output_obj, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
     print(f"[INFO] Saved competency proposals to {output_path}")

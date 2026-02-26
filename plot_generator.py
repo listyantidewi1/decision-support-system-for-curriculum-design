@@ -622,7 +622,7 @@ def plot_top_skill_knowledge_clusters(adv_skills: pd.DataFrame,
     # Top HARD skills (by frequency, weighted by confidence)
 # Top HARD skills (by frequency, weighted by confidence)
     if not adv_skills.empty:
-        hard = adv_skills.loc[adv_skills["type"] == "Hard"].copy()
+        hard = adv_skills.loc[adv_skills["type"].isin(["Hard", "Both"])].copy()
         # filter out '/', degrees, languages, 1-word verbs, generic nouns
         hard = hard.loc[hard["skill"].apply(valid_hard_skill_for_plot)]
         # also remove soft-ish phrases that leaked into hard skills
@@ -644,7 +644,7 @@ def plot_top_skill_knowledge_clusters(adv_skills: pd.DataFrame,
 
 
         # Top SOFT skills
-        soft = adv_skills[adv_skills["type"] == "Soft"].copy()
+        soft = adv_skills[adv_skills["type"] == "Soft"].copy()  # Both excluded from soft-only
         if not soft.empty:
             grp = soft.groupby("skill").agg(
                 freq=("skill", "count"),
@@ -1018,7 +1018,7 @@ def main():
         embedder = SentenceTransformer(EMBEDDING_MODEL)
 
         # 🔧 Only map HARD skills (curriculum is ~99% hard skills)
-        hard_skills = adv_skills[adv_skills["type"] == "Hard"].copy()
+        hard_skills = adv_skills[adv_skills["type"].isin(["Hard", "Both"])].copy()
 
         mapping_df = map_items_to_components(
             hard_skills,
