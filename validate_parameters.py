@@ -2,15 +2,24 @@
 validate_parameters.py
 
 Validates pipeline scoring parameters against human review data.
-Computes AUC-ROC for confidence as a predictor of human validity,
-and suggests optimal thresholds using Youden's J statistic.
+
+Metrics:
+    - AUC-ROC per scoring column
+    - Brier score (calibration quality)
+    - Calibration curve (10-bin reliability diagram data)
+    - Youden's J optimal threshold
+    - 5-fold cross-validated AUC
+    - Confusion matrix at optimal threshold
+    - Calibrated threshold exported for verify_skills.py
 
 Inputs:
     - feedback_store/human_verified_skills.csv
     - config.OUTPUT_DIR/expert_review_skills.csv (with human_valid column)
+    - DATA/labels/gold_skills.csv (optional, preferred if available)
 
 Outputs:
     - parameter_validation_report.json
+    - feedback_store/calibrated_threshold.json
 """
 
 import argparse
@@ -23,10 +32,25 @@ import pandas as pd
 import config
 
 FEEDBACK_DIR = Path(config.PROJECT_ROOT) / "feedback_store"
+LABELS_DIR = Path(config.PROJECT_ROOT) / "DATA" / "labels"
 
 
 def load_reviewed_skills(output_dir: Path) -> pd.DataFrame:
-    """Load expert_review_skills.csv with human_valid filled in."""
+    """Load labeled skills: prefer gold set, then expert_review_skills.csv."""
+    gold_path = LABELS_DIR / "gold_skills.csv"
+    if gold_path.exists():
+        df = pd.read_csv(gold_path)
+        if "is_correct" in df.columns and "confidence_score" in df.columns:
+            df["is_correct"] = df["is_correct"].astype(str).str.strip().str.lower()
+            df = df[df["is_correct"].isin(["yes", "no"])].copy()
+            if not df.empty:
+                df["is_valid"] = (df["is_correct"] == "yes").astype(int)
+                df["confidence_score"] = pd.to_numeric(df["confidence_score"], errors="coerce")
+                df = df.dropna(subset=["confidence_score"])
+                if not df.empty:
+                    print(f"[INFO] Using gold set ({len(df)} items)")
+                    return df
+
     path = output_dir / "expert_review_skills.csv"
     if not path.exists():
         return pd.DataFrame()
@@ -82,8 +106,98 @@ def youden_j_optimal(fpr_list, tpr_list, thresholds):
     }
 
 
+def compute_brier_score(y_true: np.ndarray, y_prob: np.ndarray) -> float:
+    return float(np.mean((y_prob - y_true) ** 2))
+
+
+def compute_calibration_curve(y_true: np.ndarray, y_prob: np.ndarray,
+                              n_bins: int = 10) -> dict:
+    """Compute calibration curve data (reliability diagram)."""
+    bins = np.linspace(0, 1, n_bins + 1)
+    bin_centers = []
+    observed_freq = []
+    predicted_mean = []
+    bin_counts = []
+
+    for i in range(n_bins):
+        mask = (y_prob >= bins[i]) & (y_prob < bins[i + 1])
+        if i == n_bins - 1:
+            mask = (y_prob >= bins[i]) & (y_prob <= bins[i + 1])
+        count = mask.sum()
+        if count > 0:
+            bin_centers.append(round((bins[i] + bins[i + 1]) / 2, 3))
+            observed_freq.append(round(float(y_true[mask].mean()), 4))
+            predicted_mean.append(round(float(y_prob[mask].mean()), 4))
+            bin_counts.append(int(count))
+
+    max_cal_error = 0.0
+    for obs, pred in zip(observed_freq, predicted_mean):
+        max_cal_error = max(max_cal_error, abs(obs - pred))
+
+    return {
+        "n_bins": n_bins,
+        "bin_centers": bin_centers,
+        "observed_freq": observed_freq,
+        "predicted_mean": predicted_mean,
+        "bin_counts": bin_counts,
+        "max_calibration_error": round(max_cal_error, 4),
+    }
+
+
+def compute_confusion_matrix(y_true: np.ndarray, y_score: np.ndarray,
+                             threshold: float) -> dict:
+    y_pred = (y_score >= threshold).astype(int)
+    tp = int(((y_pred == 1) & (y_true == 1)).sum())
+    fp = int(((y_pred == 1) & (y_true == 0)).sum())
+    fn = int(((y_pred == 0) & (y_true == 1)).sum())
+    tn = int(((y_pred == 0) & (y_true == 0)).sum())
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
+    return {
+        "threshold": round(threshold, 4),
+        "tp": tp, "fp": fp, "fn": fn, "tn": tn,
+        "precision": round(precision, 4),
+        "recall": round(recall, 4),
+        "f1": round(f1, 4),
+    }
+
+
+def cross_validated_auc(y_true: np.ndarray, y_score: np.ndarray,
+                        k: int = 5, seed: int = 42) -> dict:
+    """K-fold cross-validated AUC (shuffle-split)."""
+    n = len(y_true)
+    if n < k * 5:
+        return {"status": "insufficient_data", "n": n}
+
+    rng = np.random.RandomState(seed)
+    indices = rng.permutation(n)
+    fold_size = n // k
+    aucs = []
+
+    for i in range(k):
+        test_idx = indices[i * fold_size:(i + 1) * fold_size]
+        y_t = y_true[test_idx]
+        y_s = y_score[test_idx]
+        if y_t.sum() == 0 or y_t.sum() == len(y_t):
+            continue
+        auc_val, _, _, _ = compute_auc_roc(y_t, y_s)
+        aucs.append(auc_val)
+
+    if not aucs:
+        return {"status": "degenerate_folds"}
+
+    return {
+        "status": "ok",
+        "k": k,
+        "fold_aucs": [round(a, 4) for a in aucs],
+        "mean_auc": round(float(np.mean(aucs)), 4),
+        "std_auc": round(float(np.std(aucs)), 4),
+    }
+
+
 def validate_column(df: pd.DataFrame, col: str) -> dict:
-    """Compute AUC-ROC and optimal threshold for a single score column."""
+    """Full validation for a single score column: AUC, Brier, calibration, CV."""
     if col not in df.columns:
         return {"column": col, "status": "missing"}
     subset = df.dropna(subset=[col])
@@ -96,6 +210,13 @@ def validate_column(df: pd.DataFrame, col: str) -> dict:
     auc, fpr, tpr, thresholds = compute_auc_roc(y_true, y_score)
     optimal = youden_j_optimal(fpr, tpr, thresholds)
     corr = float(np.corrcoef(y_score, y_true)[0, 1]) if y_true.std() > 0 else 0.0
+    brier = compute_brier_score(y_true, y_score)
+    cal = compute_calibration_curve(y_true, y_score)
+    cv = cross_validated_auc(y_true, y_score)
+
+    confusion = {}
+    if optimal:
+        confusion = compute_confusion_matrix(y_true, y_score, optimal["threshold"])
 
     return {
         "column": col,
@@ -104,7 +225,11 @@ def validate_column(df: pd.DataFrame, col: str) -> dict:
         "n_invalid": int(len(y_true) - y_true.sum()),
         "auc_roc": round(auc, 4),
         "pearson_corr": round(corr, 4),
+        "brier_score": round(brier, 4),
+        "calibration": cal,
+        "cross_validated_auc": cv,
         "optimal_threshold": optimal,
+        "confusion_at_optimal": confusion,
     }
 
 
@@ -144,12 +269,38 @@ def main():
 
         for r in results:
             if "auc_roc" in r:
-                print(f"  {r['column']}: AUC-ROC={r['auc_roc']:.4f}, "
+                print(f"  {r['column']}:")
+                print(f"    AUC-ROC={r['auc_roc']:.4f}, "
+                      f"Brier={r['brier_score']:.4f}, "
                       f"corr={r['pearson_corr']:.4f}")
+                print(f"    Max calibration error={r['calibration']['max_calibration_error']:.4f}")
+                if r.get("cross_validated_auc", {}).get("status") == "ok":
+                    cv = r["cross_validated_auc"]
+                    print(f"    CV AUC={cv['mean_auc']:.4f} +/- {cv['std_auc']:.4f}")
                 if r.get("optimal_threshold"):
                     opt = r["optimal_threshold"]
                     print(f"    Optimal threshold={opt['threshold']:.3f} "
                           f"(TPR={opt['tpr']:.3f}, FPR={opt['fpr']:.3f})")
+                if r.get("confusion_at_optimal"):
+                    cm = r["confusion_at_optimal"]
+                    print(f"    At threshold: P={cm['precision']:.3f}, "
+                          f"R={cm['recall']:.3f}, F1={cm['f1']:.3f}")
+
+        # Export calibrated threshold for verify_skills.py
+        conf_result = next((r for r in results if r["column"] == "confidence_score"
+                           and "optimal_threshold" in r and r["optimal_threshold"]), None)
+        if conf_result:
+            cal_threshold = {
+                "source": "validate_parameters.py",
+                "confidence_threshold": conf_result["optimal_threshold"]["threshold"],
+                "auc_roc": conf_result["auc_roc"],
+                "brier_score": conf_result["brier_score"],
+                "confusion_at_threshold": conf_result.get("confusion_at_optimal", {}),
+            }
+            cal_path = FEEDBACK_DIR / "calibrated_threshold.json"
+            FEEDBACK_DIR.mkdir(parents=True, exist_ok=True)
+            cal_path.write_text(json.dumps(cal_threshold, indent=2), encoding="utf-8")
+            print(f"[INFO] Exported calibrated threshold to {cal_path}")
 
     report_path = out_dir / args.output
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")

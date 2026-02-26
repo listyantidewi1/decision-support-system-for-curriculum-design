@@ -151,8 +151,8 @@ def main():
     parser.add_argument(
         "--future_domains_file",
         type=str,
-        default="future_domains_dummy.csv",
-        help="Future domains CSV file (default: future_domains_dummy.csv)",
+        default="future_domains.csv",
+        help="Future domains CSV file (default: future_domains.csv)",
     )
     parser.add_argument(
         "--output_file",
@@ -243,6 +243,17 @@ def main():
     best_domain_idx = np.argmax(sim_mat, axis=1)
     best_sim = sim_mat[np.arange(len(item_texts)), best_domain_idx]
 
+    # Mapping uncertainty: margin between top-1 and top-2 similarity
+    if sim_mat.shape[1] >= 2:
+        sorted_sims = np.sort(sim_mat, axis=1)[:, ::-1]
+        top1_sim = sorted_sims[:, 0]
+        top2_sim = sorted_sims[:, 1]
+        mapping_margin = top1_sim - top2_sim
+    else:
+        top1_sim = best_sim
+        top2_sim = np.zeros_like(best_sim)
+        mapping_margin = top1_sim
+
     matched_domains = domains_df.iloc[best_domain_idx].reset_index(drop=True)
 
     result_df = pd.DataFrame(
@@ -255,10 +266,22 @@ def main():
             "trend_label": matched_domains["trend_label"].values,
             "trend_score": matched_domains["trend_score"].values,
             "similarity": best_sim,
+            "top1_similarity": top1_sim,
+            "top2_similarity": top2_sim,
+            "mapping_margin": mapping_margin,
         }
     )
+
+    if "source" in matched_domains.columns:
+        result_df["domain_source"] = matched_domains["source"].values
+
     result_df["future_weight"] = result_df["similarity"] * result_df["trend_score"]
     result_df = result_df.sort_values("future_weight", ascending=False)
+
+    print(f"[INFO] Mapping margin stats: "
+          f"mean={mapping_margin.mean():.3f}, "
+          f"median={np.median(mapping_margin):.3f}, "
+          f"min={mapping_margin.min():.3f}")
 
     out_dir.mkdir(parents=True, exist_ok=True)
     result_df.to_csv(output_path, index=False, encoding="utf-8-sig")

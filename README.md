@@ -22,6 +22,7 @@ The system is modular, reproducible, and supports multi-run **experimental aggre
 |----------|---------|
 | **README.md** (this file) | Overview, quick start, high-level workflow |
 | **[PIPELINE.md](PIPELINE.md)** | Detailed pipeline documentation: phases, data flow, file dependencies, troubleshooting |
+| **[RESEARCH_QUESTIONS.md](RESEARCH_QUESTIONS.md)** | Research questions (RQ1–RQ5), evaluation metrics, gold set design, ablation study |
 
 ---
 
@@ -33,16 +34,26 @@ skill-extraction/
 ├── pipeline.py                      # Main hybrid extraction pipeline
 ├── config.py                        # Global configuration
 ├── plot_generator.py                # Visual analytics
-├── verify_skills.py                 # Skill verification tiers
+├── verify_skills.py                 # Skill verification (calibrated or percentile)
 ├── generate_competencies.py         # Future-aware competency generator (LLM)
+├── recommendations.py               # Ranked curriculum recommendations + ablation
+├── enrich_with_dates.py             # Attach job_date → extraction outputs
+├── skill_time_trend_analysis.py     # FDR-controlled time-series trends + stability
+├── future_weight_mapping.py         # Map skills/knowledge → future domains (with margin)
+├── ingest_future_domains.py         # Normalize WEF/O*NET/McKinsey → future_domains.csv
+│
 ├── export_for_review.py             # Human-in-the-loop review tables
 ├── export_competencies_for_review.py # Competency review export
-├── enrich_with_dates.py             # Attach job_date → extraction outputs
-├── skill_time_trend_analysis.py     # Time-series trend analysis
-├── future_weight_mapping.py         # Maps knowledge → future domains
+├── export_gold_set.py               # Stratified gold set for labeling
 ├── import_feedback.py               # Merge feedback_store → feedback artifacts
 ├── apply_feedback.py                # Apply Bloom/type corrections
-├── aggregate_results.py             # Aggregates multiple experiment runs
+│
+├── evaluate_extraction.py           # P/R/F1 per extractor (BERT/GPT/Hybrid)
+├── validate_parameters.py           # AUC, Brier, calibration, cross-validated AUC
+├── evaluate_competency_generation.py # Competency quality metrics
+├── evaluate_future_mapping.py       # Domain mapping accuracy vs gold labels
+├── log_run_metadata.py              # Record run metadata for reproducibility
+├── aggregate_results.py             # Aggregate runs + cross-run summary
 ├── preprocess_jobs_pipeline.py      # Raw jobs → jobs_sentences.csv, jobs_metadata.csv
 │
 ├── review_ui/                       # Web UI for expert review
@@ -55,27 +66,53 @@ skill-extraction/
 │   ├── knowledge_feedback.csv
 │   └── competency_feedback.csv
 │
-├── DATA/preprocessing/data_prepared/
-│   ├── jobs_sentences.csv           # Pipeline input
-│   └── jobs_metadata.csv            # job_id → job_date
+├── DATA/
+│   ├── labels/                      # Gold set for evaluation
+│   │   ├── gold_skills.csv
+│   │   ├── gold_knowledge.csv
+│   │   └── gold_future_domain.csv
+│   └── preprocessing/data_prepared/
+│       ├── jobs_sentences.csv       # Pipeline input
+│       └── jobs_metadata.csv        # job_id → job_date
 │
 ├── results/                         # Output of a single run
-├── results_run1/                    # Snapshot of run 1
 ├── results_aggregated/              # Aggregated results across runs
 │
-├── run.bat                          # Phase 1: Full pipeline
-└── run_phase_2.bat                  # Phase 2: Post-review pipeline
+├── RESEARCH_QUESTIONS.md            # RQs, metrics, ablation design
+├── PIPELINE.md                      # Detailed pipeline documentation
+├── run.bat                          # Phase 1: Full pipeline (14 steps)
+└── run_phase_2.bat                  # Phase 2: Post-review pipeline (12 steps)
 ```
 
 ---
 
 # ⚡ Quick Start
 
-1. **Phase 1** — Run full pipeline: `run.bat`
-2. **Review** — Start UI: `uvicorn review_ui.app:app --reload`, open `http://127.0.0.1:8000/?reviewer_id=alice`
-3. **Phase 2** — After review: `run_phase_2.bat`
+```bat
+REM 0. (One-time) Generate real future domains from WEF/O*NET/McKinsey
+python ingest_future_domains.py
+
+REM 1. Phase 1 — Full pipeline (14 steps: extraction → trends → recommendations → gold set)
+run.bat
+
+REM 2. Label the gold set (DATA/labels/gold_*.csv) — see DATA/labels/LABELING_PROTOCOL.md
+
+REM 3. Expert review — start the web UI
+uvicorn review_ui.app:app --reload
+REM Open http://127.0.0.1:8000/?reviewer_id=alice
+
+REM 4. Phase 2 — Post-review (12 steps: calibration → re-generation → full evaluation)
+run_phase_2.bat
+
+REM 5. Label top-20 recommendations (results/recommendations.csv → expert_priority column)
+python recommendations.py --evaluate
+
+REM 6. (Optional) Multi-run: rename results → results_run1, repeat, then aggregate
+python aggregate_results.py --run_dirs results_run1 results_run2 --output_dir results_aggregated
+```
 
 See [PIPELINE.md](PIPELINE.md) for detailed steps, data flow, and troubleshooting.
+See [RESEARCH_QUESTIONS.md](RESEARCH_QUESTIONS.md) for evaluation framework and metrics.
 
 ---
 
@@ -121,47 +158,52 @@ This project introduces a **multi-layer curriculum intelligence pipeline** combi
 
 ### **5. Future-of-Work Integration**
 
-* Reads WEF/McKinsey-style domains from `future_domains_dummy.csv`
+* Normalizes real forecast sources (WEF, O*NET, McKinsey) via `ingest_future_domains.py`
+* Maps skills/knowledge to domains using SBERT cosine similarity
 * Computes:
 
   ```
   future_weight = similarity(skill, domain) × trend_score
   ```
-* Identifies:
+* Includes **mapping uncertainty** (top1-top2 similarity margin)
+* Identifies future-critical skills, declining skills, and curriculum gaps
 
-  * future-critical skills
-  * declining skills
-  * curriculum gaps for future-ready design
+### **6. Time Trend Analysis**
 
-### **6. Competency Generator (LLM)**
+* FDR-controlled (Benjamini-Hochberg) emerging/declining skill detection
+* Outputs q-values (not just raw p-values) to control false discovery rate
+* Stability analysis across multiple seeds and min_jobs thresholds
 
-* Uses verified skills + future context
-* Produces:
+### **7. Competency Generator (LLM)**
 
-  * competency IDs
-  * titles
-  * descriptions
-  * related skills
-  * future relevance notes
+* Uses verified skills + future context + empirical trend signals
+* Produces competency IDs, titles, descriptions, related skills, future relevance notes
 
-### **7. Export for Review & Human-in-the-Loop**
+### **8. Curriculum Recommendations**
 
-Creates sampled CSVs for expert validation (500 skills, 200 knowledge, 100 competencies):
+* Ranked skill gap priorities combining: demand, empirical trend, future_weight, coverage gap
+* Evidence traces per recommendation (job_ids, trend stats, domain info)
+* Ablation study (remove one signal at a time)
+* Expert evaluation: Precision@20, NDCG@20
 
-* `expert_review_jobs.csv`
-* `expert_review_skills.csv` (with human_valid, human_bloom, human_notes columns)
-* `expert_review_knowledge.csv` (with future weight + human_valid, human_notes)
-* `expert_review_competencies.csv` (with human_quality, human_relevant, human_notes)
+### **9. Export for Review & Human-in-the-Loop**
+
+Creates sampled CSVs for expert validation (500 skills, 200 knowledge, 100 competencies).
 
 **Review workflow (single or multi-reviewer):**
-1. Run `export_for_review.py` and `export_competencies_for_review.py`
+1. Phase 1 (`run.bat`) exports review tables and gold-set labels automatically
 2. Start the review web app: `uvicorn review_ui.app:app --reload`
-3. **Multi-reviewer:** Each reviewer opens the app with a unique ID in the URL, e.g. `http://localhost:8000/?reviewer_id=alice` or `?reviewer_id=r1`. All reviewers see the same set; feedback is stored per reviewer.
+3. **Multi-reviewer:** Each reviewer opens `http://localhost:8000/?reviewer_id=alice`
 4. Review in browser; feedback auto-saves to `feedback_store/`
-5. Run `import_feedback.py` to merge feedback (uses majority vote when multiple reviewers)
-6. Run `apply_feedback.py` to apply Bloom overrides and filtering
-7. Run `generate_competencies.py --comprehensive` (or `--human_verified_only` for conservative mode)
-8. Run `evaluate_competency_generation.py` to assess competency quality
+5. Phase 2 (`run_phase_2.bat`) imports feedback, calibrates scoring, re-generates, and evaluates
+
+### **10. Scientific Evaluation**
+
+* **Gold set labeling** (`DATA/labels/`) for ground-truth extraction quality
+* **Extraction evaluation**: P/R/F1 per source (BERT/GPT/Hybrid) with Wilson CIs
+* **Calibrated verification**: AUC-ROC, Brier score, calibration curve, cross-validated AUC
+* **Domain mapping validation**: Top-1 accuracy vs expert labels
+* **Reproducibility**: Run metadata with dataset hash, model versions, seeds
 
 ---
 
@@ -291,10 +333,10 @@ All diagrams can be generated using the provided prompts in `/docs/prompts/`
 
 # 💼 Future Work
 
-* Incorporate **real** WEF/McKinsey datasets instead of dummy files
-* Train a **domain-specific SBERT** model for improved matching
+* Train a **domain-specific SBERT** model for improved skill-domain matching
 * Add **semantic search** over extracted competencies
 * Testing with >10,000 job postings
+* Incorporate additional national/regional forecast sources
 
 ---
 
