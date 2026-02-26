@@ -26,6 +26,32 @@ MAX_RETRIES = 2
 RETRY_BACKOFF_BASE = 2  # seconds
 
 
+def load_skill_time_trends(
+    output_dir: Path,
+    trends_file: str = "skill_time_trends.csv",
+) -> Dict[str, Dict]:
+    """
+    Load skill -> {trend_label, slope, p_value} from skill_time_trends.csv
+    (empirical emerging/declining from job posting frequency over time).
+    Returns empty dict if file missing.
+    """
+    path = output_dir / trends_file
+    if not path.exists():
+        return {}
+    df = pd.read_csv(path)
+    if "skill" not in df.columns or "trend_label" not in df.columns:
+        return {}
+    df = df.drop_duplicates(subset=["skill"], keep="first")
+    return {
+        str(row["skill"]).strip(): {
+            "trend_label": str(row["trend_label"]),
+            "slope": float(row.get("slope", 0) or 0),
+            "p_value": float(row.get("p_value", 1) or 1),
+        }
+        for _, row in df.iterrows()
+    }
+
+
 def load_skill_future_weights(
     output_dir: Path,
     weights_file: str = "future_skill_weights.csv",
@@ -191,16 +217,25 @@ def build_prompt(
     future_context: str = "",
     few_shot_examples: Optional[List[Dict]] = None,
     skill_future_weights: Optional[Dict[str, Dict]] = None,
+    skill_time_trends: Optional[Dict[str, Dict]] = None,
 ) -> str:
-    # Annotate skills with future_weight when available
+    # Annotate skills with future_weight and/or empirical trend when available
     def format_skill(s: str) -> str:
         s_stripped = s.strip()
+        parts = []
         if skill_future_weights and s_stripped in skill_future_weights:
             w = skill_future_weights[s_stripped]
             fw = w.get("future_weight", 0)
             domain = w.get("best_future_domain", "")
             trend = w.get("trend_label", "")
-            return f"- {s} (future_weight={fw:.2f}, domain={domain}, trend={trend})"
+            parts.append(f"future_weight={fw:.2f}, domain={domain}, forecast_trend={trend}")
+        if skill_time_trends and s_stripped in skill_time_trends:
+            t = skill_time_trends[s_stripped]
+            emp = t.get("trend_label", "")
+            if emp and emp != "Stable":
+                parts.append(f"empirical_trend={emp}")
+        if parts:
+            return f"- {s} ({'; '.join(parts)})"
         return f"- {s}"
 
     bullet_list = "\n".join(format_skill(s) for s in skills)
@@ -230,17 +265,17 @@ Here are examples of HIGH-QUALITY competencies (use similar style and structure)
 """
 
     future_weighting_block = ""
-    if skill_future_weights:
+    if skill_future_weights or skill_time_trends:
         future_weighting_block = """
-8. FUTURE WEIGHTING (important): Skills are annotated with future_weight, domain, and trend.
-   - PRIORITIZE competencies that cover skills with HIGH future_weight (Strong_Growth, Moderate_Growth).
+8. FUTURE WEIGHTING (important): Skills may be annotated with:
+   - future_weight, domain, forecast_trend: from domain forecasts (Strong_Growth, Moderate_Growth, Decline).
+   - empirical_trend: from actual job posting frequency over time (Emerging, Declining).
+   - PRIORITIZE competencies that cover skills with HIGH future_weight and/or empirical_trend=Emerging.
    - Give emerging skills more prominence in competency titles and descriptions.
-   - DEPRIORITIZE competencies built mainly around skills with NEGATIVE future_weight (Decline).
+   - DEPRIORITIZE competencies built mainly around skills with NEGATIVE future_weight or empirical_trend=Declining.
    - Do not create competencies that focus primarily on declining skills.
 
 """
-    else:
-        future_weighting_block = ""
 
     return f"""
 You are an expert in competency-based education and vocational curriculum design.
@@ -318,12 +353,14 @@ def call_llm_for_competencies(client: OpenAI,
                               model_name: str,
                               future_context: str = "",
                               few_shot_examples: Optional[List[Dict]] = None,
-                              skill_future_weights: Optional[Dict[str, Dict]] = None) -> Dict:
+                              skill_future_weights: Optional[Dict[str, Dict]] = None,
+                              skill_time_trends: Optional[Dict[str, Dict]] = None) -> Dict:
     prompt = build_prompt(
         skills,
         future_context=future_context,
         few_shot_examples=few_shot_examples,
         skill_future_weights=skill_future_weights,
+        skill_time_trends=skill_time_trends,
     )
 
     messages = [
@@ -507,15 +544,27 @@ def main():
     skill_future_weights = load_skill_future_weights(out_dir)
     if skill_future_weights:
         print(f"[INFO] Loaded future weights for {len(skill_future_weights)} skills")
-        # Reorder skills by future_weight descending (emerging first)
-        def sort_key(s: str) -> float:
-            w = skill_future_weights.get(s.strip(), {})
-            return w.get("future_weight", -999.0)  # unannotated at end
 
-        skills_sorted = sorted(skills_sorted, key=sort_key, reverse=True)
-        print("[INFO] Skills reordered by future_weight (emerging first)")
-    else:
-        print("[INFO] No future_skill_weights.csv; skills unannotated and unsorted by future weight")
+    # Load empirical time trends (emerging/declining from job posting frequency)
+    skill_time_trends = load_skill_time_trends(out_dir)
+    if skill_time_trends:
+        print(f"[INFO] Loaded empirical trends for {len(skill_time_trends)} skills")
+
+    # Reorder skills: future_weight first, then empirical Emerging > Stable > Declining
+    def sort_key(s: str) -> tuple:
+        s_stripped = s.strip()
+        fw = -999.0
+        if skill_future_weights and s_stripped in skill_future_weights:
+            fw = skill_future_weights[s_stripped].get("future_weight", -999.0)
+        emp_rank = 0  # 2=Emerging, 1=Stable, 0=Declining or unknown
+        if skill_time_trends and s_stripped in skill_time_trends:
+            lbl = skill_time_trends[s_stripped].get("trend_label", "")
+            emp_rank = {"Emerging": 2, "Stable": 1, "Declining": 0}.get(lbl, 0)
+        return (fw, emp_rank)
+
+    skills_sorted = sorted(skills_sorted, key=sort_key, reverse=True)
+    if skill_future_weights or skill_time_trends:
+        print("[INFO] Skills reordered by future_weight and empirical trend (emerging first)")
 
     # Load few-shot examples from human assessments (if available)
     few_shot = load_few_shot_examples(out_dir, feedback_dir, max_examples=3)
@@ -540,6 +589,7 @@ def main():
             future_context=future_context,
             few_shot_examples=few_shot or [],
             skill_future_weights=skill_future_weights or None,
+            skill_time_trends=skill_time_trends or None,
         )
 
         # Expecting {"competencies": [ ... ]}
