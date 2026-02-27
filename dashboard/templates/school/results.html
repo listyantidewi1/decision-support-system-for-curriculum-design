@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Department Results</h2>
+{% if banner %}<p class="banner">{{ banner }}</p>{% endif %}
+<p class="hint"><a href="/dashboard/school/methodology">How it works</a> — understand how scores and rankings are computed. Items marked <code>not_verified</code> have not been reviewed; they may still be valid.</p>
+
+<section class="card">
+  <form method="get" action="/dashboard/school/results">
+    <label>Department</label>
+    <select name="department_id">
+      {% for d in departments %}
+        <option value="{{ d.id }}" {% if d.id == selected_department_id %}selected{% endif %}>
+          {{ d.name }} ({{ d.vocational_field }})
+        </option>
+      {% endfor %}
+    </select>
+    <label>
+      <input type="checkbox" name="aggregate_field" value="1" {% if aggregate_field %}checked{% endif %} />
+      Aggregate with same vocational field across schools
+    </label>
+    <div>
+      <label>Ranking mode</label>
+      <span class="explain-wrap">
+        <span class="explain-icon" title="Explain">?</span>
+        <span class="explain-popover">
+          {% if explanations and explanations.ranking_mode %}
+          {{ explanations.ranking_mode.what }}
+          <a href="/dashboard/school/methodology#ranking">More</a>
+          {% endif %}
+        </span>
+      </span>
+      <select name="ranking_mode">
+        <option value="human_adjusted" {% if ranking_mode == "human_adjusted" %}selected{% endif %}>human_adjusted</option>
+        <option value="model_only" {% if ranking_mode == "model_only" %}selected{% endif %}>model_only</option>
+      </select>
+    </div>
+    <div>
+      <label>Skills count</label>
+      <select name="skills_n">
+        <option value="10" {% if skills_n == 10 %}selected{% endif %}>10</option>
+        <option value="20" {% if skills_n == 20 %}selected{% endif %}>20</option>
+        <option value="30" {% if skills_n == 30 %}selected{% endif %}>30</option>
+      </select>
+      <input type="number" min="1" max="500" name="skills_custom" value="{{ skills_custom }}" placeholder="Custom" />
+    </div>
+    <div>
+      <label>Knowledge count</label>
+      <select name="knowledge_n">
+        <option value="10" {% if knowledge_n == 10 %}selected{% endif %}>10</option>
+        <option value="20" {% if knowledge_n == 20 %}selected{% endif %}>20</option>
+        <option value="30" {% if knowledge_n == 30 %}selected{% endif %}>30</option>
+      </select>
+      <input type="number" min="1" max="1000" name="knowledge_custom" value="{{ knowledge_custom }}" placeholder="Custom" />
+    </div>
+    <div>
+      <label>Competency count</label>
+      <select name="competencies_n">
+        <option value="10" {% if competencies_n == 10 %}selected{% endif %}>10</option>
+        <option value="20" {% if competencies_n == 20 %}selected{% endif %}>20</option>
+        <option value="30" {% if competencies_n == 30 %}selected{% endif %}>30</option>
+      </select>
+      <input type="number" min="1" max="500" name="competencies_custom" value="{{ competencies_custom }}" placeholder="Custom" />
+    </div>
+    <button type="submit">Apply</button>
+  </form>
+</section>
+
+<section class="card">
+  <h3>Review Coverage</h3>
+  <p class="hint">
+    Skills reviewed: {{ coverage_totals.skills.reviewed }}/{{ coverage_totals.skills.total }} |
+    Knowledge reviewed: {{ coverage_totals.knowledge.reviewed }}/{{ coverage_totals.knowledge.total }} |
+    Competencies reviewed: {{ coverage_totals.competencies.reviewed }}/{{ coverage_totals.competencies.total }}
+  </p>
+  {% if irr_overview %}
+    <p class="hint">Inter-rater reliability snapshot (when shared reviews exist):</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Source</th><th>Shared items</th><th>Cohen kappa</th><th>Agreement %</th></tr>
+        {% for row in irr_overview %}
+          <tr>
+            <td>{{ row.source }}</td>
+            <td>{{ row.shared_items }}</td>
+            <td>{{ row.cohens_kappa }}</td>
+            <td>{{ row.pct_agreement }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h3>Aggregation Context</h3>
+  <p class="hint">Use this panel to judge pooled-data representativeness and possible confounding.</p>
+  <div class="table-wrap">
+    <table>
+      <tr>
+        <th>School</th><th>Department</th><th>Field</th><th>Uses default results</th>
+        <th>Runs</th><th>Uploads</th><th>Uploaded rows</th><th>First run</th><th>Last run</th>
+      </tr>
+      {% for c in contributors %}
+        <tr>
+          <td>{{ c.school_name }}</td>
+          <td>{{ c.department_name }}</td>
+          <td>{{ c.vocational_field }}</td>
+          <td>{{ c.uses_default_results }}</td>
+          <td>{{ c.run_count }}</td>
+          <td>{{ c.upload_count }}</td>
+          <td>{{ c.upload_rows }}</td>
+          <td>{{ c.first_run }}</td>
+          <td>{{ c.last_run }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h3>Hard Skills (Top Prioritized)</h3>
+  <p class="hint">Model score: <span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{% if explanations and explanations._model_score %}{{ explanations._model_score.what }} <a href="/dashboard/school/methodology">More</a>{% endif %}</span></span> <code>_model_score</code>; human-adjusted: <span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{% if explanations and explanations._human_adjusted_score %}{{ explanations._human_adjusted_score.what }} <a href="/dashboard/school/methodology">More</a>{% endif %}</span></span> <code>_human_adjusted_score</code>.</p>
+  <div class="table-wrap">
+    <table>
+      {% if hard_skills %}
+      <tr>
+        {% for k in hard_skills[0].keys() %}
+          <th>
+            {% if k == '_why_provenance' %}Why?{% else %}{{ k }}{% endif %}
+            {% if k != '_why_provenance' and explanations and k in explanations %}
+            <span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations[k].what }} <a href="/dashboard/school/methodology">More</a></span></span>
+            {% endif %}
+          </th>
+        {% endfor %}
+      </tr>
+      {% for row in hard_skills %}
+        <tr>
+          {% for k in hard_skills[0].keys() %}
+            <td>
+              {% if k == '_why_provenance' %}
+                {% if row.get(k) %}
+                <details class="why-details"><summary>Show</summary><span class="hint">{{ row.get(k) }}</span></details>
+                {% else %}-{% endif %}
+              {% else %}{{ row.get(k) }}{% endif %}
+            </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+      {% else %}
+      <tr><td>No hard-skill priorities found.</td></tr>
+      {% endif %}
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h3>Soft Skills (Top Prioritized)</h3>
+  <p class="hint">Model score: <code>_model_score</code>; human-adjusted: <code>_human_adjusted_score</code>.</p>
+  <div class="table-wrap">
+    <table>
+      {% if soft_skills %}
+      <tr>
+        {% for k in soft_skills[0].keys() %}
+          <th>
+            {% if k == '_why_provenance' %}Why?{% else %}{{ k }}{% endif %}
+            {% if k != '_why_provenance' and explanations and k in explanations %}
+            <span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations[k].what }} <a href="/dashboard/school/methodology">More</a></span></span>
+            {% endif %}
+          </th>
+        {% endfor %}
+      </tr>
+      {% for row in soft_skills %}
+        <tr>
+          {% for k in soft_skills[0].keys() %}
+            <td>
+              {% if k == '_why_provenance' %}
+                {% if row.get(k) %}
+                <details class="why-details"><summary>Show</summary><span class="hint">{{ row.get(k) }}</span></details>
+                {% else %}-{% endif %}
+              {% else %}{{ row.get(k) }}{% endif %}
+            </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+      {% else %}
+      <tr><td>No soft-skill priorities found.</td></tr>
+      {% endif %}
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h3>Knowledge (Top Prioritized, Post-Review Aware)</h3>
+  <p class="hint">Model score: <code>_model_score</code>; human-adjusted: <code>_human_adjusted_score</code>.</p>
+  <div class="table-wrap">
+    <table>
+      {% if knowledges %}
+      <tr>
+        {% for k in knowledges[0].keys() %}
+          <th>
+            {% if k == '_why_provenance' %}Why?{% else %}{{ k }}{% endif %}
+            {% if k != '_why_provenance' and explanations and k in explanations %}
+            <span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations[k].what }} <a href="/dashboard/school/methodology">More</a></span></span>
+            {% endif %}
+          </th>
+        {% endfor %}
+      </tr>
+      {% for row in knowledges %}
+        <tr>
+          {% for k in knowledges[0].keys() %}
+            <td>
+              {% if k == '_why_provenance' %}
+                {% if row.get(k) %}
+                <details class="why-details"><summary>Show</summary><span class="hint">{{ row.get(k) }}</span></details>
+                {% else %}-{% endif %}
+              {% else %}{{ row.get(k) }}{% endif %}
+            </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+      {% else %}
+      <tr><td>No knowledge items found.</td></tr>
+      {% endif %}
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h3>Competencies (Top Prioritized, Detailed)</h3>
+  {% if competencies %}
+    {% for c in competencies %}
+      <article class="comp-card">
+        <h4>
+          {{ c.get("title", c.get("id", "competency")) }}
+          {% if c.get("_priority_score") is not none %}
+            <span class="hint">priority {{ c.get("_priority_score") }}</span>
+          {% endif %}
+        </h4>
+        <p>{{ c.get("description", "") }}</p>
+        <p><strong>Verification:</strong> <span class="explain-wrap">{{ c.get("verification_status", "not_verified") }}<span class="explain-icon" title="Explain">?</span><span class="explain-popover">{% if explanations and explanations.verification_status %}{{ explanations.verification_status.what }} <a href="/dashboard/school/methodology">More</a>{% endif %}</span></span></p>
+        <p><strong>Model score:</strong> {{ c.get("_model_score", "-") }} | <strong>Human-adjusted score:</strong> {{ c.get("_human_adjusted_score", "-") }}</p>
+        {% if c.get("_why_provenance") %}
+        <details class="why-details"><summary>Why this item?</summary><p class="hint">{{ c.get("_why_provenance") }}</p></details>
+        {% endif %}
+        <p><strong>Future relevance:</strong> {{ c.get("future_relevance", "-") }}</p>
+        <p><strong>Batch:</strong> {{ c.get("batch_id", "-") }}</p>
+        <div class="chips">
+          <strong>Related skills:</strong><br/>
+          {% for s in c.get("related_skills", []) %}
+            <span class="chip">{{ s }}</span>
+          {% endfor %}
+        </div>
+        <div class="chips">
+          <strong>Related knowledge:</strong><br/>
+          {% if c.get("related_knowledge") %}
+            {% for k in c.get("related_knowledge", []) %}
+              <span class="chip chip-knowledge">{{ k }}</span>
+            {% endfor %}
+          {% else %}
+            <span class="hint">No direct related knowledge matched.</span>
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+  {% else %}
+    <p>No competency proposals found.</p>
+  {% endif %}
+</section>
+{% endblock %}

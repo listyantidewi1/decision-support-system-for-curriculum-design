@@ -1,0 +1,13 @@
+﻿competency_id,reviewer_id,human_quality,human_relevant,human_notes
+C9_b1,alice,5,yes,
+C2_b1,alice,5,yes,
+C9_b2,alice,5,yes,
+C2_b2,alice,5,yes,
+C9_b3,alice,5,yes,
+C2_b3,alice,5,yes,
+C8_b4,alice,5,yes,
+C2_b4,alice,5,yes,
+C9_b40,alice,5,partial,
+C2_b40,alice,4,partial,
+C2_b44,alice,5,yes,
+C9_b1,school2@domain.com,5,yes,

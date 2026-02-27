@@ -3,6 +3,7 @@
 # ============================================================
 
 import os
+import argparse
 import re
 import json
 import time
@@ -2488,14 +2489,39 @@ class AdvancedSkillExtractionPipeline:
 def main():
     """Main entry point."""
     try:
+        parser = argparse.ArgumentParser(description="Run advanced skill extraction pipeline.")
+        parser.add_argument(
+            "--input_csv",
+            type=str,
+            default=AdvancedPipelineConfig.INPUT_CSV,
+            help="Input CSV path (default: DATA/preprocessing/data_prepared/jobs_sentences.csv)",
+        )
+        parser.add_argument(
+            "--output_dir",
+            type=str,
+            default=str(OUTPUT_DIR),
+            help="Output directory for pipeline artifacts (default: config.OUTPUT_DIR)",
+        )
+        parser.add_argument(
+            "--sample_size",
+            type=int,
+            default=AdvancedPipelineConfig.SAMPLE_SIZE,
+            help="Max number of rows to process (default: AdvancedPipelineConfig.SAMPLE_SIZE)",
+        )
+        args = parser.parse_args()
+
+        # Runtime overrides keep backward compatibility with existing run.bat defaults.
+        AdvancedPipelineConfig.INPUT_CSV = args.input_csv
+        AdvancedPipelineConfig.SAMPLE_SIZE = args.sample_size
+
         # Create pipeline instance
         pipeline = AdvancedSkillExtractionPipeline()
         
         # Initialize pipeline
-        pipeline.initialize()
+        pipeline.initialize(output_dir=args.output_dir)
         
         # Run pipeline
-        pipeline.run(sample_size=AdvancedPipelineConfig.SAMPLE_SIZE)
+        pipeline.run(sample_size=args.sample_size)
         
     except KeyboardInterrupt:
         logger.info("Pipeline interrupted by user")

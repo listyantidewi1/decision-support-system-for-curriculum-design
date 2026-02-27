@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>How It Works — Transparency & Explainability</h2>
+<p class="hint">This page explains how the curriculum recommendation system produces its results. We aim for full transparency so you can understand and trust the outputs.</p>
+
+<section class="card">
+  <h3>Pipeline Overview</h3>
+  <p>The system runs in two phases:</p>
+  <ul>
+    <li><strong>Phase 1</strong>: Extract skills and knowledge from job postings (JobBERT + LLM hybrid), map to future domains, detect trends, generate competencies, and export samples for human review.</li>
+    <li><strong>Review</strong>: Experts review sampled skills, knowledge, and competencies. Feedback is stored per reviewer; majority vote merges multi-reviewer input.</li>
+    <li><strong>Phase 2</strong>: Import feedback, apply corrections (Bloom, type), calibrate thresholds, re-verify skills, re-generate competencies, and regenerate plots. Final results reflect human input.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h3>Extraction</h3>
+  <p>Skills and knowledge are extracted using a <strong>hybrid approach</strong>:</p>
+  <ul>
+    <li><strong>JobBERT</strong>: BERT-based model fine-tuned on job postings; extracts skills/knowledge with confidence scores.</li>
+    <li><strong>LLM</strong>: Large language model (e.g., GPT) for additional extraction.</li>
+    <li><strong>Hybrid</strong>: When both agree, the item is marked BERT+GPT (typically more reliable). Single-model extractions (BERT-only, GPT-only) are also included.</li>
+  </ul>
+  <p>The <code>source</code> column indicates which model(s) produced each item.</p>
+</section>
+
+<section class="card">
+  <h3>Scoring</h3>
+  <h4>Skill Priority Score</h4>
+  <p>Curriculum recommendations combine three signals (coverage is for insights only, not prioritization):</p>
+  <ul>
+    <li><strong>Demand (40%)</strong>: Job-market frequency — how many postings mention this skill.</li>
+    <li><strong>Trend (30%)</strong>: Empirical emerging/declining from time-series (FDR-controlled).</li>
+    <li><strong>Future (30%)</strong>: Forecast-aligned relevance from WEF/O*NET/McKinsey domains.</li>
+    <li><strong>Coverage</strong>: Shown in plots for insights only. Existing curriculum may be outdated; schools use recommendations to design better curriculum.</li>
+  </ul>
+  <p>Formula: <code>priority_score = 0.40×demand + 0.30×trend + 0.30×future</code></p>
+
+  <h4>Knowledge Score</h4>
+  <p>Model score: <code>0.45×confidence + 0.25×future_weight + 0.30×occurrence</code></p>
+
+  <h4>Competency Score</h4>
+  <p>Based on related skills (max priority) plus human quality/relevance ratings (0.7×skill + 0.3×quality + relevance_adj + verify_adj).</p>
+</section>
+
+<section class="card">
+  <h3>Verification</h3>
+  <p><strong>Verification status</strong> reflects human review:</p>
+  <ul>
+    <li><strong>verified</strong>: Expert marked valid.</li>
+    <li><strong>invalid</strong>: Expert marked invalid.</li>
+    <li><strong>not_verified</strong>: Not yet reviewed. Not all items are in the review sample; unverified items may still be valid.</li>
+  </ul>
+  <p>With multiple reviewers, <strong>majority vote</strong> is used. Cohen's Kappa for inter-rater reliability is shown when shared reviews exist.</p>
+</section>
+
+<section class="card" id="ranking">
+  <h3>Ranking Modes</h3>
+  <ul>
+    <li><strong>model_only</strong>: Use pipeline scores only; human feedback shown but not used for ordering.</li>
+    <li><strong>human_adjusted</strong>: Boost verified items (+0.05), penalize invalid (-0.15). Use when you have reviewed samples.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h3>Trend Label (Why &quot;Unknown&quot;?)</h3>
+  <p><strong>Trend label</strong> shows whether a skill is Emerging (increasing), Declining (decreasing), or Stable over time, using FDR-controlled regression on job posting dates.</p>
+  <p><strong>If most or all show &quot;Unknown&quot;</strong>, common causes:</p>
+  <ul>
+    <li><strong>No job dates</strong>: Uploaded jobs must include a date column (e.g., <code>posted_date</code>, <code>job_date</code>). Preprocessing maps it to <code>jobs_metadata.csv</code>.</li>
+    <li><strong>Insufficient time span</strong>: Need at least 3 distinct months of data for regression.</li>
+    <li><strong>Low frequency</strong>: Skills with very few job mentions are excluded from trend analysis (min_jobs filter).</li>
+  </ul>
+  <p><strong>How to fix</strong>: Ensure your job upload CSV has a date column; run Phase 1 so <code>enrich_with_dates</code> and <code>skill_time_trend_analysis</code> can compute trends.</p>
+</section>
+
+<section class="card">
+  <h3>Future Weight</h3>
+  <p>Skills and knowledge are mapped to forecast domains (WEF, O*NET, McKinsey) via <strong>SBERT embeddings</strong>. The similarity between an item and domain example terms is combined with the domain's growth trend. <strong>mapping_margin</strong> (top1 − top2 similarity) indicates confidence: large margin = confident mapping; small margin = ambiguous.</p>
+</section>
+
+<section class="card">
+  <h3>Limitations & Uncertainty</h3>
+  <ul>
+    <li><strong>Sampling</strong>: Skills, knowledge, and competencies are stratified samples. Not all items are reviewed.</li>
+    <li><strong>Unverified items</strong>: Items marked <code>not_verified</code> have not been reviewed; they may still be valid and appear in results.</li>
+    <li><strong>Future mapping</strong>: Domain mapping uses embeddings; margin indicates confidence.</li>
+    <li><strong>LLM</strong>: Competencies are LLM-generated; human review improves quality.</li>
+  </ul>
+</section>
+
+<section class="card">
+  <h3>Score & Field Explanations</h3>
+  <p>Quick reference for scores and fields:</p>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Term</th><th>What it means</th></tr>
+      {% for key, ex in explanations.items() %}
+      <tr>
+        <td><strong>{{ ex.title }}</strong></td>
+        <td>{{ ex.what }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+{% endblock %}

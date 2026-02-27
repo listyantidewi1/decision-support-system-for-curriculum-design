@@ -108,7 +108,34 @@ def _make_review_id(job_id: str, skill: str) -> str:
     return f"skill_{h}"
 
 
-def build_skill_review_table(skills: pd.DataFrame, max_skills: int = 500) -> pd.DataFrame:
+def _load_exclude_skill_pairs(exclude_path: Path) -> set:
+    """Load (job_id, skill) pairs from existing review file to exclude from new sample."""
+    if not exclude_path or not exclude_path.exists():
+        return set()
+    df = pd.read_csv(exclude_path)
+    if "job_id" not in df.columns or "skill" not in df.columns:
+        return set()
+    return set(
+        (str(r["job_id"]).strip(), str(r["skill"]).strip().lower())
+        for _, r in df.iterrows()
+    )
+
+
+def _load_exclude_knowledge_ids(exclude_path: Path) -> set:
+    """Load review_ids from existing knowledge review file to exclude."""
+    if not exclude_path or not exclude_path.exists():
+        return set()
+    df = pd.read_csv(exclude_path)
+    if "review_id" not in df.columns:
+        return set()
+    return set(str(r["review_id"]).strip() for _, r in df.iterrows())
+
+
+def build_skill_review_table(
+    skills: pd.DataFrame,
+    max_skills: int = 500,
+    exclude_pairs: set | None = None,
+) -> pd.DataFrame:
     """
     Normalise skill table for expert review with stratified sampling.
     Adds review columns: review_id, human_valid, human_bloom, human_notes.
@@ -130,6 +157,17 @@ def build_skill_review_table(skills: pd.DataFrame, max_skills: int = 500) -> pd.
 
     existing = [c for c in cols if c in skills.columns]
     df = skills[existing].copy()
+
+    # Exclude already-reviewed (job_id, skill) pairs
+    exclude_pairs = exclude_pairs or set()
+    if exclude_pairs:
+        df["_key"] = df.apply(
+            lambda r: (str(r.get("job_id", "")).strip(), str(r.get("skill", "")).strip().lower()),
+            axis=1,
+        )
+        df = df[~df["_key"].isin(exclude_pairs)].drop(columns=["_key"], errors="ignore")
+        if df.empty:
+            return pd.DataFrame()
 
     # Add review columns
     df["review_id"] = df.apply(
@@ -175,9 +213,12 @@ def _make_knowledge_review_id(knowledge: str) -> str:
     return f"know_{h}"
 
 
-def build_knowledge_review_table(knowledge_df: pd.DataFrame,
-                                 future_weights: pd.DataFrame,
-                                 max_knowledge: int = 200) -> pd.DataFrame:
+def build_knowledge_review_table(
+    knowledge_df: pd.DataFrame,
+    future_weights: pd.DataFrame,
+    max_knowledge: int = 200,
+    exclude_review_ids: set | None = None,
+) -> pd.DataFrame:
     """
     Build a knowledge-level review table by joining advanced_knowledge
     with future_weight info. Adds review columns: review_id, human_valid, human_notes.
@@ -235,6 +276,13 @@ def build_knowledge_review_table(knowledge_df: pd.DataFrame,
     merged["human_notes"] = ""
     merged["reviewer_id"] = ""
 
+    # Exclude already-reviewed items
+    exclude_review_ids = exclude_review_ids or set()
+    if exclude_review_ids:
+        merged = merged[~merged["review_id"].isin(exclude_review_ids)]
+        if merged.empty:
+            return pd.DataFrame()
+
     # Proportional stratified sampling by trend_label (if available)
     if len(merged) > max_knowledge:
         if "trend_label" in merged.columns:
@@ -286,9 +334,32 @@ def main():
         default=200,
         help="Max knowledge items to export for review (default: 200)",
     )
+    parser.add_argument(
+        "--exclude_from_skills",
+        type=str,
+        default=None,
+        help="Path to existing expert_review_skills.csv - exclude items already in it",
+    )
+    parser.add_argument(
+        "--exclude_from_knowledge",
+        type=str,
+        default=None,
+        help="Path to existing expert_review_knowledge.csv - exclude items already in it",
+    )
+    parser.add_argument(
+        "--append",
+        action="store_true",
+        help="Append new samples to existing files instead of overwriting",
+    )
 
     args = parser.parse_args()
     out_dir = Path(args.output_dir)
+    exclude_skills_path = Path(args.exclude_from_skills) if args.exclude_from_skills else None
+    exclude_knowledge_path = Path(args.exclude_from_knowledge) if args.exclude_from_knowledge else None
+    if args.append and not exclude_skills_path:
+        exclude_skills_path = out_dir / args.skills_csv
+    if args.append and not exclude_knowledge_path:
+        exclude_knowledge_path = out_dir / "expert_review_knowledge.csv"
 
     print(f"[INFO] Loading comprehensive_analysis.csv from {out_dir}")
     comp = load_comprehensive_analysis(out_dir)
@@ -302,11 +373,25 @@ def main():
     print("[INFO] Loading best available skills table (verified or advanced)...")
     skills_raw = load_best_skills_table(out_dir)
 
+    exclude_skill_pairs = _load_exclude_skill_pairs(exclude_skills_path) if exclude_skills_path else set()
+    if exclude_skill_pairs:
+        print(f"[INFO] Excluding {len(exclude_skill_pairs)} already-reviewed skill pairs")
+
     print(f"[INFO] Building skill-level review table (max_skills={args.max_skills})...")
-    skills_df = build_skill_review_table(skills_raw, max_skills=args.max_skills)
+    skills_df = build_skill_review_table(
+        skills_raw,
+        max_skills=args.max_skills,
+        exclude_pairs=exclude_skill_pairs,
+    )
     skills_path = out_dir / args.skills_csv
-    skills_df.to_csv(skills_path, index=False, encoding="utf-8-sig")
-    print(f"[INFO] Saved skill-level review table to {skills_path}")
+    if args.append and skills_path.exists() and not skills_df.empty:
+        existing = pd.read_csv(skills_path)
+        skills_df = pd.concat([existing, skills_df]).drop_duplicates(subset=["review_id"], keep="first")
+    if not skills_df.empty:
+        skills_df.to_csv(skills_path, index=False, encoding="utf-8-sig")
+        print(f"[INFO] Saved skill-level review table to {skills_path} ({len(skills_df)} rows)")
+    else:
+        print("[INFO] No new skills to add (all already reviewed or empty)")
     
         # --- Knowledge-level review with future weights ---
     try:
@@ -327,17 +412,31 @@ def main():
         fw_path = out_dir / "future_skill_weights_dummy.csv"
         if knowledge_df is not None and fw_path.exists():
             future_weights = pd.read_csv(fw_path)
+            exclude_know_ids = (
+                _load_exclude_knowledge_ids(exclude_knowledge_path) if exclude_knowledge_path else set()
+            )
+            if exclude_know_ids:
+                print(f"[INFO] Excluding {len(exclude_know_ids)} already-reviewed knowledge items")
             print(f"[INFO] Building knowledge-level review table (max_knowledge={args.max_knowledge})...")
             knowledge_review_df = build_knowledge_review_table(
                 knowledge_df,
                 future_weights,
                 max_knowledge=args.max_knowledge,
+                exclude_review_ids=exclude_know_ids,
             )
             knowledge_out_path = out_dir / "expert_review_knowledge.csv"
-            knowledge_review_df.to_csv(
-                knowledge_out_path, index=False, encoding="utf-8-sig"
-            )
-            print(f"[INFO] Saved knowledge-level review table to {knowledge_out_path}")
+            if not knowledge_review_df.empty:
+                if args.append and knowledge_out_path.exists():
+                    existing = pd.read_csv(knowledge_out_path)
+                    knowledge_review_df = pd.concat([existing, knowledge_review_df]).drop_duplicates(
+                        subset=["review_id"], keep="first"
+                    )
+                knowledge_review_df.to_csv(
+                    knowledge_out_path, index=False, encoding="utf-8-sig"
+                )
+                print(f"[INFO] Saved knowledge-level review table to {knowledge_out_path} ({len(knowledge_review_df)} rows)")
+            else:
+                print("[INFO] No new knowledge items to add (all already reviewed or empty)")
         elif knowledge_df is not None:
             print("[WARN] future_skill_weights_dummy.csv not found; "
                   "cannot build expert_review_knowledge.csv.")

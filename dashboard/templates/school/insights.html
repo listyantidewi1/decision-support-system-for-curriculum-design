@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Department Insights</h2>
+{% if banner %}<p class="banner">{{ banner }}</p>{% endif %}
+
+<section class="card">
+  <form method="get" action="/dashboard/school/insights">
+    <label>Department</label>
+    <select name="department_id" onchange="this.form.submit()">
+      {% for d in departments %}
+        <option value="{{ d.id }}" {% if d.id == selected_department_id %}selected{% endif %}>
+          {{ d.name }} ({{ d.vocational_field }})
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+</section>
+
+<section class="card">
+  <h3>Generated Plots</h3>
+  {% if images %}
+    <div class="image-grid">
+      {% for img in images %}
+        <figure class="plot-card">
+          <button
+            type="button"
+            class="plot-button"
+            onclick="openPlotModal('/dashboard/file/{{ img.path }}', '{{ img.title|e }}', '{{ img.what|e }}', '{{ img.how|e }}')"
+          >
+            <img src="/dashboard/file/{{ img.path }}" alt="{{ img.name }}" />
+          </button>
+          <figcaption>
+            <strong>{{ img.title }}</strong><br/>
+            <span class="hint">{{ img.name }}</span>
+          </figcaption>
+        </figure>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No plot images found for this department yet.</p>
+  {% endif %}
+</section>
+
+<div id="plot-modal" class="plot-modal" onclick="closePlotModalOnBackdrop(event)">
+  <div class="plot-modal-content">
+    <button class="plot-modal-close" type="button" onclick="closePlotModal()">×</button>
+    <h3 id="plot-modal-title">Plot</h3>
+    <img id="plot-modal-image" src="" alt="enlarged plot" />
+    <div class="plot-modal-text">
+      <p><strong>What this plot tells:</strong> <span id="plot-modal-what"></span></p>
+      <p><strong>How to read / interpret:</strong> <span id="plot-modal-how"></span></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openPlotModal(src, title, whatText, howText) {
+    const modal = document.getElementById("plot-modal");
+    document.getElementById("plot-modal-image").src = src;
+    document.getElementById("plot-modal-title").textContent = title;
+    document.getElementById("plot-modal-what").textContent = whatText;
+    document.getElementById("plot-modal-how").textContent = howText;
+    modal.classList.add("open");
+  }
+
+  function closePlotModal() {
+    const modal = document.getElementById("plot-modal");
+    modal.classList.remove("open");
+    document.getElementById("plot-modal-image").src = "";
+  }
+
+  function closePlotModalOnBackdrop(event) {
+    if (event.target && event.target.id === "plot-modal") {
+      closePlotModal();
+    }
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") closePlotModal();
+  });
+</script>
+{% endblock %}

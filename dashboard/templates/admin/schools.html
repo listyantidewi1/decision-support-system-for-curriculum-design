@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Schools & Departments</h2>
+
+<section class="grid2">
+  <div class="card">
+    <h3>Create School</h3>
+    <form method="post" action="/dashboard/admin/schools/create">
+      <label>School name</label>
+      <input name="school_name" required />
+      <button type="submit">Create school</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Create Department</h3>
+    <form method="post" action="/dashboard/admin/departments/create">
+      <label>School</label>
+      <select name="school_id" required>
+        {% for s in schools %}
+          <option value="{{ s.id }}">{{ s.name }}</option>
+        {% endfor %}
+      </select>
+      <label>Department name</label>
+      <input name="department_name" placeholder="Culinary Department" required />
+      <label>Vocational field</label>
+      <input name="vocational_field" placeholder="culinary / fashion / automotive / it" required />
+      <button type="submit">Create department</button>
+    </form>
+  </div>
+</section>
+
+<section class="card">
+  <h3>Schools</h3>
+  <table>
+    <tr><th>ID</th><th>Name</th><th>Created</th></tr>
+    {% for s in schools %}
+      <tr><td>{{ s.id }}</td><td>{{ s.name }}</td><td>{{ s.created_at }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section class="card">
+  <h3>Departments</h3>
+  <table>
+    <tr><th>ID</th><th>School</th><th>Name</th><th>Field</th><th>Created</th></tr>
+    {% for d in departments %}
+      <tr>
+        <td>{{ d.id }}</td>
+        <td>{{ d.school_name }}</td>
+        <td>{{ d.name }}</td>
+        <td>{{ d.vocational_field }}</td>
+        <td>{{ d.created_at }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}

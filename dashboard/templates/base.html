@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ title or "Dashboard" }}</title>
+  <link rel="stylesheet" href="/dashboard/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Curriculum Recommendation System -- Dashboard</h1>
+    {% if user %}
+      <div class="userbox">
+        <span>{{ user.email }} ({{ user.role }})</span>
+        <a href="/dashboard/logout">Logout</a>
+      </div>
+    {% endif %}
+  </header>
+  <nav class="nav">
+    {% if user and user.role == "admin" %}
+      <a href="/dashboard/admin/schools">Schools</a>
+      <a href="/dashboard/admin/users">Users</a>
+      <a href="/dashboard/admin/runs">Runs</a>
+    {% elif user and user.role == "school" %}
+      <a href="/dashboard/school/upload">Upload</a>
+      <a href="/dashboard/school/runs">Runs</a>
+      <a href="/dashboard/school/results">Results</a>
+      <a href="/dashboard/school/review">Review</a>
+      <a href="/dashboard/school/insights">Insights</a>
+      <a href="/dashboard/school/methodology">How it works</a>
+    {% endif %}
+  </nav>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

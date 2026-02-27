@@ -23,7 +23,7 @@ import pandas as pd
 
 import config
 
-FEEDBACK_DIR = Path(config.PROJECT_ROOT) / "feedback_store"
+DEFAULT_FEEDBACK_DIR = Path(config.PROJECT_ROOT) / "feedback_store"
 
 # --- configurable weights ---------------------------------------------------
 
@@ -36,9 +36,9 @@ HIGH_PERCENTILE = 80   # top 20 %
 MEDIUM_PERCENTILE = 50 # top 50 %
 
 
-def load_calibrated_threshold() -> dict:
+def load_calibrated_threshold(feedback_dir: Path) -> dict:
     """Load calibrated threshold if available."""
-    path = FEEDBACK_DIR / "calibrated_threshold.json"
+    path = feedback_dir / "calibrated_threshold.json"
     if not path.exists():
         return {}
     try:
@@ -130,9 +130,16 @@ def main():
         "--force_percentile", action="store_true",
         help="Force percentile-based thresholds even if calibrated threshold exists",
     )
+    parser.add_argument(
+        "--feedback_dir",
+        type=str,
+        default=None,
+        help="Feedback store directory (default: PROJECT_ROOT/feedback_store)",
+    )
     args = parser.parse_args()
 
     output_dir = Path(args.output_dir)
+    feedback_dir = Path(args.feedback_dir) if args.feedback_dir else DEFAULT_FEEDBACK_DIR
     input_path = output_dir / args.input
     output_path = output_dir / args.output
 
@@ -155,7 +162,7 @@ def main():
 
     df["composite_score"] = compute_composite(df)
 
-    cal = load_calibrated_threshold()
+    cal = load_calibrated_threshold(feedback_dir)
     if cal and "confidence_threshold" in cal and not args.force_percentile:
         cal_thresh = float(cal["confidence_threshold"])
         print(f"[INFO] Using calibrated threshold: {cal_thresh:.4f} "

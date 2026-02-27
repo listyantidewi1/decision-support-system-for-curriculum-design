@@ -1,0 +1,354 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Department Review</h2>
+<p class="hint">Reviewer: {{ reviewer_id }} — Multiple reviewers per department can contribute; feedback is stored per reviewer. <a href="/dashboard/school/methodology">How it works</a></p>
+
+<section class="card">
+  <form method="get" action="/dashboard/school/review">
+    <label>Department</label>
+    <select name="department_id">
+      {% for d in departments %}
+        <option value="{{ d.id }}" {% if d.id == selected_department_id %}selected{% endif %}>
+          {{ d.name }} ({{ d.vocational_field }})
+        </option>
+      {% endfor %}
+    </select>
+    <label>
+      <input type="checkbox" id="show-unreviewed-only" />
+      Show only non-reviewed items (for me)
+    </label>
+    <button type="submit">Load Department</button>
+  </form>
+  {% if load_more_available %}
+  <form method="post" action="/dashboard/school/review/load_more" style="margin-top: 1rem; display: inline-block;">
+    <input type="hidden" name="department_id" value="{{ selected_department_id }}" />
+    <button type="submit">Load more samples</button>
+  </form>
+  <p class="hint">Adds more skills, knowledge, and competencies to review (excludes already-reviewed items). Refresh the page after loading.</p>
+  {% endif %}
+</section>
+
+<nav class="review-tabs">
+  <button type="button" class="tab active" data-tab="skills">Skills</button>
+  <button type="button" class="tab" data-tab="knowledge">Knowledge</button>
+  <button type="button" class="tab" data-tab="competencies">Competencies</button>
+</nav>
+
+<section id="skills-panel" class="card review-panel active">
+  <h3>Skill Review (sampled) <span class="hint" id="skills-progress"></span></h3>
+  {% if skills %}
+    {% for row in skills %}
+      <form method="post" action="/dashboard/school/review/save_skill" class="comp-card review-item skill-item" data-kind="skill">
+        <input type="hidden" name="department_id" value="{{ selected_department_id }}" />
+        <input type="hidden" name="review_id" value="{{ row.get('review_id', '') }}" />
+        <h4>{{ row.get("skill", "-") }} <span class="hint">#{{ row.get("review_id", "") }}</span></h4>
+        <p class="hint">
+          Current model type: <strong>{{ row.get("type", "-") }}</strong> |
+          Current model bloom: <strong>{{ row.get("bloom", "-") }}</strong> |
+          Confidence: <strong>{{ row.get("confidence_score", "-") }}</strong>
+          {% if explanations and explanations.confidence_score %}
+          <span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.confidence_score.what }}</span></span>
+          {% endif %}
+        </p>
+        <p class="hint">
+          Tier: {{ row.get("confidence_tier", "-") }} |
+          Verification level: {{ row.get("verification_level", "-") }}
+          {% if explanations and explanations.verification_level %}
+          <span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.verification_level.what }}</span></span>
+          {% endif %}
+          | Auto-verified: {{ row.get("is_verified", "-") }} |
+          Source: {{ row.get("source", "-") }}
+          {% if explanations and explanations.source %}
+          <span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.source.what }}</span></span>
+          {% endif %}
+          | Job: {{ row.get("job_id", "-") }}
+        </p>
+        {% if row.get("context") %}
+          <p>{{ row.get("context", "") }}</p>
+        {% endif %}
+        <label>Validity {% if explanations and explanations.human_valid %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_valid.what }}</span></span>{% endif %}</label>
+        <select name="human_valid">
+          <option value="" {% if not row.get("human_valid") %}selected{% endif %}>-</option>
+          <option value="valid" {% if row.get("human_valid") == "valid" %}selected{% endif %}>valid</option>
+          <option value="invalid" {% if row.get("human_valid") == "invalid" %}selected{% endif %}>invalid</option>
+        </select>
+        <label>Type {% if explanations and explanations.human_type %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_type.what }}</span></span>{% endif %}</label>
+        <select name="human_type">
+          <option value="" {% if not row.get("human_type") %}selected{% endif %}>-</option>
+          <option value="Hard" {% if row.get("human_type") == "Hard" %}selected{% endif %}>Hard</option>
+          <option value="Soft" {% if row.get("human_type") == "Soft" %}selected{% endif %}>Soft</option>
+          <option value="Both" {% if row.get("human_type") == "Both" %}selected{% endif %}>Both</option>
+        </select>
+        <label>Bloom {% if explanations and explanations.human_bloom %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_bloom.what }}</span></span>{% endif %}</label>
+        <select name="human_bloom">
+          <option value="" {% if not row.get("human_bloom") %}selected{% endif %}>-</option>
+          <option value="Remember" {% if row.get("human_bloom") == "Remember" %}selected{% endif %}>Remember</option>
+          <option value="Understand" {% if row.get("human_bloom") == "Understand" %}selected{% endif %}>Understand</option>
+          <option value="Apply" {% if row.get("human_bloom") == "Apply" %}selected{% endif %}>Apply</option>
+          <option value="Analyze" {% if row.get("human_bloom") == "Analyze" %}selected{% endif %}>Analyze</option>
+          <option value="Evaluate" {% if row.get("human_bloom") == "Evaluate" %}selected{% endif %}>Evaluate</option>
+          <option value="Create" {% if row.get("human_bloom") == "Create" %}selected{% endif %}>Create</option>
+          <option value="N/A" {% if row.get("human_bloom") == "N/A" %}selected{% endif %}>N/A</option>
+        </select>
+        <label>Notes</label>
+        <textarea name="human_notes" rows="2">{{ row.get("human_notes", "") }}</textarea>
+        <button type="button" class="save-now">Save Skill Review</button>
+        <span class="hint" style="margin-left: 8px;">Changes auto-save. Click to save immediately.</span>
+      </form>
+    {% endfor %}
+  {% else %}
+    <p>No skill review template found.</p>
+  {% endif %}
+</section>
+
+<section id="knowledge-panel" class="card review-panel">
+  <h3>Knowledge Review (sampled) <span class="hint" id="knowledge-progress"></span></h3>
+  {% if knowledge %}
+    {% for row in knowledge %}
+      <form method="post" action="/dashboard/school/review/save_knowledge" class="comp-card review-item knowledge-item" data-kind="knowledge">
+        <input type="hidden" name="department_id" value="{{ selected_department_id }}" />
+        <input type="hidden" name="review_id" value="{{ row.get('review_id', '') }}" />
+        <h4>{{ row.get("knowledge", "-") }} <span class="hint">#{{ row.get("review_id", "") }}</span></h4>
+        <p class="hint">
+          Frequency: <strong>{{ row.get("freq", "-") }}</strong> |
+          Mean confidence: <strong>{{ row.get("mean_confidence", "-") }}</strong> |
+          Future weight: <strong>{{ row.get("future_weight", "-") }}</strong>
+          {% if explanations and explanations.future_weight %}
+          <span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.future_weight.what }}</span></span>
+          {% endif %}
+        </p>
+        <p class="hint">
+          Domain: {{ row.get("best_future_domain", "-") }} |
+          Trend: {{ row.get("trend_label", "-") }}
+          {% if explanations and explanations.trend_label %}
+          <span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.trend_label.what }}</span></span>
+          {% endif %}
+          ({{ row.get("trend_score", "-") }}) |
+          Similarity: {{ row.get("similarity", "-") }}
+        </p>
+        <label>Validity {% if explanations and explanations.human_valid %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_valid.what }}</span></span>{% endif %}</label>
+        <select name="human_valid">
+          <option value="" {% if not row.get("human_valid") %}selected{% endif %}>-</option>
+          <option value="valid" {% if row.get("human_valid") == "valid" %}selected{% endif %}>valid</option>
+          <option value="invalid" {% if row.get("human_valid") == "invalid" %}selected{% endif %}>invalid</option>
+        </select>
+        <label>Notes</label>
+        <textarea name="human_notes" rows="2">{{ row.get("human_notes", "") }}</textarea>
+        <button type="button" class="save-now">Save Knowledge Review</button>
+        <span class="hint" style="margin-left: 8px;">Changes auto-save. Click to save immediately.</span>
+      </form>
+    {% endfor %}
+  {% else %}
+    <p>No knowledge review template found.</p>
+  {% endif %}
+</section>
+
+<section id="competencies-panel" class="card review-panel">
+  <h3>Competency Review (sampled) <span class="hint" id="competencies-progress"></span></h3>
+  {% if competencies %}
+    {% for row in competencies %}
+      <form method="post" action="/dashboard/school/review/save_competency" class="comp-card review-item competency-item" data-kind="competency">
+        <input type="hidden" name="department_id" value="{{ selected_department_id }}" />
+        <input type="hidden" name="competency_id" value="{{ row.get('competency_id', '') }}" />
+        <h4>{{ row.get("title", row.get("competency_id", "-")) }}</h4>
+        <p>{{ row.get("description", "") }}</p>
+        <p class="hint">
+          Competency ID: {{ row.get("competency_id", "-") }} |
+          Batch: {{ row.get("batch_id", "-") }} |
+          All skills human verified: {{ row.get("all_skills_human_verified", "-") }}
+        </p>
+        <p class="hint">Future relevance: {{ row.get("future_relevance", "-") }}</p>
+        <p class="hint">Related skills:</p>
+        <p class="mono">{{ row.get("related_skills", "-") }}</p>
+        <label>Quality {% if explanations and explanations.human_quality %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_quality.what }}</span></span>{% endif %}</label>
+        <select name="human_quality">
+          <option value="" {% if not row.get("human_quality") %}selected{% endif %}>-</option>
+          <option value="1" {% if row.get("human_quality") in ("1", "poor") %}selected{% endif %}>1 – poor</option>
+          <option value="2" {% if row.get("human_quality") in ("2", "fair") %}selected{% endif %}>2 – fair</option>
+          <option value="3" {% if row.get("human_quality") in ("3", "good") %}selected{% endif %}>3 – good</option>
+          <option value="4" {% if row.get("human_quality") == "4" %}selected{% endif %}>4 – very good</option>
+          <option value="5" {% if row.get("human_quality") in ("5", "excellent") %}selected{% endif %}>5 – excellent</option>
+        </select>
+        <label>Relevance {% if explanations and explanations.human_relevant %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_relevant.what }}</span></span>{% endif %}</label>
+        <select name="human_relevant">
+          <option value="" {% if not row.get("human_relevant") %}selected{% endif %}>-</option>
+          <option value="yes" {% if row.get("human_relevant") == "yes" %}selected{% endif %}>yes</option>
+          <option value="partial" {% if row.get("human_relevant") == "partial" %}selected{% endif %}>partial</option>
+          <option value="no" {% if row.get("human_relevant") == "no" %}selected{% endif %}>no</option>
+        </select>
+        <label>Notes</label>
+        <textarea name="human_notes" rows="2">{{ row.get("human_notes", "") }}</textarea>
+        <button type="button" class="save-now">Save Competency Review</button>
+        <span class="hint" style="margin-left: 8px;">Changes auto-save. Click to save immediately.</span>
+      </form>
+    {% endfor %}
+  {% else %}
+    <p>No competency review template found.</p>
+  {% endif %}
+</section>
+
+<p class="review-footer-note">
+  <strong>Multi-reviewer &amp; crowd-sourced</strong>
+  Each reviewer’s feedback is stored separately (per reviewer_id). Schools with the same vocational field can aggregate results on the Results page to benefit from crowd-sourced data across departments.
+</p>
+<p class="hint" style="margin-top: 8px;">
+  <strong>How feedback is used:</strong> When multiple reviewers assess the same item, majority vote merges feedback. Your feedback is applied in Phase 2 (Run Phase 2 after review) to correct Bloom/type, calibrate thresholds, and re-generate competencies.
+</p>
+<p class="hint" style="margin-top: 4px;">
+  <strong>Limitations:</strong> Skills, knowledge, and competencies are stratified samples; not all items are reviewed. Unverified items may still appear in final results.
+</p>
+
+<script>
+(() => {
+  const saveTimers = {};
+  const unreviewedToggle = document.getElementById("show-unreviewed-only");
+
+  document.querySelectorAll(".review-tabs .tab").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll(".review-tabs .tab").forEach((t) => t.classList.remove("active"));
+      document.querySelectorAll(".review-panel").forEach((p) => p.classList.remove("active"));
+      btn.classList.add("active");
+      const panel = document.getElementById(tab + "-panel");
+      if (panel) panel.classList.add("active");
+    });
+  });
+
+  function isReviewed(card) {
+    const kind = card.dataset.kind;
+    if (kind === "skill") {
+      return !!(
+        card.querySelector('[name="human_valid"]').value ||
+        card.querySelector('[name="human_type"]').value ||
+        card.querySelector('[name="human_bloom"]').value ||
+        card.querySelector('[name="human_notes"]').value.trim()
+      );
+    }
+    if (kind === "knowledge") {
+      return !!(
+        card.querySelector('[name="human_valid"]').value ||
+        card.querySelector('[name="human_notes"]').value.trim()
+      );
+    }
+    return !!(
+      card.querySelector('[name="human_quality"]').value ||
+      card.querySelector('[name="human_relevant"]').value ||
+      card.querySelector('[name="human_notes"]').value.trim()
+    );
+  }
+
+  function payloadFor(card) {
+    const data = { department_id: Number(card.querySelector('[name="department_id"]').value) };
+    const kind = card.dataset.kind;
+    if (kind === "skill") {
+      data.review_id = card.querySelector('[name="review_id"]').value;
+      data.human_valid = card.querySelector('[name="human_valid"]').value;
+      data.human_type = card.querySelector('[name="human_type"]').value;
+      data.human_bloom = card.querySelector('[name="human_bloom"]').value;
+      data.human_notes = card.querySelector('[name="human_notes"]').value;
+      data.url = "/dashboard/school/review/api/save_skill";
+    } else if (kind === "knowledge") {
+      data.review_id = card.querySelector('[name="review_id"]').value;
+      data.human_valid = card.querySelector('[name="human_valid"]').value;
+      data.human_notes = card.querySelector('[name="human_notes"]').value;
+      data.url = "/dashboard/school/review/api/save_knowledge";
+    } else {
+      data.competency_id = card.querySelector('[name="competency_id"]').value;
+      data.human_quality = card.querySelector('[name="human_quality"]').value;
+      data.human_relevant = card.querySelector('[name="human_relevant"]').value;
+      data.human_notes = card.querySelector('[name="human_notes"]').value;
+      data.url = "/dashboard/school/review/api/save_competency";
+    }
+    return data;
+  }
+
+  function setSavedState(card, state) {
+    let dot = card.querySelector(".save-dot");
+    if (!dot) {
+      dot = document.createElement("span");
+      dot.className = "save-dot";
+      card.prepend(dot);
+    }
+    dot.textContent = state === "ok" ? "Saved" : "Error";
+    dot.style.color = state === "ok" ? "#15803d" : "#b91c1c";
+    setTimeout(() => {
+      if (dot.textContent === "Saved" || dot.textContent === "Error") {
+        dot.textContent = "";
+      }
+    }, 1500);
+  }
+
+  async function saveCard(card) {
+    const data = payloadFor(card);
+    const url = data.url;
+    delete data.url;
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("save failed");
+      card.classList.toggle("reviewed", isReviewed(card));
+      applyFilter();
+      updateProgress();
+      setSavedState(card, "ok");
+    } catch (_e) {
+      setSavedState(card, "error");
+    }
+  }
+
+  function debounceSave(card, key) {
+    if (saveTimers[key]) clearTimeout(saveTimers[key]);
+    saveTimers[key] = setTimeout(() => saveCard(card), 650);
+  }
+
+  function applyFilter() {
+    const onlyUnreviewed = !!unreviewedToggle.checked;
+    document.querySelectorAll(".review-item").forEach((card) => {
+      const reviewed = isReviewed(card);
+      card.classList.toggle("reviewed", reviewed);
+      const hide = onlyUnreviewed && reviewed;
+      card.classList.toggle("hidden", hide);
+    });
+  }
+
+  function updateProgress() {
+    const sets = [
+      ["skill-item", "skills-progress"],
+      ["knowledge-item", "knowledge-progress"],
+      ["competency-item", "competencies-progress"],
+    ];
+    sets.forEach(([cls, outId]) => {
+      const items = Array.from(document.querySelectorAll("." + cls));
+      const reviewed = items.filter((x) => isReviewed(x)).length;
+      const pct = items.length ? Math.round((reviewed / items.length) * 100) : 0;
+      const out = document.getElementById(outId);
+      if (out) out.textContent = `${reviewed}/${items.length} reviewed (${pct}%)`;
+    });
+  }
+
+  document.querySelectorAll(".review-item").forEach((card) => {
+    const keyId = card.querySelector('[name="review_id"], [name="competency_id"]')?.value || Math.random().toString();
+    card.querySelectorAll("select, textarea").forEach((el) => {
+      el.addEventListener("change", () => {
+        card.classList.toggle("reviewed", isReviewed(card));
+        applyFilter();
+        updateProgress();
+        debounceSave(card, keyId);
+      });
+      el.addEventListener("input", () => {
+        card.classList.toggle("reviewed", isReviewed(card));
+        updateProgress();
+        debounceSave(card, keyId);
+      });
+    });
+    card.querySelector(".save-now")?.addEventListener("click", () => saveCard(card));
+  });
+
+  unreviewedToggle?.addEventListener("change", applyFilter);
+  applyFilter();
+  updateProgress();
+})();
+</script>
+{% endblock %}

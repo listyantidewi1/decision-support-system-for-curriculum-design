@@ -4,6 +4,8 @@ This document defines the research questions, success metrics, and evaluation
 protocol for the Future-Aware Hybrid Skill Extraction pipeline as a
 **curriculum recommendation system** for vocational high schools.
 
+**Related**: [CALCULATIONS.md](CALCULATIONS.md) — formulas for priority scores, voting, ranking, FDR, P@N, NDCG.
+
 ---
 
 ## Research Questions
@@ -66,7 +68,7 @@ Evaluation: compare against `DATA/labels/gold_future_domain.csv`.
 | Ablation delta | change in P@20 when removing each signal | report |
 
 Evaluation: expert labels top-N=20 recommendations; ablation removes one
-signal at a time (demand, trend, future_weight, coverage_gap).
+signal at a time (demand, trend, future_weight). Coverage is optional (`with_coverage` variant); by default it is not used for prioritization.
 
 ---
 
@@ -104,10 +106,10 @@ Each item is labeled with:
 ### Recommendation ablation
 | Variant | Signals Used |
 |---------|-------------|
-| Full | demand + trend + future_weight + coverage_gap |
-| No trend | demand + future_weight + coverage_gap |
-| No future | demand + trend + coverage_gap |
-| No coverage | demand + trend + future_weight |
+| Full | demand + trend + future_weight (default; coverage for insights only) |
+| No trend | demand + future_weight |
+| No future | demand + trend |
+| With coverage | demand + trend + future_weight + coverage_gap (optional) |
 | Demand only | demand only |
 
 ### Stability

@@ -466,6 +466,12 @@ def main():
         help="Use all skills (with Bloom/type corrections) from advanced_skills_human_filtered.csv. "
              "Tags each competency with all_skills_human_verified. Some competencies may be from unverified skills.",
     )
+    parser.add_argument(
+        "--feedback_dir",
+        type=str,
+        default=None,
+        help="Feedback store directory (default: PROJECT_ROOT/feedback_store)",
+    )
 
     args = parser.parse_args()
     if args.human_verified_only and args.comprehensive:
@@ -473,7 +479,7 @@ def main():
 
     out_dir = Path(args.output_dir)
     output_path = out_dir / args.output_json
-    feedback_dir = Path(config.PROJECT_ROOT) / "feedback_store"
+    feedback_dir = Path(args.feedback_dir) if args.feedback_dir else Path(config.PROJECT_ROOT) / "feedback_store"
 
     # Build future-of-work context from future_skill_weights_dummy.csv (if available)
     future_context = build_future_context(out_dir)

@@ -1,0 +1,58 @@
+{% extends "base.html" %} {% block content %}
+<h2>All Runs</h2>
+<section class="card">
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>School</th>
+      <th>Department</th>
+      <th>Status</th>
+      <th>Created</th>
+      <th>Completed</th>
+      <th>Message</th>
+    </tr>
+    {% for r in runs %}
+    <tr>
+      <td>{{ r.id }}</td>
+      <td>{{ r.school_name }}</td>
+      <td>{{ r.department_name }}</td>
+      <td>{{ r.status }}</td>
+      <td>{{ r.created_at }}</td>
+      <td>{{ r.completed_at or "-" }}</td>
+      <td class="mono">{{ r.message or "-" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section class="card">
+  <h3>Inter-rater Reliability</h3>
+  {% if irr_rows %}
+  <table>
+    <tr>
+      <th>School</th>
+      <th>Department</th>
+      <th>Source</th>
+      <th>Shared items</th>
+      <th>Cohen kappa</th>
+      <th>Agreement %</th>
+    </tr>
+    {% for r in irr_rows %}
+    <tr>
+      <td>{{ r.school_name }}</td>
+      <td>{{ r.department_name }}</td>
+      <td>{{ r.source }}</td>
+      <td>{{ r.shared_items }}</td>
+      <td>{{ r.cohens_kappa }}</td>
+      <td>{{ r.pct_agreement }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="hint">
+    No inter-rater report found yet (requires overlapping multi-reviewer
+    assessments).
+  </p>
+  {% endif %}
+</section>
+{% endblock %}

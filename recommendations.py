@@ -4,7 +4,7 @@ recommendations.py
 Generates ranked curriculum recommendations with evidence traces.
 
 Each recommendation is a skill/knowledge gap with:
-    - priority_score (composite of demand, trend, future_weight, coverage_gap)
+    - priority_score (composite of demand, trend, future_weight; coverage is for insights only)
     - evidence trace (supporting job_ids, trend stats, domain info)
     - curriculum gap status
 
@@ -117,12 +117,12 @@ def compute_priority_scores(
     coverage: pd.DataFrame,
     use_trend: bool = True,
     use_future: bool = True,
-    use_coverage: bool = True,
+    use_coverage: bool = False,
     use_validity: bool = True,
-    w_demand: float = 0.30,
-    w_trend: float = 0.25,
-    w_future: float = 0.25,
-    w_coverage: float = 0.20,
+    w_demand: float = 0.40,
+    w_trend: float = 0.30,
+    w_future: float = 0.30,
+    w_coverage: float = 0.0,
 ) -> pd.DataFrame:
     """Compute priority score per skill. Signals can be ablated."""
     if demand.empty:
@@ -270,10 +270,10 @@ def evaluate_recommendations(recs: pd.DataFrame, top_n: int = 20) -> dict:
 def run_ablation(demand, trends, future_weights, coverage, top_n: int = 20) -> dict:
     """Run ablation study: remove one signal at a time."""
     variants = {
-        "full": {"use_trend": True, "use_future": True, "use_coverage": True},
-        "no_trend": {"use_trend": False, "use_future": True, "use_coverage": True},
-        "no_future": {"use_trend": True, "use_future": False, "use_coverage": True},
-        "no_coverage": {"use_trend": True, "use_future": True, "use_coverage": False},
+        "full": {"use_trend": True, "use_future": True, "use_coverage": False},
+        "no_trend": {"use_trend": False, "use_future": True, "use_coverage": False},
+        "no_future": {"use_trend": True, "use_future": False, "use_coverage": False},
+        "with_coverage": {"use_trend": True, "use_future": True, "use_coverage": True},
         "demand_only": {"use_trend": False, "use_future": False, "use_coverage": False},
     }
 

@@ -13,9 +13,9 @@ Metrics:
     - Calibrated threshold exported for verify_skills.py
 
 Inputs:
-    - feedback_store/human_verified_skills.csv
-    - config.OUTPUT_DIR/expert_review_skills.csv (with human_valid column)
     - DATA/labels/gold_skills.csv (optional, preferred if available)
+    - config.OUTPUT_DIR/expert_review_skills.csv (scores, review_id)
+    - feedback_store/skill_feedback.csv (human_valid merged by review_id)
 
 Outputs:
     - parameter_validation_report.json
@@ -24,6 +24,7 @@ Outputs:
 
 import argparse
 import json
+from collections import Counter
 from pathlib import Path
 
 import numpy as np
@@ -31,12 +32,21 @@ import pandas as pd
 
 import config
 
-FEEDBACK_DIR = Path(config.PROJECT_ROOT) / "feedback_store"
+DEFAULT_FEEDBACK_DIR = Path(config.PROJECT_ROOT) / "feedback_store"
 LABELS_DIR = Path(config.PROJECT_ROOT) / "DATA" / "labels"
 
 
-def load_reviewed_skills(output_dir: Path) -> pd.DataFrame:
-    """Load labeled skills: prefer gold set, then expert_review_skills.csv."""
+def _majority_vote(votes: list) -> str:
+    """Return majority vote for human_valid, or first non-empty if tie."""
+    votes = [str(v).strip().lower() for v in votes if v and str(v).strip() and str(v).strip().lower() in ("valid", "invalid")]
+    if not votes:
+        return ""
+    c = Counter(votes)
+    return c.most_common(1)[0][0]
+
+
+def load_reviewed_skills(output_dir: Path, feedback_dir: Path) -> pd.DataFrame:
+    """Load labeled skills: prefer gold set, then expert_review_skills merged with skill_feedback."""
     gold_path = LABELS_DIR / "gold_skills.csv"
     if gold_path.exists():
         df = pd.read_csv(gold_path)
@@ -51,14 +61,44 @@ def load_reviewed_skills(output_dir: Path) -> pd.DataFrame:
                     print(f"[INFO] Using gold set ({len(df)} items)")
                     return df
 
-    path = output_dir / "expert_review_skills.csv"
-    if not path.exists():
+    # Load expert_review_skills.csv (has scores) and merge with skill_feedback.csv (has human_valid)
+    tpl_path = output_dir / "expert_review_skills.csv"
+    fb_path = feedback_dir / "skill_feedback.csv"
+    if not tpl_path.exists():
         return pd.DataFrame()
-    df = pd.read_csv(path)
-    if "human_valid" not in df.columns or "confidence_score" not in df.columns:
+
+    df = pd.read_csv(tpl_path)
+    if "review_id" not in df.columns or "confidence_score" not in df.columns:
+        return pd.DataFrame()
+
+    # Merge with feedback_store/skill_feedback.csv to get human_valid
+    if fb_path.exists():
+        fb = pd.read_csv(fb_path)
+        if not fb.empty and "review_id" in fb.columns and "human_valid" in fb.columns:
+            # Aggregate by review_id: majority vote for human_valid
+            hv_agg = fb.groupby("review_id")["human_valid"].apply(
+                lambda x: _majority_vote(x.dropna().astype(str).tolist())
+            ).reset_index()
+            hv_agg.columns = ["review_id", "human_valid"]
+            df = df.merge(hv_agg, on="review_id", how="inner", suffixes=("", "_fb"))
+            if "human_valid_fb" in df.columns:
+                df["human_valid"] = df["human_valid_fb"].fillna(df.get("human_valid", ""))
+                df = df.drop(columns=["human_valid_fb"], errors="ignore")
+        else:
+            # Fallback: use human_valid from template if present (legacy)
+            if "human_valid" not in df.columns:
+                return pd.DataFrame()
+    else:
+        # Legacy: human_valid in expert_review_skills.csv
+        if "human_valid" not in df.columns:
+            return pd.DataFrame()
+
+    if "human_valid" not in df.columns or df.empty:
         return pd.DataFrame()
     df["human_valid"] = df["human_valid"].astype(str).str.strip().str.lower()
     df = df[df["human_valid"].isin(["valid", "invalid"])].copy()
+    if df.empty:
+        return df
     df["is_valid"] = (df["human_valid"] == "valid").astype(int)
     df["confidence_score"] = pd.to_numeric(df["confidence_score"], errors="coerce")
     df = df.dropna(subset=["confidence_score"])
@@ -244,10 +284,18 @@ def main():
     parser.add_argument(
         "--output", type=str, default="parameter_validation_report.json",
     )
+    parser.add_argument(
+        "--feedback_dir",
+        type=str,
+        default=None,
+        help="Feedback store directory (default: PROJECT_ROOT/feedback_store)",
+    )
     args = parser.parse_args()
 
     out_dir = Path(args.output_dir)
-    df = load_reviewed_skills(out_dir)
+    feedback_dir = Path(args.feedback_dir) if args.feedback_dir else DEFAULT_FEEDBACK_DIR
+    feedback_dir.mkdir(parents=True, exist_ok=True)
+    df = load_reviewed_skills(out_dir, feedback_dir)
 
     if df.empty:
         print("[WARN] No reviewed skills with human_valid found. "
@@ -297,8 +345,7 @@ def main():
                 "brier_score": conf_result["brier_score"],
                 "confusion_at_threshold": conf_result.get("confusion_at_optimal", {}),
             }
-            cal_path = FEEDBACK_DIR / "calibrated_threshold.json"
-            FEEDBACK_DIR.mkdir(parents=True, exist_ok=True)
+            cal_path = feedback_dir / "calibrated_threshold.json"
             cal_path.write_text(json.dumps(cal_threshold, indent=2), encoding="utf-8")
             print(f"[INFO] Exported calibrated threshold to {cal_path}")
 
