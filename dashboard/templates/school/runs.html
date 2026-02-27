@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Department Runs</h2>
+{% if banner %}<p class="banner">{{ banner }}</p>{% endif %}
+
+<section class="card">
+  <form method="get" action="/dashboard/school/runs">
+    <label>Department</label>
+    <select name="department_id" onchange="this.form.submit()">
+      {% for d in departments %}
+        <option value="{{ d.id }}" {% if d.id == selected_department_id %}selected{% endif %}>
+          {{ d.name }} ({{ d.vocational_field }})
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+</section>
+
+{% if selected_department_id %}
+<section class="card">
+  <h3>Phase 1: Extract & Export for Review</h3>
+  <form method="post" action="/dashboard/school/runs/start">
+    <input type="hidden" name="department_id" value="{{ selected_department_id }}" />
+    <label>Sample size</label>
+    <input type="number" name="sample_size" value="1000" min="10" />
+    <button type="submit">Run Phase 1</button>
+  </form>
+  <p class="hint">If no uploads exist, dashboard falls back to default demo results.</p>
+</section>
+
+{% if phase2_available %}
+<section class="card">
+  <h3>Phase 2: Apply Feedback & Final Results</h3>
+  <p class="hint">Run after reviewing skills/knowledge/competencies. Regenerates competencies, recommendations, and plots.</p>
+  <form method="post" action="/dashboard/school/runs/start_phase2">
+    <input type="hidden" name="department_id" value="{{ selected_department_id }}" />
+    <button type="submit">Run Phase 2</button>
+  </form>
+</section>
+{% endif %}
+{% endif %}
+
+<section class="card">
+  <table>
+    <tr><th>ID</th><th>Phase</th><th>Status</th><th>Created</th><th>Completed</th><th>Message</th></tr>
+    {% for r in runs %}
+      <tr>
+        <td>{{ r.id }}</td>
+        <td>{{ r.phase or "phase1" }}</td>
+        <td>{{ r.status }}</td>
+        <td>{{ r.created_at }}</td>
+        <td>{{ r.completed_at or "-" }}</td>
+        <td class="mono">{{ r.message or "-" }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}

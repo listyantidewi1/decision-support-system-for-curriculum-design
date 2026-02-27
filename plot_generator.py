@@ -868,6 +868,94 @@ def plot_coverage_distributions(coverage_report: pd.DataFrame,
             plt.close()
 
 
+def plot_top_future_weight_items(output_dir: Path, fig_dir: Path, top_n: int = 20):
+    """Plot top skills and knowledge by future_weight (insight: future-critical items)."""
+    # Skills
+    fw_skills = output_dir / "future_skill_weights.csv"
+    if fw_skills.exists():
+        df = pd.read_csv(fw_skills)
+        if not df.empty and "skill" in df.columns and "future_weight" in df.columns:
+            top = df.nlargest(top_n, "future_weight")
+            plt.figure(figsize=(10, max(5, len(top) * 0.35)))
+            plt.barh(top["skill"], top["future_weight"])
+            plt.xlabel("future_weight")
+            plt.ylabel("Skill")
+            plt.title("Top Skills by Future Relevance (Insight)")
+            plt.gca().invert_yaxis()
+            plt.tight_layout()
+            plt.savefig(fig_dir / "top_future_weight_skills.png", dpi=300)
+            plt.close()
+            print("[INFO] Saved top_future_weight_skills.png")
+
+    # Knowledge
+    fw_knowledge = output_dir / "future_skill_weights_dummy.csv"
+    if fw_knowledge.exists():
+        df = pd.read_csv(fw_knowledge)
+        if not df.empty and "knowledge" in df.columns and "future_weight" in df.columns:
+            top = df.nlargest(top_n, "future_weight")
+            plt.figure(figsize=(10, max(5, len(top) * 0.35)))
+            plt.barh(top["knowledge"], top["future_weight"])
+            plt.xlabel("future_weight")
+            plt.ylabel("Knowledge")
+            plt.title("Top Knowledge by Future Relevance (Insight)")
+            plt.gca().invert_yaxis()
+            plt.tight_layout()
+            plt.savefig(fig_dir / "top_future_weight_knowledge.png", dpi=300)
+            plt.close()
+            print("[INFO] Saved top_future_weight_knowledge.png")
+
+
+def plot_emerging_skills_coverage(
+    output_dir: Path,
+    mapping_df: pd.DataFrame,
+    fig_dir: Path,
+    top_n: int = 20,
+):
+    """Plot emerging skills: covered vs not covered by curriculum (insight only)."""
+    trends_path = output_dir / "skill_time_trends.csv"
+    if not trends_path.exists():
+        return
+    trends = pd.read_csv(trends_path)
+    if "skill" not in trends.columns or "trend_label" not in trends.columns:
+        return
+    emerging = trends[trends["trend_label"] == "Emerging"]["skill"].str.strip().tolist()
+    if not emerging:
+        return
+    emerging = emerging[:top_n]
+
+    if mapping_df is None or mapping_df.empty or "component_id" not in mapping_df.columns:
+        return
+    skill_mapped = set()
+    for _, row in mapping_df.iterrows():
+        if row.get("item_type") == "skill" and pd.notna(row.get("component_id")):
+            skill_mapped.add(str(row.get("text", "")).strip().lower())
+
+    covered = [s for s in emerging if s.lower() in skill_mapped]
+    not_covered = [s for s in emerging if s.lower() not in skill_mapped]
+    if not covered and not not_covered:
+        return
+
+    # Simple horizontal bar: green = covered, orange = not covered
+    labels = covered + not_covered
+    colors = ["green"] * len(covered) + ["orange"] * len(not_covered)
+    plt.figure(figsize=(10, max(5, len(labels) * 0.4)))
+    y_pos = list(range(len(labels)))
+    plt.barh(y_pos, [1] * len(labels), color=colors, alpha=0.7)
+    plt.yticks(y_pos, [s[:45] + ("..." if len(s) > 45 else "") for s in labels], fontsize=9)
+    plt.xlabel("Coverage status")
+    plt.title("Emerging Skills: Curriculum Coverage (Insight Only)")
+    from matplotlib.patches import Patch
+    plt.legend(
+        handles=[
+            Patch(facecolor="green", alpha=0.7, label="Covered by curriculum"),
+            Patch(facecolor="orange", alpha=0.7, label="Not covered"),
+        ],
+    )
+    plt.tight_layout()
+    plt.savefig(fig_dir / "emerging_skills_coverage.png", dpi=300)
+    plt.close()
+    print("[INFO] Saved emerging_skills_coverage.png")
+
 
 # -------------------------------------------------------------------
 # Text report
@@ -1042,6 +1130,12 @@ def main():
     # Confidence & coverage distributions
     plot_confidence_distributions(adv_skills, adv_knowledge, model_comp, fig_dir)
     plot_coverage_distributions(coverage_report, model_comp, fig_dir)
+
+    # Top future-weighted skills & knowledge (insight)
+    plot_top_future_weight_items(output_dir, fig_dir, top_n=20)
+
+    # Emerging skills coverage (insight: how much curriculum covers emerging skills)
+    plot_emerging_skills_coverage(output_dir, mapping_df, fig_dir, top_n=20)
 
     # Text report
     write_text_report(

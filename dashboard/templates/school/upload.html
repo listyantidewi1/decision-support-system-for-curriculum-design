@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Department Uploads</h2>
+
+<section class="card">
+  <form method="get" action="/dashboard/school/upload">
+    <label>Department</label>
+    <select name="department_id" onchange="this.form.submit()">
+      {% for d in departments %}
+        <option value="{{ d.id }}" {% if d.id == selected_department_id %}selected{% endif %}>
+          {{ d.name }} ({{ d.vocational_field }})
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+</section>
+
+<section class="grid2">
+  <div class="card">
+    <h3>Upload Raw Jobs CSV</h3>
+    <form method="post" action="/dashboard/school/upload/jobs" enctype="multipart/form-data">
+      <input type="hidden" name="department_id" value="{{ selected_department_id }}" />
+      <input type="file" name="file" accept=".csv" required />
+      <button type="submit">Upload jobs CSV</button>
+    </form>
+    <p class="hint">Required columns: <code>description</code>; optional: <code>id</code>, <code>date_posted</code>. Sample: <code>DATA/samples/jobs_sample.csv</code></p>
+  </div>
+  <div class="card">
+    <h3>Upload Curriculum CSV/JSON</h3>
+    <form method="post" action="/dashboard/school/upload/curriculum" enctype="multipart/form-data">
+      <input type="hidden" name="department_id" value="{{ selected_department_id }}" />
+      <input type="file" name="file" accept=".csv,.json" required />
+      <button type="submit">Upload curriculum</button>
+    </form>
+    <p class="hint">Schema: component_id, component_name, bloom_level, phrases. Sample: <code>DATA/samples/curriculum_sample.csv</code></p>
+  </div>
+</section>
+{% endblock %}

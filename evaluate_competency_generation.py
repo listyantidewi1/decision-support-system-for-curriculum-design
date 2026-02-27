@@ -27,7 +27,7 @@ from pathlib import Path
 
 import config
 
-FEEDBACK_DIR = Path(config.PROJECT_ROOT) / "feedback_store"
+DEFAULT_FEEDBACK_DIR = Path(config.PROJECT_ROOT) / "feedback_store"
 
 QUALITY_MAP = {
     "1": 1, "2": 2, "3": 3, "4": 4, "5": 5,
@@ -35,8 +35,8 @@ QUALITY_MAP = {
 }
 
 
-def load_assessments() -> dict:
-    path = FEEDBACK_DIR / "competency_assessments.json"
+def load_assessments(feedback_dir: Path) -> dict:
+    path = feedback_dir / "competency_assessments.json"
     if not path.exists():
         return {}
     return json.loads(path.read_text(encoding="utf-8"))
@@ -213,10 +213,17 @@ def main():
     )
     parser.add_argument("--output_dir", type=str, default=str(config.OUTPUT_DIR))
     parser.add_argument("--output", type=str, default="competency_evaluation_report.json")
+    parser.add_argument(
+        "--feedback_dir",
+        type=str,
+        default=None,
+        help="Feedback store directory (default: PROJECT_ROOT/feedback_store)",
+    )
     args = parser.parse_args()
 
     out_dir = Path(args.output_dir)
-    assessments = load_assessments()
+    feedback_dir = Path(args.feedback_dir) if args.feedback_dir else DEFAULT_FEEDBACK_DIR
+    assessments = load_assessments(feedback_dir)
     proposals = load_proposals(out_dir)
 
     if not assessments:

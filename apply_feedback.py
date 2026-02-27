@@ -19,21 +19,21 @@ import pandas as pd
 
 import config
 
-FEEDBACK_DIR = Path(config.PROJECT_ROOT) / "feedback_store"
+DEFAULT_FEEDBACK_DIR = Path(config.PROJECT_ROOT) / "feedback_store"
 
 
-def load_bloom_corrections() -> dict:
+def load_bloom_corrections(feedback_dir: Path) -> dict:
     """Load skill_text -> correct_bloom from bloom_corrections.json."""
-    path = FEEDBACK_DIR / "bloom_corrections.json"
+    path = feedback_dir / "bloom_corrections.json"
     if not path.exists():
         return {}
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def load_type_corrections() -> dict:
+def load_type_corrections(feedback_dir: Path) -> dict:
     """Load skill_text -> correct_type from type_corrections.json.
     Valid types: Hard, Soft, Both (hybrid)."""
-    path = FEEDBACK_DIR / "type_corrections.json"
+    path = feedback_dir / "type_corrections.json"
     if not path.exists():
         return {}
     return json.loads(path.read_text(encoding="utf-8"))
@@ -53,17 +53,17 @@ def apply_type_overrides(df: pd.DataFrame, corrections: dict) -> pd.DataFrame:
     return df
 
 
-def load_human_verified_skills() -> pd.DataFrame:
+def load_human_verified_skills(feedback_dir: Path) -> pd.DataFrame:
     """Load human-verified skills (human_valid=valid)."""
-    path = FEEDBACK_DIR / "human_verified_skills.csv"
+    path = feedback_dir / "human_verified_skills.csv"
     if not path.exists():
         return pd.DataFrame()
     return pd.read_csv(path)
 
 
-def load_human_verified_knowledge() -> pd.DataFrame:
+def load_human_verified_knowledge(feedback_dir: Path) -> pd.DataFrame:
     """Load human-verified knowledge."""
-    path = FEEDBACK_DIR / "human_verified_knowledge.csv"
+    path = feedback_dir / "human_verified_knowledge.csv"
     if not path.exists():
         return pd.DataFrame()
     return pd.read_csv(path)
@@ -130,14 +130,22 @@ def main():
         action="store_true",
         help="If set, output only human-verified items. Otherwise only apply Bloom overrides.",
     )
+    parser.add_argument(
+        "--feedback_dir",
+        type=str,
+        default=None,
+        help="Feedback store directory (default: PROJECT_ROOT/feedback_store)",
+    )
 
     args = parser.parse_args()
     out_dir = Path(args.output_dir)
+    feedback_dir = Path(args.feedback_dir) if args.feedback_dir else DEFAULT_FEEDBACK_DIR
+    feedback_dir.mkdir(parents=True, exist_ok=True)
 
-    bloom_corrections = load_bloom_corrections()
-    type_corrections = load_type_corrections()
-    verified_skills = load_human_verified_skills()
-    verified_knowledge = load_human_verified_knowledge()
+    bloom_corrections = load_bloom_corrections(feedback_dir)
+    type_corrections = load_type_corrections(feedback_dir)
+    verified_skills = load_human_verified_skills(feedback_dir)
+    verified_knowledge = load_human_verified_knowledge(feedback_dir)
 
     # Skills
     skills_path = out_dir / "advanced_skills.csv"

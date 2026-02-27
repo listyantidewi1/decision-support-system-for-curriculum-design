@@ -1,0 +1,17 @@
+{
+  "manage budgets": "Evaluate",
+  "participate in code reviews": "Evaluate",
+  "anticipate bias/variance tradeoff": "Analyze",
+  "expand critical infrastructure": "Create",
+  "deliver solutions for ambiguous or new problems": "Create",
+  "anticipate risks of data leakage": "Evaluate",
+  "understand operating styles": "Understand",
+  "prioritise outreach": "Analyze",
+  "establish best practices": "Apply",
+  "leverage emerging technologies": "Apply",
+  "implement SystemVerilog RTL": "Apply",
+  "mitigate fraud threats": "Analyze",
+  "solve real-world business problems": "Evaluate",
+  "discover new insights": "Evaluate",
+  "optimise AI behaviours and systems": "Analyze"
+}

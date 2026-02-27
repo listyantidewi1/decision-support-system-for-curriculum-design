@@ -22,6 +22,7 @@ The system is modular, reproducible, and supports multi-run **experimental aggre
 |----------|---------|
 | **README.md** (this file) | Overview, quick start, high-level workflow |
 | **[PIPELINE.md](PIPELINE.md)** | Detailed pipeline documentation: phases, data flow, file dependencies, troubleshooting |
+| **[CALCULATIONS.md](CALCULATIONS.md)** | Scientific formulas: ranking, voting, weighting, priority scores, FDR, evaluation metrics |
 | **[RESEARCH_QUESTIONS.md](RESEARCH_QUESTIONS.md)** | Research questions (RQ1–RQ5), evaluation metrics, gold set design, ablation study |
 
 ---
@@ -56,12 +57,18 @@ skill-extraction/
 ├── aggregate_results.py             # Aggregate runs + cross-run summary
 ├── preprocess_jobs_pipeline.py      # Raw jobs → jobs_sentences.csv, jobs_metadata.csv
 │
-├── review_ui/                       # Web UI for expert review
+├── review_ui/                       # Web UI for internal/development review
 │   ├── app.py                       # FastAPI backend
 │   ├── static/app.js                # Frontend logic
 │   └── templates/index.html
 │
-├── feedback_store/                  # Per-reviewer feedback (auto-saved)
+├── dashboard/                       # Admin + school dashboard (production)
+│   ├── app.py                       # FastAPI app, school review, results
+│   ├── db.py                        # SQLite (schools, departments, users, runs)
+│   ├── templates/                   # Jinja2 (admin, school)
+│   └── static/style.css
+│
+├── feedback_store/                  # Per-reviewer feedback (default run)
 │   ├── skill_feedback.csv
 │   ├── knowledge_feedback.csv
 │   └── competency_feedback.csv
@@ -71,6 +78,10 @@ skill-extraction/
 │   │   ├── gold_skills.csv
 │   │   ├── gold_knowledge.csv
 │   │   └── gold_future_domain.csv
+│   ├── samples/                     # Sample CSVs for dashboard simulation
+│   │   ├── jobs_sample.csv
+│   │   ├── curriculum_sample.csv
+│   │   └── README.md
 │   └── preprocessing/data_prepared/
 │       ├── jobs_sentences.csv       # Pipeline input
 │       └── jobs_metadata.csv        # job_id → job_date
@@ -79,9 +90,11 @@ skill-extraction/
 ├── results_aggregated/              # Aggregated results across runs
 │
 ├── RESEARCH_QUESTIONS.md            # RQs, metrics, ablation design
+├── CALCULATIONS.md                  # Ranking, voting, weighting formulas
 ├── PIPELINE.md                      # Detailed pipeline documentation
 ├── run.bat                          # Phase 1: Full pipeline (14 steps)
-└── run_phase_2.bat                  # Phase 2: Post-review pipeline (12 steps)
+├── run_phase_2.bat                  # Phase 2: Post-review pipeline (13 steps)
+└── scripts/create_sample_csvs.py   # Generate DATA/samples/*.csv for dashboard
 ```
 
 ---
@@ -97,22 +110,71 @@ run.bat
 
 REM 2. Label the gold set (DATA/labels/gold_*.csv) — see DATA/labels/LABELING_PROTOCOL.md
 
-REM 3. Expert review — start the web UI
+REM 3. Expert review — start the web UI (optional but recommended)
 uvicorn review_ui.app:app --reload
 REM Open http://127.0.0.1:8000/?reviewer_id=alice
 
-REM 4. Phase 2 — Post-review (12 steps: calibration → re-generation → full evaluation)
+REM 4. Phase 2 — Post-review (13 steps: calibration → re-generation → plots → evaluation)
 run_phase_2.bat
 
 REM 5. Label top-20 recommendations (results/recommendations.csv → expert_priority column)
 python recommendations.py --evaluate
 
-REM 6. (Optional) Multi-run: rename results → results_run1, repeat, then aggregate
+REM 6. (Optional) Dashboard simulation: upload DATA/samples/*.csv, run department pipeline
+REM 7. (Optional) Multi-run: rename results → results_run1, repeat, then aggregate
 python aggregate_results.py --run_dirs results_run1 results_run2 --output_dir results_aggregated
 ```
 
+**Larger data:** Edit `run.bat` or run `python pipeline.py --sample_size 5000` (or `0` for no limit).
+
 See [PIPELINE.md](PIPELINE.md) for detailed steps, data flow, and troubleshooting.
+See [CALCULATIONS.md](CALCULATIONS.md) for ranking, voting, weighting, and evaluation formulas.
 See [RESEARCH_QUESTIONS.md](RESEARCH_QUESTIONS.md) for evaluation framework and metrics.
+
+---
+
+# 🖥 Dashboard (Admin + School)
+
+This repo includes a **dashboard app** at `dashboard/` for production use:
+
+- **Admin**: Schools, departments, users, runs, inter-rater reliability
+- **School users**: Department-scoped uploads, runs, results, insights, **in-dashboard review**
+- **Multi-reviewer**: Each school can have multiple users; feedback stored per `reviewer_id` (email)
+- **Crowd-sourced aggregation**: Schools with same vocational field can aggregate results
+- **Ranking modes**: `model_only` (pipeline scores only) or `human_adjusted` (incorporates expert feedback)
+
+Run:
+
+```bat
+uvicorn dashboard.app:app --reload
+```
+
+Open `http://127.0.0.1:8000/dashboard/login` — default admin: `admin@local` / `admin123`.
+
+See **[dashboard/README.md](dashboard/README.md)** for full documentation.
+
+---
+
+# 🔬 Review UI (Internal / Development)
+
+For **internal or development** reviews (no auth, single output dir):
+
+```bat
+uvicorn review_ui.app:app --reload
+```
+
+Open `http://127.0.0.1:8000/?reviewer_id=alice` — feedback goes to `feedback_store/` (project root).
+
+| Aspect | review_ui | Dashboard |
+|--------|-----------|-----------|
+| Purpose | Internal / dev | Production (schools) |
+| Auth | None (URL param) | Login required |
+| Reviewer ID | `?reviewer_id=` | Logged-in user email |
+| Data | Default `results/`, `feedback_store/` | Per-department `data/schools/.../` |
+
+**Notes:**
+- Dashboard runs are isolated under `data/schools/{school_id}/departments/{department_id}/`
+- Existing `run.bat` and `run_phase_2.bat` workflows remain unchanged
 
 ---
 
@@ -181,9 +243,10 @@ This project introduces a **multi-layer curriculum intelligence pipeline** combi
 
 ### **8. Curriculum Recommendations**
 
-* Ranked skill gap priorities combining: demand, empirical trend, future_weight, coverage gap
+* Ranked skill gap priorities combining: **demand, empirical trend, future_weight** (coverage is for insights only, not prioritization)
+* Schools use the system to design better curriculum; existing curriculum may be outdated
 * Evidence traces per recommendation (job_ids, trend stats, domain info)
-* Ablation study (remove one signal at a time)
+* Ablation study (remove one signal at a time; optional `with_coverage` variant)
 * Expert evaluation: Precision@20, NDCG@20
 
 ### **9. Export for Review & Human-in-the-Loop**
@@ -216,6 +279,8 @@ The system supports **multiple independent runs** for robust evaluation.
 ```bat
 run.bat
 ```
+
+For **larger data**: `python pipeline.py --sample_size 5000` (or `--sample_size 0` for no limit).
 
 After the run completes, rename the results folder:
 
@@ -278,7 +343,7 @@ The system generates:
 * Hard skills
 * Knowledge items
 * Soft skills
-* Skills demanded but **not covered** by curriculum
+* Skills demanded but **not covered** by curriculum (insight)
 * Skills "future-critical" but underrepresented
 
 ### **Time trend analysis**
@@ -290,8 +355,14 @@ The system generates:
 ### **Future-of-work analytics**
 
 * future_weight histogram
-* top future-critical knowledge
-* declining domains
+* Top future-weighted skills and knowledge
+* Emerging skills coverage (covered vs not covered; insight only)
+
+### **Coverage (insight only)**
+
+* Coverage distribution across jobs
+* Coverage improvement: Hybrid vs base models
+* Coverage is not used for prioritization; schools use recommendations to design better curriculum.
 
 ---
 
