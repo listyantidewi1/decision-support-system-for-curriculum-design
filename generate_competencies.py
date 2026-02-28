@@ -1,5 +1,5 @@
 """
-generate_competencies_llm.py
+generate_competencies.py
 
 Takes high/medium-verified skills from verified_skills.csv and asks an LLM
 (through OpenRouter) to propose competency statements / curriculum components.
@@ -12,6 +12,7 @@ import argparse
 import json
 import os
 import re
+from collections import defaultdict
 import time
 from pathlib import Path
 from typing import List, Dict, Optional
@@ -165,6 +166,51 @@ def load_openrouter_client() -> OpenAI:
         raise RuntimeError("OpenRouter API key is empty.")
 
     return OpenAI(api_key=api_key, base_url=base_url)
+
+
+# ----------------------------------------------------------------------
+# Competency deduplication (group similar, track occurrence)
+# ----------------------------------------------------------------------
+
+
+def _normalize_competency_key(text: str) -> str:
+    """Normalize competency title for grouping (matches skill/knowledge normalization)."""
+    if not text or not isinstance(text, str):
+        return ""
+    t = str(text).strip().lower()
+    t = re.sub(r"[\s_/|,;:.()\[\]{}]+", " ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
+
+
+def _deduplicate_competencies(comps: List[Dict]) -> List[Dict]:
+    """
+    Group competencies by normalized title. For each group: keep canonical (first),
+    set occurrence_count = group size. Higher occurrence implies higher demand.
+    """
+    if not comps:
+        return comps
+    by_key: Dict[str, List[Dict]] = defaultdict(list)
+    for c in comps:
+        title = c.get("title", "") or c.get("description", "")[:100]
+        key = _normalize_competency_key(title)
+        if not key:
+            by_key[f"_unnamed_{len(by_key)}"].append(c)
+        else:
+            by_key[key].append(c)
+
+    out = []
+    for key, group in by_key.items():
+        canonical = group[0].copy()
+        canonical["occurrence_count"] = len(group)
+        if len(group) > 1:
+            related = set()
+            for g in group:
+                for s in g.get("related_skills") or []:
+                    related.add(str(s).strip())
+            canonical["related_skills"] = sorted(related)
+        out.append(canonical)
+    return out
 
 
 # ----------------------------------------------------------------------
@@ -354,7 +400,8 @@ def call_llm_for_competencies(client: OpenAI,
                               future_context: str = "",
                               few_shot_examples: Optional[List[Dict]] = None,
                               skill_future_weights: Optional[Dict[str, Dict]] = None,
-                              skill_time_trends: Optional[Dict[str, Dict]] = None) -> Dict:
+                              skill_time_trends: Optional[Dict[str, Dict]] = None,
+                              temperature: float = 0.0) -> Dict:
     prompt = build_prompt(
         skills,
         future_context=future_context,
@@ -381,7 +428,7 @@ def call_llm_for_competencies(client: OpenAI,
             resp = client.chat.completions.create(
                 model=model_name,
                 messages=messages,
-                temperature=0.3,
+                temperature=temperature,
                 max_tokens=4000,
             )
             content = resp.choices[0].message.content or ""
@@ -472,8 +519,20 @@ def main():
         default=None,
         help="Feedback store directory (default: PROJECT_ROOT/feedback_store)",
     )
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=0.0,
+        help="LLM temperature for reproducibility (0=deterministic, default: 0)",
+    )
+    parser.add_argument(
+        "--no-deduplicate",
+        action="store_true",
+        help="Disable competency deduplication (group similar titles, aggregate occurrence)",
+    )
 
     args = parser.parse_args()
+    args.deduplicate = not args.no_deduplicate
     if args.human_verified_only and args.comprehensive:
         raise ValueError("Cannot use both --human_verified_only and --comprehensive. Choose one.")
 
@@ -596,6 +655,7 @@ def main():
             few_shot_examples=few_shot or [],
             skill_future_weights=skill_future_weights or None,
             skill_time_trends=skill_time_trends or None,
+            temperature=args.temperature,
         )
 
         # Expecting {"competencies": [ ... ]}
@@ -622,10 +682,18 @@ def main():
         for c in all_competencies:
             c["all_skills_human_verified"] = False  # no human feedback loaded
 
-    print(f"[INFO] Total competencies generated: {len(all_competencies)}")
+    print(f"[INFO] Total competencies generated (before dedup): {len(all_competencies)}")
 
-    # Build output with metadata for comprehensive mode
-    output_obj = {"competencies": all_competencies}
+    # Deduplicate similar competencies; aggregate occurrence_count
+    if args.deduplicate and all_competencies:
+        all_competencies = _deduplicate_competencies(all_competencies)
+        print(f"[INFO] Competencies after grouping: {len(all_competencies)}")
+    else:
+        for c in all_competencies:
+            c.setdefault("occurrence_count", 1)
+
+    # Build output with metadata for reproducibility and comprehensive mode
+    output_obj = {"competencies": all_competencies, "llm_temperature": args.temperature}
     if args.comprehensive:
         verified_count = sum(1 for c in all_competencies if c.get("all_skills_human_verified"))
         output_obj["generation_mode"] = "comprehensive"

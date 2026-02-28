@@ -3,6 +3,10 @@ recommendations.py
 
 Generates ranked curriculum recommendations with evidence traces.
 
+Scientific methods (see SCIENTIFIC_METHODOLOGY.md §7, 9):
+    - priority_score = 0.4×demand + 0.3×trend + 0.3×future (coverage for insights only)
+    - Weight sensitivity: Jaccard vs baseline top-20 for alternative weight configs
+
 Each recommendation is a skill/knowledge gap with:
     - priority_score (composite of demand, trend, future_weight; coverage is for insights only)
     - evidence trace (supporting job_ids, trend stats, domain info)
@@ -21,6 +25,7 @@ Evaluation (when gold labels are available):
 import argparse
 import json
 import math
+import re
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -72,41 +77,59 @@ def load_coverage(output_dir: Path) -> pd.DataFrame:
 # Build recommendation table
 # ---------------------------------------------------------------------------
 
+def _normalize_skill_for_grouping(text: str) -> str:
+    """Normalize skill for grouping (matches future_weight_mapping)."""
+    if not text or not isinstance(text, str):
+        return ""
+    t = str(text).strip().lower()
+    t = re.sub(r"[\s_/|,;:.()\[\]{}]+", " ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
+
+
 def build_skill_demand(skills_df: pd.DataFrame) -> pd.DataFrame:
-    """Aggregate per-skill demand statistics."""
+    """Aggregate per-skill demand statistics. Groups equivalent skills (case/punctuation variants)."""
     if skills_df.empty or "skill" not in skills_df.columns:
         return pd.DataFrame()
 
-    agg = {"skill": "count"}
-    if "confidence_score" in skills_df.columns:
-        agg["confidence_score"] = "mean"
+    skills_df = skills_df.copy()
+    skills_df["_group_key"] = skills_df["skill"].apply(_normalize_skill_for_grouping)
+    skills_df = skills_df[skills_df["_group_key"] != ""]
 
-    grp = skills_df.groupby("skill").agg(**{
-        "demand_freq": ("skill", "count"),
-        "mean_confidence": ("confidence_score", "mean") if "confidence_score" in skills_df.columns else ("skill", "count"),
-    }).reset_index()
+    agg_dict = {
+        "demand_freq": ("_group_key", "count"),
+        "mean_confidence": ("confidence_score", "mean") if "confidence_score" in skills_df.columns else ("_group_key", "count"),
+    }
+    grp = skills_df.groupby("_group_key").agg(**agg_dict).reset_index()
+
+    canonical = skills_df.groupby("_group_key")["skill"].apply(
+        lambda x: x.value_counts().index[0]
+    ).reset_index()
+    canonical.columns = ["_group_key", "skill"]
+    grp = grp.merge(canonical, on="_group_key")
 
     if "type" in skills_df.columns:
-        type_map = skills_df.groupby("skill")["type"].agg(
+        type_map = skills_df.groupby("_group_key")["type"].agg(
             lambda x: x.mode().iloc[0] if not x.mode().empty else "Unknown"
         ).reset_index()
-        type_map.columns = ["skill", "skill_type"]
-        grp = grp.merge(type_map, on="skill", how="left")
+        type_map.columns = ["_group_key", "skill_type"]
+        grp = grp.merge(type_map, on="_group_key", how="left")
 
     if "bloom" in skills_df.columns:
-        bloom_map = skills_df.groupby("skill")["bloom"].agg(
+        bloom_map = skills_df.groupby("_group_key")["bloom"].agg(
             lambda x: x.mode().iloc[0] if not x.mode().empty else "Unknown"
         ).reset_index()
-        bloom_map.columns = ["skill", "bloom_level"]
-        grp = grp.merge(bloom_map, on="skill", how="left")
+        bloom_map.columns = ["_group_key", "bloom_level"]
+        grp = grp.merge(bloom_map, on="_group_key", how="left")
 
     if "job_id" in skills_df.columns:
-        job_ids = skills_df.groupby("skill")["job_id"].apply(
+        job_ids = skills_df.groupby("_group_key")["job_id"].apply(
             lambda x: list(x.unique()[:5])
         ).reset_index()
-        job_ids.columns = ["skill", "example_job_ids"]
-        grp = grp.merge(job_ids, on="skill", how="left")
+        job_ids.columns = ["_group_key", "example_job_ids"]
+        grp = grp.merge(job_ids, on="_group_key", how="left")
 
+    grp = grp.drop(columns=["_group_key"], errors="ignore")
     return grp
 
 
@@ -297,6 +320,56 @@ def run_ablation(demand, trends, future_weights, coverage, top_n: int = 20) -> d
     return results
 
 
+def run_weight_sensitivity(
+    demand: pd.DataFrame,
+    trends: pd.DataFrame,
+    future_weights: pd.DataFrame,
+    coverage: pd.DataFrame,
+    top_n: int = 20,
+) -> dict:
+    """
+    Sweep weight configurations; compare top-20 to baseline via Jaccard.
+    Baseline: w_demand=0.4, w_trend=0.3, w_future=0.3.
+    """
+    baseline_weights = (0.40, 0.30, 0.30)
+    recs_baseline = compute_priority_scores(
+        demand, trends, future_weights, coverage,
+        w_demand=baseline_weights[0], w_trend=baseline_weights[1], w_future=baseline_weights[2],
+    )
+    baseline_top = set(recs_baseline.head(top_n)["skill"].tolist()) if not recs_baseline.empty else set()
+
+    configs = [
+        (0.3, 0.35, 0.35),
+        (0.4, 0.30, 0.30),  # baseline
+        (0.5, 0.25, 0.25),
+        (0.3, 0.2, 0.5),
+        (0.4, 0.2, 0.4),
+        (0.5, 0.2, 0.3),
+    ]
+
+    results = {}
+    for w_d, w_t, w_f in configs:
+        key = f"d{w_d}_t{w_t}_f{w_f}"
+        recs = compute_priority_scores(
+            demand, trends, future_weights, coverage,
+            w_demand=w_d, w_trend=w_t, w_future=w_f,
+        )
+        top_skills = recs.head(top_n)["skill"].tolist() if not recs.empty else []
+        top_set = set(top_skills)
+        inter = len(baseline_top & top_set)
+        union = len(baseline_top | top_set)
+        jaccard = round(inter / union, 4) if union else 1.0
+        results[key] = {
+            "weights": {"demand": w_d, "trend": w_t, "future": w_f},
+            "jaccard_vs_baseline": jaccard,
+            "top_skills": top_skills[:20],
+        }
+    return {
+        "baseline_weights": {"demand": 0.4, "trend": 0.3, "future": 0.3},
+        "configs": results,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -310,6 +383,8 @@ def main():
                         help="Top-N recommendations to highlight (default: 20)")
     parser.add_argument("--ablation", action="store_true",
                         help="Run ablation study (remove signals one at a time)")
+    parser.add_argument("--sensitivity", action="store_true",
+                        help="Run weight sensitivity analysis (sweep demand/trend/future weights)")
     parser.add_argument("--evaluate", action="store_true",
                         help="Evaluate against expert labels in recommendations.csv")
     args = parser.parse_args()
@@ -369,6 +444,16 @@ def main():
         report["ablation"] = ablation
         for name, data in ablation.items():
             print(f"  {name}: Jaccard vs full = {data['jaccard_vs_full']:.3f}")
+
+    if args.sensitivity:
+        print("\n[INFO] Running weight sensitivity analysis...")
+        sensitivity = run_weight_sensitivity(demand, trends, future_weights, coverage, top_n=args.top_n)
+        report["weight_sensitivity"] = sensitivity
+        sens_path = out_dir / "weight_sensitivity_report.json"
+        sens_path.write_text(json.dumps(sensitivity, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(f"[INFO] Saved weight sensitivity report to {sens_path}")
+        for key, data in sensitivity["configs"].items():
+            print(f"  {key}: Jaccard vs baseline = {data['jaccard_vs_baseline']:.3f}")
 
     if args.evaluate:
         existing = out_dir / "recommendations.csv"

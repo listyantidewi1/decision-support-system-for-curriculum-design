@@ -2,6 +2,8 @@
 
 This document provides a **scientifically rigorous** description of all formulas, weighting schemes, voting rules, and ranking decisions used in the Future-Aware Hybrid Skill Extraction pipeline and dashboard.
 
+**For detailed scientific methods with worked examples**, see **[SCIENTIFIC_METHODOLOGY.md](SCIENTIFIC_METHODOLOGY.md)** (binomial test, effect sizes, Cohen's/Fleiss' Kappa, power analysis, FDR, multi-comparison correction, etc.).
+
 ---
 
 ## 1. Pipeline Priority Score (recommendations.py)
@@ -87,6 +89,36 @@ mapping_margin = top1_similarity - top2_similarity
 
 ---
 
+## 2.1 Normalization and Grouping (Skills, Knowledge, Competencies)
+
+To reduce redundancy from case and punctuation variants (e.g., "AI agents" vs "AI Agents", "AI/ML" vs "AI ML"), the pipeline applies **deterministic normalization** before aggregation.
+
+### Normalization Rule (reproducible)
+
+```
+normalize(text) = lowercase(strip(text))
+                ; collapse [\s_/|,;:.()\[\]{}]+ → single space
+                ; collapse repeated spaces
+```
+
+Applied in: `future_weight_mapping.py`, `recommendations.py`, `generate_competencies.py`, dashboard `_normalize_knowledge_key`.
+
+### Grouping Logic
+
+| Item type | Group key | Canonical form | Aggregation |
+|-----------|-----------|----------------|-------------|
+| Skills | normalize(skill) | Most frequent raw form | demand_freq = sum; type/bloom = mode |
+| Knowledge | normalize(knowledge) | Most frequent raw form | freq = sum; mean_confidence = mean |
+| Competencies | normalize(title) | First in group | occurrence_count = group size |
+
+### Scientific Rationale
+
+- **Deterministic**: Same input always yields same key.
+- **Occurrence preservation**: Grouping sums occurrence counts; high occurrence indicates higher demand.
+- **Canonical form**: Most frequent raw string used for display and embedding to avoid information loss.
+
+---
+
 ## 3. Majority Vote (Multi-Reviewer Feedback)
 
 When multiple reviewers assess the same item, the pipeline uses **majority vote** to merge feedback.
@@ -124,6 +156,37 @@ When ≥2 reviewers assess the same items, **Cohen's Kappa** is computed:
 - P_e = expected agreement by chance
 
 Stored in `feedback_store/inter_rater_report.json` per feedback source.
+
+---
+
+## 3.0 Effect Sizes (Extraction Evaluation)
+
+For proportions (e.g., precision vs chance):
+
+**Odds ratio** (vs p0 = 0.5):
+```
+odds_ratio = (p / (1 - p)) / (p0 / (1 - p0)) = p / (1 - p)  when p0 = 0.5
+```
+
+**Risk difference**:
+```
+risk_difference = p - p0
+```
+
+**Cohen's h** (for comparing two proportions p1, p2):
+```
+h = 2 × (arcsin(√p1) - arcsin(√p2))
+```
+- Small: |h| ≈ 0.2; Medium: |h| ≈ 0.5; Large: |h| ≈ 0.8
+
+---
+
+## 3.1 Recall in Gold-Set Paradigm
+
+In the gold-set evaluation paradigm:
+- **Precision** = tp / n (correct extractions among those labeled)
+- **Recall** cannot be computed without knowing the total number of true positives in the full population; the gold set is a sample of extractions, not an enumeration of all true items.
+- We report **recall_estimate** = same as precision when gold set = sample of extractions; interpret as "recall on the labeled sample" rather than true recall.
 
 ---
 

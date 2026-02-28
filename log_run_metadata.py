@@ -80,6 +80,7 @@ def main():
         "project_root": str(config.PROJECT_ROOT),
         "output_dir": str(out_dir),
         "random_seed": args.seed,
+        "pipeline_sample_seed": args.seed,
         "git_hash": git_hash(),
         "input_dataset": {
             "path": str(input_csv),

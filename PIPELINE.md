@@ -14,6 +14,7 @@ This document describes the current pipeline architecture, data flow, and usage 
 | Document | Purpose |
 |----------|---------|
 | [CALCULATIONS.md](CALCULATIONS.md) | Ranking, voting, weighting, priority scores, FDR, evaluation formulas |
+| [SCIENTIFIC_METHODOLOGY.md](SCIENTIFIC_METHODOLOGY.md) | Full scientific methods: binomial test, effect sizes, Kappa, power analysis, FDR, etc. |
 | [RESEARCH_QUESTIONS.md](RESEARCH_QUESTIONS.md) | RQs, metrics, gold set, ablation |
 
 ---

@@ -6,6 +6,10 @@ advanced_skills_with_dates.csv.  Uses scipy.stats.linregress for
 slope, p-value, and R-squared, with Benjamini-Hochberg FDR correction
 to control false discoveries across many skills.
 
+Scientific methods (see SCIENTIFIC_METHODOLOGY.md §8):
+    - Linear regression per skill (freq vs month_idx)
+    - Benjamini-Hochberg q-values; trend_label: Emerging/Declining/Stable (q < 0.05)
+
 Outputs:
     skill_time_trends.csv  (with slope, p_value, q_value, r_squared, trend_label)
     trend_stability_report.json  (optional, with --stability flag)

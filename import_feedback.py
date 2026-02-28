@@ -4,6 +4,10 @@ import_feedback.py
 Reads feedback from feedback_store/ (multi-reviewer format) or expert_review_*.csv (legacy).
 Merges multi-reviewer feedback using majority vote. Validates human_valid, human_bloom, etc.
 
+Scientific methods (see SCIENTIFIC_METHODOLOGY.md):
+    - Majority vote for multi-reviewer merge (most frequent non-empty value)
+    - Cohen's Kappa (2 raters) or Fleiss' Kappa (3+ raters) for IRR
+
 Outputs to feedback_store/:
     - human_verified_skills.csv
     - human_verified_knowledge.csv
@@ -16,6 +20,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 import config
@@ -234,6 +239,50 @@ def import_competency_feedback(output_dir: Path, feedback_dir: Path) -> None:
         print(f"[INFO] Saved {len(assessments)} competency assessments")
 
 
+def _fleiss_kappa(ratings_matrix: list) -> float:
+    """
+    Compute Fleiss' Kappa for 3+ raters.
+    ratings_matrix: list of lists; rows=items, cols=raters; cells=category labels (str or int).
+    Returns kappa in [-1, 1]; 0=chance, 1=perfect agreement.
+    """
+    n = len(ratings_matrix)  # subjects
+    if n == 0:
+        return 0.0
+    N = len(ratings_matrix[0])  # raters
+    if N < 3:
+        return 0.0
+
+    all_cats = sorted(set(cell for row in ratings_matrix for cell in row if cell is not None and str(cell).strip()))
+    if not all_cats:
+        return 0.0
+    k = len(all_cats)
+    cat2idx = {c: i for i, c in enumerate(all_cats)}
+
+    # n_ij = count of raters who assigned subject i to category j
+    n_ij = []
+    for row in ratings_matrix:
+        counts = [0] * k
+        for cell in row:
+            if cell is not None and str(cell).strip():
+                c = str(cell).strip().lower()
+                if c in cat2idx:
+                    counts[cat2idx[c]] += 1
+        n_ij.append(counts)
+
+    n_ij = np.array(n_ij)
+    # P_i = (1/(N*(N-1))) * sum_j(n_ij*(n_ij-1))
+    P_i = (1.0 / (N * (N - 1))) * np.sum(n_ij * (n_ij - 1), axis=1)
+    P_bar = np.mean(P_i)
+
+    # p_j = proportion of all assignments to category j
+    p_j = np.sum(n_ij, axis=0) / (n * N)
+    P_e = np.sum(p_j ** 2)
+
+    if P_e >= 1.0:
+        return 1.0
+    return float((P_bar - P_e) / (1.0 - P_e))
+
+
 def _cohens_kappa(labels1, labels2) -> float:
     """Compute Cohen's Kappa for two lists of labels."""
     if len(labels1) != len(labels2) or len(labels1) == 0:
@@ -275,37 +324,51 @@ def compute_inter_rater_reliability(output_dir: Path, feedback_dir: Path) -> Non
         if len(reviewers) < 2:
             continue
 
-        r1_df = df[df["reviewer_id"] == reviewers[0]]
-        r2_df = df[df["reviewer_id"] == reviewers[1]]
-        shared = set(r1_df[id_col]) & set(r2_df[id_col])
+        reviewer_dfs = {r: df[df["reviewer_id"] == r] for r in reviewers}
+        shared = set(reviewer_dfs[reviewers[0]][id_col])
+        for r in reviewers[1:]:
+            shared &= set(reviewer_dfs[r][id_col])
         if len(shared) < 5:
             continue
 
-        r1_map = dict(zip(r1_df[id_col], r1_df[label_col]))
-        r2_map = dict(zip(r2_df[id_col], r2_df[label_col]))
         shared_ids = sorted(shared)
+        r1_map = dict(zip(reviewer_dfs[reviewers[0]][id_col], reviewer_dfs[reviewers[0]][label_col]))
+        r2_map = dict(zip(reviewer_dfs[reviewers[1]][id_col], reviewer_dfs[reviewers[1]][label_col]))
         labels1 = [r1_map[sid] for sid in shared_ids]
         labels2 = [r2_map[sid] for sid in shared_ids]
-
         kappa = _cohens_kappa(labels1, labels2)
         pct_agree = sum(1 for a, b in zip(labels1, labels2) if a == b) / len(labels1) * 100
         disagreed = [sid for sid, a, b in zip(shared_ids, labels1, labels2) if a != b]
 
-        report[fb_name] = {
-            "reviewers": reviewers[:2],
+        entry = {
+            "reviewers": reviewers,
             "shared_items": len(shared_ids),
             "cohens_kappa": round(kappa, 4),
             "pct_agreement": round(pct_agree, 1),
             "disagreed_ids": disagreed[:20],
         }
+        if len(reviewers) >= 3:
+            ratings_matrix = []
+            for sid in shared_ids:
+                row = []
+                for r in reviewers:
+                    rdf = reviewer_dfs[r]
+                    match = rdf[rdf[id_col] == sid]
+                    val = match[label_col].iloc[0] if len(match) > 0 else ""
+                    row.append(str(val).strip() if pd.notna(val) else "")
+                ratings_matrix.append(row)
+            entry["fleiss_kappa"] = round(_fleiss_kappa(ratings_matrix), 4)
+        report[fb_name] = entry
 
     if report:
         out_path = feedback_dir / "inter_rater_report.json"
         out_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"[INFO] Inter-rater reliability report saved to {out_path}")
         for fb_name, r in report.items():
-            print(f"  {fb_name}: kappa={r['cohens_kappa']:.3f}, "
-                  f"agree={r['pct_agreement']:.1f}% ({r['shared_items']} shared items)")
+            msg = f"  {fb_name}: cohens_kappa={r['cohens_kappa']:.3f}, agree={r['pct_agreement']:.1f}% ({r['shared_items']} shared items)"
+            if "fleiss_kappa" in r:
+                msg += f", fleiss_kappa={r['fleiss_kappa']:.3f}"
+            print(msg)
     else:
         print("[INFO] No multi-reviewer data found; skipping inter-rater report.")
 

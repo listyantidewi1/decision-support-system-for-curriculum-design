@@ -23,7 +23,9 @@ The system is modular, reproducible, and supports multi-run **experimental aggre
 | **README.md** (this file) | Overview, quick start, high-level workflow |
 | **[PIPELINE.md](PIPELINE.md)** | Detailed pipeline documentation: phases, data flow, file dependencies, troubleshooting |
 | **[CALCULATIONS.md](CALCULATIONS.md)** | Scientific formulas: ranking, voting, weighting, priority scores, FDR, evaluation metrics |
+| **[SCIENTIFIC_METHODOLOGY.md](SCIENTIFIC_METHODOLOGY.md)** | **Full scientific documentation**: all statistical methods, formulas, and worked examples (binomial test, effect sizes, Kappa, power analysis, FDR, normalization, etc.) |
 | **[RESEARCH_QUESTIONS.md](RESEARCH_QUESTIONS.md)** | Research questions (RQ1–RQ5), evaluation metrics, gold set design, ablation study |
+| **[docs/DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md)** | Central index of all documentation |
 
 ---
 
