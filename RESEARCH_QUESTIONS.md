@@ -4,7 +4,7 @@ This document defines the research questions, success metrics, and evaluation
 protocol for the Future-Aware Hybrid Skill Extraction pipeline as a
 **curriculum recommendation system** for vocational high schools.
 
-**Related**: [CALCULATIONS.md](CALCULATIONS.md) — formulas for priority scores, voting, ranking, FDR, P@N, NDCG.
+**Related**: [CALCULATIONS.md](CALCULATIONS.md) — formulas; [SCIENTIFIC_METHODOLOGY.md](SCIENTIFIC_METHODOLOGY.md) — full scientific methods with worked examples.
 
 ---
 
@@ -85,6 +85,13 @@ signal at a time (demand, trend, future_weight). Coverage is optional (`with_cov
 - Confidence tier: Very High / High / Medium / Low (proportional)
 - Skill type: Hard / Soft / Both (proportional)
 
+### Power Analysis
+
+- Assumptions: H0 precision = 0.5 (chance), H1 precision = 0.7 (RQ1 target), alpha = 0.05, target power = 0.80
+- Required n: 37 items to achieve power >= 0.80 for the one-proportion binomial test
+- Current gold set: skills n = 150 yields power ≈ 1.00; knowledge n = 100 yields power ≈ 0.99
+- Interpretation: Gold set sizes are well above the minimum required for adequate statistical power
+
 ### Labeling Protocol
 Each item is labeled with:
 - `is_correct`: yes/no (was this correctly extracted from the text?)
@@ -129,3 +136,13 @@ Each item is labeled with:
 | Cross-validation folds | 5 | Balance between bias and variance |
 | Stability runs | 3-5 | Minimum for variance estimation |
 | min_jobs sensitivity | [5, 10, 15, 20] | Range around default |
+
+---
+
+## Limitations
+
+- **Recall**: Only estimable from the labeled sample; true recall is unknown without full population labeling. Gold sets are stratified samples of extractions, not exhaustive enumerations of all true items in job postings.
+- **Temporal bias**: Job posting dates may cluster in the scrape window; trend analyses reflect the available time range.
+- **Domain coverage**: `future_domains.csv` may not cover all vocational fields; mapping accuracy is limited to included domains.
+- **Generalizability**: Pipeline tuned for IT/Software/Game Dev context; results may not transfer to other sectors.
+- **LLM variability**: Competency generation is non-deterministic when temperature > 0; use `--temperature 0` for reproducibility.

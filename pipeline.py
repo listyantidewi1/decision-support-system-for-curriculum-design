@@ -250,6 +250,9 @@ class AdvancedPipelineConfig:
     BERT_DENSITY_FACTOR_BASE = 0.8      # Minimum semantic-density factor (floor)
     BERT_STANDALONE_PENALTY = 0.8       # Penalty when BERT skill has no GPT match
 
+    # Reproducibility (override via --seed)
+    RANDOM_SEED = None  # Set from config.RANDOM_SEED or args.seed at runtime
+
     # --- Confidence scoring weights (GPT skills) ---
     GPT_BASE_CONFIDENCE = 0.8           # Base confidence for GPT extractions
     GPT_TYPE_FACTOR_BASE = 0.6          # Minimum type-confidence factor
@@ -1871,7 +1874,8 @@ class AdvancedDataManager:
                 raise ValueError(f"INPUT_CSV must contain columns {missing}")
 
             if len(df) > sample_size:
-                df_sample = df.sample(n=sample_size, random_state=None)
+                seed = AdvancedPipelineConfig.RANDOM_SEED if AdvancedPipelineConfig.RANDOM_SEED is not None else config.RANDOM_SEED
+                df_sample = df.sample(n=sample_size, random_state=seed)
             else:
                 df_sample = df
 
@@ -2508,11 +2512,18 @@ def main():
             default=AdvancedPipelineConfig.SAMPLE_SIZE,
             help="Max number of rows to process (default: AdvancedPipelineConfig.SAMPLE_SIZE)",
         )
+        parser.add_argument(
+            "--seed",
+            type=int,
+            default=config.RANDOM_SEED,
+            help="Random seed for sampling (default: config.RANDOM_SEED)",
+        )
         args = parser.parse_args()
 
         # Runtime overrides keep backward compatibility with existing run.bat defaults.
         AdvancedPipelineConfig.INPUT_CSV = args.input_csv
         AdvancedPipelineConfig.SAMPLE_SIZE = args.sample_size
+        AdvancedPipelineConfig.RANDOM_SEED = args.seed
 
         # Create pipeline instance
         pipeline = AdvancedSkillExtractionPipeline()

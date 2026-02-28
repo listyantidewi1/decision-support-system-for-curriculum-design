@@ -4,7 +4,10 @@ future_weight_mapping.py
 Map extracted knowledge items OR skills to future job domains (e.g., WEF/McKinsey-style)
 and compute a "future_weight" score for each item.
 
-future_weight = cosine_similarity(item, domain_example_terms) * trend_score
+Scientific methods (see SCIENTIFIC_METHODOLOGY.md §6–7):
+    - future_weight = similarity(item, best_domain) × trend_score
+    - mapping_margin = top1_sim - top2_sim (uncertainty)
+    - Normalization for grouping: lowercase, collapse punctuation
 
 Modes:
   - knowledge (default): advanced_knowledge.csv -> future_skill_weights_dummy.csv
@@ -20,6 +23,7 @@ Outputs:
 """
 
 import argparse
+import re
 from pathlib import Path
 
 import numpy as np
@@ -33,6 +37,20 @@ from pipeline import AdvancedPipelineConfig  # reuse embedding model name
 
 
 # ------------------------ helpers ------------------------ #
+
+def _normalize_for_grouping(text: str) -> str:
+    """
+    Deterministic normalization for grouping equivalent skills/knowledge.
+    Used to merge case variants (e.g. 'AI' vs 'ai') and punctuation variants
+    (e.g. 'AI/ML' vs 'AI ML'). Scientifically rigorous: reproducible, documented.
+    """
+    if not text or not isinstance(text, str):
+        return ""
+    t = str(text).strip().lower()
+    t = re.sub(r"[\s_/|,;:.()\[\]{}]+", " ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
+
 
 def load_knowledge_df(path: Path) -> pd.DataFrame:
     if not path.exists():
@@ -191,30 +209,37 @@ def main():
 
     item_col = "skill" if args.input_type == "skills" else "knowledge"
 
+    def _aggregate_with_canonical(df, item_col):
+        df = df.copy()
+        df["_group_key"] = df[item_col].apply(_normalize_for_grouping)
+        df = df[df["_group_key"] != ""]
+        agg_dict = {"freq": ("_group_key", "count")}
+        if "confidence_score" in df.columns:
+            agg_dict["mean_confidence"] = ("confidence_score", "mean")
+        else:
+            agg_dict["mean_confidence"] = ("_group_key", "count")
+        grp = df.groupby("_group_key").agg(**agg_dict).reset_index()
+        canonical = df.groupby("_group_key")[item_col].apply(
+            lambda x: x.value_counts().index[0]
+        ).reset_index()
+        canonical.columns = ["_group_key", item_col]
+        grp = grp.merge(canonical, on="_group_key").drop(columns=["_group_key"])
+        return grp
+
     if args.input_type == "skills":
         skills_path = out_dir / args.skills_file
         print(f"[INFO] Using OUTPUT_DIR = {out_dir}")
         print(f"[INFO] Reading skills from {skills_path}")
         skills_df = load_skills_df(skills_path)
-        grp = skills_df.groupby("skill").agg(
-            freq=("skill", "count"),
-            mean_confidence=("confidence_score", "mean")
-            if "confidence_score" in skills_df.columns
-            else ("skill", "count"),
-        ).reset_index()
+        grp = _aggregate_with_canonical(skills_df, "skill")
     else:
         knowledge_path = out_dir / args.knowledge_file
         print(f"[INFO] Using OUTPUT_DIR = {out_dir}")
         print(f"[INFO] Reading knowledge from {knowledge_path}")
         knowledge_df = load_knowledge_df(knowledge_path)
-        grp = knowledge_df.groupby("knowledge").agg(
-            freq=("knowledge", "count"),
-            mean_confidence=("confidence_score", "mean")
-            if "confidence_score" in knowledge_df.columns
-            else ("knowledge", "count"),
-        ).reset_index()
+        grp = _aggregate_with_canonical(knowledge_df, "knowledge")
 
-    print(f"[INFO] Unique {args.input_type} items before freq filter: {len(grp)}")
+    print(f"[INFO] Unique {args.input_type} items (after grouping) before freq filter: {len(grp)}")
     grp = grp[grp["freq"] >= args.min_freq].copy()
     print(f"[INFO] Unique {args.input_type} items after freq >= {args.min_freq}: {len(grp)}")
 

@@ -7,6 +7,9 @@ from pathlib import Path
 # ---- PROJECT ROOT ----
 PROJECT_ROOT = Path(r"D:\Projects\skill-extraction")
 
+# ---- REPRODUCIBILITY ----
+RANDOM_SEED = 42  # Single source of truth for sampling; override via --seed in scripts
+
 # ---- MODEL / DATA PATHS ----
 # Base model for fine-tuning (JobBERT)
 JOBBERT_MODEL_NAME = "jjzha/jobbert-base-cased"  # or any BERT-like model
