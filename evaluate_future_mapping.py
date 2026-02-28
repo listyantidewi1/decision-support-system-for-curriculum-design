@@ -24,7 +24,9 @@ LABELS_DIR = Path(config.PROJECT_ROOT) / "DATA" / "labels"
 
 
 def load_gold(labels_dir: Path) -> pd.DataFrame:
-    path = labels_dir / "gold_future_domain.csv"
+    path = labels_dir / "gold_future_domain_merged.csv"
+    if not path.exists():
+        path = labels_dir / "gold_future_domain.csv"
     if not path.exists():
         return pd.DataFrame()
     df = pd.read_csv(path)

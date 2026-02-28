@@ -1,5 +1,5 @@
 ﻿domain_id,future_domain,example_terms,trend_label,trend_score,source,horizon_year
-WEF01,AI & Machine Learning,"machine learning, deep learning, generative AI, large language models, neural networks, MLOps, computer vision, NLP",Strong_Growth,1.0,WEF_FutureOfJobs_2023,2030
+WEF01,AI & Machine Learning,"machine learning, deep learning, generative AI, large language models, neural networks, MLOps, computer vision, NLP",Strong_Growth,1,WEF_FutureOfJobs_2023,2030
 WEF02,Big Data & Analytics,"data analytics, data engineering, business intelligence, data visualization, statistical modeling, data pipelines, data warehousing",Strong_Growth,0.9,WEF_FutureOfJobs_2023,2030
 WEF03,Cybersecurity,"cybersecurity, information security, penetration testing, threat intelligence, zero trust, SOC, incident response, encryption",Strong_Growth,0.9,WEF_FutureOfJobs_2023,2030
 WEF04,Cloud Computing & Infrastructure,"cloud computing, kubernetes, docker, AWS, Azure, GCP, terraform, infrastructure as code, CI/CD, DevOps",Strong_Growth,0.85,WEF_FutureOfJobs_2023,2030
@@ -12,6 +12,6 @@ ONET03,UX/UI & Digital Design,"user experience, user interface, Figma, wireframi
 ONET04,Game Development & Interactive Media,"game development, Unity, Unreal Engine, 3D modeling, game design, VR, AR, interactive media, shader programming",Moderate_Growth,0.6,ONET_BrightOutlook_2024,2033
 MCK01,Process Automation & RPA,"robotic process automation, workflow automation, scripting, low-code, no-code, business process management",Moderate_Growth,0.5,McKinsey_FutureOfWork_2023,2030
 MCK02,Advanced Communication & Collaboration,"technical writing, cross-functional collaboration, remote work tools, stakeholder management, presentation skills",Moderate_Growth,0.4,McKinsey_FutureOfWork_2023,2030
-DEC01,Routine Data Entry & Clerical,"data entry, routine clerical work, simple repetitive administration, manual bookkeeping",Decline,-0.6,WEF_FutureOfJobs_2023,2030
-DEC02,Legacy Web Development,"static websites, basic HTML only, table-based layouts, Flash development",Decline,-0.4,Expert_consensus,2028
-DEC03,Routine Maintenance Coding,"boilerplate code updates, simple feature maintenance, repetitive bug fixing without design thinking",Decline,-0.3,McKinsey_FutureOfWork_2023,2030
+1-Dec,Routine Data Entry & Clerical,"data entry, routine clerical work, simple repetitive administration, manual bookkeeping",Decline,-0.6,WEF_FutureOfJobs_2023,2030
+2-Dec,Legacy Web Development,"static websites, basic HTML only, table-based layouts, Flash development",Decline,-0.4,Expert_consensus,2028
+3-Dec,Routine Maintenance Coding,"boilerplate code updates, simple feature maintenance, repetitive bug fixing without design thinking",Decline,-0.3,McKinsey_FutureOfWork_2023,2030

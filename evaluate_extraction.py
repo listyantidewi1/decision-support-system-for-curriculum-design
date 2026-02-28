@@ -107,6 +107,59 @@ def evaluate_by_source(df: pd.DataFrame, source_col: str = "source") -> List[Dic
     return results
 
 
+def _load_irr_from_gold_labels(labels_dir: Path, kind: str, overlap_n: int = 20) -> Dict:
+    """Load IRR from gold_labels/ (multi-reviewer UI format)."""
+    path = labels_dir / "gold_labels" / f"{kind}_labels.csv"
+    if not path.exists():
+        return {"status": "no_gold_labels"}
+    df = pd.read_csv(path)
+    if "gold_id" not in df.columns or "labeler_id" not in df.columns or "is_correct" not in df.columns:
+        return {"status": "missing_columns"}
+    df["is_correct"] = df["is_correct"].astype(str).str.strip().str.lower()
+    df = df[df["is_correct"].isin(["yes", "no"])].copy()
+    df["is_correct_bin"] = (df["is_correct"] == "yes").astype(int)
+
+    # Overlap: first N unique gold_ids from template
+    template_path = labels_dir / ("gold_skills.csv" if kind == "skill" else "gold_knowledge.csv")
+    if template_path.exists():
+        tpl = pd.read_csv(template_path)
+        overlap_ids = tpl["gold_id"].head(overlap_n).tolist() if "gold_id" in tpl.columns else []
+    else:
+        overlap_ids = df["gold_id"].unique()[:overlap_n].tolist()
+
+    df_overlap = df[df["gold_id"].isin(overlap_ids)].copy()
+    labelers = df_overlap["labeler_id"].astype(str).str.strip().unique()
+    labelers = [x for x in labelers if x and x != ""]
+    if len(labelers) < 2:
+        return {"status": "single_labeler", "labeler": str(labelers[0]) if len(labelers) == 1 else "none"}
+
+    pivot = df_overlap.pivot_table(
+        index="gold_id", columns="labeler_id", values="is_correct_bin", aggfunc="first"
+    ).dropna(how="all")
+    valid_labelers = [c for c in labelers if c in pivot.columns]
+    if len(valid_labelers) < 2:
+        return {"status": "insufficient_overlap", "overlap_items": len(pivot)}
+    pivot = pivot[valid_labelers].dropna()
+    if len(pivot) < 5:
+        return {"status": "insufficient_overlap", "overlap_items": len(pivot)}
+
+    l1, l2 = valid_labelers[0], valid_labelers[1]
+    a, b = pivot[l1].values, pivot[l2].values
+    agree = (a == b).sum()
+    n = len(a)
+    po = agree / n
+    pe = ((a == 1).sum() / n * (b == 1).sum() / n +
+          (a == 0).sum() / n * (b == 0).sum() / n)
+    kappa = (po - pe) / (1 - pe) if pe < 1 else 0.0
+    return {
+        "status": "ok",
+        "labelers": [str(l1), str(l2)],
+        "overlap_items": n,
+        "observed_agreement": round(po, 4),
+        "cohens_kappa": round(kappa, 4),
+    }
+
+
 def evaluate_irr(df: pd.DataFrame, id_col: str = "gold_id") -> Dict:
     """Compute inter-rater reliability if multiple labelers present."""
     if "labeler_id" not in df.columns:
@@ -162,16 +215,20 @@ def main():
 
     report: Dict = {}
 
-    skills_path = labels / "gold_skills.csv"
+    # Prefer merged file (multi-reviewer majority vote); fallback to direct gold_skills.csv
+    skills_path = labels / "gold_skills_merged.csv"
+    if not skills_path.exists():
+        skills_path = labels / "gold_skills.csv"
     skills_df = _load_labeled(skills_path)
     if skills_df.empty:
         print("[WARN] No labeled skills found (gold_skills.csv empty or missing is_correct)")
         report["skills"] = {"status": "no_data"}
     else:
         print(f"[INFO] Loaded {len(skills_df)} labeled skills")
+        irr = _load_irr_from_gold_labels(labels, "skill") if (labels / "gold_labels" / "skill_labels.csv").exists() else evaluate_irr(skills_df)
         report["skills"] = {
             "by_source": evaluate_by_source(skills_df),
-            "irr": evaluate_irr(skills_df),
+            "irr": irr,
         }
         overall = [r for r in report["skills"]["by_source"] if r["source"] == "all"]
         if overall:
@@ -179,16 +236,19 @@ def main():
             print(f"  Skills overall: P={o['precision']:.3f} "
                   f"(95% CI {o['precision_ci_95']}), n={o['n']}")
 
-    knowledge_path = labels / "gold_knowledge.csv"
+    knowledge_path = labels / "gold_knowledge_merged.csv"
+    if not knowledge_path.exists():
+        knowledge_path = labels / "gold_knowledge.csv"
     knowledge_df = _load_labeled(knowledge_path)
     if knowledge_df.empty:
         print("[WARN] No labeled knowledge found")
         report["knowledge"] = {"status": "no_data"}
     else:
         print(f"[INFO] Loaded {len(knowledge_df)} labeled knowledge")
+        irr = _load_irr_from_gold_labels(labels, "knowledge") if (labels / "gold_labels" / "knowledge_labels.csv").exists() else evaluate_irr(knowledge_df)
         report["knowledge"] = {
             "by_source": evaluate_by_source(knowledge_df),
-            "irr": evaluate_irr(knowledge_df),
+            "irr": irr,
         }
         overall = [r for r in report["knowledge"]["by_source"] if r["source"] == "all"]
         if overall:

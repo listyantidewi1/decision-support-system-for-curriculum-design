@@ -62,6 +62,13 @@ skill-extraction/
 │   ├── static/app.js                # Frontend logic
 │   └── templates/index.html
 │
+├── gold_labeling_ui/                # Web UI for gold-set labeling (multi-reviewer)
+│   ├── app.py                       # FastAPI backend
+│   ├── static/app.js, style.css     # Frontend
+│   └── templates/index.html         # Skills, Knowledge, Domain tabs
+│
+├── merge_gold_labels.py             # Majority-vote merge of multi-reviewer labels
+│
 ├── dashboard/                       # Admin + school dashboard (production)
 │   ├── app.py                       # FastAPI app, school review, results
 │   ├── db.py                        # SQLite (schools, departments, users, runs)
@@ -77,7 +84,8 @@ skill-extraction/
 │   ├── labels/                      # Gold set for evaluation
 │   │   ├── gold_skills.csv
 │   │   ├── gold_knowledge.csv
-│   │   └── gold_future_domain.csv
+│   │   ├── gold_future_domain.csv
+│   │   └── gold_labels/             # Multi-reviewer labels (from gold_labeling_ui)
 │   ├── samples/                     # Sample CSVs for dashboard simulation
 │   │   ├── jobs_sample.csv
 │   │   ├── curriculum_sample.csv
@@ -92,7 +100,7 @@ skill-extraction/
 ├── RESEARCH_QUESTIONS.md            # RQs, metrics, ablation design
 ├── CALCULATIONS.md                  # Ranking, voting, weighting formulas
 ├── PIPELINE.md                      # Detailed pipeline documentation
-├── run.bat                          # Phase 1: Full pipeline (14 steps)
+├── run.bat                          # Phase 1: Full pipeline (15 steps)
 ├── run_phase_2.bat                  # Phase 2: Post-review pipeline (13 steps)
 └── scripts/create_sample_csvs.py   # Generate DATA/samples/*.csv for dashboard
 ```
@@ -108,7 +116,8 @@ python ingest_future_domains.py
 REM 1. Phase 1 — Full pipeline (14 steps: extraction → trends → recommendations → gold set)
 run.bat
 
-REM 2. Label the gold set (DATA/labels/gold_*.csv) — see DATA/labels/LABELING_PROTOCOL.md
+REM 2. (Optional) Label gold set: uvicorn gold_labeling_ui.app:app --reload
+REM    Then python merge_gold_labels.py — see DATA/labels/LABELING_PROTOCOL.md
 
 REM 3. Expert review — start the web UI (optional but recommended)
 uvicorn review_ui.app:app --reload

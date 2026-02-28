@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gold Set Labeling — Ground Truth for Evaluation</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>Gold Set Labeling</h1>
+    <p class="meta">Ground-truth labels for extraction evaluation (precision/recall) and inter-rater reliability (Cohen's Kappa)</p>
+    <p class="labeler-badge">Labeler: <strong id="labeler-display">—</strong> <span class="hint">(set via ?labeler_id=alice for multi-reviewer)</span></p>
+    <div class="protocol-banner">
+      <strong>Scientific protocol:</strong> First 20 items in each tab are the <em>overlap set</em>—all reviewers must label these for Cohen's Kappa. Use <strong>yes</strong>/<strong>no</strong> for is_correct (conservative: use <em>no</em> when unsure).
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="skills">Skills</button>
+    <button class="tab" data-tab="knowledge">Knowledge</button>
+    <button class="tab" data-tab="domain">Domain Mapping</button>
+  </nav>
+
+  <main>
+    <section id="skills-panel" class="panel active">
+      <div class="panel-toolbar">
+        <h2>Skill Labels (is_correct, type, Bloom)</h2>
+        <div class="toolbar-right">
+          <button class="btn-filter" onclick="toggleFilter()">Show Unlabeled Only</button>
+          <button class="btn-next">Next Unlabeled</button>
+        </div>
+      </div>
+      <p>Label whether each extracted skill is <strong>correctly</strong> extracted from the job text. <code>yes</code> = real skill from posting; <code>no</code> = garbage, fragment, or hallucinated.</p>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="skills-bar"></div>
+      </div>
+      <div class="progress"><span id="skills-progress">0 / 0</span> labeled <span class="overlap-hint">(first 20 = overlap for IRR)</span></div>
+      <div id="skills-list" class="review-list"></div>
+    </section>
+
+    <section id="knowledge-panel" class="panel">
+      <div class="panel-toolbar">
+        <h2>Knowledge Labels (is_correct)</h2>
+        <div class="toolbar-right">
+          <button class="btn-filter" onclick="toggleFilter()">Show Unlabeled Only</button>
+          <button class="btn-next">Next Unlabeled</button>
+        </div>
+      </div>
+      <p>Label whether each knowledge item is <strong>correctly</strong> extracted. <code>yes</code> = real concept from posting; <code>no</code> = garbage or hallucinated.</p>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="knowledge-bar"></div>
+      </div>
+      <div class="progress"><span id="knowledge-progress">0 / 0</span> labeled <span class="overlap-hint">(first 20 = overlap for IRR)</span></div>
+      <div id="knowledge-list" class="review-list"></div>
+    </section>
+
+    <section id="domain-panel" class="panel">
+      <div class="panel-toolbar">
+        <h2>Domain Mapping (true_domain_id)</h2>
+        <div class="toolbar-right">
+          <button class="btn-filter" onclick="toggleFilter()">Show Unlabeled Only</button>
+          <button class="btn-next">Next Unlabeled</button>
+        </div>
+      </div>
+      <p>Select the future domain that best fits each item. Use <code>none</code> if no fit; <code>unclear</code> if undecidable.</p>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="domain-bar"></div>
+      </div>
+      <div class="progress"><span id="domain-progress">0 / 0</span> labeled <span class="overlap-hint">(first 20 = overlap for IRR)</span></div>
+      <div id="domain-list" class="review-list"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Labels auto-save per labeler. After all reviewers finish, run <code>python merge_gold_labels.py</code> to produce majority-vote merged files, then <code>python evaluate_extraction.py</code> and <code>python evaluate_future_mapping.py</code>.</p>
+  </footer>
+  <script src="/static/app.js"></script>
+</body>
+</html>
