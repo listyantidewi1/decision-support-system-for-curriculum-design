@@ -2,7 +2,31 @@
 
 ## Purpose
 Create ground-truth labels for evaluating extraction quality, scoring
-calibration, and future-domain mapping accuracy.
+calibration, and future-domain mapping accuracy. Supports multi-reviewer
+labeling with majority vote and inter-rater reliability (Cohen's Kappa).
+
+## Labeling Options
+
+| Method | Use Case |
+|--------|----------|
+| **Gold Labeling UI** | Multi-reviewer, auto-save, overlap set for IRR |
+| **Manual CSV edit** | Single reviewer, direct edit of gold_*.csv |
+
+## Gold Labeling UI (Recommended for Multi-Reviewer)
+
+```bat
+uvicorn gold_labeling_ui.app:app --reload
+```
+
+Open `http://127.0.0.1:8000/?labeler_id=alice` (use different labeler_id per reviewer).
+
+Labels are stored in `DATA/labels/gold_labels/` per (gold_id, labeler_id).
+
+**After all reviewers finish:**
+```bat
+python merge_gold_labels.py
+```
+Then run `evaluate_extraction.py` and `evaluate_future_mapping.py` (they use `*_merged.csv` automatically).
 
 ## Files to Label
 
@@ -51,12 +75,18 @@ pipeline.
 - **labeler_id**: Your reviewer ID
 - **notes**: Optional
 
-## Overlap Items
-The first 20 items in each file should be labeled by all reviewers to compute
-inter-rater reliability (Cohen's Kappa). The export script uses the same
-random seed so overlap is deterministic.
+## Overlap Items (IRR)
+The **first 20 items** in each tab must be labeled by **all** reviewers to compute
+inter-rater reliability (Cohen's Kappa). The Gold Labeling UI marks these with
+an "Overlap (IRR)" badge. The export script uses the same random seed so overlap
+is deterministic.
+
+## Majority Vote
+When multiple reviewers label the same item:
+- **is_correct**: yes if count(yes) > count(no); else no (conservative tie-break)
+- **type_label**, **bloom_label**, **true_domain_id**: mode (most frequent)
 
 ## Quality Checks
 - Label all items (do not skip)
 - If in doubt, mark `no` for is_correct (conservative)
-- Save as UTF-8 CSV (do not change column order)
+- For manual CSV: save as UTF-8 (do not change column order)
