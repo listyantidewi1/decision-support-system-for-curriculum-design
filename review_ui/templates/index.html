@@ -11,6 +11,18 @@
     <h1>Expert Review Dashboard</h1>
     <p class="meta">Human-in-the-loop verification &mdash; changes auto-save as you review</p>
     <p class="reviewer-badge">Reviewer: <strong id="reviewer-display">—</strong> <span class="hint">(set via ?reviewer_id=alice in URL for multi-reviewer)</span></p>
+    <details class="rubric-toggle">
+      <summary><strong>Review Rubric</strong> — when to choose Valid/Invalid, Quality 1–5, Relevant?</summary>
+      <div class="rubric-content">
+        <h4>Skills &amp; Knowledge — Valid?</h4>
+        <p><strong>Valid:</strong> Real skill/knowledge from the job text; actionable or meaningful concept. <strong>Invalid:</strong> Garbage, fragment, hallucination, not a skill/knowledge, or degree requirement. <em>When unsure, choose Invalid.</em></p>
+        <h4>Competency — Quality (1–5)</h4>
+        <p><strong>1 Poor:</strong> Unusable (incoherent, wrong grouping). <strong>2 Fair:</strong> Weak. <strong>3 Good:</strong> Acceptable, usable. <strong>4–5:</strong> Strong to excellent, curriculum-ready.</p>
+        <h4>Competency — Relevant?</h4>
+        <p><strong>Relevance = alignment with related skills + curriculum domain.</strong> <strong>Yes:</strong> Competency accurately groups skills and is useful for curriculum. <strong>Partial:</strong> Some fit, some don't. <strong>No:</strong> Misaligned with skills or not relevant to domain.</p>
+        <p class="rubric-ref">Full rubric: <code>docs/EXPERT_REVIEW_RUBRIC.md</code></p>
+      </div>
+    </details>
   </header>
 
   <nav class="tabs">

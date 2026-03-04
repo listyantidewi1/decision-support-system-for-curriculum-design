@@ -39,6 +39,7 @@ The **[SCIENTIFIC_METHODOLOGY.md](../SCIENTIFIC_METHODOLOGY.md)** document cover
 
 | Document | Description |
 |----------|-------------|
+| [EXPERT_REVIEW_RUBRIC.md](EXPERT_REVIEW_RUBRIC.md) | Review criteria: Valid/Invalid, Quality 1–5, Relevance |
 | [../DATA/labels/LABELING_PROTOCOL.md](../DATA/labels/LABELING_PROTOCOL.md) | Gold labeling instructions, majority vote, IRR overlap |
 | [../gold_labeling_ui/README.md](../gold_labeling_ui/README.md) | Gold labeling web UI |
 | [../dashboard/README.md](../dashboard/README.md) | Dashboard (admin, school) |
