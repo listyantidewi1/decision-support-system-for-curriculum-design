@@ -1,0 +1,102 @@
+================================================================================
+ADVANCED METRICS REPORT
+================================================================================
+
+1. Model-Level Extraction Summary
+--------------------------------
+- Model: GPT
+    Jobs                     : 5290
+    Total skills extracted   : 20886
+    Total knowledge extracted: 11060
+    Mean skills per job      : 3.28
+    Mean knowledge per job   : 1.73
+
+- Model: Hybrid
+    Jobs                     : 5369
+    Total skills extracted   : 30325
+    Total knowledge extracted: 13954
+    Mean skills per job      : 4.67
+    Mean knowledge per job   : 2.15
+
+- Model: JobBERT
+    Jobs                     : 3238
+    Total skills extracted   : 15367
+    Total knowledge extracted: 6569
+    Mean skills per job      : 4.17
+    Mean knowledge per job   : 1.78
+
+
+2. Hybrid Improvement (Hybrid - Base Model)
+-------------------------------------------
+- Compared to JobBERT:
+    skill_diff_JobBERT: mean=1.9071, median=1.6667
+    knowledge_diff_JobBERT: mean=0.8128, median=0.0000
+    coverage_diff_JobBERT: mean=0.0692, median=0.0432
+    avg_conf_diff_JobBERT: mean=-0.0427, median=-0.0504
+
+- Compared to GPT:
+    skill_diff_GPT: mean=1.4352, median=0.5000
+    knowledge_diff_GPT: mean=0.4388, median=0.0000
+    coverage_diff_GPT: mean=0.0557, median=0.0261
+    avg_conf_diff_GPT: mean=-0.0408, median=-0.0150
+
+
+3. Bloom Taxonomy Distribution (Hard Skills)
+-------------------------------------------
+- Model: GPT
+    bloom_remember: 202
+    bloom_understand: 159
+    bloom_apply: 4167
+    bloom_analyze: 1535
+    bloom_evaluate: 1196
+    bloom_create: 3753
+    bloom_na: 9874
+
+- Model: Hybrid
+    bloom_remember: 336
+    bloom_understand: 332
+    bloom_apply: 10349
+    bloom_analyze: 2083
+    bloom_evaluate: 1779
+    bloom_create: 5084
+    bloom_na: 10362
+
+- Model: JobBERT
+    bloom_remember: 241
+    bloom_understand: 327
+    bloom_apply: 9075
+    bloom_analyze: 1053
+    bloom_evaluate: 1156
+    bloom_create: 2379
+    bloom_na: 1136
+
+
+4. Coverage Metrics (Hybrid)
+----------------------------
+- Mean overall coverage percentage  : 0.0375
+- Median overall coverage percentage: 0.0000
+- Mean skill coverage percentage    : 0.02165187348371378980860235685668158112093806
+- Mean knowledge coverage percentage: 0.0226
+- Mean skill confidence (hybrid)    : 0.4339
+- Mean knowledge confidence (hybrid): 0.2708
+
+- Mean missing components per job   : 17.16
+- Median missing components per job : 19.00
+
+
+5. Curriculum Demand Summary (from Mapping)
+------------------------------------------
+- Total mapped items: 24856
+- Unique curriculum components with demand: 19
+
+  Top 10 most demanded components (by count):
+    workforce_insights: 3149
+    digital_literacy: 3037
+    algorithms_programming: 2271
+    data_analysis: 2228
+    basic_job_skills_ohs: 2166
+    computational_thinking: 2037
+    ai_development: 1248
+    web_development: 1190
+    graphics_multimedia: 1120
+    ai_literacy_ethics: 1076
