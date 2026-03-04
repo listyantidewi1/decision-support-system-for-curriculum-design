@@ -1,132 +1,357 @@
 ﻿review_id,job_id,skill
-skill_024d392d3d8e,in-0f426aefb28b6547,take ownership of security tools
-skill_06d548b66076,in-1b25dd823a4e1d2d,ensure code quality
-skill_07d7a8389a82,in-19645b80a73af969,maintain documentation standards
-skill_09341884ece0,in-8e1b2efd1265f8b9,manage budgets
-skill_0ce642cd7f32,in-c2f9d84c98c31d92,ensure scalability
-skill_0da26b950049,in-59ebc721a66a2f28,participate in code reviews
-skill_0e65efc51581,in-7199f8b61f253ce3,maintain data pipelines
-skill_0e9460c5aebf,in-2edf962ec238e57d,administer Workplace Management
-skill_0eef20f6b72c,in-d9dec1280ddbbc23,analyze data
-skill_10edef60904b,in-b9fcb0438cfe5431,prepare client-facing reports
-skill_129bf799557a,in-c2f9d84c98c31d92,ensure robust security
-skill_152175a9bdc1,in-b91dc4f379ed04ae,implement access control policies
-skill_152efc16c946,in-4e704173bd6f376b,contribute to the evolution of engineering culture and operating models
-skill_15c1290b096c,in-984033710b0943bf,anticipate bias/variance tradeoff
-skill_16a6d4cb35a0,in-a1c615fc84d5d867,maintain high data quality
-skill_1799198cc08c,in-3957ddd875530637,drive recurring revenues
-skill_18b5253d15e2,in-c98f2a57e04d73aa,wash walls
-skill_19cf2344c97d,in-f66fab6b91882463,apply QA methodologies and tools
-skill_1ce3131d77b4,in-23f0317d88e4e60e,"ensure commissioning outcomes meet safety, quality, and client expectations"
-skill_1d1fbdf4bc3c,in-5bd2c411fbfa5f24,expand critical infrastructure
-skill_1f9fb30b5cf4,in-e17a65cac32522bd,maintain core tools and libraries
+skill_00fbd149506e,in-4a656605e60ee2cb,uphold security best practices
+skill_01aae7222f55,in-e622db2eb160aabb,review pull requests
+skill_024d392d3d8e,,
+skill_030ef83f8ffd,in-526ea3535eaa83a3,monitor regulatory changes
+skill_0351fd73e2c2,in-4fb78df93424d89c,support sales teams
+skill_03b2b2bf8e0b,in-be57a5eac072936f,prepare proposal documentation
+skill_03cc07fb93f9,in-22c718b3a2bc8602,communicate effectively
+skill_042963ae9ba4,in-6544e27371514bdc,create partnerships
+skill_052ac9c8f8b9,in-d6f5b1ef405322e7,conduct data analysis
+skill_05967b7cc0ff,in-6c14c3cc5e1e7e69,liaise with customers
+skill_06d548b66076,,
+skill_07d7a8389a82,,
+skill_09341884ece0,,
+skill_0b3bc1f8c66f,in-6806e5c21d27a818,oversee development of reports
+skill_0b896c0f372a,in-edfabd3fa40a808b,adhere to SLA requirements
+skill_0ce642cd7f32,,
+skill_0ceed34da26b,in-248ab7c99e0437ed,develop automation scripts
+skill_0d7336a66e83,in-f088d4f821eb47ea,deliver high-quality outcomes
+skill_0da26b950049,,
+skill_0e65efc51581,,
+skill_0e9460c5aebf,,
+skill_0ee9e7f4c211,in-36979d3955912c1c,offer suggestions for improvement
+skill_0eef20f6b72c,,
+skill_10edef60904b,,
+skill_116b7ec8710d,in-eafa4f6055753174,process payments
+skill_11ed84725704,in-845346fa24bb906c,boost developer productivity
+skill_123c6af607c3,in-55dc0326a7b5e2d2,bring diverse teams together
+skill_129bf799557a,,
+skill_13ef3f953a57,in-9c583f25348c0eae,implement application security policies
+skill_148f71a8afad,in-7962a060c53532fb,break limits
+skill_152175a9bdc1,,
+skill_152efc16c946,,
+skill_152fc7ac5fe4,in-ac2d1477da058794,run experiments
+skill_15c1290b096c,,
+skill_1680e995bc79,in-c2f46f18a1a484d8,maintain clear communication channels
+skill_16a6d4cb35a0,,
+skill_16d73f82391e,in-eb1b0d5bcdc417f9,build clear decks
+skill_1799198cc08c,,
+skill_18a1a0f8c422,in-9bebd4d084f02ba0,build reliable data pipelines
+skill_18b5253d15e2,,
+skill_19cf2344c97d,,
+skill_1ac653a816ab,in-c619f8fed61b43bd,adapt to fast-paced environments
+skill_1becafbb050a,in-af87cde151fe52e5,think outside of the box
+skill_1ce3131d77b4,,
+skill_1d1fbdf4bc3c,,
+skill_1df489bbeee3,in-a837d7aff10ff5ed,lead the design and development of new control systems features
+skill_1e7f1df34903,in-be1d3eb33ea74335,motivate team members
+skill_1f9fb30b5cf4,,
+skill_20a19bb5bd98,in-2909130b7c628bf7,reduce incident response time
+skill_21135f28a882,in-5ced6d9107a6c537,ensure smooth build
+skill_217b614fafa1,in-f70b2dbf8b1ea6a6,make business-based judgment calls
 skill_219545b56853,in-0f38cde44555d389,identify automation opportunities
-skill_22fbd26de80b,in-0f6e1973320e0797,deliver on SMB growth objectives
+skill_219d5f652c08,in-e930c35b618edf8f,troubleshoot infrastructure issues
+skill_22fbd26de80b,,
+skill_235219262295,in-b68dbc93bf7f7024,turn insights into action
+skill_243c0295be60,in-0b39b1b24a1554be,integrate customer centric research findings into product design decisions
+skill_247102ea7d49,in-bf6941e9141be8bc,drive solutions
+skill_2481af7cfdf2,in-8c4719679b173c62,craft engaging social content
+skill_2559404632a6,in-5b8b8b6b495946f5,lead data migration activities
+skill_25abc2965f66,in-ffb8aff903814d1d,champion financial governance
+skill_25bda619e912,in-f7bdb497758a5bfa,complete design/documentation
 skill_25bf30de616d,in-0f38cde44555d389,make data-driven decisions
-skill_2882cd42c4d8,in-6dc2d89f8c34b112,perform clinical skills
-skill_297118e0b9e3,in-fc023aaf76570654,analyze business problems and requirements
-skill_29bdfefa5200,in-19914a6af4ea9ddb,deliver solutions for ambiguous or new problems
-skill_29e382cb3cb8,in-984033710b0943bf,anticipate risks of data leakage
-skill_2bff9dd7ac65,in-584b7e17d700e205,collaborate with stakeholders
-skill_2eb75efb135d,in-ad45d0a1a69a07da,align partners’ goals with business outcomes
-skill_329f7e7a3bd3,in-e83d82f6046a761b,lead client engagement
-skill_35e376cb7687,in-6055370b483ace56,work independently
-skill_39e3a95c83d7,in-65a84ae03b79df62,identify relevant technologies for implementation
-skill_3a512106e7e5,in-9bbde45aefa519e1,motivate each other
-skill_3db0fb45cec1,in-16b8ccda0edc7185,negotiate with external parties
-skill_413e6795787c,in-d14ad0b5d3a560a8,detect anomalies and risks
-skill_41dd556ec255,in-7caa9329eb9bfdf7,assist with operational issues
-skill_424012dbd0ae,in-e758bf85ade6587f,communicate ideas effectively
-skill_442e03b4cdc7,in-582782654d5ecc0d,implement best practices in data governance
-skill_446a242b1c32,in-068fab73d00568ea,manage projects
-skill_462c0739c3be,in-2a73b5e567998db1,work with diverse group
-skill_49bcb6d36eb5,in-8e1b2efd1265f8b9,manage risks
-skill_4c4e25da78d7,in-a61c1082390cb772,calculate campaign results
-skill_4e8526951cdb,in-3bc924a81fb0f63e,ensure seamless integration with other SAP
-skill_5410bb766611,in-7f7d3005364b8f41,perform site-based hands-on work
-skill_54268b6bd0c8,in-20819a46539714f8,coordinate instrument operations
-skill_55060ff17086,in-0ce4ee994f5986ef,resolve complex service requests
-skill_555ac1ecb463,in-323408134a4a75b0,ensure adherence to industry standards
-skill_567a69413ab3,in-e77d08be654e0bfe,operate at scale
-skill_58f4f56dd46f,in-65a84ae03b79df62,pick up new technologies quickly
-skill_5b88e5ec1b46,in-e026c565f721c839,analyze large datasets
-skill_5c9c17b4cfbc,in-796fcd601edaf728,ensure seamless execution of activities
-skill_5f1ac5360b9b,in-739f0a0c8a69de2a,perform detailed calculations
-skill_6157e6ba7d8c,in-a9b1db04cc467274,combat circumvention of systems
-skill_674a6ecb3bbb,in-9faba76b8ffb3600,understand operating styles
-skill_67ef7816dee0,in-006d3d5257bcc3e0,deploy AI enabled solutions
-skill_689307fcc189,in-a1c615fc84d5d867,prioritise outreach
-skill_69c33254d140,in-26690ce23c3fecfb,meet deadlines
-skill_6b8fdf31926b,in-7cfa12291f690da0,drive productivity
-skill_6baa515e6a7a,in-6ba0cad0e74273c1,conduct general TTM duties
-skill_6e364e1f5aed,in-cf71d1051ebbaecd,work with diverse populations
-skill_710fd4c18c7a,in-f236d97986ddfba2,manage cloud-based security posture activities
-skill_711dc66a6226,in-ea8f11069ede0305,lead insights/intelligence function
-skill_7175d070a0b4,in-e6cadbe5ff69357e,lead execution
-skill_727a50929c78,in-7f75cc3102ed1fc2,provide valuable feedback
-skill_7339eaeb2575,in-21771c999eed976a,embed practice tools
-skill_745b43c16f88,in-9bbde45aefa519e1,take risks
-skill_74b4f20a491b,in-7f7d3005364b8f41,ensure uninterrupted provision of Tunnel services
-skill_7705e25aaab7,in-c6eab91bffa3d3bd,drive data use
-skill_791ff5ea24cd,in-943ad19608fc7fde,establish best practices
-skill_7df74f8f5673,in-56858f647fd75f50,conduct technical feasibility studies
-skill_80dc4f6dc109,in-1b5b705fabffaa4a,negotiate / influence at a senior stakeholder level
-skill_81ad3f5528b6,in-4118eeb4a097c9b6,reduce operational risk
-skill_81eacd8bceba,in-e057b9be073de15d,teach instructional content
-skill_828c841ba1ee,in-9faba76b8ffb3600,adjust behavior
-skill_86cc04756fbb,in-2a4302db92bc7eea,manage and coordinate monthly HV maintenance works
-skill_8d39de0d3ed0,in-6556f40a159eae7f,maintain visual styles
-skill_8dfe796eaf73,in-0291434f0c4cfdad,provide subject matter expertise
-skill_8eca1f5af636,in-277cf9b06c74153d,fulfill special requests
-skill_8feee84a9f06,in-4d23cfdf1e39da47,provide hands-on direction
+skill_2762495b3b0c,in-bee82521a330a463,carry out data gathering
+skill_2837868ef4e0,in-8968ba568e695892,provide commercial analysis
+skill_2882cd42c4d8,,
+skill_2895d03e02a0,in-bacf82922de13ca1,generate business case reports
+skill_297118e0b9e3,,
+skill_29bdfefa5200,,
+skill_29e382cb3cb8,,
+skill_2ac45c0141f7,in-480433f7a9aff4fd,create network diagrams
+skill_2afb67b647bc,in-80cff041411bc94d,provide customer service excellence
+skill_2b57f558c238,in-3bdfce1f80372977,shape commercial outcomes
+skill_2bff9dd7ac65,,
+skill_2cbceda273ae,in-d9cadd0e5390cadd,understand customer drivers
+skill_2cfc25532c39,in-bf27e3c9db1b8a21,"ensure alignment with approved schedule, budget, and design"
+skill_2d30609844b0,in-7af6513fd2aa9222,inform game design and implementations
+skill_2eb75efb135d,,
+skill_2ecc0f8c1441,in-e1fa0fe9d232901f,define problems
+skill_305267d8104c,in-917644013c709d00,manage/approve subcontractor time extensions
+skill_308ab8b3aea4,in-5e52c688efc5774c,ensure every piece fits perfectly
+skill_319f87277980,in-24460c3c588d3f58,enable intuitive analytics
+skill_329f7e7a3bd3,,
+skill_339ea81d1031,in-04c370e7e5fa5de4,design high quality solutions
+skill_33a41e839982,in-6c848f37fc379105,gain insights
+skill_35e376cb7687,,
+skill_382e3ba89478,in-70544cdaba20d546,ensure operational efficiency
+skill_39e3a95c83d7,,
+skill_3a512106e7e5,,
+skill_3aad830b050c,in-ff3a31ce6a108e49,solve problems
+skill_3ac2f2b40e2c,in-38f3773fcb0a5e37,support production
+skill_3c1e363540fe,in-da23b9136909c481,provide administrative support
+skill_3cb1f095fd56,in-57d798fda99e7846,validate data migration
+skill_3d952e339af5,in-327a9e4dfda23fd8,deliver excellent service
+skill_3db0fb45cec1,,
+skill_3df917363c83,in-73c1ffdb2eac3614,use custom reporting tools
+skill_3f0f5761d39e,in-35db87ab4efa6927,resolve issues
+skill_3f40d74d7220,in-b82ada7cf4b26b40,drive cohesive approach
+skill_413e6795787c,,
+skill_41dd556ec255,,
+skill_424012dbd0ae,,
+skill_442e03b4cdc7,,
+skill_446a242b1c32,,
+skill_44c53bdee4a0,in-5313ca5efc67cfce,work with vendors
+skill_45c62675c114,in-a6736e124b5c4b79,align user needs to business outcomes
+skill_462c0739c3be,,
+skill_46c153976336,in-82f9fb26440bd39f,drive leads
+skill_474045e27f8c,in-36b379a1f0970539,drive data-driven decision-making
+skill_49bcb6d36eb5,,
+skill_4a22082a844d,in-d107997caf95d4e7,define workflows and approaches
+skill_4a8cb29e2d19,in-9e17e731092490ad,innovate
+skill_4aeb830d40fe,in-71462cdbe44d141c,demonstrate compliance
+skill_4b1efbc4dded,in-bb99b75ad5707d11,troubleshoot localisation issues
+skill_4c4e25da78d7,,
+skill_4cc2e3e68630,in-159c6d093e97476a,lead complex initiatives
+skill_4e52ef2f265e,in-0dd9a86d29518092,supervise and manage projects
+skill_4e8526951cdb,,
+skill_51471cc7d9b4,in-c8a52c2a1f7a97fe,build server-side foundations
+skill_52e0050a58ba,in-fab64b1f35dc960b,lead research
+skill_530ff0b46b58,in-254b0aa9e605ea21,identify areas for improvement
+skill_5410bb766611,,
+skill_54268b6bd0c8,,
+skill_55060ff17086,,
+skill_55582318fb33,in-7cad68425d328373,deliver successful products
+skill_555ac1ecb463,,
+skill_5644ca2b856f,in-91471fd2aa99b5a8,operate independently
+skill_567a69413ab3,,
+skill_570739e891f8,in-f7abd010cae8a163,motivate the team
+skill_58f1ac70e7bb,in-776e4c08376c36b4,provide strategic leadership
+skill_58f4f56dd46f,,
+skill_5962e169094f,in-ce69dae5b45ada66,manage digital workflows
+skill_5aeddcef5622,in-316e06c5e8deb0e1,"manage data ingestion, cleansing, transformation, and presentation"
+skill_5b88e5ec1b46,,
+skill_5c9c17b4cfbc,,
+skill_5cbf59d8a4e6,in-b0e33d027ac8700f,support everyday tickets
+skill_5ddfe29c6b8a,in-0b694e1cd2c10626,conduct contextual analysis
+skill_5eec84fa897d,in-79455b9eeb1ab8bf,build consensus
+skill_5f1ac5360b9b,,
+skill_6092e1f3ac2f,in-7acf3515abe32748,deliver risk-based audits
+skill_60a8f716b0b1,in-dab25a0ae1add1ca,create Bill of Materials (BOMs)
+skill_6157e6ba7d8c,,
+skill_6193cf5073ae,in-234255dcb0b3fd8b,implement appropriate controls
+skill_6284ed6618b8,in-c294fca197e238f6,anticipate future technology trends
+skill_650b854e1ee8,in-ba810b899bbfd90b,tackle challenges
+skill_663700fd0355,in-8612b8a83f90997f,use hands and fingers
+skill_670b69153693,in-7f124fa2e6e3d1b8,build scalable backend systems
+skill_674a6ecb3bbb,,
+skill_67ef7816dee0,,
+skill_6887d266dbf5,in-9ed16f46072e56de,act globally
+skill_689307fcc189,,
+skill_69c33254d140,,
+skill_6b893fb60e96,in-5941d074db566c6e,influence decision making
+skill_6b8fdf31926b,,
+skill_6baa515e6a7a,,
+skill_6c407b9af301,in-ee21c40b782ba960,work independently
+skill_6e364e1f5aed,,
+skill_7004796743c0,in-6c2932ac90eefa30,monitor user journeys
+skill_7094dfc68a5c,in-22cca762983b43f9,manage enterprise-wide data
+skill_710fd4c18c7a,,
+skill_711dc66a6226,,
+skill_7175d070a0b4,,
+skill_718b81b7a39e,in-f7efd6d106b3c748,execute audits
+skill_727a50929c78,,
+skill_7339eaeb2575,,
+skill_73e431b1fd7a,in-444b4b837844792e,translate user needs into evidence-based measurable requirements
+skill_7436faae235d,in-d92fd3ff29cad1e3,analyze data for continual improvement
+skill_745b43c16f88,,
+skill_74b4f20a491b,,
+skill_7705e25aaab7,,
+skill_77178539c09b,in-33c01bdd1bf14a8b,interact with clients
+skill_7777a0fd8277,in-d2e4a46079c8f922,define standards
+skill_77f12ea56483,in-4fa1cedef1c25473,execute change analysis
+skill_791ff5ea24cd,,
+skill_7a0947f75bb0,in-b6253936a4bb860c,teach Art courses
+skill_7aae96736c12,in-b1d04f8439b6fd2c,identify opportunities for growth
+skill_7b0700327fe7,in-7c72c72497dd6393,deploy agentic AI models
+skill_7d27d10a9648,in-6986500026189041,ask insightful questions
+skill_7df74f8f5673,,
+skill_806a49d388d7,in-bda1107ba499c153,identify potential areas of process improvement
+skill_80af454796c3,in-6fd7ab41fd9c572b,lead the delivery of complex cloud solution projects
+skill_80dc4f6dc109,,
+skill_817fb3bcf521,in-1793ad8e1f7e949d,"act with due skill, care, and diligence"
+skill_81ad3f5528b6,,
+skill_81c99729cd61,in-0d463b90645c0d01,value precision
+skill_81eacd8bceba,,
+skill_828c841ba1ee,,
+skill_82c828bdf9b3,in-17264860e4d557bd,plan projects
+skill_85d0290e123f,in-b3063ac854623dbf,work directly with leadership
+skill_86cc04756fbb,,
+skill_87b754e83ddf,in-5b21cde32da0219f,monitor existing clients
+skill_87c58ab105b4,in-d201dcee4ab022ff,debug/troubleshoot
+skill_87ffff118faf,in-1c71aa1adece6ee9,identify requirements
+skill_8874642b77df,in-38a3750e70b343a6,communicate effectively
+skill_88c00594ce00,in-eb7b44719e77cc58,operate a vehicle
+skill_89f70a65653f,in-4c0e76d448ffc00d,deliver high-quality insights
+skill_8d39de0d3ed0,,
+skill_8dfe796eaf73,,
+skill_8e8217e6664d,in-ec5b03718277f678,turn numbers into stories
+skill_8eca1f5af636,,
+skill_8f9932172f57,in-57b8f62b5d876090,provide technical advice
+skill_8feee84a9f06,,
 skill_90a2990c71fb,,
-skill_91dd3cc5e7c4,in-2d0ccdc10653d678,secure cloud resources
-skill_92f307594ae8,in-5f27e2c930c157e7,show creativity
-skill_99e5749036ee,in-b91dc4f379ed04ae,implement new features
-skill_a0574692c281,in-3284678829246fd8,detect active or attempted compromise
-skill_a5314babf337,in-2a4302db92bc7eea,lead HV maintenance delivery
-skill_a75850088670,in-068fab73d00568ea,engage stakeholders
-skill_a9ee50b98252,in-ceac4e3b0931c548,share knowledge
-skill_aaa240fc12db,in-4d23cfdf1e39da47,provide strategic leadership
-skill_b7149c3ee3ca,in-79ded432e6d70498,manage user roles and permissions
-skill_be463d3691e4,in-c8be4c3c86736fab,detect fraud trends
-skill_bec56b95ed45,in-92b3553c6f4db1a4,do meaningful work
-skill_bf5323ffdece,in-b8c30960583b8b8c,prepare workshops
-skill_c21587400e22,in-cae4dce4d5680aa4,leverage emerging technologies
-skill_c2e6ccc3885e,in-79ded432e6d70498,manage transaction logs
-skill_c4896af99fef,in-2c6e663f01600447,collaborate with stakeholders to gather requirements
-skill_c53359962345,in-918af191ba357cba,work with spatial data formats
-skill_c601b10178b1,in-7e5aa2392c45758d,perform reactive maintenance
-skill_c698eb16afda,in-b9f641f663bba62b,ensure packaging process readiness
-skill_c8b1a99ebd9d,in-78f35efe37a1d54d,diagnose root causes
+skill_91743cf311be,in-7670810cc6b6860f,implement multi-region cloud infrastructure
+skill_91dd3cc5e7c4,,
+skill_92f307594ae8,,
+skill_9419bf21f61b,in-f9435af21527c7ef,evolve the architecture
+skill_968b4ecc624d,in-04dc159f00d6bd3a,offer styling advice
+skill_9859f97ee8a0,in-10ab11d030bb8e0b,build Windows-based GitHub ephemeral build runners
+skill_994c7ecff7b3,in-0eac567071a68902,automate deployment pipelines
+skill_99e5749036ee,,
+skill_9af5638e1b5f,in-1eb20bc48f9544f2,execute load testing strategies
+skill_9c29c268ada4,in-2a36feb586ba135c,ensure data integrity
+skill_9f40963ac4e1,in-93833b8e7a6e44d0,sell enterprise SaaS software
+skill_9fb45b683663,in-891f7dd07f209dff,maintain ServiceNow
+skill_a01cd56e57a1,in-06937182df049c4f,communicate in writing effectively
+skill_a0574692c281,,
+skill_a08845c01d28,in-b0721327207dcb8f,foster AI-first product thinking
+skill_a0dfb6ed1c0f,in-aca4ce0a134ba786,deliver excellent outcomes
+skill_a24b4e5e6151,in-de42b8496f12db74,drive business development
+skill_a29e7ae135f4,in-7f8170705ece7e73,deliver value-driven solutions
+skill_a3d8825dc386,in-c03e220b41bb6b05,assist with contractor management
+skill_a44e719fe296,in-39b38c8af7c65d6c,develop high-performance culture
+skill_a4af774a2407,in-ac46b5552a88b130,demonstrate interpersonal effectiveness
+skill_a4e0218e2809,in-b88b291a6c2feed4,maintain database security policies
+skill_a5314babf337,,
+skill_a683ef1f027e,in-f5360a401ce4875a,ensure data integrity
+skill_a75850088670,,
+skill_a7a91fefd8d2,in-f3684aa98572cf35,see issues from multiple perspectives
+skill_a93d901e0e5c,in-f52ef8baf5bde6fd,support implementation of initiatives
+skill_a9e869b1ce94,in-255061426d5cbe9d,mentor junior engineers
+skill_a9ee50b98252,,
+skill_aa67df88cacb,in-89ea52f0c4aa0aaf,develop presentations
+skill_aaa240fc12db,,
+skill_aaa507e81881,in-ce69dae5b45ada66,be proactive
+skill_ab5796a0ab68,in-2d0e816866476285,reach with hands and arms
+skill_ac5dd3e9b128,in-4ea7a8e61c97118a,clean preparation areas
+skill_ad5d5f729872,in-b8c248cb2a655350,monitor cloud spending
+skill_add5adc75f76,in-4b787ac6de0800eb,interpret data
+skill_ae350c346f35,in-d68a5a419b82cc98,optimize outcomes
+skill_af530ab12def,in-89eb07ce2c795be3,maintain technical designs and documentation
+skill_b113929990fe,in-40d0831e88696c86,care about best practices
+skill_b1ce5a81248b,in-05e62ee0a1067759,lead solution architecture discussions
+skill_b1f79e8c07b3,in-bf27e3c9db1b8a21,assist the Project Manager in daily management of construction projects
+skill_b2673cd4cbcf,in-4ba5f15fe628d466,prioritize user privacy
+skill_b285e370e959,in-bb99b75ad5707d11,maintain localisation documentation
+skill_b5c5979ea8d7,in-22abe92a943287ec,maintain RESTful APIs
+skill_b7149c3ee3ca,,
+skill_b7808a34d41c,in-0b694e1cd2c10626,provide data-driven insights
+skill_b940480aa49d,in-664725e2834842f8,mentor colleagues
+skill_bc6e897589a7,in-0a795d59243fe474,manage diverse projects
+skill_bd55baed75ec,in-9b13d084395d8b8e,implement data pipelines
+skill_bd6dfec409a0,in-ad22b23e336a595f,manufacture products at scale
+skill_bdcd29b0ea13,in-4a656605e60ee2cb,facilitate solutions across business areas
+skill_be463d3691e4,,
+skill_bec56b95ed45,,
+skill_bf5323ffdece,,
+skill_c0e0b9393ca3,in-1af20f351a33df74,serve as a subject matter expert
+skill_c12daca4397d,in-9c5be75a02f0df18,escalate issues as needed
+skill_c21587400e22,,
+skill_c22e8bf55a3f,in-917644013c709d00,review and analyse aspects of constructability/buildability
+skill_c24271cd9248,in-f1a3e8b5223190f6,"support system upgrades, automation, and integration of MDM tools"
+skill_c2832a648af0,in-2aad98f2c5443047,strategically integrate emerging technologies
+skill_c2e6ccc3885e,,
+skill_c33fc9f58be0,in-8e205749fe8753d1,ensure website security
+skill_c3802a08289e,in-709eb683a5ba770f,coordinate diverse tasks
+skill_c3834a6a1e0d,in-a8cb5f48982e794b,design substation physical layouts
+skill_c442efa32a37,in-430af4601022bd07,develop programs
+skill_c4832c059634,in-a155cba4b0635237,verify risk premium calculations
+skill_c4896af99fef,,
+skill_c53359962345,,
+skill_c601b10178b1,,
+skill_c698eb16afda,,
+skill_c72d9fce5e5b,in-025357527dc35d0d,develop solutions from first principles
+skill_c807a9b0dce2,in-67eb83d3188c0e50,scope work with clarity
+skill_c83f4cba6d58,in-5c317c3827cbcb9a,provide customer service
+skill_c877d640ba50,in-4ada907f162bb1a3,aim for positive change in behavior
+skill_c8b1a99ebd9d,,
 skill_c918dfd780bb,,
-skill_cbff69f03116,in-78f35efe37a1d54d,monitor integrations
-skill_cd0001e8a7b9,in-e3dc55a2d51c8f05,debug code
-skill_cfe840127a4e,in-6a43fc4672d6dc6b,embed security-first practices
-skill_d1934f718d62,in-ba495aac0217250a,maintain website
-skill_d1d041935e57,in-bf2606456667ee0a,implement accessibility standards
-skill_d3bb467d1bc2,in-cfd54a5d5863c61c,lead with confidence and creativity
-skill_d7dc4d6fdacc,in-c98f2a57e04d73aa,perform maintenance
-skill_d8cc49a879ac,in-53cfdaded73a3d73,implement SystemVerilog RTL
-skill_da1d0acd1de1,in-a61c1082390cb772,ensure documentation accuracy
-skill_dbbbdf004c4f,in-19645b80a73af969,ensure compliance
-skill_dce973f16b35,in-65e8e56891d77abc,run servers for visual effect playback
-skill_dd6b058dd124,in-3f5dd318b3ab15e8,implement advanced statistical methods
-skill_dee9ff0a5c01,in-90d13fe4964a2e53,mitigate fraud threats
-skill_e01d40814002,in-fbfa2583b6c69b12,embed security
-skill_e1fe22745408,in-87da0fa9cc457bdb,use big data
-skill_e2a86bcaa6b3,in-583102a545c0e3f4,stay ahead of AI developments
-skill_e4bbbb748f5b,in-1b5b705fabffaa4a,ensure compliance of contractual obligations
-skill_e5833458b9aa,in-c98f2a57e04d73aa,climb a ladder
-skill_e78a50920edb,in-3bc924a81fb0f63e,analyze business requirements
-skill_e7ddc4b77855,in-ddc8d55e66c8ce42,analyze failure trends
-skill_e815e2f81d19,in-e96393a458fef0cb,solve real-world business problems
-skill_e84d05175cdb,in-2ce72a5ebfa33b22,diagnose bottlenecks
-skill_e9a36bcb3cbb,in-c8be4c3c86736fab,analyze payments data
-skill_eb430ba8da4d,in-87da0fa9cc457bdb,discover new insights
-skill_f23526ca4f81,in-a1fdabde381d60b9,optimise AI behaviours and systems
-skill_f43263aa90a7,in-d9dec1280ddbbc23,identify trends
-skill_f4bb6141a164,in-ee79c4b7c07c00fd,communicate development strategy
-skill_f661b599f642,in-5910bc38a3003b6c,manage resource allocation
-skill_fb41b0b4d39a,in-ddc8d55e66c8ce42,thrive in a fast-paced environment
-skill_fcbc78f1e412,in-9451969540256b32,deliver quality work
+skill_caa3d1c0be66,in-42d8c375b2cc11bd,"own, track, and report on key supply chain performance indicators (KPIs)"
+skill_cbff69f03116,,
+skill_ccfca4884705,in-b8283ed825bb0b30,keep the learning space clean and organized
+skill_cd0001e8a7b9,,
+skill_cdf4a622b4f6,in-93762eb6d86a9831,develop capture side tone mapping algorithms
+skill_cdf7966f11b7,in-957a9cd87929d935,ensure compliance with regulatory requirements
+skill_cf87c71c0885,in-8144185181998b1d,demonstrate commitment
+skill_cfe840127a4e,,
+skill_cfec1206cd44,in-8ff3d9129d1b24e3,manage time
+skill_d07f153490c0,in-7b739d1ad31207a6,support data-driven remediation activities
+skill_d08846541986,in-be57a5eac072936f,take responsibility for projects
+skill_d0e4c705bcbe,in-21e34d850e5b0581,move fast
+skill_d1934f718d62,,
+skill_d1d041935e57,,
+skill_d27ccb8ecfe1,in-9bd737ac9f890224,recommend process or coaching changes
+skill_d3bb467d1bc2,,
+skill_d3ddd004bfe1,in-f52ef8baf5bde6fd,provide input into planning
+skill_d4bb96497a44,in-c1f39a75d50772c0,ensure adoption
+skill_d6125952e2f7,in-4c36c22e14b01052,lead technical delivery
+skill_d681092b5daa,in-88d8ac4a97f40024,"cultivate an inclusive, growth-oriented team environment"
+skill_d6c58df3010f,in-b1b780a493478422,operate with a high degree of autonomy
+skill_d6f6e7f59ac4,in-f8d9e3eff2461aab,apply insights in a high-impact setting
+skill_d73c23aa9857,in-41fbc6e0ba6b8af0,develop advanced analytics solutions
+skill_d7dc4d6fdacc,,
+skill_d8524c6aca0a,in-bae7b8bb0e8017ae,drive strategy
+skill_d8cc49a879ac,,
+skill_d97d2819802f,in-04ed3f2ad67cb835,ensure software adheres to security best practices
+skill_da1d0acd1de1,,
+skill_da742dfc4202,in-188e6f6bd12da146,execute multi-channel campaigns
+skill_dbbbdf004c4f,,
+skill_dbc568723b99,in-c0023827e52e2d3c,implement trading algorithms
+skill_dce973f16b35,,
+skill_dd6b058dd124,,
+skill_dd9994dfa6c0,in-2a657a4ea0a95b75,implement infrastructure automation
+skill_dec9356794fd,in-1c71aa1adece6ee9,collaborate with cross-functional teams
+skill_dee9ff0a5c01,,
+skill_df99d94a5972,in-4018bb7bef9a18b4,interpret complex data
+skill_e01d40814002,,
+skill_e05333c7b4c7,in-291f2968a155a50d,resolve application issues
+skill_e15cfaf85776,in-a0a13b00e05c1c23,manage OPEX/CAPEX
+skill_e1fe22745408,,
+skill_e2a86bcaa6b3,,
+skill_e4300abe7efb,in-5ab82c9a9034bbd2,book site inspections
+skill_e4bbbb748f5b,,
+skill_e5050c12ea3e,in-42bcb81b7db61fc4,lead development of a mobile app
+skill_e51ae77f6cf2,in-cea54473f68f4ebe,improve systems and processes
+skill_e5833458b9aa,,
+skill_e5961119d6e7,in-778480e11f3e5831,collaborate with global stakeholders
+skill_e78a50920edb,,
+skill_e7ddc4b77855,,
+skill_e815e2f81d19,,
+skill_e84d05175cdb,,
+skill_e9029dc71d6c,in-f1a3e8b5223190f6,drive master data governance framework
+skill_e91f69b80bed,in-1991420eca842f87,design automations
+skill_e94ba2d2520c,in-8fe3085f2c39b0f1,implement backend services
+skill_e9a36bcb3cbb,,
+skill_eb430ba8da4d,,
+skill_ed29961e6dba,in-9f9fd6d1a20850a9,provide administrative support
+skill_ee5762c92a6b,in-22d008a687ba406e,"ensure features meet security, compliance, and performance requirements"
+skill_eea549fa5b7f,in-8988fd9c54a689fe,strengthen client relationships
+skill_f23526ca4f81,,
+skill_f43263aa90a7,,
+skill_f4bb6141a164,,
+skill_f4f13b7facc4,in-5ba3e164049c8285,plan ahead
+skill_f5076aabf01b,in-0c979b87ec2ab37a,perform database backups at frequency
+skill_f57c064caccc,in-754ef7cca0b37dd6,build trust
+skill_f655b811f522,in-c2f46f18a1a484d8,ensure deliverables are accurate
+skill_f661b599f642,,
+skill_f6e34b325c84,in-d01eacf54b20047e,thrive in a team environment
+skill_f79889a7e3be,in-74fb7d67cfa0cf88,drive the operational business agenda
+skill_f7bab85f5bab,in-23008603f9343efc,ensure customer billing is done appropriately
+skill_f7f281349eb7,in-256b83336c9899e4,collaborate with engineering leadership
+skill_f822291c1136,in-6fc9f358afdd1245,develop story ideas
+skill_f952d833f3fa,in-ecb7db3700bc6ef4,focus on proactive solutions
+skill_fb41b0b4d39a,,
+skill_fba170454ec7,in-dad392d432acf9fb,enhance analytics tools
+skill_fcbc78f1e412,,
+skill_fdb29943e18f,in-198664b359fea978,deploy AI models
+skill_fde4daa45e09,in-b2887239df2a7185,ensure compliance with sales processes

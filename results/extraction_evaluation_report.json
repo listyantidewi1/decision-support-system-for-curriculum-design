@@ -34,7 +34,7 @@
         ],
         "p_value_vs_chance": 0.0,
         "significant_at_005": true,
-        "odds_ratio": 0.0,
+        "odds_ratio": 999.0,
         "risk_difference": 0.5,
         "p_value_adjusted": 0.0,
         "significant_after_correction": true

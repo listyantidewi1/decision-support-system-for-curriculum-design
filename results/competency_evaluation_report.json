@@ -1,55 +1,180 @@
 {
-  "total_assessed": 11,
-  "mean_quality": 4.909,
-  "median_quality": 5,
-  "std_quality": 0.302,
-  "min_quality": 4,
-  "max_quality": 5,
-  "q1_quality": 5.0,
-  "q3_quality": 5.0,
-  "ci_95_lower": 4.714,
-  "ci_95_upper": 5.104,
-  "pct_quality_gte_good": 100.0,
-  "pct_relevant_yes": 81.8,
-  "pct_relevant_partial": 18.2,
+  "total_assessed": 91,
+  "mean_quality": 0.0,
+  "median_quality": 0.0,
+  "std_quality": 0.0,
+  "min_quality": 0,
+  "max_quality": 0,
+  "q1_quality": 0.0,
+  "q3_quality": 0.0,
+  "ci_95_lower": 0.0,
+  "ci_95_upper": 0.0,
+  "pct_quality_gte_good": 0.0,
+  "pct_relevant_yes": 89.0,
+  "pct_relevant_partial": 8.8,
   "pct_relevant_no": 0.0,
   "per_batch": [
     {
       "batch_id": 1,
-      "n": 2,
-      "mean_quality": 5.0
+      "n": 0,
+      "mean_quality": 0
     },
     {
       "batch_id": 2,
-      "n": 2,
-      "mean_quality": 5.0
+      "n": 0,
+      "mean_quality": 0
     },
     {
       "batch_id": 3,
-      "n": 2,
-      "mean_quality": 5.0
+      "n": 0,
+      "mean_quality": 0
     },
     {
       "batch_id": 4,
-      "n": 2,
-      "mean_quality": 5.0
+      "n": 0,
+      "mean_quality": 0
     },
     {
       "batch_id": 40,
-      "n": 2,
-      "mean_quality": 4.5
+      "n": 0,
+      "mean_quality": 0
     },
     {
-      "batch_id": 44,
-      "n": 1,
-      "mean_quality": 5.0
+      "batch_id": 42,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 61,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 77,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 79,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 87,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 111,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 132,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 133,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 146,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 156,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 164,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 166,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 175,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 197,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 205,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 211,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 245,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 265,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 272,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 279,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 293,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 334,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 335,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 354,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 429,
+      "n": 0,
+      "mean_quality": 0
+    },
+    {
+      "batch_id": 464,
+      "n": 0,
+      "mean_quality": 0
     }
   ],
-  "notes_count": 11,
+  "notes_count": 91,
   "notes_common_words": [
     [
       "nan",
-      11
+      91
     ]
   ]
 }

@@ -1,57 +1,457 @@
 {
+  "C10_b31": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C10_b87": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C11_b111": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C1_b429": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
   "C2_b1": {
-    "quality": "5",
+    "quality": "5.0",
     "relevant": "yes",
     "notes": "nan"
   },
   "C2_b2": {
-    "quality": "5",
+    "quality": "5.0",
     "relevant": "yes",
     "notes": "nan"
   },
   "C2_b3": {
-    "quality": "5",
+    "quality": "5.0",
     "relevant": "yes",
     "notes": "nan"
   },
   "C2_b4": {
-    "quality": "5",
+    "quality": "5.0",
     "relevant": "yes",
     "notes": "nan"
   },
   "C2_b40": {
-    "quality": "4",
+    "quality": "4.0",
     "relevant": "partial",
     "notes": "nan"
   },
   "C2_b44": {
-    "quality": "5",
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C8_b175": {
+    "quality": "5.0",
+    "relevant": "partial",
+    "notes": "nan"
+  },
+  "C8_b205": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C8_b329": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C8_b354": {
+    "quality": "5.0",
     "relevant": "yes",
     "notes": "nan"
   },
   "C8_b4": {
-    "quality": "5",
+    "quality": "5.0",
     "relevant": "yes",
     "notes": "nan"
   },
   "C9_b1": {
-    "quality": "5",
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b11": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b132": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b133": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b136": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b146": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b156": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b159": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b164": {
+    "quality": "5.0",
+    "relevant": "nan",
+    "notes": "nan"
+  },
+  "C9_b166": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b177": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b197": {
+    "quality": "5.0",
     "relevant": "yes",
     "notes": "nan"
   },
   "C9_b2": {
-    "quality": "5",
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b211": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b213": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b245": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b248": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b249": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b25": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b257": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b260": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b262": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b265": {
+    "quality": "5.0",
+    "relevant": "partial",
+    "notes": "nan"
+  },
+  "C9_b272": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b279": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b285": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b290": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b292": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b293": {
+    "quality": "5.0",
     "relevant": "yes",
     "notes": "nan"
   },
   "C9_b3": {
-    "quality": "5",
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b312": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b317": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b32": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b322": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b334": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b335": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b361": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b368": {
+    "quality": "5.0",
     "relevant": "yes",
     "notes": "nan"
   },
   "C9_b40": {
-    "quality": "5",
+    "quality": "5.0",
     "relevant": "partial",
+    "notes": "nan"
+  },
+  "C9_b406": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b42": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b448": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b451": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b464": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b494": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b50": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b516": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b525": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b527": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b543": {
+    "quality": "5.0",
+    "relevant": "partial",
+    "notes": "nan"
+  },
+  "C9_b56": {
+    "quality": "4.0",
+    "relevant": "partial",
+    "notes": "nan"
+  },
+  "C9_b568": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b57": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b577": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b578": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b587": {
+    "quality": "5.0",
+    "relevant": "nan",
+    "notes": "nan"
+  },
+  "C9_b591": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b593": {
+    "quality": "5.0",
+    "relevant": "partial",
+    "notes": "nan"
+  },
+  "C9_b61": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b611": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b617": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b624": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b627": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b630": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b647": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b652": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b663": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b669": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b679": {
+    "quality": "nan",
+    "relevant": "partial",
+    "notes": "nan"
+  },
+  "C9_b680": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b71": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b77": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b78": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b79": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b83": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "notes": "nan"
+  },
+  "C9_b91": {
+    "quality": "5.0",
+    "relevant": "yes",
     "notes": "nan"
   }
 }
