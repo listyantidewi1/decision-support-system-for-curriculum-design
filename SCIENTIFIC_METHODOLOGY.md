@@ -631,4 +631,28 @@ NDCG ≈ 2.20/2.89 ≈ **0.76**
 
 ---
 
+---
+
+## Scientific Visualization (plot_scientific_analysis.py)
+
+The pipeline generates **scientific plots** that visualize the quantitative analysis:
+
+| Plot | Description |
+|------|-------------|
+| `scientific_extraction_precision_skills/knowledge.png` | Precision by source with Wilson 95% CI; chance line at 0.5 |
+| `scientific_odds_ratio_skills/knowledge.png` | Odds ratio vs chance (1.0) by source |
+| `scientific_binomial_test_skills/knowledge.png` | Binomial distribution under H₀ with observed count |
+| `scientific_trend_volcano.png` | FDR volcano: slope vs -log₁₀(q); Emerging/Declining/Stable |
+| `scientific_trend_regression_samples.png` | Sample regression lines for top emerging/declining skills |
+| `scientific_calibration_curve.png` | Reliability diagram (predicted vs observed) |
+| `scientific_power_curve.png` | Power vs n for one-sided binomial test |
+| `scientific_future_mapping.png` | Top-1 accuracy and mapping margin distribution |
+| `scientific_weight_sensitivity.png` | Jaccard vs baseline for weight configurations |
+
+Run: `python plot_scientific_analysis.py` (invoked by run.bat step 17).
+
+**Interpretations:** See [docs/FIGURE_INTERPRETATIONS.md](docs/FIGURE_INTERPRETATIONS.md) for detailed explanations of each figure.
+
+---
+
 *Last updated: Full scientific methodology with worked examples.*
