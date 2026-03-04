@@ -1,74 +1,182 @@
 ﻿review_id,knowledge
-know_0086b4d7988a,test method development
-know_05e7d19a6d00,energy
-know_0bb8c320dee5,Office.
-know_0fd539cd68d9,MOPO Batteries
-know_10fc493d67db,compiler development
-know_13783afeae02,electrical construction
-know_13fd1a10d592,artificial
-know_15ea3f46f42e,Tagetik development and configuration.
-know_1c98b6fcd2a6,AzureDevOps
-know_1ce38b99de0b,Confluence
-know_2055d64c2aba,data modeling techniques
-know_250d9c7235cb,networked media distribution
-know_2659fbacb312,online media optimisation techniques
-know_30136395f018,Kubernetes
-know_303cb0ef9edb,.NET
-know_371651195ada,automotive technologies
-know_39c034499492,multimodal language models
-know_3b2819dd4c24,Node.js
-know_3ba90f7ae365,Cloud Security
-know_3df5b1fe9418,ultra
-know_42d316b0cb86,internal analytic tools
-know_430e8984e72f,health and medical plan
-know_467d9643b483,modern JavaScript framework
-know_53fcf4386cab,mental health services
-know_543aecf35bbc,data services
-know_62fe704d6e5f,occupant comfort
-know_6af575b97fa1,Golden Source v8.x
-know_6dbcde40cced,"GitHub,"
-know_6e57d8bfff7e,feature film
-know_6f4327b67d20,GenAI powered
-know_766ed919e04d,reagent dispensing
-know_76df58bcdf7e,performance testing
-know_77c0b180512f,client and server side MVC architectures
-know_7b1ac1aecdeb,audio systems
-know_81efc2968533,cosmetic dentistry
-know_8303325a9f58,KOL
-know_89765ba66c55,infrastructure as code
-know_89948c7f4890,monitoring
-know_8a9da7865483,x86
-know_912e1b278456,vulnerability assessments
-know_9312518e3f4a,auto-remediation PRs
-know_96d82a7fc1d2,/ ML
-know_9778840a0100,SQL
-know_9bbd45bad55c,Accounting
-know_a1234b3161b4,cloud
-know_a1595abbb4c3,Control
-know_a62152805e82,IoT technologies
-know_ac9bb7c74a24,Redshift GTM
-know_ae0e4bdad7b5,bug
-know_b3e154951e44,Usage & Unified expansion
-know_b83dd690f864,complaint investigations
-know_b87c87d2a5f4,estimations de ressources
-know_bd9081e95f9f,visual standards
-know_be2ae05fb04d,Ethernet
-know_bf9bb4fad8a3,Surface and U/G Mining
-know_c26157b5167b,reliability-focused system design
-know_c566d6d9bc3c,Azure DevOps
-know_cab648e8cbe1,application code
-know_cee171350246,biological performance
-know_d09b2dbc434c,data workloads
-know_df49adab93b9,CMake
-know_e0b899598f52,punch press
-know_e4c50e7a3518,WAN
-know_e5564043fa65,SOC's Neuron Cores
-know_e55b71fba163,"Excel),"
-know_e9839443e2c0,contracts
-know_e9ef48a7c810,Data Warehousing
-know_ec8dbf034027,"mapping,"
-know_efe01da942ed,RTL
-know_f6867a28f962,rail renewal projects
-know_f78a7241ee06,Healthcare Common Procedure Coding System
-know_f9731341a234,Reference Data
+know_0086b4d7988a,
+know_0114d059a96e,"Software Development,"
+know_05e7d19a6d00,
+know_08dc41fbb67d,client entities
+know_0bb8c320dee5,
+know_0c3e5c7f3c75,process improvement
+know_0c63d976c870,model deployment
+know_0d3e2f879e6a,Cyberpunk franchise
+know_0efcf787de33,Microsoft Windows Server Operating System
+know_0fd539cd68d9,
+know_10a5f67eae00,Bachelor’s Degree
+know_10fc493d67db,
+know_10fe5d742f23,Emergency Health Ambulance Dispatch
+know_11ffe996179a,employee share plans
+know_13783afeae02,
+know_13fd1a10d592,
+know_15ea3f46f42e,
+know_16a440285f44,"relationships, dashboards."
+know_197d816d9b6a,SharePoint 2016
+know_1b1bf2a2a597,full-stack web technologies
+know_1c98b6fcd2a6,
+know_1ce38b99de0b,
+know_1eb01c0da669,Managed Services
+know_2055d64c2aba,
+know_206e3718af09,MongoDB
+know_223f0f7587f6,complex compliance workflows
+know_250d9c7235cb,
+know_2659fbacb312,
+know_2875ec54afbd,Painting
+know_2a4698353e80,sports content
+know_2ab1f3f89382,Pipe
+know_2e19534b1ace,arte 3D
+know_30136395f018,
+know_303cb0ef9edb,
+know_3141e135f3ab,LiveKit
+know_323887ee1ef3,database design principles
+know_3385c62e8b55,Power Point
+know_3606bbb27b85,autoimmunity
+know_371651195ada,
+know_39c034499492,
+know_3b2819dd4c24,
+know_3ba90f7ae365,
+know_3df5b1fe9418,
+know_3e56befa7c72,MDM tools
+know_3e7971b9e12b,digital design
+know_3e7ab11d6e7f,React)
+know_3fe17314bd34,A2A integrations
+know_40a4346b6f62,interactive media
+know_41a8d0160f43,budgeting
+know_427f8d943215,hacking and exploitation tools and methodologies
+know_42d316b0cb86,
+know_430e8984e72f,
+know_4665b9a3201a,agile approach
+know_467d9643b483,
+know_4899b393c764,enterprise patch management
+know_4de91f0fcb9c,SOAP
+know_517586c0f7b1,dental
+know_53fcf4386cab,
+know_543aecf35bbc,
+know_558052b80ee6,RESTful API
+know_5b1a02d446cd,ML training
+know_60e14efafa51,technical architecture
+know_62fe704d6e5f,
+know_67c5e29d6e6b,Information Governance
+know_6af575b97fa1,
+know_6dbcde40cced,
+know_6e57d8bfff7e,
+know_6ec1bd1ea6a5,Unix
+know_6f4327b67d20,
+know_7186b611667d,server applications
+know_72b3f43ad844,"storage systems,"
+know_766ed919e04d,
+know_76df58bcdf7e,
+know_77c0b180512f,
+know_790d379f0690,electrical switchboard
+know_7982b09a852b,OpenCL
+know_7a39b642dccb,higher education
+know_7ac87e42d0e2,DBA
+know_7b1ac1aecdeb,
+know_7b34e5ad8d2e,ELT
+know_7c81afa30ecd,Special Education
+know_7d46e8d64e09,Textron
+know_7ed7eaee45e3,QA / QC
+know_80625700a6c8,performance marketing tools
+know_81efc2968533,
+know_8303325a9f58,
+know_836e74238f82,audio products
+know_854b40dabdf9,eyewear products
+know_8625e1de7be1,Tools
+know_8683dc493330,robotic manipulation
+know_89765ba66c55,
+know_89948c7f4890,
+know_8a9da7865483,
+know_8e92d804ea68,Korean financial market
+know_8fce58396631,Rigging
+know_912e1b278456,
+know_9312518e3f4a,
+know_96d82a7fc1d2,
+know_9778840a0100,
+know_97818ec23dad,"design,"
+know_98bf4640b315,Capital Markets
+know_9bbd45bad55c,
+know_9cdc4bbeede8,Servlets
+know_9df218ba5905,college diploma
+know_9dfb1965da88,disaster
+know_a1234b3161b4,
+know_a1595abbb4c3,
+know_a5fa5746370b,Networking
+know_a62152805e82,
+know_a8f2874987b6,Dynamics ERP
+know_ac9bb7c74a24,
+know_ad3920a5bf4b,FMCG industry
+know_ae0e4bdad7b5,
+know_ae551aeefd54,transport impact assessment
+know_b1d278ba8485,media platforms
+know_b31df235e8ae,systems
+know_b3e154951e44,
+know_b4d21d83de29,real-time streaming
+know_b68d6bf59ee5,modern design tools
+know_b74e7c72e7c3,Play Console
+know_b83dd690f864,
+know_b87c87d2a5f4,
+know_b9208fa1c113,design calculations
+know_b929f79fe3c1,audience measurement
+know_bd9081e95f9f,
+know_be2ae05fb04d,
+know_bf9bb4fad8a3,
+know_c26157b5167b,
+know_c318b79e38cf,digital engineering
+know_c31c335ef372,Angular
+know_c4fda4ce7f99,Oracle Apex
+know_c566d6d9bc3c,
+know_ca6fb71c4c1e,III-V devices
+know_caafcb4edcfa,systèmes embarqués
+know_cab648e8cbe1,
+know_caf0f36841fe,rare variant discovery
+know_cee171350246,
+know_d09b2dbc434c,
+know_d0bb0be2fea6,agile development
+know_d0f019f948e1,solution consumption
+know_d0f5bf7a6eb6,electrical systems
+know_d2968f373705,Database Tuning
+know_d3c8871c17a9,OPC-UA
+know_d3eb707a0789,electrical and telecommunication systems
+know_d44b34f5a834,hotel sector
+know_d49c8734692f,Seismic design
+know_d51cd6b455bd,DDoS mitigation platforms
+know_d9a3e8541c17,corporate governance
+know_db3c10b1e863,customer insights
+know_dcdb64c465b9,Solr
+know_df3c6db99884,web technologies
+know_df49adab93b9,
+know_e0b899598f52,
+know_e26cc60cd6e0,Industrial Relations
+know_e4c50e7a3518,
+know_e5564043fa65,
+know_e55b71fba163,
+know_e6212e3987da,digital content
+know_e9839443e2c0,
+know_e9ef48a7c810,
+know_ea17e0a18fd0,software engineering / mathematics /
+know_ec8dbf034027,
+know_ed08bd3d167e,industrial Ethernet networks
+know_ee434023cf89,nginx
+know_eebc48b89bf1,technology trends
+know_efe01da942ed,
+know_f1eb24184551,application development
+know_f4c45f0f222c,community feedback roles.
+know_f5c272adce88,AVEVA E&I systems
+know_f5c6ba2f3b9c,Architectural Technology
+know_f6867a28f962,
+know_f6d1068a54f2,operational risk management
+know_f78a7241ee06,
+know_f9731341a234,
+know_fb01eb7d017d,Business Management
+know_fb347e3972f2,NPS
+know_fcaeeb6e34b4,Overwatch
 know_fd29e03a13f2,Strategy & Governance
+know_fdb0c26e10f7,service prototypes
+know_fe2567bc91f7,architectural and landscape 3D modelling
+know_fed36e93a050,templates

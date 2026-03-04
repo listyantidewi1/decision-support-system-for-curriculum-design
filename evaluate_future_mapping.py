@@ -91,15 +91,18 @@ def evaluate(gold: pd.DataFrame, mapping: pd.DataFrame) -> dict:
 
     results_df = pd.DataFrame(results)
 
-    evaluable = results_df[~results_df.get("is_none_or_unclear", False)].copy()
+    # Ensure boolean: pandas can store as float if mixed/NaN, and ~ fails on float
+    mask = (results_df["is_none_or_unclear"] == True)
+    evaluable = results_df[~mask].copy()
     n_eval = len(evaluable)
     n_correct = evaluable["correct"].sum() if n_eval > 0 else 0
     top1_acc = n_correct / n_eval if n_eval > 0 else 0.0
 
-    none_rate = results_df.get("is_none_or_unclear", pd.Series(dtype=bool)).sum() / len(results_df) if len(results_df) > 0 else 0.0
+    none_rate = mask.sum() / len(results_df) if len(results_df) > 0 else 0.0
 
     confusion = Counter()
-    for _, r in evaluable[~evaluable["correct"]].iterrows():
+    incorrect_mask = (evaluable["correct"] != True)
+    for _, r in evaluable[incorrect_mask].iterrows():
         pair = f"{r['true_domain']} -> {r['predicted_domain']}"
         confusion[pair] += 1
 
