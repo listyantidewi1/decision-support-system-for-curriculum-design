@@ -99,6 +99,11 @@ th, td {
   padding: 10px;
   border-radius: 6px;
 }
+.banner.success-banner {
+  background: #d1fae5;
+  color: #047857;
+  border-color: #10b981;
+}
 
 .hint {
   color: #6b7280;
@@ -340,4 +345,42 @@ th, td {
 .why-details summary {
   cursor: pointer;
   color: #2563eb;
+}
+
+/* Run progress indicator */
+.run-status-running {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.run-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cbd5e1;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: run-spin 0.8s linear infinite;
+}
+@keyframes run-spin {
+  to { transform: rotate(360deg); }
+}
+.run-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.run-status-pill.running {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.run-status-pill.completed {
+  background: #d1fae5;
+  color: #047857;
+}
+.run-status-pill.failed {
+  background: #fee2e2;
+  color: #b91c1c;
 }

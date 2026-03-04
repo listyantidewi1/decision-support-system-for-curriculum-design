@@ -44,15 +44,72 @@
   <table>
     <tr><th>ID</th><th>Phase</th><th>Status</th><th>Created</th><th>Completed</th><th>Message</th></tr>
     {% for r in runs %}
-      <tr>
+      <tr data-run-id="{{ r.id }}">
         <td>{{ r.id }}</td>
         <td>{{ r.phase or "phase1" }}</td>
-        <td>{{ r.status }}</td>
+        <td class="run-status-cell">
+          {% if r.status == "running" %}
+          <span class="run-status-running">
+            <span class="run-spinner" aria-hidden="true"></span>
+            <span class="run-status-pill running">Running</span>
+          </span>
+          {% elif r.status == "completed" %}
+          <span class="run-status-pill completed">{{ r.status }}</span>
+          {% elif r.status == "failed" %}
+          <span class="run-status-pill failed">{{ r.status }}</span>
+          {% else %}
+          <span class="run-status-pill">{{ r.status }}</span>
+          {% endif %}
+        </td>
         <td>{{ r.created_at }}</td>
-        <td>{{ r.completed_at or "-" }}</td>
-        <td class="mono">{{ r.message or "-" }}</td>
+        <td class="run-completed-at">{{ r.completed_at or "-" }}</td>
+        <td class="mono run-message">{{ r.message or "-" }}</td>
       </tr>
     {% endfor %}
   </table>
 </section>
+
+{% if selected_department_id and has_running %}
+<script>
+(function() {
+  var deptId = {{ selected_department_id }};
+
+  function hasAnyRunning(runs) {
+    return runs && runs.some(function(r) { return r.status === "running"; });
+  }
+
+  function poll() {
+    fetch("/dashboard/school/runs/status?department_id=" + deptId, { credentials: "same-origin" })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (!hasAnyRunning(data.runs)) {
+          window.location.reload();
+          return;
+        }
+        data.runs.forEach(function(run) {
+          var row = document.querySelector("tr[data-run-id='" + run.id + "']");
+          if (!row) return;
+          if (run.status !== "running") {
+            var statusCell = row.querySelector(".run-status-cell");
+            var completedCell = row.querySelector(".run-completed-at");
+            var msgCell = row.querySelector(".run-message");
+            if (statusCell) {
+              var pillClass = run.status === "completed" ? "completed" : (run.status === "failed" ? "failed" : "");
+              statusCell.innerHTML = '<span class="run-status-pill ' + pillClass + '">' + run.status + '</span>';
+            }
+            if (completedCell) completedCell.textContent = run.completed_at || "-";
+            if (msgCell) msgCell.textContent = run.message || "-";
+          }
+        });
+        if (!hasAnyRunning(data.runs)) {
+          window.location.reload();
+        }
+      })
+      .catch(function() {});
+  }
+
+  setInterval(poll, 4000);
+})();
+</script>
+{% endif %}
 {% endblock %}

@@ -398,7 +398,10 @@ For multiple experimental runs:
 1. Run `run.bat`, then rename `results` → `results_run1`
 2. Repeat for run2, run3, etc.
 3. Aggregate: `python aggregate_results.py --run_dirs results_run1 results_run2 results_run3 --output_dir results_aggregated`
-4. Set `OUTPUT_DIR = "results_aggregated"` in config.py, then run downstream steps
+4. Generate plots from aggregated results:
+   - **Option A**: Add `--plot` to aggregate: `... --output_dir results_aggregated --plot`
+   - **Option B**: Run `plot_aggregated.bat` after aggregation (writes to `results_aggregated/figures/`)
+5. Alternatively, set `OUTPUT_DIR = "results_aggregated"` in config.py and run downstream steps
 
 ---
 
@@ -456,6 +459,7 @@ For multiple experimental runs:
 ### Batch Scripts
 - `run.bat`: Phase 1 with error handling; `enrich_with_dates` before `export_for_review`
 - `run_phase_2.bat`: Full post-review flow with `import_feedback`, `apply_feedback`, `generate_competencies --comprehensive`
+- `plot_aggregated.bat`: Generate all plots from `results_aggregated/` (use after `aggregate_results.py`)
 
 ### Data Notes
 - `advanced_skills.csv` has empty `date_posted`; use `advanced_skills_with_dates.csv` for trend analysis

@@ -21,7 +21,6 @@ from typing import List
 
 import pandas as pd
 from langdetect import detect, LangDetectException
-from transformers import pipeline as hf_pipeline
 
 
 # -------------------------------------------------------
@@ -87,7 +86,8 @@ def detect_language(text: str) -> str:
 
 class Translator:
     def __init__(self, model="Helsinki-NLP/opus-mt-mul-en"):
-        print(f"[INFO] Loading translation model: {model}")
+        from transformers import pipeline as hf_pipeline
+        print(f"[INFO] Loading translation model: {model}", flush=True)
         self.pipe = hf_pipeline("translation", model=model)
 
     def translate_batch(self, texts: List[str]):
@@ -128,7 +128,7 @@ def main():
     if not input_path.exists():
         raise FileNotFoundError(f"Input CSV not found: {input_path}")
 
-    print(f"[INFO] Reading raw data: {input_path}")
+    print(f"[INFO] Reading raw data: {input_path}", flush=True)
     df = pd.read_csv(input_path)
 
     if "description" not in df.columns:
@@ -151,7 +151,7 @@ def main():
     metadata_cols = [c for c in ["job_id", "title", "company", "location", "site", "job_url", "job_date"] if c in df.columns]
     metadata = df[metadata_cols].drop_duplicates()
     metadata.to_csv(out_dir / "jobs_metadata.csv", index=False, encoding="utf-8-sig")
-    print(f"[INFO] Saved jobs_metadata.csv")
+    print(f"[INFO] Saved jobs_metadata.csv", flush=True)
 
     # -----------------------------
     # Sentence splitting
@@ -239,4 +239,8 @@ def main():
     pipe_df.to_csv(jobs_sent_path, index=False, encoding="utf-8-sig")
     print(f"[INFO] Saved: {jobs_sent_path} (pipeline input)")
 
-    print("[INFO] Preprocessing completed successfully.")
+    print("[INFO] Preprocessing completed successfully.", flush=True)
+
+
+if __name__ == "__main__":
+    main()

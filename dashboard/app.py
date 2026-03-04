@@ -1031,6 +1031,7 @@ def school_runs(request: Request, department_id: Optional[int] = None):
             row["phase"] = "phase1"
         runs.append(row)
     phase2_available = _phase2_available(user["school_id"], selected)
+    has_running = any(str(r.get("status", "")).lower() == "running" for r in runs)
     return templates.TemplateResponse(
         "school/runs.html",
         {
@@ -1039,6 +1040,7 @@ def school_runs(request: Request, department_id: Optional[int] = None):
             "departments": departments,
             "selected_department_id": selected,
             "phase2_available": phase2_available,
+            "has_running": has_running,
             "banner": "",
             "user": user,
         },
@@ -1071,6 +1073,21 @@ def _run_phase2_worker(run_id: int, school_id: int, department_id: int) -> None:
             "UPDATE runs SET status=?, message=?, completed_at=CURRENT_TIMESTAMP WHERE id=?",
             ("failed", str(exc), run_id),
         )
+
+
+@app.get("/dashboard/school/runs/status")
+def school_runs_status(request: Request, department_id: int):
+    """JSON endpoint for polling run status (used by progress indicator)."""
+    user = _require_role(request, "school")
+    dept = q_one("SELECT * FROM departments WHERE id=? AND school_id=?", (department_id, user["school_id"]))
+    if not dept:
+        raise HTTPException(status_code=404, detail="Department not found")
+    rows = q_all("SELECT id, status, message, completed_at FROM runs WHERE department_id=? ORDER BY id DESC", (department_id,))
+    runs = [
+        {"id": r["id"], "status": r["status"], "message": r["message"] or "", "completed_at": r["completed_at"]}
+        for r in rows
+    ]
+    return {"runs": runs}
 
 
 @app.post("/dashboard/school/runs/start")
@@ -1112,16 +1129,27 @@ def school_start_phase2(request: Request, department_id: int = Form(...)):
 
 
 @app.get("/dashboard/school/upload", response_class=HTMLResponse)
-def school_upload_page(request: Request, department_id: Optional[int] = None):
+def school_upload_page(
+    request: Request,
+    department_id: Optional[int] = None,
+    uploaded: Optional[str] = None,
+    rows: Optional[int] = None,
+):
     user = _require_role(request, "school")
     departments = _school_departments(user)
     selected = department_id or (departments[0]["id"] if departments else None)
+    success_banner = ""
+    if uploaded == "jobs":
+        success_banner = f"Jobs CSV uploaded successfully. {rows or 0} rows loaded." if rows is not None else "Jobs CSV uploaded successfully."
+    elif uploaded == "curriculum":
+        success_banner = "Curriculum file uploaded successfully."
     return templates.TemplateResponse(
         "school/upload.html",
         {
             "request": request,
             "departments": departments,
             "selected_department_id": selected,
+            "success_banner": success_banner,
             "user": user,
         },
     )
@@ -1145,7 +1173,10 @@ async def school_upload_jobs(request: Request, department_id: int = Form(...), f
         "INSERT INTO job_uploads(department_id, file_path, row_count) VALUES(?, ?, ?)",
         (department_id, str(out), row_count),
     )
-    return RedirectResponse(f"/dashboard/school/upload?department_id={department_id}", status_code=302)
+    return RedirectResponse(
+        f"/dashboard/school/upload?department_id={department_id}&uploaded=jobs&rows={row_count}",
+        status_code=302,
+    )
 
 
 @app.post("/dashboard/school/upload/curriculum")
@@ -1161,7 +1192,10 @@ async def school_upload_curriculum(request: Request, department_id: int = Form(.
         "INSERT INTO curriculum_uploads(department_id, file_path, format) VALUES(?, ?, ?)",
         (department_id, str(out), out.suffix.lower().lstrip(".")),
     )
-    return RedirectResponse(f"/dashboard/school/upload?department_id={department_id}", status_code=302)
+    return RedirectResponse(
+        f"/dashboard/school/upload?department_id={department_id}&uploaded=curriculum",
+        status_code=302,
+    )
 
 
 @app.get("/dashboard/school/results", response_class=HTMLResponse)

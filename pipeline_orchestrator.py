@@ -114,22 +114,40 @@ def run_department_pipeline(
         return payload
 
     # 1) Preprocess uploaded raw jobs into department preprocessing dir.
-    _run_cmd(
-        [
-            sys.executable,
-            str(PROJECT_ROOT / "preprocess_jobs_pipeline.py"),
-            "--input",
-            str(jobs_csv),
-            "--output_dir",
-            str(paths.preprocessing),
-            "--dedupe",
-        ]
+    #    Use data_prepared subdir to match default pipeline structure (DATA/preprocessing/data_prepared).
+    preprocess_out = paths.preprocessing / "data_prepared"
+    preprocess_out.mkdir(parents=True, exist_ok=True)
+    preprocess_cmd = [
+        sys.executable,
+        str(PROJECT_ROOT / "preprocess_jobs_pipeline.py"),
+        "--input",
+        str(jobs_csv),
+        "--output_dir",
+        str(preprocess_out.resolve()),  # resolve() to avoid Windows path issues
+        "--dedupe",
+    ]
+    completed = subprocess.run(
+        preprocess_cmd,
+        cwd=str(PROJECT_ROOT),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
     )
+    preprocess_out_log = f"\nPreprocess STDOUT:\n{completed.stdout}\nPreprocess STDERR:\n{completed.stderr}"
 
-    input_csv = paths.preprocessing / "jobs_sentences.csv"
-    jobs_meta = paths.preprocessing / "jobs_metadata.csv"
+    if completed.returncode != 0:
+        raise RuntimeError(
+            f"Preprocessing failed: {' '.join(preprocess_cmd)}{preprocess_out_log}"
+        )
+
+    input_csv = preprocess_out / "jobs_sentences.csv"
+    jobs_meta = preprocess_out / "jobs_metadata.csv"
     if not input_csv.exists():
-        raise FileNotFoundError(f"Expected preprocessing output not found: {input_csv}")
+        listing = list(preprocess_out.iterdir()) if preprocess_out.exists() else []
+        raise FileNotFoundError(
+            f"Expected preprocessing output not found: {input_csv}\n"
+            f"Files in output dir: {[p.name for p in listing]}{preprocess_out_log}"
+        )
 
     # 2) Execute core Phase-1 scripts with output_dir override.
     #    This keeps global run.bat unchanged and isolated.
