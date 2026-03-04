@@ -224,6 +224,23 @@ th, td {
   display: none;
 }
 
+.job-context {
+  margin: 10px 0;
+  padding: 10px;
+  background: #f8fafc;
+  border-left: 3px solid #94a3b8;
+  font-size: 13px;
+  color: #475569;
+}
+.job-context blockquote {
+  margin: 6px 0 0 0;
+  padding: 0;
+  border: none;
+  font-style: normal;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* Review sub-tabs */
 .review-tabs {
   display: flex;

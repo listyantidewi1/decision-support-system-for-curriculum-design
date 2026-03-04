@@ -135,6 +135,7 @@ def build_skill_review_table(
     skills: pd.DataFrame,
     max_skills: int = 500,
     exclude_pairs: set | None = None,
+    job_text_map: dict | None = None,
 ) -> pd.DataFrame:
     """
     Normalise skill table for expert review with stratified sampling.
@@ -191,10 +192,10 @@ def build_skill_review_table(
     if sort_cols:
         df = df.sort_values(sort_cols, ascending=sort_asc)
 
-    # Prioritize hybrid (BERT+GPT) results, then fill from other sources
+    # Prioritize hybrid (BERT+LLM) results, then fill from other sources
     if len(df) > max_skills and "source" in df.columns:
-        hybrid = df[df["source"] == "BERT+GPT"]
-        non_hybrid = df[df["source"] != "BERT+GPT"]
+        hybrid = df[df["source"].isin(["BERT+GPT", "BERT+LLM"])]
+        non_hybrid = df[~df["source"].isin(["BERT+GPT", "BERT+LLM"])]
         if len(hybrid) >= max_skills:
             df = _stratified_sample_skills(hybrid, max_skills)
         else:
@@ -203,6 +204,9 @@ def build_skill_review_table(
             df = pd.concat([hybrid, sampled_rest]).reset_index(drop=True)
     elif len(df) > max_skills:
         df = _stratified_sample_skills(df, max_skills)
+
+    if job_text_map and "job_id" in df.columns:
+        df["job_text"] = df["job_id"].astype(str).map(lambda j: job_text_map.get(j, ""))
 
     return df
 
@@ -218,6 +222,7 @@ def build_knowledge_review_table(
     future_weights: pd.DataFrame,
     max_knowledge: int = 200,
     exclude_review_ids: set | None = None,
+    job_text_map: dict | None = None,
 ) -> pd.DataFrame:
     """
     Build a knowledge-level review table by joining advanced_knowledge
@@ -247,6 +252,15 @@ def build_knowledge_review_table(
         )
         .reset_index()
     )
+    agg["confidence_score"] = agg["mean_confidence"]  # alias for expert review display
+    if "job_id" in knowledge_df.columns:
+        first_job = knowledge_df.groupby("knowledge")["job_id"].first().reset_index(name="job_id")
+        agg = agg.merge(first_job, on="knowledge")
+    if "source" in knowledge_df.columns:
+        source_mode = knowledge_df.groupby("knowledge")["source"].agg(
+            lambda x: x.mode().iloc[0] if len(x.mode()) > 0 else x.iloc[0]
+        )
+        agg = agg.merge(source_mode.reset_index(name="source"), on="knowledge")
 
     # Join with future weights
     merged = agg.merge(
@@ -269,6 +283,10 @@ def build_knowledge_review_table(
         ["future_weight", "freq"],
         ascending=[False, False],
     )
+
+    # Add job_text from representative job_id
+    if job_text_map and "job_id" in merged.columns:
+        merged["job_text"] = merged["job_id"].astype(str).map(lambda j: job_text_map.get(j, ""))
 
     # Add review columns
     merged["review_id"] = merged["knowledge"].apply(_make_knowledge_review_id)
@@ -370,6 +388,14 @@ def main():
     jobs_df.to_csv(jobs_path, index=False, encoding="utf-8-sig")
     print(f"[INFO] Saved job-level review table to {jobs_path}")
 
+    # Build job_id -> raw_text map for context
+    job_text_map = dict(
+        zip(
+            comp["job_id"].astype(str),
+            comp["raw_text"].astype(str).fillna(""),
+        )
+    )
+
     print("[INFO] Loading best available skills table (verified or advanced)...")
     skills_raw = load_best_skills_table(out_dir)
 
@@ -382,6 +408,7 @@ def main():
         skills_raw,
         max_skills=args.max_skills,
         exclude_pairs=exclude_skill_pairs,
+        job_text_map=job_text_map,
     )
     skills_path = out_dir / args.skills_csv
     if args.append and skills_path.exists() and not skills_df.empty:
@@ -423,6 +450,7 @@ def main():
                 future_weights,
                 max_knowledge=args.max_knowledge,
                 exclude_review_ids=exclude_know_ids,
+                job_text_map=job_text_map,
             )
             knowledge_out_path = out_dir / "expert_review_knowledge.csv"
             if not knowledge_review_df.empty:

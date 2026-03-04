@@ -493,8 +493,8 @@ def main():
     parser.add_argument(
         "--model",
         type=str,
-        default="deepseek/deepseek-chat",
-        help="Model name on OpenRouter (default: deepseek/deepseek-chat)",
+        default="google/gemini-2.5-flash",
+        help="Model name on OpenRouter (default: google/gemini-2.5-flash)",
     )
     parser.add_argument(
         "--max_skills_per_call",

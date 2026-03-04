@@ -81,7 +81,7 @@ signal at a time (demand, trend, future_weight). Coverage is optional (`with_cov
 - Overlap for IRR: 20 items labeled by 2 reviewers
 
 ### Stratification
-- Extraction source: BERT / GPT / Hybrid (proportional)
+- Extraction source: BERT / LLM / Hybrid (proportional)
 - Confidence tier: Very High / High / Medium / Low (proportional)
 - Skill type: Hard / Soft / Both (proportional)
 
@@ -107,8 +107,8 @@ Each item is labeled with:
 | Variant | Description |
 |---------|-------------|
 | BERT-only | Items with source=BERT only |
-| LLM-only | Items with source=GPT only |
-| Hybrid | Items with source=BERT+GPT or Hybrid |
+| LLM-only | Items with source=LLM only |
+| Hybrid | Items with source=BERT+LLM or Hybrid |
 
 ### Recommendation ablation
 | Variant | Signals Used |

@@ -18,8 +18,8 @@
   <p>Skills and knowledge are extracted using a <strong>hybrid approach</strong>:</p>
   <ul>
     <li><strong>JobBERT</strong>: BERT-based model fine-tuned on job postings; extracts skills/knowledge with confidence scores.</li>
-    <li><strong>LLM</strong>: Large language model (e.g., GPT) for additional extraction.</li>
-    <li><strong>Hybrid</strong>: When both agree, the item is marked BERT+GPT (typically more reliable). Single-model extractions (BERT-only, GPT-only) are also included.</li>
+    <li><strong>LLM</strong>: Large language model (DeepSeek, GPT, Gemini, Claude, etc.) for additional extraction. Configurable via pipeline config.</li>
+    <li><strong>Hybrid</strong>: When both agree, the item is marked BERT+LLM (typically more reliable). Single-model extractions (BERT-only, LLM-only) are also included.</li>
   </ul>
   <p>The <code>source</code> column indicates which model(s) produced each item.</p>
 </section>

@@ -63,8 +63,8 @@
           {% endif %}
           | Job: {{ row.get("job_id", "-") }}
         </p>
-        {% if row.get("context") %}
-          <p>{{ row.get("context", "") }}</p>
+        {% if row.get("job_text") %}
+        <div class="job-context"><strong>Job context:</strong><br/><blockquote>{{ row.get("job_text", "")[:800] }}{% if row.get("job_text", "")|length > 800 %}…{% endif %}</blockquote></div>
         {% endif %}
         <label>Validity {% if explanations and explanations.human_valid %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_valid.what }}</span></span>{% endif %}</label>
         <select name="human_valid">
@@ -110,8 +110,10 @@
         <input type="hidden" name="review_id" value="{{ row.get('review_id', '') }}" />
         <h4>{{ row.get("knowledge", "-") }} <span class="hint">#{{ row.get("review_id", "") }}</span></h4>
         <p class="hint">
+          {% set conf = row.get("confidence_score") or row.get("mean_confidence") %}
+          Confidence: <strong>{% if conf is not none and conf != "" %}{{ "%.2f"|format(conf|float) }}{% else %}-{% endif %}</strong> |
+          Source: <strong>{{ row.get("source", "-") }}</strong> |
           Frequency: <strong>{{ row.get("freq", "-") }}</strong> |
-          Mean confidence: <strong>{{ row.get("mean_confidence", "-") }}</strong> |
           Future weight: <strong>{{ row.get("future_weight", "-") }}</strong>
           {% if explanations and explanations.future_weight %}
           <span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.future_weight.what }}</span></span>
@@ -126,6 +128,9 @@
           ({{ row.get("trend_score", "-") }}) |
           Similarity: {{ row.get("similarity", "-") }}
         </p>
+        {% if row.get("job_text") %}
+        <div class="job-context"><strong>Job context:</strong><br/><blockquote>{{ row.get("job_text", "")[:800] }}{% if row.get("job_text", "")|length > 800 %}…{% endif %}</blockquote></div>
+        {% endif %}
         <label>Validity {% if explanations and explanations.human_valid %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_valid.what }}</span></span>{% endif %}</label>
         <select name="human_valid">
           <option value="" {% if not row.get("human_valid") %}selected{% endif %}>-</option>
@@ -290,7 +295,7 @@
       });
       if (!res.ok) throw new Error("save failed");
       card.classList.toggle("reviewed", isReviewed(card));
-      applyFilter();
+      // Don't applyFilter on save: keep card visible so user can add Type, Bloom, Notes
       updateProgress();
       setSavedState(card, "ok");
     } catch (_e) {
@@ -333,7 +338,7 @@
     card.querySelectorAll("select, textarea").forEach((el) => {
       el.addEventListener("change", () => {
         card.classList.toggle("reviewed", isReviewed(card));
-        applyFilter();
+        // Don't applyFilter on change: keep card visible so user can add Type, Bloom, Notes
         updateProgress();
         debounceSave(card, keyId);
       });

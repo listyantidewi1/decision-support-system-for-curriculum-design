@@ -325,7 +325,12 @@ def main():
             plt.close()
             print(f"[INFO] Saved future_weight_histogram.png")
 
-            top_n = result_df.head(20)
+            # Dedupe by normalized key (merge AI/ML, AI / ML:, etc.)
+            r = result_df.copy()
+            r["_key"] = r["knowledge"].apply(_normalize_for_grouping)
+            r = r[r["_key"] != ""]
+            r = r.loc[r.groupby("_key")["future_weight"].idxmax()].drop(columns=["_key"])
+            top_n = r.head(20)
             plt.figure(figsize=(10, 6))
             plt.barh(top_n["knowledge"], top_n["future_weight"])
             plt.xlabel("future_weight")
@@ -337,7 +342,7 @@ def main():
             plt.close()
             print(f"[INFO] Saved top_future_weight_knowledge.png")
 
-            bottom_n = result_df.tail(20).sort_values("future_weight")
+            bottom_n = r.tail(20).sort_values("future_weight")
             plt.figure(figsize=(10, 6))
             plt.barh(bottom_n["knowledge"], bottom_n["future_weight"])
             plt.xlabel("future_weight")

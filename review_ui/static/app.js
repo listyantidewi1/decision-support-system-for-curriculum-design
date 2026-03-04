@@ -95,6 +95,8 @@ async function autoSaveSkill(reviewId, card) {
     updateSkillProgress();
     card.classList.toggle("reviewed", !!(hv || hb || hn));
     showSaveIndicator(card, true);
+    // Don't re-render on save when unreviewed-only: keep card visible so user can
+    // add Type, Bloom, Notes before moving on (hide only on "Next Unreviewed").
   } catch (e) {
     showSaveIndicator(card, false);
   }
@@ -127,6 +129,7 @@ function renderSkills() {
         <span class="meta-tag">Confidence: ${item.confidence_score || "—"}</span>
         <span class="meta-tag">Source: ${escapeHtml(item.source || "—")}</span>
       </div>
+      ${item.job_text ? `<div class="job-context"><strong>Job context:</strong><blockquote>${escapeHtml((item.job_text || "").slice(0, 800))}${(item.job_text || "").length > 800 ? "…" : ""}</blockquote></div>` : ""}
       <div class="row">
         <div class="col">
           <div class="label">Valid?</div>
@@ -190,6 +193,7 @@ async function autoSaveKnowledge(reviewId, card) {
     updateKnowledgeProgress();
     card.classList.toggle("reviewed", !!(hv || hn));
     showSaveIndicator(card, true);
+    // Don't re-render on save when unreviewed-only: keep card visible for notes.
   } catch (e) {
     showSaveIndicator(card, false);
   }
@@ -217,10 +221,13 @@ function renderKnowledge() {
         <div class="value">${escapeHtml(item.knowledge || "")}</div>
       </div>
       <div class="card-meta">
+        <span class="meta-tag">Confidence: ${item.confidence_score != null && item.confidence_score !== "" ? Number(item.confidence_score).toFixed(2) : "—"}</span>
+        <span class="meta-tag">Source: ${escapeHtml(item.source || "—")}</span>
         <span class="meta-tag">Domain: ${escapeHtml(item.best_future_domain || "—")}</span>
         <span class="meta-tag">Trend: ${escapeHtml(item.trend_label || "—")}</span>
-        <span class="meta-tag">Weight: ${item.future_weight || "—"}</span>
+        <span class="meta-tag">Weight: ${item.future_weight != null && item.future_weight !== "" ? Number(item.future_weight).toFixed(3) : "—"}</span>
       </div>
+      ${item.job_text ? `<div class="job-context"><strong>Job context:</strong><blockquote>${escapeHtml((item.job_text || "").slice(0, 800))}${(item.job_text || "").length > 800 ? "…" : ""}</blockquote></div>` : ""}
       <div class="row">
         <div class="col">
           <div class="label">Valid?</div>
@@ -263,6 +270,7 @@ async function autoSaveCompetency(compId, card) {
     updateCompetencyProgress();
     card.classList.toggle("reviewed", !!(hq || hr || hn));
     showSaveIndicator(card, true);
+    // Don't re-render on save when unreviewed-only: keep card visible for notes.
   } catch (e) {
     showSaveIndicator(card, false);
   }
