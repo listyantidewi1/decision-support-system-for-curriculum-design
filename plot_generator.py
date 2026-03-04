@@ -510,6 +510,9 @@ def cluster_and_plot_texts(texts, weights, fig_path: Path, title: str, n_cluster
     if not texts:
         print(f"[WARN] No texts for clustering: {title}")
         return
+    if len(texts) < 2:
+        print(f"[WARN] Too few texts for PCA/clustering ({len(texts)}); skipping: {title}")
+        return
 
     embedder = SentenceTransformer(EMBEDDING_MODEL)
     embeddings = embedder.encode(texts, convert_to_tensor=False)

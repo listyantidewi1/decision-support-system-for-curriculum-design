@@ -47,6 +47,15 @@ import config
 FIG_DIR_NAME = "figures"
 
 
+def _unwrap_aggregated_json(data) -> dict:
+    """If data is aggregated format (list of per-run dicts), return first run for plotting."""
+    if isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
+        return data[0]
+    if isinstance(data, dict):
+        return data
+    return {}
+
+
 def ensure_fig_dir(output_dir: Path) -> Path:
     fig_dir = output_dir / FIG_DIR_NAME
     fig_dir.mkdir(parents=True, exist_ok=True)
@@ -404,7 +413,8 @@ def main():
     extraction_report = {}
     if extraction_path.exists():
         try:
-            extraction_report = json.loads(extraction_path.read_text(encoding="utf-8"))
+            raw = json.loads(extraction_path.read_text(encoding="utf-8"))
+            extraction_report = _unwrap_aggregated_json(raw)
         except Exception as e:
             print(f"[WARN] Could not load extraction report: {e}")
 
@@ -428,7 +438,8 @@ def main():
     validation_report = {}
     if validation_path.exists():
         try:
-            validation_report = json.loads(validation_path.read_text(encoding="utf-8"))
+            raw = json.loads(validation_path.read_text(encoding="utf-8"))
+            validation_report = _unwrap_aggregated_json(raw)
         except Exception as e:
             print(f"[WARN] Could not load validation report: {e}")
 
@@ -436,7 +447,8 @@ def main():
     mapping_report = {}
     if mapping_path.exists():
         try:
-            mapping_report = json.loads(mapping_path.read_text(encoding="utf-8"))
+            raw = json.loads(mapping_path.read_text(encoding="utf-8"))
+            mapping_report = _unwrap_aggregated_json(raw)
         except Exception as e:
             print(f"[WARN] Could not load mapping report: {e}")
 
@@ -444,7 +456,8 @@ def main():
     sensitivity_report = {}
     if sensitivity_path.exists():
         try:
-            sensitivity_report = json.loads(sensitivity_path.read_text(encoding="utf-8"))
+            raw = json.loads(sensitivity_path.read_text(encoding="utf-8"))
+            sensitivity_report = _unwrap_aggregated_json(raw)
         except Exception as e:
             print(f"[WARN] Could not load weight sensitivity report: {e}")
 

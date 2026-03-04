@@ -39,6 +39,7 @@ except ImportError:
 # Import your project modules
 try:
     from multitask_model import ResearchJobBERT 
+    import config
     from config import *
     # Ensure OUTPUT_DIR is defined
     if 'OUTPUT_DIR' not in locals() and 'OUTPUT_DIR' not in globals():
@@ -50,6 +51,7 @@ except ImportError:
         MULTITASK_MODEL_DIR = "models"
         JOBBERT_MODEL_NAME = "bert-base-uncased"
         OUTPUT_DIR = "output"
+        RANDOM_SEED = 42
         SKILL_ID2LABEL = {}
         KNOWLEDGE_ID2LABEL = {}
         CURRICULUM_COMPONENTS = {}
@@ -2536,10 +2538,12 @@ def main():
         
     except KeyboardInterrupt:
         logger.info("Pipeline interrupted by user")
+        sys.exit(130)
     except Exception as e:
         logger.error(f"Pipeline failed: {e}")
         import traceback
         traceback.print_exc()
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

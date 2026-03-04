@@ -11,6 +11,12 @@ Aggregates:
 
 Usage:
     python aggregate_results.py --run_dirs results_run1 results_run2 results_run3
+    python aggregate_results.py --run_dirs results_run1 results_run2 --output_dir results_aggregated --plot
+
+    To generate plots from existing aggregated results (without re-aggregating):
+        plot_aggregated.bat
+        or: python plot_generator.py --output_dir results_aggregated
+            python plot_scientific_analysis.py --output_dir results_aggregated
 """
 
 import argparse
@@ -166,6 +172,11 @@ def main():
         "--output_dir", type=str, default="results_aggregated",
         help="Output directory (default: results_aggregated)",
     )
+    parser.add_argument(
+        "--plot",
+        action="store_true",
+        help="Run plot_generator and plot_scientific_analysis on output_dir after aggregation",
+    )
     args = parser.parse_args()
 
     run_dirs = [Path(d) for d in args.run_dirs]
@@ -188,6 +199,22 @@ def main():
     compute_cross_run_summary(run_dirs, output_dir)
 
     print("[INFO] Aggregation complete.")
+
+    if args.plot:
+        import subprocess
+        out_str = str(output_dir)
+        print("\n[INFO] Generating plots from aggregated results...")
+        for script, name in [
+            ("plot_generator.py", "Main plots"),
+            ("plot_scientific_analysis.py", "Scientific analysis plots"),
+        ]:
+            try:
+                subprocess.run(
+                    ["python", script, "--output_dir", out_str],
+                    check=False,
+                )
+            except Exception as e:
+                print(f"[WARN] {name} failed: {e}")
 
 
 if __name__ == "__main__":

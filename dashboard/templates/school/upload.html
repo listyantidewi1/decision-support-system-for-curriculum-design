@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Department Uploads</h2>
+{% if success_banner %}<p class="banner success-banner">{{ success_banner }}</p>{% endif %}
 
 <section class="card">
   <form method="get" action="/dashboard/school/upload">

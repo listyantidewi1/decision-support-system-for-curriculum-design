@@ -134,6 +134,9 @@ python recommendations.py --evaluate
 REM 6. (Optional) Dashboard simulation: upload DATA/samples/*.csv, run department pipeline
 REM 7. (Optional) Multi-run: rename results → results_run1, repeat, then aggregate
 python aggregate_results.py --run_dirs results_run1 results_run2 --output_dir results_aggregated
+REM 8. (Optional) Generate all plots from aggregated data:
+REM    plot_aggregated.bat
+REM    or: python aggregate_results.py ... --plot
 ```
 
 **Larger data:** Edit `run.bat` or run `python pipeline.py --sample_size 5000` (or `0` for no limit).
