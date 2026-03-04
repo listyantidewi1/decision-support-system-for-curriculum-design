@@ -264,11 +264,14 @@ def build_prompt(
     few_shot_examples: Optional[List[Dict]] = None,
     skill_future_weights: Optional[Dict[str, Dict]] = None,
     skill_time_trends: Optional[Dict[str, Dict]] = None,
+    skill_bloom_map: Optional[Dict[str, str]] = None,
 ) -> str:
-    # Annotate skills with future_weight and/or empirical trend when available
+    # Annotate skills with Bloom, future_weight, and/or empirical trend when available
     def format_skill(s: str) -> str:
         s_stripped = s.strip()
         parts = []
+        if skill_bloom_map and s_stripped in skill_bloom_map:
+            parts.append(f"bloom={skill_bloom_map[s_stripped]}")
         if skill_future_weights and s_stripped in skill_future_weights:
             w = skill_future_weights[s_stripped]
             fw = w.get("future_weight", 0)
@@ -339,13 +342,20 @@ Please follow these rules:
 3. Each competency is an object with:
    - "id": a short identifier (e.g., "C1", "C2", ...).
    - "title": a concise competency title.
-   - "description": 2–3 sentences competency statement that can be used in a curriculum.
+   - "description": ONE single sentence that is clear, measurable, and operational.
+     Start with a Bloom-level verb (Design, Analyze, Evaluate, Create, etc.); state the object/outcome;
+     include how (measurable, operational criteria).
+     Example: "Design scalable, high-performance software components by breaking down complex
+     requirements into smaller, manageable subsystems and choosing appropriate technologies."
    - "related_skills": list of skill phrases from the input that this competency covers.
    - "future_relevance": a short note (1–2 sentences) on why this competency
      matters for the future of work (based on the context if available).
-4. Try to produce between 10 and 25 competencies for this batch.
-5. Prefer higher-level, integrative competencies, not trivial one-skill items.
-6. Give slightly higher priority and more detail to skills and themes that appear
+4. BLOOM ALIGNMENT: For each competency, use the HIGHEST Bloom taxonomy level among its
+   related skills (e.g. if skills have Apply, Understand, Analyze, write at Analyze level).
+   Bloom order: Remember < Understand < Apply < Analyze < Evaluate < Create.
+5. Try to produce between 10 and 25 competencies for this batch.
+6. Prefer higher-level, integrative competencies, not trivial one-skill items.
+7. Give slightly higher priority and more detail to skills and themes that appear
    in future-critical domains (AI, data, cloud, security, human–AI collaboration),
    if such context is provided.
 {future_weighting_block}
@@ -401,6 +411,7 @@ def call_llm_for_competencies(client: OpenAI,
                               few_shot_examples: Optional[List[Dict]] = None,
                               skill_future_weights: Optional[Dict[str, Dict]] = None,
                               skill_time_trends: Optional[Dict[str, Dict]] = None,
+                              skill_bloom_map: Optional[Dict[str, str]] = None,
                               temperature: float = 0.0) -> Dict:
     prompt = build_prompt(
         skills,
@@ -408,6 +419,7 @@ def call_llm_for_competencies(client: OpenAI,
         few_shot_examples=few_shot_examples,
         skill_future_weights=skill_future_weights,
         skill_time_trends=skill_time_trends,
+        skill_bloom_map=skill_bloom_map,
     )
 
     messages = [
@@ -605,6 +617,24 @@ def main():
 
     print(f"[INFO] Total unique skills for competency generation: {len(skills_sorted)}")
 
+    # Build skill->Bloom map (mode or first non-N/A per skill)
+    skill_bloom_map = {}
+    if "bloom" in df.columns and "skill" in df.columns:
+        for skill in skills_sorted:
+            s = str(skill).strip()
+            vals = df[df["skill"].astype(str).str.strip() == s]["bloom"].dropna().astype(str).str.strip()
+            vals = vals[vals.str.lower() != "n/a"]
+            if len(vals) > 0:
+                try:
+                    mode_val = vals.mode().iloc[0]
+                except (IndexError, KeyError):
+                    mode_val = vals.iloc[0]
+                skill_bloom_map[s] = str(mode_val)
+        if skill_bloom_map:
+            print(f"[INFO] Loaded Bloom levels for {len(skill_bloom_map)} skills")
+    else:
+        print("[INFO] Bloom column not available; Bloom alignment optional in prompt")
+
     # Load skill future weights (for annotation and reordering)
     skill_future_weights = load_skill_future_weights(out_dir)
     if skill_future_weights:
@@ -655,6 +685,7 @@ def main():
             few_shot_examples=few_shot or [],
             skill_future_weights=skill_future_weights or None,
             skill_time_trends=skill_time_trends or None,
+            skill_bloom_map=skill_bloom_map or None,
             temperature=args.temperature,
         )
 

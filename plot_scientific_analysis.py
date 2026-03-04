@@ -298,8 +298,13 @@ def plot_calibration_curve(validation_report: dict, fig_dir: Path) -> None:
         ax = axes[idx] if idx < len(axes) else axes[-1]
         pred = cal["predicted_mean"]
         obs = cal["observed_freq"]
+        bin_counts = cal.get("bin_counts", [])
         ax.plot([0, 1], [0, 1], "k--", label="Perfect calibration")
         ax.plot(pred, obs, "o-", color="#3498db", linewidth=2, markersize=8, label="Model")
+        for i, (px, oy) in enumerate(zip(pred, obs)):
+            if i < len(bin_counts):
+                ax.annotate(f"n={bin_counts[i]}", (px, oy), xytext=(5, 5), textcoords="offset points",
+                            fontsize=8, alpha=0.8)
         ax.set_xlabel("Mean predicted probability")
         ax.set_ylabel("Observed frequency")
         ax.set_title(f"{v.get('column', 'Score')} (Brier={v.get('brier_score', 'N/A')})")
@@ -346,16 +351,32 @@ def plot_power_curve(fig_dir: Path, p0: float = 0.5, p1: float = 0.7, alpha: flo
 
 
 def plot_future_mapping(mapping_report: dict, fig_dir: Path) -> None:
-    """Top-1 accuracy bar and mapping margin distribution (if per-item data exists)."""
+    """Top-1/Top-3 accuracy bars and mapping margin distribution (if per-item data exists)."""
     if not mapping_report or mapping_report.get("status") != "ok":
         return
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     top1 = mapping_report.get("top1_accuracy", 0)
-    axes[0].bar(["Top-1 accuracy"], [top1], color="#3498db", edgecolor="black")
+    top3 = mapping_report.get("top3_accuracy", 0)
+    top1_hm = mapping_report.get("top1_accuracy_high_margin")
+    top3_hm = mapping_report.get("top3_accuracy_high_margin")
+    mean_margin = mapping_report.get("mean_margin", 0)
+
+    labels = ["Top-1", "Top-3"]
+    values = [top1, top3]
+    colors = ["#3498db", "#2ecc71"]
+    if top1_hm is not None and top3_hm is not None:
+        labels.extend(["Top-1 (hm)", "Top-3 (hm)"])
+        values.extend([top1_hm, top3_hm])
+        colors.extend(["#2980b9", "#27ae60"])
+    x = np.arange(len(labels))
+    axes[0].bar(x, values, color=colors, edgecolor="black")
     axes[0].axhline(0.6, color="red", linestyle="--", alpha=0.7, label="Target 0.60")
+    axes[0].axhline(0.8, color="orange", linestyle=":", alpha=0.7, label="Top-3 target 0.80")
+    axes[0].set_xticks(x)
+    axes[0].set_xticklabels(labels, rotation=15, ha="right")
     axes[0].set_ylim(0, 1.05)
     axes[0].set_ylabel("Accuracy")
-    axes[0].set_title("Future-Domain Mapping: Top-1 vs Expert")
+    axes[0].set_title("Future-Domain Mapping vs Expert")
     axes[0].legend()
     per_item = mapping_report.get("per_item", [])
     if per_item:

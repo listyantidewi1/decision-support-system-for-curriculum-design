@@ -47,12 +47,56 @@ def load_calibrated_threshold(feedback_dir: Path) -> dict:
         return {}
 
 
-def compute_composite(df: pd.DataFrame) -> pd.Series:
-    """Compute a composite verification score per row."""
+def load_calibration_weights(output_dir: Path) -> dict | None:
+    """Load Brier-based weights from parameter_validation_report.json if available.
+    Map: confidence_score -> W_CONFIDENCE, semantic_density -> W_DENSITY,
+    context_agreement -> W_AGREEMENT. W_FREQUENCY stays fixed (no Brier in report).
+    Returns dict with keys W_CONFIDENCE, W_AGREEMENT, W_DENSITY, W_FREQUENCY, or None.
+    """
+    path = output_dir / "parameter_validation_report.json"
+    if not path.exists():
+        return None
+    try:
+        report = json.loads(path.read_text(encoding="utf-8"))
+        if report.get("status") != "ok" or "validations" not in report:
+            return None
+        brier_map = {}
+        for v in report["validations"]:
+            if isinstance(v, dict) and "column" in v and "brier_score" in v:
+                brier_map[v["column"]] = float(v["brier_score"])
+        # Map validated columns to our signals
+        w_conf = 1.0 / (1.0 + brier_map.get("confidence_score", 0.2))
+        w_dens = 1.0 / (1.0 + brier_map.get("semantic_density", 0.2))
+        w_agr = 1.0 / (1.0 + brier_map.get("context_agreement", 0.2))
+        w_freq = 0.15  # Fixed (no Brier)
+        total = w_conf + w_dens + w_agr + w_freq
+        return {
+            "W_CONFIDENCE": w_conf / total,
+            "W_AGREEMENT": w_agr / total,
+            "W_DENSITY": w_dens / total,
+            "W_FREQUENCY": w_freq / total,
+        }
+    except Exception:
+        return None
+
+
+def compute_composite(df: pd.DataFrame, weights: dict | None = None) -> pd.Series:
+    """Compute a composite verification score per row.
+    weights: optional dict with W_CONFIDENCE, W_AGREEMENT, W_DENSITY, W_FREQUENCY.
+    If None, uses module-level constants.
+    """
+    w = weights or {}
+    w_conf = w.get("W_CONFIDENCE", W_CONFIDENCE)
+    w_agr = w.get("W_AGREEMENT", W_AGREEMENT)
+    w_freq = w.get("W_FREQUENCY", W_FREQUENCY)
+    w_dens = w.get("W_DENSITY", W_DENSITY)
+
     conf = pd.to_numeric(df["confidence_score"], errors="coerce").fillna(0.0)
 
     if "model_agreement_score" in df.columns:
         agree = pd.to_numeric(df["model_agreement_score"], errors="coerce").fillna(conf)
+    elif "context_agreement" in df.columns:
+        agree = pd.to_numeric(df["context_agreement"], errors="coerce").fillna(conf)
     else:
         agree = conf.copy()
 
@@ -65,10 +109,10 @@ def compute_composite(df: pd.DataFrame) -> pd.Series:
     freq_norm = (freq / FREQ_CAP).clip(upper=1.0)
 
     composite = (
-        W_CONFIDENCE * conf
-        + W_AGREEMENT * agree
-        + W_FREQUENCY * freq_norm
-        + W_DENSITY * density
+        w_conf * conf
+        + w_agr * agree
+        + w_freq * freq_norm
+        + w_dens * density
     )
     return composite
 
@@ -160,7 +204,12 @@ def main():
     else:
         df["_freq"] = 1.0
 
-    df["composite_score"] = compute_composite(df)
+    cal_weights = load_calibration_weights(output_dir)
+    if cal_weights:
+        print(f"[INFO] Using calibration-aware weights from parameter_validation_report.json")
+    else:
+        print("[INFO] Using fixed weights (parameter_validation_report.json not found or invalid)")
+    df["composite_score"] = compute_composite(df, weights=cal_weights)
 
     cal = load_calibrated_threshold(feedback_dir)
     if cal and "confidence_threshold" in cal and not args.force_percentile:

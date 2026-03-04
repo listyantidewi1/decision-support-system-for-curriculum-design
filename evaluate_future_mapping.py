@@ -47,7 +47,7 @@ def load_pipeline_mapping(output_dir: Path) -> pd.DataFrame:
     return pd.DataFrame()
 
 
-def evaluate(gold: pd.DataFrame, mapping: pd.DataFrame) -> dict:
+def evaluate(gold: pd.DataFrame, mapping: pd.DataFrame, margin_threshold: float = 0.05) -> dict:
     if gold.empty:
         return {"status": "no_gold_data"}
 
@@ -73,19 +73,26 @@ def evaluate(gold: pd.DataFrame, mapping: pd.DataFrame) -> dict:
             results.append({
                 "item": key, "true_domain": true_id,
                 "predicted_domain": "", "correct": False,
+                "is_none_or_unclear": True,  # Exclude from evaluable (no prediction to compare)
                 "margin": 0.0, "status": "not_in_mapping",
             })
             continue
 
-        pred_id = str(match.iloc[0].get("best_domain_id", "")).strip().lower()
-        margin = float(match.iloc[0].get("mapping_margin", 0))
+        m = match.iloc[0]
+        pred_id = str(m.get("best_domain_id", "")).strip().lower()
+        top2_id = str(m.get("top2_domain_id", "")).strip().lower()
+        top3_id = str(m.get("top3_domain_id", "")).strip().lower()
+        margin = float(m.get("mapping_margin", 0))
 
         is_correct = (true_id == pred_id)
+        top3_preds = {p for p in (pred_id, top2_id, top3_id) if p}
+        is_top3_correct = true_id in top3_preds if top3_preds else is_correct
         is_none = true_id in ("none", "unclear")
 
         results.append({
             "item": key, "true_domain": true_id,
             "predicted_domain": pred_id, "correct": is_correct,
+            "top3_correct": is_top3_correct,
             "is_none_or_unclear": is_none, "margin": round(margin, 4),
         })
 
@@ -97,6 +104,14 @@ def evaluate(gold: pd.DataFrame, mapping: pd.DataFrame) -> dict:
     n_eval = len(evaluable)
     n_correct = evaluable["correct"].sum() if n_eval > 0 else 0
     top1_acc = n_correct / n_eval if n_eval > 0 else 0.0
+
+    n_top3_correct = evaluable["top3_correct"].sum() if n_eval > 0 and "top3_correct" in evaluable.columns else 0
+    top3_acc = n_top3_correct / n_eval if n_eval > 0 else 0.0
+
+    high_margin = evaluable[evaluable["margin"] >= margin_threshold] if n_eval > 0 else evaluable
+    n_hm = len(high_margin)
+    top1_acc_hm = high_margin["correct"].sum() / n_hm if n_hm > 0 else 0.0
+    top3_acc_hm = high_margin["top3_correct"].sum() / n_hm if n_hm > 0 and "top3_correct" in high_margin.columns else 0.0
 
     none_rate = mask.sum() / len(results_df) if len(results_df) > 0 else 0.0
 
@@ -111,6 +126,11 @@ def evaluate(gold: pd.DataFrame, mapping: pd.DataFrame) -> dict:
         "total_items": len(results_df),
         "evaluable_items": n_eval,
         "top1_accuracy": round(top1_acc, 4),
+        "top3_accuracy": round(top3_acc, 4),
+        "margin_threshold": margin_threshold,
+        "high_margin_items": n_hm,
+        "top1_accuracy_high_margin": round(top1_acc_hm, 4),
+        "top3_accuracy_high_margin": round(top3_acc_hm, 4),
         "none_unclear_rate": round(none_rate, 4),
         "mean_margin": round(float(results_df["margin"].mean()), 4),
         "median_margin": round(float(results_df["margin"].median()), 4),
@@ -126,6 +146,8 @@ def main():
     parser.add_argument("--output_dir", type=str, default=str(config.OUTPUT_DIR))
     parser.add_argument("--labels_dir", type=str, default=str(LABELS_DIR))
     parser.add_argument("--output", type=str, default="future_mapping_evaluation_report.json")
+    parser.add_argument("--margin_threshold", type=float, default=0.05,
+                        help="Margin threshold for high-margin accuracy subset (default: 0.05)")
     args = parser.parse_args()
 
     out_dir = Path(args.output_dir)
@@ -144,9 +166,11 @@ def main():
             report = {"status": "no_mapping"}
         else:
             print(f"[INFO] Loaded {len(mapping)} mapping entries")
-            report = evaluate(gold, mapping)
+            report = evaluate(gold, mapping, margin_threshold=args.margin_threshold)
             if report.get("status") == "ok":
                 print(f"  Top-1 accuracy: {report['top1_accuracy']:.3f}")
+                print(f"  Top-3 accuracy: {report.get('top3_accuracy', 0):.3f}")
+                print(f"  Top-1 (high-margin): {report.get('top1_accuracy_high_margin', 0):.3f}")
                 print(f"  None/unclear rate: {report['none_unclear_rate']:.3f}")
                 print(f"  Mean margin: {report['mean_margin']:.3f}")
 
