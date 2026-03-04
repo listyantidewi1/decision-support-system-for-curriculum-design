@@ -4,13 +4,6 @@ ADVANCED METRICS REPORT
 
 1. Model-Level Extraction Summary
 --------------------------------
-- Model: GPT
-    Jobs                     : 5290
-    Total skills extracted   : 20886
-    Total knowledge extracted: 11060
-    Mean skills per job      : 3.28
-    Mean knowledge per job   : 1.73
-
 - Model: Hybrid
     Jobs                     : 5369
     Total skills extracted   : 30325
@@ -25,6 +18,13 @@ ADVANCED METRICS REPORT
     Mean skills per job      : 4.17
     Mean knowledge per job   : 1.78
 
+- Model: LLM
+    Jobs                     : 5290
+    Total skills extracted   : 20886
+    Total knowledge extracted: 11060
+    Mean skills per job      : 3.28
+    Mean knowledge per job   : 1.73
+
 
 2. Hybrid Improvement (Hybrid - Base Model)
 -------------------------------------------
@@ -34,24 +34,15 @@ ADVANCED METRICS REPORT
     coverage_diff_JobBERT: mean=0.0692, median=0.0432
     avg_conf_diff_JobBERT: mean=-0.0427, median=-0.0504
 
-- Compared to GPT:
-    skill_diff_GPT: mean=1.4352, median=0.5000
-    knowledge_diff_GPT: mean=0.4388, median=0.0000
-    coverage_diff_GPT: mean=0.0557, median=0.0261
-    avg_conf_diff_GPT: mean=-0.0408, median=-0.0150
+- Compared to LLM:
+    skill_diff_LLM: mean=1.4352, median=0.5000
+    knowledge_diff_LLM: mean=0.4388, median=0.0000
+    coverage_diff_LLM: mean=0.0557, median=0.0261
+    avg_conf_diff_LLM: mean=-0.0408, median=-0.0150
 
 
 3. Bloom Taxonomy Distribution (Hard Skills)
 -------------------------------------------
-- Model: GPT
-    bloom_remember: 202
-    bloom_understand: 159
-    bloom_apply: 4167
-    bloom_analyze: 1535
-    bloom_evaluate: 1196
-    bloom_create: 3753
-    bloom_na: 9874
-
 - Model: Hybrid
     bloom_remember: 336
     bloom_understand: 332
@@ -69,6 +60,15 @@ ADVANCED METRICS REPORT
     bloom_evaluate: 1156
     bloom_create: 2379
     bloom_na: 1136
+
+- Model: LLM
+    bloom_remember: 202
+    bloom_understand: 159
+    bloom_apply: 4167
+    bloom_analyze: 1535
+    bloom_evaluate: 1196
+    bloom_create: 3753
+    bloom_na: 9874
 
 
 4. Coverage Metrics (Hybrid)
