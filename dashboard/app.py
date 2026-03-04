@@ -736,7 +736,7 @@ def _explanations() -> Dict[str, Dict[str, str]]:
         },
         "source": {
             "title": "Extraction Source",
-            "what": "BERT+GPT = hybrid (both agreed); BERT-only or GPT-only = single model. Hybrid typically more reliable.",
+            "what": "BERT+LLM = hybrid (both agreed); BERT-only or LLM-only = single model. Hybrid typically more reliable.",
             "formula": "",
             "limitations": "",
         },

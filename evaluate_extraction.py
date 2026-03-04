@@ -2,7 +2,7 @@
 evaluate_extraction.py
 
 Evaluates extraction quality (precision, recall, F1) using a labeled gold set.
-Computes metrics overall and per extraction source (BERT / GPT / Hybrid).
+Computes metrics overall and per extraction source (BERT / LLM / Hybrid).
 
 Scientific methods (see SCIENTIFIC_METHODOLOGY.md):
     - Binomial test: H0 precision=0.5 vs H1 precision>0.5

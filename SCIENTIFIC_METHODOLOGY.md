@@ -140,9 +140,9 @@ h = 2 × (arcsin(√p₁) - arcsin(√p₂))
 - odds_ratio = 0.80 / 0.20 = **4.0**
 - risk_difference = 0.80 - 0.5 = **0.30**
 
-**Example 2 — Cohen's h (BERT vs GPT)**
+**Example 2 — Cohen's h (BERT vs LLM)**
 
-- BERT precision p₁ = 0.65, GPT precision p₂ = 0.50
+- BERT precision p₁ = 0.65, LLM precision p₂ = 0.50
 - h = 2 × (arcsin(√0.65) - arcsin(√0.50))
 - arcsin(√0.65) ≈ 0.947, arcsin(√0.50) ≈ 0.785
 - h ≈ 2 × 0.162 ≈ **0.32** (small-to-medium effect)
@@ -151,7 +151,7 @@ h = 2 × (arcsin(√p₁) - arcsin(√p₂))
 
 ## 3. Multi-Comparison Correction
 
-When testing multiple sources (BERT, GPT, Hybrid) or performing pairwise comparisons, we correct for multiple testing to control the family-wise error rate (FWER) or false discovery rate (FDR).
+When testing multiple sources (BERT, LLM, Hybrid) or performing pairwise comparisons, we correct for multiple testing to control the family-wise error rate (FWER) or false discovery rate (FDR).
 
 ### Bonferroni Correction (Per-Source Tests)
 
@@ -189,7 +189,7 @@ No rejections after BH. If p-values were [0.01, 0.02, 0.10]:
 
 ### Two-Proportion Z-Test
 
-For comparing BERT (n₁, x₁ correct) vs GPT (n₂, x₂ correct):
+For comparing BERT (n₁, x₁ correct) vs LLM (n₂, x₂ correct):
 
 ```
 p₁ = x₁/n₁,  p₂ = x₂/n₂

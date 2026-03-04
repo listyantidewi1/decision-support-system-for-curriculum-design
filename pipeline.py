@@ -132,7 +132,7 @@ class SkillItem:
     bloom: BloomLevel
     confidence_score: float  # Continuous 0.0-1.0
     confidence_tier: ConfidenceTier
-    source: str  # "BERT", "GPT", "BERT+GPT", "Hybrid"
+    source: str  # "BERT", "LLM", "BERT+LLM", "Hybrid"
     semantic_density: float = 1.0  # How information-dense the skill is
     context_agreement: float = 1.0  # Agreement with context
     
@@ -181,8 +181,8 @@ class AdvancedPipelineConfig:
     # Embedding model
     EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
     
-    # GPT model
-    GPT_MODEL = "deepseek/deepseek-chat"
+    # LLM model (OpenRouter: deepseek, gpt-5, gemini, claude, etc.)
+    LLM_MODEL = "google/gemini-2.5-flash"
     
     # OpenAI API (replace with your actual key)
     OPENAI_API_KEY = None
@@ -248,20 +248,20 @@ class AdvancedPipelineConfig:
     BERT_TYPE_CONFIDENCE_WEIGHT = 0.3   # Hard/soft type classification contribution
     BERT_BLOOM_FACTOR_BASE = 0.5        # Minimum Bloom confidence factor (floor)
     BERT_DENSITY_FACTOR_BASE = 0.8      # Minimum semantic-density factor (floor)
-    BERT_STANDALONE_PENALTY = 0.8       # Penalty when BERT skill has no GPT match
+    BERT_STANDALONE_PENALTY = 0.8       # Penalty when BERT skill has no LLM match
 
     # Reproducibility (override via --seed)
     RANDOM_SEED = None  # Set from config.RANDOM_SEED or args.seed at runtime
 
-    # --- Confidence scoring weights (GPT skills) ---
-    GPT_BASE_CONFIDENCE = 0.8           # Base confidence for GPT extractions
-    GPT_TYPE_FACTOR_BASE = 0.6          # Minimum type-confidence factor
-    GPT_BLOOM_FACTOR_BASE = 0.7         # Minimum Bloom factor for GPT
-    GPT_DENSITY_FACTOR_BASE = 0.8       # Minimum density factor for GPT
+    # --- Confidence scoring weights (LLM skills) ---
+    LLM_BASE_CONFIDENCE = 0.8           # Base confidence for LLM extractions
+    LLM_TYPE_FACTOR_BASE = 0.6          # Minimum type-confidence factor
+    LLM_BLOOM_FACTOR_BASE = 0.7         # Minimum Bloom factor for LLM
+    LLM_DENSITY_FACTOR_BASE = 0.8       # Minimum density factor for LLM
 
     # --- Fusion weights ---
     FUSION_MATCH_BONUS_WEIGHT = 0.2     # How much match score boosts confidence
-    FUSION_TYPE_DISAGREEMENT = 0.8      # Multiplier when BERT/GPT types disagree
+    FUSION_TYPE_DISAGREEMENT = 0.8      # Multiplier when BERT/LLM types disagree
     FUSION_BLOOM_CONFIDENCE_SCALE = 0.7 # Scale for Bloom confidence in fusion
 
     # --- Agreement thresholds ---
@@ -701,9 +701,9 @@ class AdvancedTaxonomyManager:
                 elif soft_context_hits > hard_context_hits:
                     return SkillType.SOFT, 0.7
         
-        # 3. Use GPT classification if available with context adjustment
+        # 3. Use LLM classification if available with context adjustment
         if gpt_type:
-            gpt_confidence = 0.8  # Base confidence for GPT
+            gpt_confidence = 0.8  # Base confidence for LLM
             # Adjust based on context consistency
             context_words = ' '.join(context_lower)
             if any(word in context_words for word in ['technical', 'technology', 'software', 'code']):
@@ -841,7 +841,7 @@ class BloomClassifier:
                  openai_client=None, model_name: str = None):
         self.embedder = embedder
         self.openai_client = openai_client
-        self.model_name = model_name or AdvancedPipelineConfig.GPT_MODEL
+        self.model_name = model_name or AdvancedPipelineConfig.LLM_MODEL
         self._exemplar_embeddings = {}
         self._bloom_levels = list(self.BLOOM_EXEMPLARS.keys())
 
@@ -914,17 +914,17 @@ class BloomClassifier:
 
 
 # ============================================================
-# 5. GPT EXTRACTOR
+# 5. LLM EXTRACTOR
 # ============================================================
 
-class GPTExtractor:
-    """Handles GPT-based extraction."""
+class LLMExtractor:
+    """Handles LLM-based extraction (configurable: DeepSeek, GPT, Gemini, Claude, etc.)."""
     
     def __init__(self, openai_client):
         self.client = openai_client
     
     def extract_skills_and_knowledge(self, text: str, bert_knowledge: List[Dict]) -> Dict:
-        """Extract skills and knowledge using GPT."""
+        """Extract skills and knowledge using the configured LLM."""
         if not self.client:
             return {"skills": [], "knowledge": []}
         
@@ -1012,7 +1012,7 @@ class GPTExtractor:
         
         try:
             response = self.client.chat.completions.create(
-                model=AdvancedPipelineConfig.GPT_MODEL,
+                model=AdvancedPipelineConfig.LLM_MODEL,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -1028,7 +1028,7 @@ class GPTExtractor:
             }
             
         except Exception as e:
-            logger.error(f"GPT extraction error: {e}")
+            logger.error(f"LLM extraction error: {e}")
             return {"skills": [], "knowledge": []}
 
 # ============================================================
@@ -1045,7 +1045,7 @@ class ContextAwareExtractor:
         self.bloom_classifier = BloomClassifier(
             embedder=model_manager.embedder,
             openai_client=model_manager.openai_client,
-            model_name=AdvancedPipelineConfig.GPT_MODEL,
+            model_name=AdvancedPipelineConfig.LLM_MODEL,
         )
         
     def extract_with_context_awareness(self, text: str) -> Dict[str, List[SkillItem]]:
@@ -1054,7 +1054,7 @@ class ContextAwareExtractor:
         # Extract knowledge with BERT first
         bert_skills_raw, bert_knowledge = self.model_manager.extract_with_bert(text)
         
-        # Extract from GPT
+        # Extract from LLM
         gpt_output = self.gpt_extractor.extract_skills_and_knowledge(text, bert_knowledge)
         
         # Convert to structured format
@@ -1130,7 +1130,7 @@ class ContextAwareExtractor:
         return processed
     
     def _process_gpt_skills(self, gpt_skills: List[Dict], context: str) -> List[SkillItem]:
-        """Process GPT skills with advanced features."""
+        """Process LLM skills with advanced features."""
         processed = []
         
         for skill in gpt_skills:
@@ -1143,29 +1143,29 @@ class ContextAwareExtractor:
             # Calculate semantic density
             semantic_density = AdvancedTaxonomyManager.calculate_semantic_density(text)
             
-            # Classify skill with context (use GPT's classification as hint)
+            # Classify skill with context (use LLM's classification as hint)
             skill_type, type_confidence = AdvancedTaxonomyManager.classify_skill_with_context(
                 text, gpt_type, context=[context]
             )
             
-            # Use hybrid Bloom classifier instead of trusting GPT label
+            # Use hybrid Bloom classifier instead of trusting LLM label
             bloom_level, bloom_confidence = self.bloom_classifier.classify(
                 text, context=context, skill_type=skill_type
             )
             
             # Calculate overall confidence using named config weights
-            base_confidence = AdvancedPipelineConfig.GPT_BASE_CONFIDENCE
+            base_confidence = AdvancedPipelineConfig.LLM_BASE_CONFIDENCE
             adjusted_confidence = base_confidence * (
-                AdvancedPipelineConfig.GPT_TYPE_FACTOR_BASE
-                + type_confidence * (1.0 - AdvancedPipelineConfig.GPT_TYPE_FACTOR_BASE)
+                AdvancedPipelineConfig.LLM_TYPE_FACTOR_BASE
+                + type_confidence * (1.0 - AdvancedPipelineConfig.LLM_TYPE_FACTOR_BASE)
             )
             final_confidence = adjusted_confidence * (
-                AdvancedPipelineConfig.GPT_BLOOM_FACTOR_BASE
-                + bloom_confidence * (1.0 - AdvancedPipelineConfig.GPT_BLOOM_FACTOR_BASE)
+                AdvancedPipelineConfig.LLM_BLOOM_FACTOR_BASE
+                + bloom_confidence * (1.0 - AdvancedPipelineConfig.LLM_BLOOM_FACTOR_BASE)
             )
             final_confidence *= (
-                AdvancedPipelineConfig.GPT_DENSITY_FACTOR_BASE
-                + semantic_density * (1.0 - AdvancedPipelineConfig.GPT_DENSITY_FACTOR_BASE)
+                AdvancedPipelineConfig.LLM_DENSITY_FACTOR_BASE
+                + semantic_density * (1.0 - AdvancedPipelineConfig.LLM_DENSITY_FACTOR_BASE)
             )
             
             skill_item = SkillItem(
@@ -1174,7 +1174,7 @@ class ContextAwareExtractor:
                 bloom=bloom_level,
                 confidence_score=final_confidence,
                 confidence_tier=AdvancedTaxonomyManager.get_confidence_tier(final_confidence),
-                source="GPT",
+                source="LLM",
                 semantic_density=semantic_density,
                 context_agreement=1.0  # Will be adjusted later
             )
@@ -1184,7 +1184,7 @@ class ContextAwareExtractor:
     
     def _analyze_model_agreement(self, bert_skills: List[SkillItem], 
                                 gpt_skills: List[SkillItem]) -> Dict[str, float]:
-        """Analyze agreement between BERT and GPT models."""
+        """Analyze agreement between BERT and LLM models."""
         if not bert_skills or not gpt_skills:
             return {'overall': 0.0, 'matches': [], 'bert_count': 0, 'gpt_count': 0, 'match_count': 0}
         
@@ -1333,7 +1333,7 @@ class AdvancedFusionEngine:
         """
         Advanced fusion with continuous confidence scores and partial matching.
         """
-        # Start with all GPT skills
+        # Start with all LLM skills
         fused = gpt_skills.copy()
         
         # Track which BERT skills have been matched
@@ -1423,9 +1423,9 @@ class AdvancedFusionEngine:
                            match_score: float, match_type: str) -> SkillItem:
         """Fuse two matched skills into one."""
         
-        # Decide which text to use (prefer GPT for clarity, BERT for completeness)
+        # Decide which text to use (prefer LLM for clarity, BERT for completeness)
         if match_type == 'exact' or match_score > 0.9:
-            # High confidence match - use GPT text (usually better formatted)
+            # High confidence match - use LLM text (usually better formatted)
             fused_text = gpt_skill.text
         else:
             # Partial match - use the longer/more complete text
@@ -1479,14 +1479,14 @@ class AdvancedFusionEngine:
             bloom=fused_bloom,
             confidence_score=fused_confidence,
             confidence_tier=AdvancedTaxonomyManager.get_confidence_tier(fused_confidence),
-            source="BERT+GPT",
+            source="BERT+LLM",
             semantic_density=fused_density,
             context_agreement=fused_context_agreement
         )
     
     def fuse_knowledge_advanced(self, bert_knowledge: List[Dict], 
                               gpt_knowledge: List[str]) -> List[KnowledgeItem]:
-        """Fuse knowledge items from BERT and GPT."""
+        """Fuse knowledge items from BERT and LLM."""
         fused_knowledge = []
         
         # Convert BERT knowledge to KnowledgeItems
@@ -1500,17 +1500,17 @@ class AdvancedFusionEngine:
                 source="BERT"
             ))
         
-        # Convert GPT knowledge to KnowledgeItems
+        # Convert LLM knowledge to KnowledgeItems
         gpt_items = []
         for item in gpt_knowledge:
             gpt_items.append(KnowledgeItem(
                 text=item,
-                confidence_score=0.75,  # Base confidence for GPT
+                confidence_score=0.75,  # Base confidence for LLM
                 confidence_tier=AdvancedTaxonomyManager.get_confidence_tier(0.75),
-                source="GPT"
+                source="LLM"
             ))
         
-        # Start with GPT knowledge
+        # Start with LLM knowledge
         fused = gpt_items.copy()
         bert_matched = [False] * len(bert_items)
         
@@ -1524,7 +1524,7 @@ class AdvancedFusionEngine:
             
             similarity_matrix = util.cos_sim(bert_embeddings, gpt_embeddings)
             
-            # Match BERT to GPT
+            # Match BERT to LLM
             for i, bert_item in enumerate(bert_items):
                 best_match_idx = -1
                 best_match_score = 0.0
@@ -1545,10 +1545,10 @@ class AdvancedFusionEngine:
                     fused_confidence *= (1.0 + best_match_score * 0.1)  # Bonus for match
                     
                     fused_knowledge_item = KnowledgeItem(
-                        text=gpt_item.text,  # Use GPT text (usually cleaner)
+                        text=gpt_item.text,  # Use LLM text (usually cleaner)
                         confidence_score=fused_confidence,
                         confidence_tier=AdvancedTaxonomyManager.get_confidence_tier(fused_confidence),
-                        source="BERT+GPT"
+                        source="BERT+LLM"
                     )
                     fused[best_match_idx] = fused_knowledge_item
         
@@ -2003,12 +2003,12 @@ class AdvancedDataManager:
             
             # Fusion statistics
             bert_only = len([s for s in final_skills if 'BERT (standalone)' in s.source])
-            gpt_only = len([s for s in final_skills if s.source == 'GPT'])
-            fused = len([s for s in final_skills if 'BERT+GPT' in s.source])
+            llm_only = len([s for s in final_skills if s.source == 'LLM'])
+            fused = len([s for s in final_skills if 'BERT+LLM' in s.source])
             
             bert_knowledge_only = len([k for k in final_knowledge if 'BERT (standalone)' in k.source])
-            gpt_knowledge_only = len([k for k in final_knowledge if k.source == 'GPT'])
-            fused_knowledge = len([k for k in final_knowledge if 'BERT+GPT' in k.source])
+            llm_knowledge_only = len([k for k in final_knowledge if k.source == 'LLM'])
+            fused_knowledge = len([k for k in final_knowledge if 'BERT+LLM' in k.source])
             
             # Quality metrics
             avg_semantic_density = np.mean([ensure_float(s.semantic_density) for s in final_skills]) if final_skills else 0.0
@@ -2089,11 +2089,11 @@ class AdvancedDataManager:
                 
                 # Fusion statistics
                 'bert_only_skills': bert_only,
-                'gpt_only_skills': gpt_only,
+                'gpt_only_skills': llm_only,
                 'fused_skills': fused,
                 
                 'bert_only_knowledge': bert_knowledge_only,
-                'gpt_only_knowledge': gpt_knowledge_only,
+                'gpt_only_knowledge': llm_knowledge_only,
                 'fused_knowledge': fused_knowledge,
                 
                 # Quality metrics
@@ -2133,7 +2133,7 @@ class AdvancedDataManager:
             # Create comparison rows for each model
             models = [
                 ('JobBERT', bert_skills),
-                ('GPT', gpt_skills),
+                ('LLM', gpt_skills),
                 ('Hybrid', final_skills)
             ]
             
@@ -2149,7 +2149,7 @@ class AdvancedDataManager:
                 knowledge_count = 0
                 if model_name == 'JobBERT':
                     knowledge_count = len(extraction_results.get('bert_knowledge', []))
-                elif model_name == 'GPT':
+                elif model_name == 'LLM':
                     knowledge_count = len(extraction_results.get('gpt_knowledge', []))
                 elif model_name == 'Hybrid':
                     knowledge_count = len(results.get('knowledge', []))
@@ -2267,8 +2267,8 @@ class AdvancedSkillExtractionPipeline:
             self.model_manager.load_openai_client()
             self.model_manager.load_embedder()
             
-            # 2. Initialize GPT Extractor
-            self.gpt_extractor = GPTExtractor(self.model_manager.openai_client)
+            # 2. Initialize LLM Extractor
+            self.gpt_extractor = LLMExtractor(self.model_manager.openai_client)
             
             # 3. Initialize Context-Aware Extractor
             self.context_extractor = ContextAwareExtractor(

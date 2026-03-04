@@ -19,6 +19,7 @@ Outputs:
 """
 
 import os
+import re
 import argparse
 from pathlib import Path
 from collections import defaultdict, Counter
@@ -73,6 +74,16 @@ def safe_read_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
+def _normalize_for_grouping(text: str) -> str:
+    """Normalize item text for deduplication (matches future_weight_mapping logic)."""
+    if not text or not isinstance(text, str):
+        return ""
+    t = str(text).strip().lower()
+    t = re.sub(r"[\s_/|,;:.()\[\]{}]+", " ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
+
+
 def normalize_model_name(name: str) -> str:
     """
     Normalize model labels to something consistent for plotting if needed.
@@ -80,10 +91,10 @@ def normalize_model_name(name: str) -> str:
     if not isinstance(name, str):
         return str(name)
     name_lower = name.lower()
-    if "bert" in name_lower and "gpt" not in name_lower and "hybrid" not in name_lower:
+    if "bert" in name_lower and "gpt" not in name_lower and "llm" not in name_lower and "hybrid" not in name_lower:
         return "JobBERT"
-    if "gpt" in name_lower or "deepseek" in name_lower:
-        return "GPT"
+    if "gpt" in name_lower or "llm" in name_lower or "deepseek" in name_lower or "gemini" in name_lower or "claude" in name_lower:
+        return "LLM"
     if "hybrid" in name_lower or "fusion" in name_lower:
         return "Hybrid"
     return name
@@ -107,7 +118,7 @@ def load_all_data(output_dir: Path):
 
 
 # -------------------------------------------------------------------
-# 1. JobBERT vs GPT vs Hybrid – skill & knowledge extraction
+# 1. JobBERT vs LLM vs Hybrid – skill & knowledge extraction
 # -------------------------------------------------------------------
 
 def plot_skill_knowledge_counts(model_comp: pd.DataFrame, fig_dir: Path):
@@ -189,7 +200,7 @@ def plot_hybrid_improvement(model_comp: pd.DataFrame, fig_dir: Path):
     df = model_comp.copy()
     df["model_norm"] = df["model"].apply(normalize_model_name)
 
-    # Pivot to have columns JobBERT, GPT, Hybrid for selected metrics
+    # Pivot to have columns JobBERT, LLM, Hybrid for selected metrics
     pivot = df.pivot_table(
         index="job_id",
         columns="model_norm",
@@ -201,9 +212,9 @@ def plot_hybrid_improvement(model_comp: pd.DataFrame, fig_dir: Path):
         print("[WARN] Hybrid model not found in model_comparison; skipping improvement plots.")
         return
 
-    # Differences: Hybrid - JobBERT, Hybrid - GPT
+    # Differences: Hybrid - JobBERT, Hybrid - LLM
     diffs = {}
-    for base_model in ["JobBERT", "GPT"]:
+    for base_model in ["JobBERT", "LLM"]:
         if ("skill_count", base_model) not in pivot.columns:
             continue
         diff_df = pd.DataFrame({
@@ -279,7 +290,7 @@ def plot_bloom_distribution(model_comp: pd.DataFrame, fig_dir: Path):
         ax = plt.gca()
     ax.set_xlabel("Bloom Level (Hard Skills)")
     ax.set_ylabel("Total Count (across all jobs)")
-    ax.set_title("Bloom Taxonomy Distribution for Hard Skills (JobBERT vs GPT vs Hybrid)")
+    ax.set_title("Bloom Taxonomy Distribution for Hard Skills (JobBERT vs LLM vs Hybrid)")
     plt.legend(title="Model")
     plt.tight_layout()
     plt.savefig(fig_dir / "bloom_distribution_hard_skills.png", dpi=300)
@@ -847,7 +858,7 @@ def plot_coverage_distributions(coverage_report: pd.DataFrame,
         df = model_comp.copy()
         df["model_norm"] = df["model"].apply(normalize_model_name)
 
-        # keep ONLY Hybrid rows, since JobBERT/GPT don't have meaningful coverage
+        # keep ONLY Hybrid rows, since JobBERT/LLM don't have meaningful coverage
         df = df[df["model_norm"] == "Hybrid"].copy()
 
         # if everything is NaN, skip the plot
@@ -868,13 +879,28 @@ def plot_coverage_distributions(coverage_report: pd.DataFrame,
             plt.close()
 
 
+def _dedupe_future_weight_df(df: pd.DataFrame, item_col: str) -> pd.DataFrame:
+    """Deduplicate by normalized key; keep row with max future_weight per group."""
+    if df.empty or item_col not in df.columns or "future_weight" not in df.columns:
+        return df
+    df = df.copy()
+    df["_key"] = df[item_col].apply(_normalize_for_grouping)
+    df = df[df["_key"] != ""]
+    # Per group: keep row with highest future_weight; use most frequent display form as canonical
+    best = df.loc[df.groupby("_key")["future_weight"].idxmax()].copy()
+    best = best.drop(columns=["_key"])
+    return best
+
+
 def plot_top_future_weight_items(output_dir: Path, fig_dir: Path, top_n: int = 20):
-    """Plot top skills and knowledge by future_weight (insight: future-critical items)."""
+    """Plot top skills and knowledge by future_weight (insight: future-critical items).
+    Deduplicates by normalized key to avoid redundant near-duplicates (e.g. AI/ML vs AI / ML:)."""
     # Skills
     fw_skills = output_dir / "future_skill_weights.csv"
     if fw_skills.exists():
         df = pd.read_csv(fw_skills)
         if not df.empty and "skill" in df.columns and "future_weight" in df.columns:
+            df = _dedupe_future_weight_df(df, "skill")
             top = df.nlargest(top_n, "future_weight")
             plt.figure(figsize=(10, max(5, len(top) * 0.35)))
             plt.barh(top["skill"], top["future_weight"])
@@ -892,6 +918,7 @@ def plot_top_future_weight_items(output_dir: Path, fig_dir: Path, top_n: int = 2
     if fw_knowledge.exists():
         df = pd.read_csv(fw_knowledge)
         if not df.empty and "knowledge" in df.columns and "future_weight" in df.columns:
+            df = _dedupe_future_weight_df(df, "knowledge")
             top = df.nlargest(top_n, "future_weight")
             plt.figure(figsize=(10, max(5, len(top) * 0.35)))
             plt.barh(top["knowledge"], top["future_weight"])
@@ -1091,7 +1118,7 @@ def main():
     comprehensive = dfs["comprehensive_analysis"]
     model_comp = dfs["model_comparison"]
 
-    # 1. JobBERT vs GPT vs Hybrid extraction performance
+    # 1. JobBERT vs LLM vs Hybrid extraction performance
     agg_model = plot_skill_knowledge_counts(model_comp, fig_dir)
 
     # 2. Hybrid improvements

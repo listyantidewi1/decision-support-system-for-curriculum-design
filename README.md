@@ -51,7 +51,7 @@ skill-extraction/
 ├── import_feedback.py               # Merge feedback_store → feedback artifacts
 ├── apply_feedback.py                # Apply Bloom/type corrections
 │
-├── evaluate_extraction.py           # P/R/F1 per extractor (BERT/GPT/Hybrid)
+├── evaluate_extraction.py           # P/R/F1 per extractor (BERT/LLM/Hybrid)
 ├── validate_parameters.py           # AUC, Brier, calibration, cross-validated AUC
 ├── evaluate_competency_generation.py # Competency quality metrics
 ├── evaluate_future_mapping.py       # Domain mapping accuracy vs gold labels
@@ -202,10 +202,10 @@ This project introduces a **multi-layer curriculum intelligence pipeline** combi
 * Sentence splitting
 * Every sentence carries **job_id + job_date**
 
-### **2. Hybrid Extraction (JobBERT + GPT)**
+### **2. Hybrid Extraction (JobBERT + LLM)**
 
 * **JobBERT + CRF** for BIO-tagged skill/knowledge spans
-* **GPT-based extractor** for structured JSON
+* **LLM-based extractor** for structured JSON (configurable: DeepSeek, GPT, Gemini, Claude, etc.)
 * **Semantic agreement** using SBERT embeddings
 * **Fusion Engine** merges both with:
 
@@ -274,7 +274,7 @@ Creates sampled CSVs for expert validation (500 skills, 200 knowledge, 100 compe
 ### **10. Scientific Evaluation**
 
 * **Gold set labeling** (`DATA/labels/`) for ground-truth extraction quality
-* **Extraction evaluation**: P/R/F1 per source (BERT/GPT/Hybrid) with Wilson CIs
+* **Extraction evaluation**: P/R/F1 per source (BERT/LLM/Hybrid) with Wilson CIs
 * **Calibrated verification**: AUC-ROC, Brier score, calibration curve, cross-validated AUC
 * **Domain mapping validation**: Top-1 accuracy vs expert labels
 * **Reproducibility**: Run metadata with dataset hash, model versions, seeds
@@ -335,14 +335,14 @@ The system generates:
 
 ### **Hybrid model comparison**
 
-* JobBERT vs GPT vs Hybrid
+* JobBERT vs LLM vs Hybrid
 * Skill/Knowledge counts
 * Confidence score distributions
 
 ### **Bloom taxonomy distribution**
 
 * For hard skills only
-* Across JobBERT, GPT, Hybrid
+* Across JobBERT, LLM, Hybrid
 
 ### **Curriculum heatmap**
 
