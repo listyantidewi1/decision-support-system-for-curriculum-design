@@ -273,7 +273,7 @@ class AdvancedPipelineConfig:
 
     # File paths
     INPUT_CSV = 'DATA\\preprocessing\\data_prepared\\jobs_sentences.csv'
-    SAMPLE_SIZE = 10000
+    SAMPLE_SIZE = 1000
     
     # Output files
     OUTPUT_FILES = {

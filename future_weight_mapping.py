@@ -279,6 +279,19 @@ def main():
         top2_sim = np.zeros_like(best_sim)
         mapping_margin = top1_sim
 
+    # Top-2 and Top-3 domain IDs and similarities (argsort ascending: [:, -1]=max, [:, -2]=2nd, [:, -3]=3rd)
+    sorted_idx = np.argsort(sim_mat, axis=1)
+    if sim_mat.shape[1] >= 2:
+        top2_domain_ids = domains_df["domain_id"].iloc[sorted_idx[:, -2]].values
+    else:
+        top2_domain_ids = np.array([""] * len(item_texts))
+    if sim_mat.shape[1] >= 3:
+        top3_domain_ids = domains_df["domain_id"].iloc[sorted_idx[:, -3]].values
+        top3_sim = np.sort(sim_mat, axis=1)[:, ::-1][:, 2]
+    else:
+        top3_domain_ids = np.array([""] * len(item_texts))
+        top3_sim = np.zeros_like(best_sim)
+
     matched_domains = domains_df.iloc[best_domain_idx].reset_index(drop=True)
 
     result_df = pd.DataFrame(
@@ -293,7 +306,10 @@ def main():
             "similarity": best_sim,
             "top1_similarity": top1_sim,
             "top2_similarity": top2_sim,
+            "top3_similarity": top3_sim,
             "mapping_margin": mapping_margin,
+            "top2_domain_id": top2_domain_ids,
+            "top3_domain_id": top3_domain_ids,
         }
     )
 

@@ -141,6 +141,7 @@ Each item is labeled with:
 
 ## Limitations
 
+- **BERT-only extraction**: BERT-only extraction performs below chance in current evaluation; Hybrid (BERT+GPT) and GPT-only are recommended for production. BERT is retained in the fusion pipeline for potential complementary signal.
 - **Recall**: Only estimable from the labeled sample; true recall is unknown without full population labeling. Gold sets are stratified samples of extractions, not exhaustive enumerations of all true items in job postings.
 - **Temporal bias**: Job posting dates may cluster in the scrape window; trend analyses reflect the available time range.
 - **Domain coverage**: `future_domains.csv` may not cover all vocational fields; mapping accuracy is limited to included domains.

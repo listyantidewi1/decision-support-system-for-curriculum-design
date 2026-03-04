@@ -414,6 +414,7 @@ For multiple experimental runs:
 | enrich_with_dates fails | jobs_metadata.csv at DATA/preprocessing/data_prepared/; or pass --jobs_meta path |
 | Pipeline input not found | jobs_sentences.csv at DATA/preprocessing/data_prepared/; columns: job_id, sentence_text |
 | Competencies from unverified skills | Expected in comprehensive mode; check all_skills_human_verified in JSON |
+| No FDR-significant trends | Ensure 12–24 months of job data and adequate sample size. Run `skill_time_trend_analysis.py --stability` for Jaccard overlap across runs. Vary `min_jobs` to assess sensitivity. |
 
 ---
 
@@ -486,6 +487,13 @@ For multiple experimental runs:
 - RQ4: Future-domain mapping accuracy
 - RQ5: Recommendation quality (P@20, NDCG@20, ablation)
 
+### Improvement Plan (2025)
+- **Phase 2 dashboard fix**: `evaluate_future_mapping.py` — added `is_none_or_unclear` to `not_in_mapping` result (fixes KeyError).
+- **Future-domain mapping**: Expanded `example_terms` in `ingest_future_domains.py`; added `top2_domain_id`, `top3_domain_id` to `future_weight_mapping.py`; Top-3 accuracy and margin-stratified metrics in `evaluate_future_mapping.py`; updated future-mapping plot in `plot_scientific_analysis.py`.
+- **Calibration**: Calibration-aware signal weights in `verify_skills.py` (from `parameter_validation_report.json`); bin counts on calibration curve plot.
+- **Competency formulation**: Bloom per skill loaded and passed to prompt; one-sentence description; BLOOM ALIGNMENT rule (highest level among related skills); clear/measurable/operational guidance.
+- **Documentation**: BERT standalone limitation (RESEARCH_QUESTIONS.md); trend troubleshooting (PIPELINE.md); this changelog.
+
 ---
 
-*Last updated: Priority score (coverage for insights only), Phase 2 plot_generator, new plots, sample CSVs.*
+*Last updated: Improvement plan (2025), calibration weights, competency Bloom alignment, Phase 2 dashboard fix.*
