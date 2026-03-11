@@ -234,9 +234,15 @@ def main():
 
     cal = load_calibrated_threshold(feedback_dir)
     if cal and "confidence_threshold" in cal and not args.force_percentile:
-        cal_thresh = float(cal["confidence_threshold"])
+        raw_thresh = float(cal["confidence_threshold"])
+        # The calibrated threshold was computed on raw confidence_score, not
+        # on the composite. Scale it into composite space using the confidence
+        # weight so the threshold aligns with the composite distribution.
+        w_conf_used = cal_weights.get("W_CONFIDENCE", W_CONFIDENCE) if cal_weights else W_CONFIDENCE
+        cal_thresh = raw_thresh * w_conf_used + (1.0 - w_conf_used) * 0.5
         print(f"[INFO] Using calibrated threshold: {cal_thresh:.4f} "
-              f"(AUC={cal.get('auc_roc', '?')}, Brier={cal.get('brier_score', '?')})")
+              f"(scaled from raw {raw_thresh:.4f}, "
+              f"AUC={cal.get('auc_roc', '?')}, Brier={cal.get('brier_score', '?')})")
         df["verification_level"] = assign_levels_calibrated(df["composite_score"], cal_thresh)
         df["threshold_source"] = "calibrated"
     else:

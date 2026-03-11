@@ -68,7 +68,7 @@ def label_trend_fdr(slope: float, q_value: float, alpha: float = 0.05) -> str:
     return "Emerging" if slope > 0 else "Declining"
 
 
-def compute_trends_for_df(df: pd.DataFrame, min_jobs: int) -> pd.DataFrame:
+def compute_trends_for_df(df: pd.DataFrame, min_jobs: int, fdr_alpha: float = 0.05) -> pd.DataFrame:
     """Core trend computation (reusable for stability analysis)."""
     df["year_month"] = df["job_date"].dt.to_period("M").astype(str)
     months_sorted = sorted(df["year_month"].unique())
@@ -107,7 +107,7 @@ def compute_trends_for_df(df: pd.DataFrame, min_jobs: int) -> pd.DataFrame:
     trends["q_value"] = benjamini_hochberg(p_vals)
 
     trends["trend_label"] = trends.apply(
-        lambda r: label_trend_fdr(r["slope"], r["q_value"]), axis=1
+        lambda r: label_trend_fdr(r["slope"], r["q_value"], alpha=fdr_alpha), axis=1
     )
 
     return trends
@@ -212,7 +212,7 @@ def main():
     if args.only_hard and "type" in df.columns:
         df = df[df["type"].astype(str).str.lower().isin(["hard", "both"])].copy()
 
-    trends = compute_trends_for_df(df, args.min_jobs)
+    trends = compute_trends_for_df(df, args.min_jobs, fdr_alpha=args.fdr_alpha)
 
     if trends.empty:
         print("[WARN] No skills passed the min_jobs filter; nothing to analyze.")

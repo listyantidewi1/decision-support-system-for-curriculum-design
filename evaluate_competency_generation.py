@@ -22,10 +22,12 @@ Outputs:
 import argparse
 import json
 import math
+import re
 from collections import Counter
 from pathlib import Path
 
 import config
+from scipy import stats
 
 DEFAULT_FEEDBACK_DIR = Path(config.PROJECT_ROOT) / "feedback_store"
 
@@ -51,7 +53,56 @@ def load_proposals(output_dir: Path) -> list:
 
 
 def _quality_to_score(q) -> float:
-    return QUALITY_MAP.get(str(q).lower().strip(), 0)
+    s = str(q).lower().strip()
+    if s in QUALITY_MAP:
+        return QUALITY_MAP[s]
+    # Handle float strings like "5.0"
+    try:
+        v = float(s)
+        if 1 <= v <= 5:
+            return int(round(v))
+    except ValueError:
+        pass
+    return 0
+
+
+def _discretize_quality(score: float) -> str:
+    """Map quality score to category for IRR: 1-2=low, 3=mid, 4-5=high."""
+    if score <= 0:
+        return None
+    if score <= 2:
+        return "low"
+    if score <= 3:
+        return "mid"
+    return "high"
+
+
+def _get_quality_keys_from_assessment(a: dict) -> list[str]:
+    """Extract quality-related keys: 'quality' or 'quality_<name>' (e.g. quality_alice)."""
+    keys = []
+    for k in a:
+        if k == "quality":
+            keys.append(k)
+        elif re.match(r"quality_[a-zA-Z0-9_]+", k):
+            keys.append(k)
+    return keys
+
+
+def _cohens_kappa(labels1: list, labels2: list) -> float | None:
+    """Compute Cohen's Kappa for two rater label sequences. Returns None if invalid."""
+    if len(labels1) != len(labels2) or len(labels1) == 0:
+        return None
+    n = len(labels1)
+    # p_o = observed agreement
+    agreements = sum(1 for a, b in zip(labels1, labels2) if a == b)
+    p_o = agreements / n
+    categories = sorted(set(labels1) | set(labels2))
+    # p_e = expected agreement by chance
+    c1, c2 = Counter(labels1), Counter(labels2)
+    p_e = sum(c1.get(c, 0) / n * c2.get(c, 0) / n for c in categories)
+    if p_e >= 1:
+        return 1.0 if p_o >= 1 else None  # perfect agreement when single category
+    return (p_o - p_e) / (1 - p_e)
 
 
 def _t_critical_95(n: int) -> float:
@@ -84,6 +135,13 @@ def evaluate(assessments: dict, proposals: list) -> dict:
             "per_batch": [],
             "notes_count": 0,
             "notes_common_words": [],
+            "sign_test_pvalue": None,
+            "irr_kappa": None,
+            "irr_n_overlap": 0,
+            "irr_note": "no assessments",
+            "kruskal_wallis_h": None,
+            "kruskal_wallis_p": None,
+            "n_batches": 0,
         }
 
     scores = []
@@ -153,7 +211,97 @@ def evaluate(assessments: dict, proposals: list) -> dict:
             if len(w) > 2 and w not in stop:
                 word_counter[w] += 1
 
-    return {
+    # --- Sign test: H0 median=3 vs H1 median>3 (binom: count>3, n=non-3 scores, p=0.5)
+    non_3_scores = [s for s in scores if s != 3]
+    count_gt_3 = sum(1 for s in scores if s > 3)
+    n_non_3 = len(non_3_scores)
+    if n_non_3 > 0:
+        sign_result = stats.binomtest(count_gt_3, n_non_3, p=0.5, alternative="greater")
+        sign_test_pvalue = round(sign_result.pvalue, 4)
+    else:
+        sign_test_pvalue = None  # all scores are 3, test undefined
+
+    # --- Inter-rater reliability (Cohen's Kappa)
+    irr_kappa = None
+    irr_n_overlap = 0
+    irr_note = None
+    # Collect quality ratings per competency, keyed by rater
+    rater_pairs_data: dict[str, list[tuple[str, float]]] = {}  # cid -> [(rater_key, score), ...]
+    for cid, a in assessments.items():
+        # Handle assessment as dict or list (e.g. multiple reviewers per cid)
+        if isinstance(a, list):
+            for item in a:
+                if isinstance(item, dict):
+                    qk_keys = _get_quality_keys_from_assessment(item)
+                    if qk_keys:
+                        for qk in qk_keys:
+                            score = _quality_to_score(item.get(qk))
+                            if score > 0:
+                                rater_pairs_data.setdefault(cid, []).append((qk, score))
+                    elif item.get("reviewer_id") is not None:
+                        score = _quality_to_score(item.get("quality"))
+                        if score > 0:
+                            rater_pairs_data.setdefault(cid, []).append(
+                                (f"reviewer_{item['reviewer_id']}", score)
+                        )
+        elif isinstance(a, dict):
+            qk_keys = _get_quality_keys_from_assessment(a)
+            if len(qk_keys) >= 2:
+                for qk in qk_keys:
+                    score = _quality_to_score(a.get(qk))
+                    if score > 0:
+                        rater_pairs_data.setdefault(cid, []).append((qk, score))
+            elif a.get("reviewer_id") is not None:
+                score = _quality_to_score(a.get("quality"))
+                if score > 0:
+                    rater_pairs_data.setdefault(cid, []).append(
+                        (f"reviewer_{a['reviewer_id']}", score))
+
+    # Build rater pairs: need at least 2 raters with overlap
+    if rater_pairs_data:
+        # Get unique rater ids
+        all_raters = set()
+        for pairs in rater_pairs_data.values():
+            for rk, _ in pairs:
+                all_raters.add(rk)
+        # For quality_X/quality_Y in same assessment: each cid has 2+ ratings
+        # For reviewer_id across assessments: need to group by base cid
+        cids_with_multi = [cid for cid, pairs in rater_pairs_data.items() if len(pairs) >= 2]
+        if len(all_raters) >= 2 and cids_with_multi:
+            # Use first two raters found; build (rater1_labels, rater2_labels) for overlapping cids
+            rater_keys = sorted(all_raters)[:2]
+            r1_labels, r2_labels = [], []
+            for cid in cids_with_multi:
+                pairs = rater_pairs_data[cid]
+                by_rater = {rk: s for rk, s in pairs}
+                if rater_keys[0] in by_rater and rater_keys[1] in by_rater:
+                    d1 = _discretize_quality(by_rater[rater_keys[0]])
+                    d2 = _discretize_quality(by_rater[rater_keys[1]])
+                    if d1 is not None and d2 is not None:
+                        r1_labels.append(d1)
+                        r2_labels.append(d2)
+            if len(r1_labels) >= 2:
+                kappa = _cohens_kappa(r1_labels, r2_labels)
+                if kappa is not None:
+                    irr_kappa = round(kappa, 4)
+                    irr_n_overlap = len(r1_labels)
+        else:
+            irr_note = "single reviewer"
+    else:
+        irr_note = "single reviewer"
+
+    # --- Kruskal-Wallis across batches
+    kruskal_wallis_h = None
+    kruskal_wallis_p = None
+    n_batches = len(batch_scores)
+    if n_batches >= 2:
+        batch_lists = [batch_scores[bid] for bid in sorted(batch_scores) if batch_scores[bid]]
+        if len(batch_lists) >= 2:
+            kw_result = stats.kruskal(*batch_lists)
+            kruskal_wallis_h = round(kw_result.statistic, 4)
+            kruskal_wallis_p = round(kw_result.pvalue, 4)
+
+    report = {
         "total_assessed": n,
         "mean_quality": round(mean_q, 3),
         "median_quality": round(median_q, 1),
@@ -171,7 +319,15 @@ def evaluate(assessments: dict, proposals: list) -> dict:
         "per_batch": per_batch,
         "notes_count": len(all_notes),
         "notes_common_words": word_counter.most_common(15),
+        "sign_test_pvalue": sign_test_pvalue,
+        "irr_kappa": irr_kappa,
+        "irr_n_overlap": irr_n_overlap,
+        "irr_note": irr_note,
+        "kruskal_wallis_h": kruskal_wallis_h,
+        "kruskal_wallis_p": kruskal_wallis_p,
+        "n_batches": n_batches,
     }
+    return report
 
 
 def _find_batch(cid: str, proposals: list):

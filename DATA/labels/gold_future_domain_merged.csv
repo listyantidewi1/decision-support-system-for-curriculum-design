@@ -1,12 +1,12 @@
-﻿gold_id,item_text,item_type,pipeline_domain,pipeline_similarity,notes,true_domain_id,labeler_id
-gfs_43214cb6c989,ensure successful validation of system components,skill,Routine Maintenance Coding,0.173,,3-Dec,"alice,dewi"
+gold_id,item_text,item_type,pipeline_domain,pipeline_similarity,notes,true_domain_id,labeler_id
+gfs_43214cb6c989,ensure successful validation of system components,skill,Routine Maintenance Coding,0.173,,DEC03,"alice,dewi"
 gfs_6a371deed89a,work with designers,skill,UX/UI & Digital Design,0.412,,MCK02,"alice,dewi"
-gfs_b0e4b9cbcecf,commit to accuracy,skill,Routine Data Entry & Clerical,0.214,,1-Dec,"alice,dewi"
+gfs_b0e4b9cbcecf,commit to accuracy,skill,Routine Data Entry & Clerical,0.214,,DEC01,"alice,dewi"
 gfs_88a4496db1f9,participate in meetings,skill,Advanced Communication & Collaboration,0.272,,MCK02,"alice,dewi"
 gfs_437080194d4a,work closely with product teams,skill,Advanced Communication & Collaboration,0.403,,MCK02,"alice,dewi"
 gfs_289c61929462,organize work,skill,Routine Maintenance Coding,0.28,,unclear,"alice,dewi"
 gfs_7ede8dccc0a4,modernize the organization,skill,Advanced Communication & Collaboration,0.248,,none,"alice,dewi"
-gfs_963d2a48204f,email cover letter,skill,Routine Data Entry & Clerical,0.103,,1-Dec,"alice,dewi"
+gfs_963d2a48204f,email cover letter,skill,Routine Data Entry & Clerical,0.103,,DEC01,"alice,dewi"
 gfs_a47e48a56397,ensure data security,skill,Cybersecurity,0.321,,WEF03,"alice,dewi"
 gfs_47373589733a,automate document uploads,skill,Process Automation & RPA,0.231,,MCK01,"alice,dewi"
 gfs_895da11a9cf5,showcase work in portfolio,skill,Advanced Communication & Collaboration,0.232,,MCK02,"alice,dewi"
@@ -24,11 +24,11 @@ gfs_59b5f8ec86a0,scalability are at the core of every solution.,skill,Cloud Comp
 gfs_3903aab32386,Follow,skill,Human-AI Collaboration,0.161,,none,alice
 gfs_ece0c590bd32,full of ideas,skill,Routine Maintenance Coding,0.317,,none,alice
 gfs_1ece778ae08d,see things differently,skill,Routine Maintenance Coding,0.096,,unclear,alice
-gfs_3c34dccc51e0,reviewing outputs,skill,Routine Maintenance Coding,0.144,,3-Dec,alice
-gfs_ff291f2b152e,input billings,skill,Routine Data Entry & Clerical,0.216,,1-Dec,alice
+gfs_3c34dccc51e0,reviewing outputs,skill,Routine Maintenance Coding,0.144,,DEC03,alice
+gfs_ff291f2b152e,input billings,skill,Routine Data Entry & Clerical,0.216,,DEC01,alice
 gfs_e63eb72a2307,drive tasks to completion,skill,Process Automation & RPA,0.233,,unclear,alice
 gfs_85ff71771afd,identify opportunities to standardise approaches,skill,Routine Maintenance Coding,0.307,,unclear,alice
-gfs_f116ba208993,code application programs,skill,Routine Maintenance Coding,0.424,,3-Dec,alice
+gfs_f116ba208993,code application programs,skill,Routine Maintenance Coding,0.424,,DEC03,alice
 gfs_9ac7c9b3c562,ensure scalable data pipelines,skill,Big Data & Analytics,0.307,,,
 gfs_42580677d8ba,collaborate with customers,skill,Advanced Communication & Collaboration,0.336,,,
 gfs_3032ad6aed6c,outcome,skill,Human-AI Collaboration,0.096,,,

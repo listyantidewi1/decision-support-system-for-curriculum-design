@@ -5,7 +5,7 @@
 from pathlib import Path
 
 # ---- PROJECT ROOT ----
-PROJECT_ROOT = Path(r"D:\Projects\skill-extraction")
+PROJECT_ROOT = Path(__file__).resolve().parent
 
 # ---- REPRODUCIBILITY ----
 RANDOM_SEED = 42  # Single source of truth for sampling; override via --seed in scripts

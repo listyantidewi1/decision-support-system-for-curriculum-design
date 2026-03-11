@@ -17,10 +17,22 @@ from collections import Counter
 from pathlib import Path
 
 import pandas as pd
+from scipy import stats
 
 import config
 
 LABELS_DIR = Path(config.PROJECT_ROOT) / "DATA" / "labels"
+
+
+def wilson_ci(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
+    """Wilson score 95% confidence interval for a proportion."""
+    if n == 0:
+        return (0.0, 0.0)
+    p = k / n
+    denom = 1 + z**2 / n
+    center = (p + z**2 / (2 * n)) / denom
+    spread = z * ((p * (1 - p) / n + z**2 / (4 * n**2)) ** 0.5) / denom
+    return (max(0, center - spread), min(1, center + spread))
 
 
 def load_gold(labels_dir: Path) -> pd.DataFrame:
@@ -37,6 +49,17 @@ def load_gold(labels_dir: Path) -> pd.DataFrame:
     return df
 
 
+def load_n_domains() -> int:
+    """Load number of domains from future_domains.csv for random-chance baseline."""
+    path = Path(config.PROJECT_ROOT) / "future_domains.csv"
+    if not path.exists():
+        path = Path(config.PROJECT_ROOT) / "future_domains_dummy.csv"
+    if not path.exists():
+        return 25  # fallback if files missing
+    df = pd.read_csv(path)
+    return len(df)
+
+
 def load_pipeline_mapping(output_dir: Path) -> pd.DataFrame:
     for name in ["future_skill_weights.csv", "future_skill_weights_dummy.csv"]:
         path = output_dir / name
@@ -47,7 +70,9 @@ def load_pipeline_mapping(output_dir: Path) -> pd.DataFrame:
     return pd.DataFrame()
 
 
-def evaluate(gold: pd.DataFrame, mapping: pd.DataFrame, margin_threshold: float = 0.05) -> dict:
+def evaluate(
+    gold: pd.DataFrame, mapping: pd.DataFrame, margin_threshold: float = 0.05, n_domains: int | None = None
+) -> dict:
     if gold.empty:
         return {"status": "no_gold_data"}
 
@@ -115,6 +140,26 @@ def evaluate(gold: pd.DataFrame, mapping: pd.DataFrame, margin_threshold: float 
 
     none_rate = mask.sum() / len(results_df) if len(results_df) > 0 else 0.0
 
+    # Wilson 95% CI and binomial test vs random chance (1/N_domains)
+    if n_domains is None:
+        n_domains = load_n_domains()
+    p0 = 1.0 / n_domains
+
+    top1_ci = wilson_ci(int(n_correct), n_eval)
+    top3_ci = wilson_ci(int(n_top3_correct), n_eval)
+
+    def _binom_pvalue(k: int, n: int, p: float) -> float:
+        if n == 0:
+            return 1.0
+        try:
+            bt = stats.binomtest(k, n, p=p, alternative="greater")
+            return float(bt.pvalue)
+        except Exception:
+            return 1.0
+
+    top1_pvalue = _binom_pvalue(int(n_correct), n_eval, p0)
+    top3_pvalue = _binom_pvalue(int(n_top3_correct), n_eval, p0)
+
     confusion = Counter()
     incorrect_mask = (evaluable["correct"] != True)
     for _, r in evaluable[incorrect_mask].iterrows():
@@ -126,7 +171,12 @@ def evaluate(gold: pd.DataFrame, mapping: pd.DataFrame, margin_threshold: float 
         "total_items": len(results_df),
         "evaluable_items": n_eval,
         "top1_accuracy": round(top1_acc, 4),
+        "top1_accuracy_ci": [round(top1_ci[0], 4), round(top1_ci[1], 4)],
+        "top1_pvalue_vs_chance": round(top1_pvalue, 6),
         "top3_accuracy": round(top3_acc, 4),
+        "top3_accuracy_ci": [round(top3_ci[0], 4), round(top3_ci[1], 4)],
+        "top3_pvalue_vs_chance": round(top3_pvalue, 6),
+        "n_domains_baseline": n_domains,
         "margin_threshold": margin_threshold,
         "high_margin_items": n_hm,
         "top1_accuracy_high_margin": round(top1_acc_hm, 4),
@@ -168,8 +218,12 @@ def main():
             print(f"[INFO] Loaded {len(mapping)} mapping entries")
             report = evaluate(gold, mapping, margin_threshold=args.margin_threshold)
             if report.get("status") == "ok":
-                print(f"  Top-1 accuracy: {report['top1_accuracy']:.3f}")
-                print(f"  Top-3 accuracy: {report.get('top3_accuracy', 0):.3f}")
+                print(f"  Top-1 accuracy: {report['top1_accuracy']:.3f} "
+                      f"(95% CI: [{report.get('top1_accuracy_ci', [0,0])[0]:.3f}, {report.get('top1_accuracy_ci', [0,0])[1]:.3f}], "
+                      f"p vs chance: {report.get('top1_pvalue_vs_chance', 1):.4f})")
+                print(f"  Top-3 accuracy: {report.get('top3_accuracy', 0):.3f} "
+                      f"(95% CI: [{report.get('top3_accuracy_ci', [0,0])[0]:.3f}, {report.get('top3_accuracy_ci', [0,0])[1]:.3f}], "
+                      f"p vs chance: {report.get('top3_pvalue_vs_chance', 1):.4f})")
                 print(f"  Top-1 (high-margin): {report.get('top1_accuracy_high_margin', 0):.3f}")
                 print(f"  None/unclear rate: {report['none_unclear_rate']:.3f}")
                 print(f"  Mean margin: {report['mean_margin']:.3f}")

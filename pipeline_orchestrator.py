@@ -19,6 +19,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
+import config
+
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 DEFAULT_DATA_PREP = PROJECT_ROOT / "DATA" / "preprocessing" / "data_prepared"
@@ -154,6 +156,14 @@ def run_department_pipeline(
     steps = [
         [
             sys.executable,
+            str(PROJECT_ROOT / "log_run_metadata.py"),
+            "--output_dir",
+            str(paths.results),
+            "--seed",
+            str(config.RANDOM_SEED),
+        ],
+        [
+            sys.executable,
             str(PROJECT_ROOT / "pipeline.py"),
             "--input_csv",
             str(input_csv),
@@ -205,8 +215,21 @@ def run_department_pipeline(
             "--output_dir",
             str(paths.results),
             "--ablation",
+            "--sensitivity",
         ],
         [sys.executable, str(PROJECT_ROOT / "export_for_review.py"), "--output_dir", str(paths.results)],
+        [
+            sys.executable,
+            str(PROJECT_ROOT / "export_gold_set.py"),
+            "--output_dir",
+            str(paths.results),
+        ],
+        [
+            sys.executable,
+            str(PROJECT_ROOT / "merge_gold_labels.py"),
+            "--labels_dir",
+            str(PROJECT_ROOT / "DATA" / "labels"),
+        ],
         [
             sys.executable,
             str(PROJECT_ROOT / "export_competencies_for_review.py"),
@@ -214,11 +237,24 @@ def run_department_pipeline(
             str(paths.results),
         ],
         [sys.executable, str(PROJECT_ROOT / "evaluate_extraction.py"), "--output_dir", str(paths.results)],
+        [
+            sys.executable,
+            str(PROJECT_ROOT / "plot_scientific_analysis.py"),
+            "--output_dir",
+            str(paths.results),
+        ],
     ]
 
     # Optional curriculum upload is currently tracked for metadata; integration can be added later.
     for step in steps:
-        _run_cmd(step)
+        # merge_gold_labels may fail if no gold labels exist; run non-fatal
+        if "merge_gold_labels.py" in str(step):
+            try:
+                _run_cmd(step)
+            except RuntimeError:
+                pass
+        else:
+            _run_cmd(step)
 
     payload = {
         "status": "completed",
@@ -326,6 +362,7 @@ def run_department_phase2(school_id: int, department_id: int) -> dict:
             sys.executable,
             str(PROJECT_ROOT / "recommendations.py"),
             "--ablation",
+            "--sensitivity",
             "--evaluate",
             "--output_dir",
             str(paths.results),
@@ -347,10 +384,18 @@ def run_department_phase2(school_id: int, department_id: int) -> dict:
             str(PROJECT_ROOT / "log_run_metadata.py"),
             "--output_dir",
             str(paths.results),
+            "--seed",
+            str(config.RANDOM_SEED),
         ],
         [
             sys.executable,
             str(PROJECT_ROOT / "plot_generator.py"),
+            "--output_dir",
+            str(paths.results),
+        ],
+        [
+            sys.executable,
+            str(PROJECT_ROOT / "plot_scientific_analysis.py"),
             "--output_dir",
             str(paths.results),
         ],
