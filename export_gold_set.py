@@ -122,9 +122,25 @@ def export_gold_future_domain(output_dir: Path, n: int, seed: int) -> pd.DataFra
         if col not in df.columns:
             continue
         df = df.drop_duplicates(subset=[col]).copy()
+
+        # Add margin_bin for stratification (same approach as skills/knowledge)
+        margin = pd.to_numeric(df.get("mapping_margin", 0), errors="coerce").fillna(0)
+        df = df.copy()
+        df["margin_bin"] = margin.apply(
+            lambda m: "High" if m >= 0.10
+            else "Medium" if m >= 0.05
+            else "Low"
+        )
+
         half = max(10, n // 2)
-        s = df.sample(n=min(half, len(df)), random_state=seed)
-        for _, r in s.iterrows():
+        strata = ["margin_bin", "best_future_domain"]
+        usable = [c for c in strata if c in df.columns]
+        if usable:
+            sampled = _stratified_sample(df, half, usable, seed)
+        else:
+            sampled = df.sample(n=min(half, len(df)), random_state=seed)
+
+        for _, r in sampled.iterrows():
             rows.append({
                 "gold_id": _make_id(prefix, r[col]),
                 "item_text": r[col],

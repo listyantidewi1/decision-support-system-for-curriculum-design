@@ -195,6 +195,13 @@ def main():
         default=None,
         help="Max number of items to embed (for quick testing). Default: None (use all).",
     )
+    parser.add_argument(
+        "--similarity_floor",
+        type=float,
+        default=0.3,
+        help="Minimum similarity for valid domain assignment. Below this, "
+             "future_weight is set to 0 (default: 0.3).",
+    )
 
     args = parser.parse_args()
 
@@ -320,7 +327,14 @@ def main():
     if "source" in matched_domains.columns:
         result_df["domain_source"] = matched_domains["source"].values
 
-    result_df["future_weight"] = result_df["similarity"] * result_df["trend_score"]
+    # Zero out future_weight for items below similarity floor
+    raw_fw = result_df["similarity"] * result_df["trend_score"]
+    below_floor = result_df["similarity"] < args.similarity_floor
+    raw_fw[below_floor] = 0.0
+    result_df["future_weight"] = raw_fw
+    if below_floor.any():
+        print(f"[INFO] {below_floor.sum()}/{len(result_df)} items below "
+              f"similarity floor ({args.similarity_floor}); future_weight set to 0")
     result_df = result_df.sort_values("future_weight", ascending=False)
 
     print(f"[INFO] Mapping margin stats: "

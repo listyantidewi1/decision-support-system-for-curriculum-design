@@ -2,16 +2,35 @@
   "status": "ok",
   "total_items": 30,
   "evaluable_items": 19,
-  "top1_accuracy": 0.7368,
-  "top3_accuracy": 0.8947,
+  "top1_accuracy": 0.4211,
+  "top1_accuracy_ci": [
+    0.2314,
+    0.6372
+  ],
+  "top1_pvalue_vs_chance": 0.0,
+  "top3_accuracy": 0.5789,
+  "top3_accuracy_ci": [
+    0.3628,
+    0.7686
+  ],
+  "top3_pvalue_vs_chance": 0.0,
+  "n_domains_baseline": 24,
   "margin_threshold": 0.05,
   "high_margin_items": 12,
-  "top1_accuracy_high_margin": 0.6667,
-  "top3_accuracy_high_margin": 0.9167,
+  "top1_accuracy_high_margin": 0.4167,
+  "top3_accuracy_high_margin": 0.6667,
   "none_unclear_rate": 0.3667,
   "mean_margin": 0.0501,
   "median_margin": 0.0488,
   "top_confusion_pairs": [
+    [
+      "dec03 -> 3-dec",
+      3
+    ],
+    [
+      "dec01 -> 1-dec",
+      3
+    ],
     [
       "mck02 -> onet03",
       1
@@ -36,10 +55,10 @@
   "per_item": [
     {
       "item": "ensure successful validation of system components",
-      "true_domain": "3-dec",
+      "true_domain": "dec03",
       "predicted_domain": "3-dec",
-      "correct": true,
-      "top3_correct": true,
+      "correct": false,
+      "top3_correct": false,
       "is_none_or_unclear": false,
       "margin": 0.0596
     },
@@ -54,10 +73,10 @@
     },
     {
       "item": "commit to accuracy",
-      "true_domain": "1-dec",
+      "true_domain": "dec01",
       "predicted_domain": "1-dec",
-      "correct": true,
-      "top3_correct": true,
+      "correct": false,
+      "top3_correct": false,
       "is_none_or_unclear": false,
       "margin": 0.0404
     },
@@ -99,10 +118,10 @@
     },
     {
       "item": "email cover letter",
-      "true_domain": "1-dec",
+      "true_domain": "dec01",
       "predicted_domain": "1-dec",
-      "correct": true,
-      "top3_correct": true,
+      "correct": false,
+      "top3_correct": false,
       "is_none_or_unclear": false,
       "margin": 0.011
     },
@@ -261,19 +280,19 @@
     },
     {
       "item": "reviewing outputs",
-      "true_domain": "3-dec",
+      "true_domain": "dec03",
       "predicted_domain": "3-dec",
-      "correct": true,
-      "top3_correct": true,
+      "correct": false,
+      "top3_correct": false,
       "is_none_or_unclear": false,
       "margin": 0.012
     },
     {
       "item": "input billings",
-      "true_domain": "1-dec",
+      "true_domain": "dec01",
       "predicted_domain": "1-dec",
-      "correct": true,
-      "top3_correct": true,
+      "correct": false,
+      "top3_correct": false,
       "is_none_or_unclear": false,
       "margin": 0.1032
     },
@@ -297,10 +316,10 @@
     },
     {
       "item": "code application programs",
-      "true_domain": "3-dec",
+      "true_domain": "dec03",
       "predicted_domain": "3-dec",
-      "correct": true,
-      "top3_correct": true,
+      "correct": false,
+      "top3_correct": false,
       "is_none_or_unclear": false,
       "margin": 0.0769
     }

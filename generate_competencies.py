@@ -910,6 +910,7 @@ def main():
                     batches,
                     domain_embeddings,
                     args.merge_domain_similarity_threshold,
+                    max_per_batch=args.max_skills_per_call,
                 )
 
         domain_counts = {}

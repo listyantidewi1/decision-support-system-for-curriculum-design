@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import threading
 from pathlib import Path
@@ -29,7 +30,10 @@ PROJECT_ROOT = APP_ROOT.parent
 templates = Jinja2Templates(directory=str(APP_ROOT / "templates"))
 
 app = FastAPI(title="Admin & School Dashboard")
-app.add_middleware(SessionMiddleware, secret_key="replace-with-secure-secret")
+app.state.secret_key = os.environ.get("DASHBOARD_SECRET_KEY", "dev-only-insecure-key")
+if app.state.secret_key == "dev-only-insecure-key":
+    print("[WARN] Using default session secret. Set DASHBOARD_SECRET_KEY env var for production.")
+app.add_middleware(SessionMiddleware, secret_key=app.state.secret_key)
 app.mount("/dashboard/static", StaticFiles(directory=str(APP_ROOT / "static")), name="dashboard_static")
 
 

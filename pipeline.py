@@ -1250,7 +1250,7 @@ class ContextAwareExtractor:
         """Adjust confidence scores based on model agreement."""
         adjusted = []
         
-        for skill in skills:
+        for skill_idx, skill in enumerate(skills):
             # Base adjustment from overall agreement
             agreement_factor = 1.0 + (agreement_scores['overall'] * 0.2 - 0.1)
             
@@ -1258,7 +1258,7 @@ class ContextAwareExtractor:
             matched = False
             for match in agreement_scores.get('matches', []):
                 idx = match['bert_idx'] if model == 'bert' else match['gpt_idx']
-                if skills.index(skill) == idx:
+                if skill_idx == idx:
                     matched = True
                     # Higher confidence for matched skills
                     match_factor = 1.0 + (match['similarity'] * 0.3)

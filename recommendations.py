@@ -163,10 +163,17 @@ def compute_priority_scores(
     rec["trend_q_value"] = 1.0
     if use_trend and not trends.empty and skill_col in trends.columns:
         trend_map = trends.set_index(skill_col)
+        # Build normalized index for fallback lookup (canonical form may differ from CSV)
+        norm_to_exact_trend = {}
+        for idx_val in trend_map.index:
+            norm = _normalize_skill_for_grouping(str(idx_val))
+            if norm and norm not in norm_to_exact_trend:
+                norm_to_exact_trend[norm] = idx_val
         for idx, row in rec.iterrows():
             s = row[skill_col]
-            if s in trend_map.index:
-                t = trend_map.loc[s]
+            lookup_key = s if s in trend_map.index else norm_to_exact_trend.get(_normalize_skill_for_grouping(s))
+            if lookup_key is not None:
+                t = trend_map.loc[lookup_key]
                 if isinstance(t, pd.DataFrame):
                     t = t.iloc[0]
                 label = str(t.get("trend_label", "Stable"))
@@ -185,10 +192,17 @@ def compute_priority_scores(
     rec["mapping_margin"] = 0.0
     if use_future and not future_weights.empty and skill_col in future_weights.columns:
         fw_map = future_weights.drop_duplicates(subset=[skill_col]).set_index(skill_col)
+        # Build normalized index for fallback lookup (canonical form may differ from CSV)
+        norm_to_exact_fw = {}
+        for idx_val in fw_map.index:
+            norm = _normalize_skill_for_grouping(str(idx_val))
+            if norm and norm not in norm_to_exact_fw:
+                norm_to_exact_fw[norm] = idx_val
         for idx, row in rec.iterrows():
             s = row[skill_col]
-            if s in fw_map.index:
-                fw = fw_map.loc[s]
+            lookup_key = s if s in fw_map.index else norm_to_exact_fw.get(_normalize_skill_for_grouping(s))
+            if lookup_key is not None:
+                fw = fw_map.loc[lookup_key]
                 if isinstance(fw, pd.DataFrame):
                     fw = fw.iloc[0]
                 rec.at[idx, "future_weight"] = float(fw.get("future_weight", 0))

@@ -172,70 +172,21 @@ def merge_similar_domain_batches(
     batches: List[Tuple[str, List[str]]],
     domain_embeddings: Dict[str, np.ndarray],
     threshold: float,
+    max_per_batch: int = 30,
 ) -> List[Tuple[str, List[str]]]:
     """
-    Merge two domain batches only when their domains are strongly similar
-    (cosine similarity >= threshold). Merges small batches into similar ones.
+    Merge domain batches only when their domains are strongly similar
+    (cosine similarity >= threshold). After merging, re-chunk any batch
+    that exceeds max_per_batch to keep LLM calls manageable.
     """
     if not batches or threshold <= 0:
         return batches
     if len(batches) <= 1:
         return batches
 
-    # Build domain -> batch indices
-    domain_to_batch_idx: Dict[str, int] = {}
-    for idx, (domain, _) in enumerate(batches):
-        if domain not in domain_to_batch_idx:
-            domain_to_batch_idx[domain] = idx
-
-    # Merge small batches with similar domains
-    # Strategy: for each small batch (< max_per_batch? we don't have that here),
-    # find the most similar other domain and merge if above threshold.
-    # Actually the plan says "merge when two domains are strongly similar" -
-    # so we merge batches that belong to domains with sim >= threshold.
-    # We need to decide: merge which ones? The plan says "small batches" -
-    # so we merge when a batch is small. Let me re-read.
-    # "Merge two domain batches only when they are strongly in the same domain"
-    # So we merge batch A and batch B if domain_A and domain_B have cos_sim >= threshold.
-    # We don't necessarily merge only small ones - we merge any two that are strongly similar.
-    # But that could create huge batches. The plan says "merge small domain batches" -
-    # so the intent is: when we have a small batch (few skills), we can merge it with
-    # another batch if that other batch's domain is strongly similar.
-    # So: for each batch with few skills, try to merge with the most similar other domain's batch.
-
-    # Simpler interpretation: group batches by "domain cluster" - domains with sim >= threshold
-    # get merged into one meta-batch. So we do hierarchical: find groups of domains that are
-    # all pairwise above threshold, merge their batches together.
-    # Even simpler: for each batch (domain, skills), if there's another batch (domain2, skills2)
-    # such that cos_sim(domain, domain2) >= threshold, merge them. We need to be careful
-    # not to merge indefinitely - maybe merge only when both batches are "small" (e.g. < 15 skills).
-
-    # The plan: "only merge when the two batch are strongly in the same domain"
-    # So we merge batch A (domain A) with batch B (domain B) iff cos_sim(A,B) >= threshold.
-    # To avoid chain merging, we'll do a single pass: for each small batch, find the best
-    # similar domain and merge. A batch is "small" if len(skills) < some_min - but we don't
-    # have max_per_batch here. Let me check the plan again.
-    # "if a domain has fewer than max_skills_per_call, optionally merge with a related domain"
-    # So we merge when a batch has fewer than max_skills_per_call skills. We need that param.
-
-    # Revise: merge_similar_domain_batches receives batches that are already chunked.
-    # Each batch is (domain, skills). Some batches might have fewer skills than max_per_batch.
-    # We merge batch A into batch B if: (1) A has fewer than max_per_batch skills, (2) domains
-    # A and B have cos_sim >= threshold. So we need max_per_batch as param.
-
-    # Actually the function signature doesn't have max_per_batch. The plan says:
-    # "merge_similar_domain_batches(batches, domain_embeddings, threshold)"
-    # So we merge any two batches whose domains have cos_sim >= threshold. That could create
-    # very large batches. To be safe, let's only merge when the resulting batch wouldn't exceed
-    # a reasonable size - but we don't have that. Let me just merge batches with similar domains:
-    # if domain A and B have sim >= threshold, merge batch A and B. We'll need to be careful
-    # about order - merge into the one with higher mean future_weight maybe.
-    # For now, I'll merge all batches that belong to "similar" domains into one. Use Union-Find.
-
     def cos_sim(a: np.ndarray, b: np.ndarray) -> float:
         return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-9))
 
-    # Union-Find to group similar domains
     domain_list = list({b[0] for b in batches})
     n = len(domain_list)
     parent = list(range(n))
@@ -254,7 +205,6 @@ def merge_similar_domain_batches(
     for i in range(n):
         for j in range(i + 1, n):
             di, dj = domain_list[i], domain_list[j]
-            # Skip special batches that have no embedding
             if di in ("Unmapped", "Uncertain") or dj in ("Unmapped", "Uncertain"):
                 continue
             emb_i = domain_embeddings.get(di)
@@ -264,7 +214,6 @@ def merge_similar_domain_batches(
                 if sim >= threshold:
                     union(i, j)
 
-    # Group batches by their merged domain cluster
     clusters: Dict[int, List[Tuple[str, List[str]]]] = {}
     for domain, skills in batches:
         idx = domain_to_id.get(domain, -1)
@@ -274,13 +223,14 @@ def merge_similar_domain_batches(
             root = find(idx)
             clusters.setdefault(root, []).append((domain, skills))
 
-    # Flatten each cluster into one batch (domain name = first domain in cluster)
     result = []
     for root, cluster_batches in clusters.items():
         merged_skills = []
-        merged_domain = cluster_batches[0][0]  # use first domain name
+        merged_domain = cluster_batches[0][0]
         for _, skills in cluster_batches:
             merged_skills.extend(skills)
-        result.append((merged_domain, merged_skills))
+        # Re-chunk to max_per_batch so LLM calls stay manageable
+        for i in range(0, len(merged_skills), max_per_batch):
+            result.append((merged_domain, merged_skills[i : i + max_per_batch]))
 
     return result
