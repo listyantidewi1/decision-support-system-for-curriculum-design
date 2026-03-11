@@ -1,0 +1,394 @@
+{
+  "job_id": "in-59bfedc24c85448f",
+  "text": "Responsibilities: Creating a fast and seamless orderbook component to visualise instrument data Displaying smooth and fluid graphs which show trades, orders and other financial data Enhancing our authorisation system which allows customers to login to their product environments Developing a highly performant permissioning system that differentiates between business units and regions Improve our IDE to allow customers to configure their custom controls Contribute to wider system improvements that advance our self -service analytics offering Requirements Strong knowledge of ASP.NET Core including creating and maintaining websites Experience with frontend frameworks such as React, Vue or Microsoft Blazor Knowledge of authentication and authorisation including token technologies e.g.",
+  "skills": [
+    {
+      "skill": "create orderbook component",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.743,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "visualise instrument data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.28
+    },
+    {
+      "skill": "display graphs",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.621,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "enhance authorisation system",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 1.26
+    },
+    {
+      "skill": "develop permissioning system",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "improve IDE",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 1.26
+    },
+    {
+      "skill": "configure custom controls",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 1.27
+    },
+    {
+      "skill": "contribute to system improvements",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.849,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 1.26
+    },
+    {
+      "skill": "create websites using ASP.NET Core",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.734,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "maintain websites using ASP.NET Core",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.735,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "Creating a fast",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.517,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.73,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "seamless orderbook component",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.531,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.86,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "Displaying smooth",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.529,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "fluid graphs",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.521,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "advance our self -service analytics offering",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.465,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.8,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "creating",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.528,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "maintaining",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.575,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.89
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "ASP.NET Core",
+      "confidence_score": 0.837,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "React",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Vue",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Microsoft Blazor",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Authentication",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Authorisation",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Token technologies",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "data_analysis": 0.8024343887770765,
+      "database_systems": 0.17961696661763035,
+      "web_development": 0.6429618165869503,
+      "mobile_development": 0.7719151816236932
+    },
+    "knowledge_coverage": {
+      "digital_literacy": 0.41297514438629157,
+      "web_development": 0.6000001430511476,
+      "mobile_development": 0.4437527775764466
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.0,
+      "audio_editing": 0.0,
+      "data_analysis": 0.8024343887770765,
+      "digital_literacy": 0.41297514438629157,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.0,
+      "database_systems": 0.17961696661763035,
+      "structured_programming": 0.0,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.0,
+      "game_programming": 0.0,
+      "workforce_insights": 0.0,
+      "computational_thinking": 0.0,
+      "multimedia_programming": 0.0,
+      "web_development": 0.6429618165869503,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.7719151816236932
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 5,
+      "coverage_percentage": 0.1478896577890338,
+      "skill_coverage_pct": 0.1261541238739658,
+      "knowledge_coverage_pct": 0.07666989815862557,
+      "avg_skill_confidence": 0.7262360919232551,
+      "avg_knowledge_confidence": 0.7624399256706239,
+      "hard_skill_count": 16,
+      "soft_skill_count": 1,
+      "knowledge_count": 7
+    },
+    "missing_components": [
+      "basic_job_skills_ohs",
+      "audio_editing",
+      "ai_development",
+      "ai_literacy_ethics",
+      "network_technology",
+      "structured_programming",
+      "game_modeling",
+      "algorithms_programming",
+      "game_programming",
+      "workforce_insights",
+      "computational_thinking",
+      "multimedia_programming",
+      "graphics_multimedia",
+      "oop"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.413,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.18,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.643,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 13,
+    "gpt_skill_count": 10,
+    "fused_skill_count": 17,
+    "model_agreement": 0.4298967168881343,
+    "match_count": 6,
+    "extraction_time": 4.150026321411133
+  }
+}

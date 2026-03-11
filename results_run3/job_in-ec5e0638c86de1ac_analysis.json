@@ -1,0 +1,324 @@
+{
+  "job_id": "in-ec5e0638c86de1ac",
+  "text": "IT Security Analyst Posting Start Date: 12/1/25 Job Location (Short): Chicago, Illinois, USA, 60631 | Milwaukee, Wisconsin, USA, 53204 -2941 Requisition ID: 34596 Onsite or Remote: Onsite Position Join Komatsu and Be Part of Something Big! Job Overview ---------------- The IT Security Analyst role at Komatsu, based in Milwaukee or Chicago, is responsible for enhancing and protecting the company\u2019s global security posture through hands -on participation in security monitoring, incident response, vulnerability management, identity governance, and the implementation of security technologies and projects.",
+  "skills": [
+    {
+      "skill": "enhance global security posture",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.674,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "protect global security posture",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.656,
+      "confidence_tier": "Medium",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "monitor security",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.676,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "respond to incidents",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.565,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "manage vulnerabilities",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.686,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "govern identity",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.569,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "implement security technologies",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.604,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.89,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "implement security projects",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.679,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "enhancing",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.448,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.81
+    },
+    {
+      "skill": "-on",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.319,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.69,
+      "context_agreement": 0.81
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "IT Security",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Security monitoring",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Incident response",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Vulnerability management",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Identity governance",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "digital_literacy": 0.24204465901226704,
+      "basic_job_skills_ohs": 0.2869108147734536,
+      "web_development": 0.2286612509220769
+    },
+    "knowledge_coverage": {
+      "digital_literacy": 0.3666734218597413,
+      "basic_job_skills_ohs": 0.44585527181625373,
+      "network_technology": 0.4263502478599549
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.0,
+      "mobile_development": 0.0,
+      "network_technology": 0.4263502478599549,
+      "web_development": 0.2286612509220769,
+      "game_programming": 0.0,
+      "game_modeling": 0.0,
+      "ai_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "database_systems": 0.0,
+      "oop": 0.0,
+      "basic_job_skills_ohs": 0.44585527181625373,
+      "ai_literacy_ethics": 0.0,
+      "structured_programming": 0.0,
+      "digital_literacy": 0.3666734218597413,
+      "computational_thinking": 0.0,
+      "audio_editing": 0.0,
+      "workforce_insights": 0.0,
+      "data_analysis": 0.0,
+      "multimedia_programming": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 4,
+      "coverage_percentage": 0.07723895749779089,
+      "skill_coverage_pct": 0.03987456445830513,
+      "knowledge_coverage_pct": 0.06520415481768156,
+      "avg_skill_confidence": 0.5876279981337562,
+      "avg_knowledge_confidence": 0.75,
+      "hard_skill_count": 10,
+      "soft_skill_count": 0,
+      "knowledge_count": 5
+    },
+    "missing_components": [
+      "algorithms_programming",
+      "mobile_development",
+      "game_programming",
+      "game_modeling",
+      "ai_development",
+      "graphics_multimedia",
+      "database_systems",
+      "oop",
+      "ai_literacy_ethics",
+      "structured_programming",
+      "computational_thinking",
+      "audio_editing",
+      "workforce_insights",
+      "data_analysis",
+      "multimedia_programming"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.426,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.229,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.446,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.367,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 3,
+    "gpt_skill_count": 8,
+    "fused_skill_count": 10,
+    "model_agreement": 0.0,
+    "match_count": 0,
+    "extraction_time": 2.5168185234069824
+  }
+}

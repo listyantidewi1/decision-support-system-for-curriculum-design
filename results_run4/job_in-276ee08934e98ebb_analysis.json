@@ -1,0 +1,401 @@
+{
+  "job_id": "in-276ee08934e98ebb",
+  "text": "Required Skills & Experience Proficiency in SQL and experience with modern data transformation tools (e.g., dbt, Coalesce). Experience with cloud platforms like Snowflake, BigQuery, Fabric, or Databricks. Advanced SQL skills (5 + years), including expertise in complex queries, stored procedures, and managing views. Strong understanding of ETL/ELT processes. Ability to build compelling data visualizations and dashboards using Tableau, Power BI, or Looker. Excellent communication skills for explaining complex technical concepts to non -technical audiences. Proven experience in designing and maintaining real -time analytics solutions.",
+  "skills": [
+    {
+      "skill": "transform data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.618,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "manage views",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 1.2
+    },
+    {
+      "skill": "build data visualizations",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.18
+    },
+    {
+      "skill": "build dashboards",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.8,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "explain complex technical concepts",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.639,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "design real-time analytics solutions",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.74,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "maintain real-time analytics solutions",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.742,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "write complex SQL queries",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.727,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "write stored procedures",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.734,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "communication skills",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.7,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.89,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "explaining complex technical concepts to non -technical audiences.",
+      "type": "Hard",
+      "bloom": "Understand",
+      "confidence_score": 0.512,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.82,
+      "context_agreement": 0.85
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "SQL",
+      "confidence_score": 0.847,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "dbt",
+      "confidence_score": 0.845,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Coalesce",
+      "confidence_score": 0.842,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Snowflake",
+      "confidence_score": 0.847,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "BigQuery",
+      "confidence_score": 0.85,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Fabric",
+      "confidence_score": 0.848,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Databricks",
+      "confidence_score": 0.85,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "ETL processes",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "ELT processes",
+      "confidence_score": 0.832,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Tableau",
+      "confidence_score": 0.848,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Power BI",
+      "confidence_score": 0.835,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Looker",
+      "confidence_score": 0.848,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "data transformation tools",
+      "confidence_score": 0.825,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "cloud platforms",
+      "confidence_score": 0.805,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "complex queries,",
+      "confidence_score": 0.432,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "stored procedures,",
+      "confidence_score": 0.558,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "ETL",
+      "confidence_score": 0.559,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.523,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "algorithms_programming": 0.5328559211423342,
+      "data_analysis": 1.0838121630741182,
+      "database_systems": 0.7105502052603515
+    },
+    "knowledge_coverage": {
+      "digital_literacy": 0.4811480841890641,
+      "algorithms_programming": 0.22597978165087032,
+      "data_analysis": 0.7635480813085423,
+      "workforce_insights": 0.5010527658025069,
+      "basic_job_skills_ohs": 0.1919292918553318,
+      "database_systems": 0.5615848002818261,
+      "mobile_development": 0.4226311858683458,
+      "graphics_multimedia": 0.4497853957607455
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.1919292918553318,
+      "audio_editing": 0.0,
+      "data_analysis": 1.0838121630741182,
+      "digital_literacy": 0.4811480841890641,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.0,
+      "database_systems": 0.7105502052603515,
+      "structured_programming": 0.0,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.5328559211423342,
+      "game_programming": 0.0,
+      "workforce_insights": 0.5010527658025069,
+      "computational_thinking": 0.0,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.4497853957607455,
+      "oop": 0.0,
+      "mobile_development": 0.4226311858683458
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 8,
+      "coverage_percentage": 0.23019815857646303,
+      "skill_coverage_pct": 0.12248517313035809,
+      "knowledge_coverage_pct": 0.18935049403774912,
+      "avg_skill_confidence": 0.7464213680464643,
+      "avg_knowledge_confidence": 0.7635974608147429,
+      "hard_skill_count": 9,
+      "soft_skill_count": 2,
+      "knowledge_count": 18
+    },
+    "missing_components": [
+      "audio_editing",
+      "ai_development",
+      "ai_literacy_ethics",
+      "network_technology",
+      "structured_programming",
+      "game_modeling",
+      "game_programming",
+      "computational_thinking",
+      "multimedia_programming",
+      "web_development",
+      "oop"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.192,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.481,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.533,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.501,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.45,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.423,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 5,
+    "gpt_skill_count": 9,
+    "fused_skill_count": 11,
+    "model_agreement": 0.1975840263896518,
+    "match_count": 2,
+    "extraction_time": 3.8670029640197754
+  }
+}

@@ -280,9 +280,15 @@ function updateDomainProgress() {
 }
 
 function domainSelectOptions(selected) {
-  const opts = new Set(domainOptions);
-  if (selected && !opts.has(selected)) opts.add(selected);
-  return [...opts].map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join("");
+  const knownIds = new Set(domainOptions.map(d => d.id));
+  const opts = [...domainOptions];
+  if (selected && !knownIds.has(selected)) {
+    opts.push({ id: selected, name: selected });
+  }
+  return opts.map(d => {
+    const label = d.id === d.name || !d.name ? d.id : `${d.id} — ${d.name}`;
+    return `<option value="${escapeHtml(d.id)}">${escapeHtml(label)}</option>`;
+  }).join("");
 }
 
 function renderDomain() {
@@ -365,7 +371,8 @@ document.querySelectorAll(".btn-next").forEach((btn) => {
 async function load() {
   try {
     const domainsRes = await fetchJson(`${API}/domains`);
-    domainOptions = domainsRes.domains || domainsRes.fallback || ["none", "unclear"];
+    const raw = domainsRes.domains || domainsRes.fallback || [];
+    domainOptions = raw.map(d => (typeof d === "string") ? { id: d, name: d } : d);
 
     const [skillsRes, knowledgeRes, domainRes] = await Promise.all([
       fetchJson(apiUrl("/skills")),

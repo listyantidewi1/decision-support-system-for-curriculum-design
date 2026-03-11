@@ -1,0 +1,265 @@
+{
+  "job_id": "in-09f9a66b0cd26247",
+  "text": "Qualifications: Basic working knowledge of Revit and BIM tools Previous exposure to electrical construction or drafting (field or academic experience) Familiarity with electrical components, systems, and NEC code Experience in the construction trade #miller #LI -JJ1 Equal Opportunity Employer: As a leading provider of mechanical and electrical construction, facilities services, and energy infrastructure, we offer employees a competitive salary and benefits package and we are always looking for individuals with the talent and skills required to contribute to our continued growth and success.",
+  "skills": [
+    {
+      "skill": "work with Revit",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.584,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.73,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "work with BIM tools",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.582,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.72,
+      "context_agreement": 0.9
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Revit",
+      "confidence_score": 0.852,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "BIM tools",
+      "confidence_score": 0.843,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "electrical construction",
+      "confidence_score": 0.852,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "drafting",
+      "confidence_score": 0.683,
+      "confidence_tier": "Medium",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "electrical components",
+      "confidence_score": 0.841,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "electrical systems",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "NEC code",
+      "confidence_score": 0.847,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "construction trade",
+      "confidence_score": 0.851,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "#miller",
+      "confidence_score": 0.533,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {},
+    "knowledge_coverage": {
+      "ai_development": 0.4523510328939245,
+      "basic_job_skills_ohs": 0.4543862666934684
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.4543862666934684,
+      "audio_editing": 0.0,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.0,
+      "ai_development": 0.4523510328939245,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.0,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.0,
+      "game_programming": 0.0,
+      "workforce_insights": 0.0,
+      "computational_thinking": 0.0,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 2,
+      "coverage_percentage": 0.04772301576775752,
+      "skill_coverage_pct": 0.0,
+      "knowledge_coverage_pct": 0.04772301576775752,
+      "avg_skill_confidence": 0.5829667200000002,
+      "avg_knowledge_confidence": 0.7835761534140437,
+      "hard_skill_count": 2,
+      "soft_skill_count": 0,
+      "knowledge_count": 9
+    },
+    "missing_components": [
+      "audio_editing",
+      "data_analysis",
+      "digital_literacy",
+      "ai_literacy_ethics",
+      "network_technology",
+      "database_systems",
+      "structured_programming",
+      "game_modeling",
+      "algorithms_programming",
+      "game_programming",
+      "workforce_insights",
+      "computational_thinking",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "oop",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.454,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.452,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 0,
+    "gpt_skill_count": 2,
+    "fused_skill_count": 2,
+    "model_agreement": 0.0,
+    "match_count": 0,
+    "extraction_time": 2.061647415161133
+  }
+}

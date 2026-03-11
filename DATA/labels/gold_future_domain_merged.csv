@@ -1,101 +1,101 @@
-gold_id,item_text,item_type,pipeline_domain,pipeline_similarity,notes,true_domain_id,labeler_id
-gfs_43214cb6c989,ensure successful validation of system components,skill,Routine Maintenance Coding,0.173,,DEC03,"alice,dewi"
-gfs_6a371deed89a,work with designers,skill,UX/UI & Digital Design,0.412,,MCK02,"alice,dewi"
-gfs_b0e4b9cbcecf,commit to accuracy,skill,Routine Data Entry & Clerical,0.214,,DEC01,"alice,dewi"
-gfs_88a4496db1f9,participate in meetings,skill,Advanced Communication & Collaboration,0.272,,MCK02,"alice,dewi"
-gfs_437080194d4a,work closely with product teams,skill,Advanced Communication & Collaboration,0.403,,MCK02,"alice,dewi"
-gfs_289c61929462,organize work,skill,Routine Maintenance Coding,0.28,,unclear,"alice,dewi"
-gfs_7ede8dccc0a4,modernize the organization,skill,Advanced Communication & Collaboration,0.248,,none,"alice,dewi"
-gfs_963d2a48204f,email cover letter,skill,Routine Data Entry & Clerical,0.103,,DEC01,"alice,dewi"
-gfs_a47e48a56397,ensure data security,skill,Cybersecurity,0.321,,WEF03,"alice,dewi"
-gfs_47373589733a,automate document uploads,skill,Process Automation & RPA,0.231,,MCK01,"alice,dewi"
-gfs_895da11a9cf5,showcase work in portfolio,skill,Advanced Communication & Collaboration,0.232,,MCK02,"alice,dewi"
-gfs_e9aecb868cc4,compliance,skill,Routine Data Entry & Clerical,0.334,,unclear,"alice,dewi"
-gfs_1372d543c8df,work with little supervision,skill,Advanced Communication & Collaboration,0.265,,none,"alice,dewi"
-gfs_8715689022a1,use Gitlab Runners,skill,Database & Systems Administration,0.086,,MCK01,"alice,dewi"
-gfs_500e1fb143a5,manage Oracle-based data environments,skill,Database & Systems Administration,0.392,,ONET02,"alice,dewi"
-gfs_91968614f658,recognition.,skill,Human-AI Collaboration,0.231,,none,"alice,dewi"
-gfs_43a953beb54d,guiding concepts from rough idea to final implementation.,skill,Routine Maintenance Coding,0.356,,MCK02,"alice,dewi"
-gfs_5081cea1e718,platforms that perform consistently,skill,Digital Platforms & E-commerce,0.329,,WEF05,"alice,dewi"
-gfs_ebf3c6ef62c6,delivering quality software.,skill,Routine Maintenance Coding,0.345,,ONET01,"alice,dewi"
-gfs_bc71e7889539,develop customer-centric advertising solutions,skill,Digital Platforms & E-commerce,0.295,,WEF05,"alice,dewi"
-gfs_99ae982e3d83,translate business processes into designs,skill,Process Automation & RPA,0.389,,WEF05,alice
-gfs_59b5f8ec86a0,scalability are at the core of every solution.,skill,Cloud Computing & Infrastructure,0.261,,none,alice
-gfs_3903aab32386,Follow,skill,Human-AI Collaboration,0.161,,none,alice
-gfs_ece0c590bd32,full of ideas,skill,Routine Maintenance Coding,0.317,,none,alice
-gfs_1ece778ae08d,see things differently,skill,Routine Maintenance Coding,0.096,,unclear,alice
-gfs_3c34dccc51e0,reviewing outputs,skill,Routine Maintenance Coding,0.144,,DEC03,alice
-gfs_ff291f2b152e,input billings,skill,Routine Data Entry & Clerical,0.216,,DEC01,alice
-gfs_e63eb72a2307,drive tasks to completion,skill,Process Automation & RPA,0.233,,unclear,alice
-gfs_85ff71771afd,identify opportunities to standardise approaches,skill,Routine Maintenance Coding,0.307,,unclear,alice
-gfs_f116ba208993,code application programs,skill,Routine Maintenance Coding,0.424,,DEC03,alice
-gfs_9ac7c9b3c562,ensure scalable data pipelines,skill,Big Data & Analytics,0.307,,,
-gfs_42580677d8ba,collaborate with customers,skill,Advanced Communication & Collaboration,0.336,,,
-gfs_3032ad6aed6c,outcome,skill,Human-AI Collaboration,0.096,,,
-gfs_a74ad8dfacd4,core,skill,Database & Systems Administration,0.234,,,
-gfs_3ae8bbf05b16,smart contracts.,skill,Routine Maintenance Coding,0.303,,,
-gfs_d027c1de3c69,troubleshoot AV systems,skill,Database & Systems Administration,0.203,,,
-gfs_5cb1b9a88d65,design aerospace and defense systems,skill,UX/UI & Digital Design,0.283,,,
-gfs_984369c00030,execute strategic initiatives efficiently,skill,Advanced Communication & Collaboration,0.263,,,
-gfs_35ca19588af4,thrive in a collaborative environment,skill,Advanced Communication & Collaboration,0.38,,,
-gfs_930ceba153b7,non -technical stakeholders.,skill,Advanced Communication & Collaboration,0.512,,,
-gfs_99a120978e21,work with hardware teams,skill,Advanced Communication & Collaboration,0.392,,,
-gfs_a06fde46a2ea,track progress of acquisition trends,skill,Routine Data Entry & Clerical,0.258,,,
-gfs_3a0add5208c0,conversion -led copy,skill,Process Automation & RPA,0.05,,,
-gfs_92df953a28cd,build career,skill,Routine Data Entry & Clerical,0.34,,,
-gfs_15a42202cf45,collaborate with Architects,skill,Human-AI Collaboration,0.388,,,
-gfs_d882f1d777e1,ensure confidentiality of information,skill,Cybersecurity,0.234,,,
-gfs_70682896e242,manage,skill,Database & Systems Administration,0.32,,,
-gfs_a054d5f94d5d,promote team,skill,Advanced Communication & Collaboration,0.203,,,
-gfs_5e59c791ac9e,solve challenges,skill,Routine Maintenance Coding,0.286,,,
-gfs_93e406b0d80e,eye for detail,skill,Routine Maintenance Coding,0.14,,,
-gfk_c23e5099fa6b,Product Owner,knowledge,Human-AI Collaboration,0.194,,,
-gfk_5c3a2cd92c4e,front-end applications,knowledge,Legacy Web Development,0.391,,,
-gfk_dda5f36986c3,digital learning platform,knowledge,Digital Platforms & E-commerce,0.354,,,
-gfk_c1e3a6aaaa6d,Data structures,knowledge,Database & Systems Administration,0.318,,,
-gfk_f08e4aa0ce10,architectural aluminum systems,knowledge,UX/UI & Digital Design,0.246,,,
-gfk_c3f6d9f53431,Financial Intelligence Unit,knowledge,Database & Systems Administration,0.349,,,
-gfk_3bbc4c203315,MEP,knowledge,AI & Machine Learning,0.118,,,
-gfk_a771a5a37055,ADP,knowledge,Human-AI Collaboration,0.186,,,
-gfk_cccae24691c5,GenAI,knowledge,Human-AI Collaboration,0.176,,,
-gfk_34094c0248f1,advertising solutions,knowledge,Digital Platforms & E-commerce,0.254,,,
-gfk_c966b222883d,MS365,knowledge,Digital Platforms & E-commerce,0.218,,,
-gfk_7778f51a56f8,user feedback,knowledge,UX/UI & Digital Design,0.228,,,
-gfk_a4ae83f2b923,CAPEX investments,knowledge,Digital Platforms & E-commerce,0.262,,,
-gfk_20a3e5ab3e8b,credit modelling,knowledge,Routine Data Entry & Clerical,0.192,,,
-gfk_f6f462aae0b4,"data and automation technologies,",knowledge,Process Automation & RPA,0.542,,,
-gfk_7adbd685a0da,retirement plans,knowledge,Routine Data Entry & Clerical,0.227,,,
-gfk_e84e30b9390c,Android,knowledge,UX/UI & Digital Design,0.198,,,
-gfk_52b0f9a6814f,Aotearoa,knowledge,Game Development & Interactive Media,0.13,,,
-gfk_a7c44dbb59da,identité de genre,knowledge,UX/UI & Digital Design,0.14,,,
-gfk_ca05b54aa2d3,Salesforce Platform Developer Certification,knowledge,Digital Platforms & E-commerce,0.409,,,
-gfk_0b7fbe71416a,SIEM,knowledge,AI & Machine Learning,0.099,,,
-gfk_ae992c1fc33f,internal approvals,knowledge,Routine Data Entry & Clerical,0.199,,,
-gfk_50ce2da63bea,React,knowledge,UX/UI & Digital Design,0.181,,,
-gfk_466da2f527b5,IBP,knowledge,Human-AI Collaboration,0.172,,,
-gfk_7868d7f359bf,AISC,knowledge,AI & Machine Learning,0.248,,,
-gfk_e900e40bc91d,environment,knowledge,Cloud Computing & Infrastructure,0.367,,,
-gfk_0280b156c999,technical knowledge,knowledge,Advanced Communication & Collaboration,0.406,,,
-gfk_69e3bc324a0c,stormwater systems,knowledge,Cloud Computing & Infrastructure,0.281,,,
-gfk_206e3718af09,MongoDB,knowledge,Database & Systems Administration,0.426,,,
-gfk_0922be6a2a3b,demonstrations,knowledge,UX/UI & Digital Design,0.217,,,
-gfk_bb7ac1fb3bf6,Epic Ambulatory,knowledge,Routine Maintenance Coding,0.25,,,
-gfk_0129a883fb02,interaction design,knowledge,UX/UI & Digital Design,0.432,,,
-gfk_78a282277dd6,continuous deployment of cloud services.,knowledge,Cloud Computing & Infrastructure,0.575,,,
-gfk_14a559d59356,Health Workday,knowledge,Routine Maintenance Coding,0.259,,,
-gfk_6630061ebfa9,API gateway policies,knowledge,Process Automation & RPA,0.143,,,
-gfk_310e60e47874,staff management,knowledge,Routine Data Entry & Clerical,0.326,,,
-gfk_148f8636ea88,data ingestion,knowledge,Routine Data Entry & Clerical,0.281,,,
-gfk_79f2dc508828,Salesforce Platform App Builder Certification,knowledge,Digital Platforms & E-commerce,0.296,,,
-gfk_b4f53b59e1b8,Salesforce DX,knowledge,UX/UI & Digital Design,0.436,,,
-gfk_e55c220b7d0f,Pandora,knowledge,Cloud Computing & Infrastructure,0.119,,,
-gfk_c282f7799fad,Clinical trials,knowledge,Routine Maintenance Coding,0.094,,,
-gfk_3c4588116394,air,knowledge,Game Development & Interactive Media,0.208,,,
-gfk_f3bfe0636abe,open government,knowledge,Cloud Computing & Infrastructure,0.203,,,
-gfk_789056d5d727,uncertainty and risk,knowledge,Human-AI Collaboration,0.112,,,
-gfk_b46e2b643c0b,Mastercard networks,knowledge,Database & Systems Administration,0.231,,,
-gfk_ef0cf80950e0,Positive behaviour support,knowledge,Routine Maintenance Coding,0.245,,,
-gfk_17d0553b88b5,UK security clearance (SC),knowledge,Cybersecurity,0.295,,,
-gfk_303cb0ef9edb,.NET,knowledge,Legacy Web Development,0.289,,,
-gfk_c6cc6b644bf9,SAFTs,knowledge,Database & Systems Administration,0.224,,,
-gfk_27ce95026b22,market structures,knowledge,Digital Platforms & E-commerce,0.323,,,
+﻿gold_id,item_text,item_type,pipeline_domain,pipeline_similarity,notes,true_domain_id,labeler_id
+gfs_8b988119861b,develop frameworks,skill,Legacy Web Development,0.427,,unclear,alice
+gfs_24024a98c9c3,implement AI/ML models,skill,AI & Machine Learning,0.546,,WEF01,alice
+gfs_543bef860e7a,brand recognition.,skill,Digital Platforms & E-commerce,0.21,,WEF05,alice
+gfs_a781814245b2,engage in active learning,skill,Technological Literacy & Digital Fluency,0.289,,WEF08,alice
+gfs_ebd8fd847378,build 3D first-person adventure game,skill,Game Development & Interactive Media,0.359,,ONET04,alice
+gfs_1f3372e223f9,move customers from APIs to SAP Integration Suite,skill,Software Development & Engineering,0.231,,ONET01,alice
+gfs_74198fb4dce6,shape the future of digital commerce,skill,Digital Platforms & E-commerce,0.516,,WEF05,alice
+gfs_0cbc6611f554,Test,skill,Quality Assurance & Testing,0.295,,none,alice
+gfs_fc19354c9a5d,ensure transactions flow through systems,skill,Blockchain & Distributed Systems,0.312,,unclear,alice
+gfs_0627ff947da2,express questions,skill,Critical Thinking & Problem Solving,0.194,,MCK04,alice
+gfs_0dd8bd03ed72,enabling strategic impact,skill,Advanced Communication & Collaboration,0.34,,MCK04,alice
+gfs_1fd604039d93,architecture of complex,skill,Blockchain & Distributed Systems,0.213,,none,alice
+gfs_4299c61cd936,support integrations,skill,Routine Maintenance Coding,0.285,,unclear,alice
+gfs_83dfbde50505,configure chatbot topics,skill,Human-AI Collaboration,0.274,,WEF07,alice
+gfs_3388aa8b068d,external documentation.,skill,Advanced Communication & Collaboration,0.385,,MCK02,alice
+gfs_8b15143ad599,lead migration to managed services,skill,Cloud Computing & Infrastructure,0.289,,WEF04,alice
+gfs_64ab7cad8b29,ensure compliance with industry standards,skill,Business Analysis & Requirements Engineering,0.264,,ESCO02,alice
+gfs_d54e7593f185,ensure automated tests are maintainable,skill,Quality Assurance & Testing,0.348,,ONET05,alice
+gfs_691a717d4bcb,deliver consistent user experiences,skill,Routine Maintenance Coding,0.297,,ONET01,alice
+gfs_67bb96989612,explosivity to a game,skill,Game Development & Interactive Media,0.15,,unclear,alice
+gfs_382d624a421d,enable sustainable engineering,skill,Environmental & Sustainability Technology,0.487,,WEF06,alice
+gfs_188c6233ea5e,develop data platform,skill,Big Data & Analytics,0.388,,WEF02,alice
+gfs_7d730ebdbefc,set the standard for scientific excellence,skill,Environmental & Sustainability Technology,0.18,,MCK05,alice
+gfs_dd6ebc218ebd,explore new methodologies,skill,Advanced Communication & Collaboration,0.361,,MCK05,alice
+gfs_2421b5cbaf33,optimize database performance,skill,Database & Systems Administration,0.263,,ONET02,alice
+gfs_714ecbaa349f,document business requirements,skill,Business Analysis & Requirements Engineering,0.418,,ESCO02,alice
+gfs_fdcda4c7fcf7,conduct interviews,skill,Business Analysis & Requirements Engineering,0.331,,MCK02,alice
+gfs_a910d2bf12eb,balance short-term delivery with long-term strategic investments,skill,Digital Platforms & E-commerce,0.216,,unclear,alice
+gfs_52ffa4de8b0f,manage distributed systems,skill,Blockchain & Distributed Systems,0.401,,unclear,alice
+gfs_cba0749f1c38,anticipate potential challenges,skill,Critical Thinking & Problem Solving,0.27,,MCK04,alice
+gfs_d432256dc758,application stability,skill,Legacy Web Development,0.282,,ONET01,alice
+gfs_00b1c586b45b,foster internal relationships,skill,Leadership & People Development,0.218,,MCK03,alice
+gfs_6b8e18bf5fb8,deploy robotic process automations,skill,Process Automation & RPA,0.515,,MCK01,alice
+gfs_1ded63e2305c,networks with people,skill,Human-AI Collaboration,0.203,,MCK02,alice
+gfs_9a612fe5da52,leverage DNV global network,skill,Cloud Computing & Infrastructure,0.154,,MCK03,alice
+gfs_126461dc357f,solve complex problems,skill,Critical Thinking & Problem Solving,0.389,,MCK04,alice
+gfs_2be78d574bd9,learn new skills,skill,Resilience & Adaptability,0.316,,MCK05,alice
+gfs_55c1c0d590ee,maintain compliance,skill,Routine Maintenance Coding,0.311,,unclear,alice
+gfs_a17db7985a70,thrive in a vibrant,skill,Resilience & Adaptability,0.388,,MCK05,alice
+gfs_19065a66e2b7,develop software applications,skill,Software Development & Engineering,0.463,,ONET01,alice
+gfs_331f293c7a02,its interaction,skill,Advanced Communication & Collaboration,0.198,,none,alice
+gfs_737b4ac082ab,define project deliverables,skill,Project Management & Agile Methodologies,0.282,,ESCO01,alice
+gfs_6029975a3b57,refine chatbot logic,skill,Human-AI Collaboration,0.301,,WEF01,alice
+gfs_f8035abb49cd,leverage inference accelerator tools for real-time inference runtimes,skill,AI & Machine Learning,0.217,,WEF01,alice
+gfs_3e80079c246a,perform data analytics,skill,Big Data & Analytics,0.497,,WEF02,alice
+gfs_3c9310599d35,apply project management methodologies,skill,Project Management & Agile Methodologies,0.605,,ESCO01,alice
+gfs_71afc19d4e4d,administer enterprise servers,skill,Database & Systems Administration,0.367,,ONET02,alice
+gfs_b6596f96c266,protect security posture,skill,Cybersecurity,0.328,,unclear,alice
+gfs_81a9dd02d071,monitor compliance with secure configuration standards,skill,Cybersecurity,0.301,,WEF03,alice
+gfs_657a9c4557bc,use Azure,skill,Cloud Computing & Infrastructure,0.378,,WEF04,alice
+gfk_88318a9ce7fb,YMCA’s mission,knowledge,Leadership & People Development,0.284,,none,alice
+gfk_0f6f8cb071eb,data & AI technologies,knowledge,AI & Machine Learning,0.62,,WEF01,alice
+gfk_915d356c4d21,C/C++,knowledge,UX/UI & Digital Design,0.258,,ONET01,alice
+gfk_6630061ebfa9,API gateway policies,knowledge,AI & Machine Learning,0.152,,WEF03,alice
+gfk_179331fd0119,AI Ethics,knowledge,Human-AI Collaboration,0.537,,WEF07,alice
+gfk_13a16fba3847,wind energy,knowledge,Environmental & Sustainability Technology,0.153,,WEF06,alice
+gfk_19bea5bec76c,Sustainability,knowledge,Environmental & Sustainability Technology,0.513,,WEF06,alice
+gfk_c3262ebffab7,resilience,knowledge,Resilience & Adaptability,0.668,,MCK05,alice
+gfk_692a630fbd16,"requirements development,",knowledge,Business Analysis & Requirements Engineering,0.557,,ESCO02,alice
+gfk_94ccf2bdf311,AWS Global Sales Compensation (GSC),knowledge,Cloud Computing & Infrastructure,0.21,,none,alice
+gfk_aa5278fc0471,multi-brand complexity,knowledge,Digital Platforms & E-commerce,0.174,,WEF05,alice
+gfk_a6b3765bd0b6,data-driven content,knowledge,Legacy Web Development,0.257,,none,alice
+gfk_d8946406751c,Entertainment department,knowledge,Database & Systems Administration,0.242,,none,alice
+gfk_1b5ccb54e2a7,software development,knowledge,Software Development & Engineering,0.543,,ONET01,alice
+gfk_6e7be37f0890,DevOps workflows,knowledge,Routine Maintenance Coding,0.418,,ONET01,alice
+gfk_ffe029a84e0c,Customer service principles,knowledge,Routine Maintenance Coding,0.245,,unclear,alice
+gfk_6f80aca1ed95,financing of terrorism,knowledge,Cybersecurity,0.125,,none,alice
+gfk_6ca515ffdcae,mission planning systems,knowledge,Project Management & Agile Methodologies,0.343,,ESCO01,alice
+gfk_03f26cd0d650,DLP incident playbooks,knowledge,Game Development & Interactive Media,0.129,,WEF03,alice
+gfk_72fa034e1591,PointStreak,knowledge,Project Management & Agile Methodologies,0.146,,unclear,alice
+gfk_a509fbd3ddb3,interactive/games,knowledge,Game Development & Interactive Media,0.571,,ONET04,alice
+gfk_7766a68dbe86,spacecraft,knowledge,Cloud Computing & Infrastructure,0.191,,none,alice
+gfk_b66fc3e40b3d,Textiles market,knowledge,Digital Platforms & E-commerce,0.226,,WEF05,alice
+gfk_ad7b3cb5bc8a,demand and forecasting systems,knowledge,Blockchain & Distributed Systems,0.249,,none,alice
+gfk_859b37d76740,Brand promotion,knowledge,Digital Platforms & E-commerce,0.232,,WEF05,alice
+gfk_33a0fbf3a815,Backend systems,knowledge,Database & Systems Administration,0.417,,ONET01,alice
+gfk_236108fe4f56,Cloud & Infrastructure,knowledge,Cloud Computing & Infrastructure,0.688,,WEF04,alice
+gfk_eab6fcb406a6,schools,knowledge,Leadership & People Development,0.243,,none,alice
+gfk_7c9f96a39a90,AWS tools,knowledge,Cloud Computing & Infrastructure,0.323,,WEF04,alice
+gfk_36ac737cbc98,production environments,knowledge,Database & Systems Administration,0.366,,unclear,alice
+gfk_0c086c875cf7,AI -related,knowledge,Human-AI Collaboration,0.554,,WEF01,alice
+gfk_61943c164998,VFX,knowledge,UX/UI & Digital Design,0.265,,ONET03,alice
+gfk_343ce34c167f,project management methodologies,knowledge,Project Management & Agile Methodologies,0.642,,ESCO01,alice
+gfk_ad5555465c0e,acquisition process of materials,knowledge,Business Analysis & Requirements Engineering,0.204,,ESCO02,alice
+gfk_8d6eb26696f6,security solutions,knowledge,Cybersecurity,0.361,,WEF03,alice
+gfk_b73c3afeb2be,malicious network traffic,knowledge,Cybersecurity,0.174,,WEF03,alice
+gfk_6997f5289259,"scientific software development,",knowledge,Software Development & Engineering,0.469,,ONET01,alice
+gfk_8bb2c5206510,transcript,knowledge,Routine Data Entry & Clerical,0.263,,none,alice
+gfk_9877f27f028d,marketing innovation,knowledge,Digital Platforms & E-commerce,0.307,,WEF05,alice
+gfk_85bd44aa9572,Seller Experience,knowledge,Advanced Communication & Collaboration,0.199,,MCK02,alice
+gfk_83a74ce6b127,data modelling principles,knowledge,Routine Data Entry & Clerical,0.293,,ONET02,alice
+gfk_0536dfcb9bba,recruitment,knowledge,Leadership & People Development,0.379,,none,alice
+gfk_68c4283db807,analytics,knowledge,Big Data & Analytics,0.449,,WEF02,alice
+gfk_3cc377f79bda,Blockchain,knowledge,Blockchain & Distributed Systems,0.582,,ONET06,alice
+gfk_c9a02a42c670,test automation frameworks,knowledge,Quality Assurance & Testing,0.526,,ONET05,alice
+gfk_126c4c3261a9,dashboards,knowledge,Database & Systems Administration,0.317,,none,alice
+gfk_f0fc8a921cea,Cosmos DB,knowledge,Database & Systems Administration,0.307,,ONET02,alice
+gfk_5b1783614498,Critical communications,knowledge,Critical Thinking & Problem Solving,0.337,,MCK04,alice
+gfk_418495454409,Systems Thinking,knowledge,Critical Thinking & Problem Solving,0.48,,MCK04,alice
+gfk_7cef8a734855,open,knowledge,Database & Systems Administration,0.096,,none,alice

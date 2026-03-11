@@ -1,0 +1,366 @@
+{
+  "job_id": "in-57d70c0fd3accddf",
+  "text": "Scope and Impact: Reports into the Global Head of Partners and member of APAC SAM Leadership Team Manage Asia Partners organization to drive increased revenue growth across all Redistribution & Co -sell partnerships in region Oversees Asia Account Management team of ~6 -7 account managers Partner and align closely with Product Leadership across RI, FTSE and D &A to devise strategies and accountability for successful partnerships Lead execution of Asia Partners strategy to maximize current and future Partnership solutions Key deliverables: Account Plans for Top Partners Focus on growing partner revenue across Asia Tiered Partner Accounts for Asia Ensuring all partner agreements (Redistribution & Cosell contracts) have been through the appropriate governance channel (e.g.",
+  "skills": [
+    {
+      "skill": "manage Asia Partners organization",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.653,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "drive increased revenue growth",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.68,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "oversee Asia Account Management team",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.708,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "partner and align closely with Product Leadership",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.725,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 1.21
+    },
+    {
+      "skill": "devise strategies for successful partnerships",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.686,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "lead execution of Asia Partners strategy",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.839,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "maximize current and future Partnership solutions",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.788,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "grow partner revenue across Asia",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.675,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "drive increased",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.397,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "Partner",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.321,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "devise strategies",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.676,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "accountability for successful partnerships",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.52,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.89,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "maximize current",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.51,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.83,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "growing partner revenue",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.504,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.87
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Redistribution & Co-sell partnerships",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Account Plans",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Tiered Partner Accounts",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Partner agreements",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Redistribution & Cosell contracts",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "governance channel",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {},
+    "knowledge_coverage": {},
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.0,
+      "audio_editing": 0.0,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.0,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.0,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.0,
+      "game_programming": 0.0,
+      "workforce_insights": 0.0,
+      "computational_thinking": 0.0,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 0,
+      "coverage_percentage": 0.0,
+      "skill_coverage_pct": 0.0,
+      "knowledge_coverage_pct": 0.0,
+      "avg_skill_confidence": 0.620020254309866,
+      "avg_knowledge_confidence": 0.75,
+      "hard_skill_count": 6,
+      "soft_skill_count": 8,
+      "knowledge_count": 6
+    },
+    "missing_components": [
+      "basic_job_skills_ohs",
+      "audio_editing",
+      "data_analysis",
+      "digital_literacy",
+      "ai_development",
+      "ai_literacy_ethics",
+      "network_technology",
+      "database_systems",
+      "structured_programming",
+      "game_modeling",
+      "algorithms_programming",
+      "game_programming",
+      "workforce_insights",
+      "computational_thinking",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "oop",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 9,
+    "gpt_skill_count": 8,
+    "fused_skill_count": 14,
+    "model_agreement": 0.30605735381444293,
+    "match_count": 3,
+    "extraction_time": 4.604313611984253
+  }
+}

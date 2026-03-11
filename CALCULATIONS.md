@@ -147,13 +147,13 @@ def _majority(votes: list) -> str:
 
 ### Inter-Rater Reliability
 
-When ≥2 reviewers assess the same items, **Cohen's Kappa** is computed:
+When ≥2 reviewers assess the same overlap items:
 
-```
-κ = (P_o - P_e) / (1 - P_e)
-```
-- P_o = observed agreement
-- P_e = expected agreement by chance
+- **2 raters:** Cohen's Kappa: `κ = (P_o - P_e) / (1 - P_e)`
+- **3+ raters:** Fleiss' Kappa (see SCIENTIFIC_METHODOLOGY.md §5)
+
+Overlap items are selected via stratified random sampling (not first-N) at
+gold set export time to avoid order bias.
 
 Stored in `feedback_store/inter_rater_report.json` per feedback source.
 
@@ -181,12 +181,14 @@ h = 2 × (arcsin(√p1) - arcsin(√p2))
 
 ---
 
-## 3.1 Recall in Gold-Set Paradigm
+## 3.1 Recall Limitation (Gold-Set Design)
 
 In the gold-set evaluation paradigm:
-- **Precision** = tp / n (correct extractions among those labeled)
-- **Recall** cannot be computed without knowing the total number of true positives in the full population; the gold set is a sample of extractions, not an enumeration of all true items.
-- We report **recall_estimate** = same as precision when gold set = sample of extractions; interpret as "recall on the labeled sample" rather than true recall.
+- **Precision** = tp / n (correct extractions among those labeled) — **reported**.
+- **Recall** cannot be computed: the gold set is a stratified sample of pipeline *outputs*, not an exhaustive annotation of all true items per posting.  False negatives (fn) are unknown.
+- **F1** is therefore not reported (it would equal precision by construction).
+
+See [SCIENTIFIC_METHODOLOGY.md §10](SCIENTIFIC_METHODOLOGY.md#10-recall-limitation-gold-set-design) for full discussion.
 
 ---
 
@@ -310,13 +312,19 @@ human_score = 0.7 × c_score + 0.3 × q_score + rel_adj + verify_adj
 
 ## 8. Calibrated Verification (validate_parameters.py)
 
-Logistic regression predicts `human_valid` from pipeline scores (confidence, semantic density, etc.):
+Validates pipeline confidence scores against human labels:
 
-- **AUC-ROC**: discrimination
-- **Brier score**: calibration (MSE of predicted vs observed)
+- **AUC-ROC**: discrimination ability
+- **Brier score**: calibration quality (MSE of predicted vs observed)
 - **Calibration curve**: 10 bins, predicted prob vs observed frequency
 
-Optimal threshold chosen to maximize Youden index or balance precision/recall; stored in `calibrated_threshold.json`.
+**Threshold selection:** The optimal confidence threshold is selected via
+**5-fold cross-validation** (CV) to avoid circularity (fitting and evaluating
+on the same data).  Each fold fits the Youden-optimal threshold on training
+data and evaluates on held-out data.  The exported threshold
+(`calibrated_threshold.json`) is the **mean of per-fold thresholds**, not the
+full-data optimum.  If CV fails (insufficient data), falls back to the
+full-data Youden threshold with `threshold_selection: "full_data_fallback"`.
 
 ---
 
@@ -367,4 +375,20 @@ Top 8 knowledge items by `(overlap DESC, confidence DESC, text)` attached as `re
 
 ---
 
-*Last updated: Priority score (coverage for insights only), dashboard ranking, aggregation, multi-reviewer support, new plots.*
+## 11. Reproducibility: Random Seeds
+
+All sampling operations use `config.RANDOM_SEED` (default: 42) as the single
+source of truth.  Scripts that accept a `--seed` CLI argument override this
+value for the current run.
+
+| Script | Seed Source | Usage |
+|--------|-------------|-------|
+| `pipeline.py` | `config.RANDOM_SEED` / `--seed` | Job sampling |
+| `export_gold_set.py` | `--seed` (default 42) | Gold set stratified sampling, IRR overlap selection |
+| `export_for_review.py` | `config.RANDOM_SEED` | Skill/knowledge stratified sampling for review |
+| `export_competencies_for_review.py` | `config.RANDOM_SEED` | Competency batch sampling |
+| `validate_parameters.py` | `config.RANDOM_SEED` | CV fold shuffling |
+| `skill_time_trend_analysis.py` | `config.RANDOM_SEED` | Stability analysis base seed |
+| `plot_generator.py` | `config.RANDOM_SEED` | KMeans clustering |
+
+*Last updated: Scientific rigor review — seed consolidation, CV threshold, labeling protocol, Bloom/type validation.*

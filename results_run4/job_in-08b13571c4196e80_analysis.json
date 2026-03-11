@@ -1,0 +1,417 @@
+{
+  "job_id": "in-08b13571c4196e80",
+  "text": "Requisition ID: 238183 Join a purpose driven winning team, committed to results, in an inclusive and high -performing culture. The Team We are the CRM, Sales & Branch Performance engineering team, part of Customer Servicing engineering in Scotia Digital, focused on providing solutions that assist front line staff across channels in deepening relationship with our customers, providing better service and offering better products to them, and help improve sales & productivity along the way. The group is a mix of architects, technology leads, business systems analysts, designers, SMEs, developers and testers who innovate and transform, develop customer servicing technology roadmaps, ensure end -to -end project delivery, support day to day operations, write technical stories, develop and test code, manage stakeholders and related teams.",
+  "skills": [
+    {
+      "skill": "provide solutions",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.597,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "deepen relationship with customers",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.834,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "provide better service",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.608,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "offer better products",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.607,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "improve sales",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.606,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "improve productivity",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.619,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.89,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "innovate technology",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.617,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "transform technology",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.619,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.89,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "develop customer servicing technology roadmaps",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.709,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "ensure end-to-end project delivery",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.706,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "support day to day operations",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.677,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.63,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "write technical stories",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.703,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "develop code",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.696,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "test code",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.69,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.72,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "manage stakeholders",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.617,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "manage related teams",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.661,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "providing",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.465,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.81
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "CRM",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Sales",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Branch Performance engineering",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Customer Servicing engineering",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Scotia Digital",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "technology roadmaps",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "project delivery",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "day to day operations",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "technical stories",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.24743472993610735,
+      "digital_literacy": 0.25193630853728877,
+      "algorithms_programming": 0.3670344319514756,
+      "workforce_insights": 0.3404642641068282,
+      "basic_job_skills_ohs": 0.25604072090731395,
+      "structured_programming": 0.25866417276517206,
+      "game_programming": 0.25164951890918336
+    },
+    "knowledge_coverage": {
+      "workforce_insights": 0.4163085222244263
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.25604072090731395,
+      "audio_editing": 0.0,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.25193630853728877,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.25866417276517206,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.3670344319514756,
+      "game_programming": 0.25164951890918336,
+      "workforce_insights": 0.4163085222244263,
+      "computational_thinking": 0.24743472993610735,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 7,
+      "coverage_percentage": 0.10784570553847198,
+      "skill_coverage_pct": 0.10385390247965103,
+      "knowledge_coverage_pct": 0.021910974853917176,
+      "avg_skill_confidence": 0.6489673936812876,
+      "avg_knowledge_confidence": 0.75,
+      "hard_skill_count": 8,
+      "soft_skill_count": 9,
+      "knowledge_count": 9
+    },
+    "missing_components": [
+      "audio_editing",
+      "data_analysis",
+      "ai_development",
+      "ai_literacy_ethics",
+      "network_technology",
+      "database_systems",
+      "game_modeling",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "oop",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.256,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.252,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.259,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.367,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.252,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.416,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.247,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 2,
+    "gpt_skill_count": 16,
+    "fused_skill_count": 17,
+    "model_agreement": 0.0,
+    "match_count": 0,
+    "extraction_time": 5.028853416442871
+  }
+}

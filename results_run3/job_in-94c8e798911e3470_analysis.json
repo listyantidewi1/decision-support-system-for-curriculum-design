@@ -1,0 +1,538 @@
+{
+  "job_id": "in-94c8e798911e3470",
+  "text": "PREFERRED EDUCATION: Bachelor\u2019s degree in computer science, Engineering, or a related field. 5 + years of software development experience, with at least 3 years of hands -on MuleSoft development. Strong knowledge of MuleSoft Anypoint Platform, including Anypoint Studio, API Manager, Runtime Manager. Proficiency in RAML/OpenAPI, DataWeave (Mule Expression Language), and MUnit testing framework. Experience with RESTful APIs, JSON, XML, JMS, and message queues. Familiarity with CI/CD tools (e.g., Jenkins, GitLab CI), version control (Git), and deployment automation. Understanding of security protocols (OAuth 2 .0, JWT, TLS) and API gateway policies.",
+  "skills": [
+    {
+      "skill": "develop software",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.705,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "develop MuleSoft",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.705,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use RAML/OpenAPI",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.705,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use DataWeave",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.699,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use MUnit testing framework",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.636,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.93,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use RESTful APIs",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.693,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use JSON",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.688,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.71,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use XML",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.685,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.69,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use JMS",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.685,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.69,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use message queues",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.696,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use CI/CD tools",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.691,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.73,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use version control",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.697,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "automate deployment",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.731,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 1.0,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "understand security protocols",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.601,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "understand API gateway policies",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.612,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.96,
+      "context_agreement": 0.9
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "MuleSoft Anypoint Platform",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Anypoint Studio",
+      "confidence_score": 0.836,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "API Manager",
+      "confidence_score": 0.846,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Runtime Manager",
+      "confidence_score": 0.843,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "RAML",
+      "confidence_score": 0.852,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "OpenAPI",
+      "confidence_score": 0.85,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "DataWeave",
+      "confidence_score": 0.852,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Mule Expression Language",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "MUnit testing framework",
+      "confidence_score": 0.807,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "RESTful APIs",
+      "confidence_score": 0.85,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "JSON",
+      "confidence_score": 0.847,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "XML",
+      "confidence_score": 0.846,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "JMS",
+      "confidence_score": 0.849,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "message queues",
+      "confidence_score": 0.841,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "CI/CD tools",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Jenkins",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "GitLab CI",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Git",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "deployment automation",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "security protocols",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "OAuth 2.0",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "JWT",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "TLS",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "API gateway policies",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Bachelor\u2019s degree",
+      "confidence_score": 0.552,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "computer science,",
+      "confidence_score": 0.495,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Engineering,",
+      "confidence_score": 0.418,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "software development",
+      "confidence_score": 0.555,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "MuleSoft development.",
+      "confidence_score": 0.494,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "MuleSoft",
+      "confidence_score": 0.55,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Anypoint Platform,",
+      "confidence_score": 0.478,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.547,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "digital_literacy": 0.2547150329032618,
+      "algorithms_programming": 0.5771390945935048,
+      "ai_development": 0.3196970033083649,
+      "workforce_insights": 0.47106558821456823,
+      "basic_job_skills_ohs": 0.6763097321251867,
+      "structured_programming": 0.26428446507808384,
+      "oop": 0.29346666408917665,
+      "multimedia_programming": 0.3235339218953712,
+      "web_development": 0.6538155339547501,
+      "mobile_development": 0.35600121368310156,
+      "game_programming": 0.32291338262471586
+    },
+    "knowledge_coverage": {
+      "digital_literacy": 0.45830650002550966,
+      "algorithms_programming": 0.38549298048019415,
+      "ai_development": 0.20470167023107097,
+      "workforce_insights": 0.2738331744607858,
+      "basic_job_skills_ohs": 0.6000000000000001,
+      "oop": 0.49898542828477127,
+      "multimedia_programming": 0.21310280003643003,
+      "web_development": 0.7625004952876838,
+      "mobile_development": 0.5198579211108193,
+      "game_programming": 0.18857782514060686
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.5771390945935048,
+      "mobile_development": 0.5198579211108193,
+      "network_technology": 0.0,
+      "web_development": 0.7625004952876838,
+      "game_programming": 0.32291338262471586,
+      "game_modeling": 0.0,
+      "ai_development": 0.3196970033083649,
+      "graphics_multimedia": 0.0,
+      "database_systems": 0.0,
+      "oop": 0.49898542828477127,
+      "basic_job_skills_ohs": 0.6763097321251867,
+      "ai_literacy_ethics": 0.0,
+      "structured_programming": 0.26428446507808384,
+      "digital_literacy": 0.45830650002550966,
+      "computational_thinking": 0.0,
+      "audio_editing": 0.0,
+      "workforce_insights": 0.47106558821456823,
+      "data_analysis": 0.0,
+      "multimedia_programming": 0.3235339218953712
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 11,
+      "coverage_percentage": 0.27339965960782,
+      "skill_coverage_pct": 0.23752324381421505,
+      "knowledge_coverage_pct": 0.21607151552936169,
+      "avg_skill_confidence": 0.681961522176,
+      "avg_knowledge_confidence": 0.7253077083134782,
+      "hard_skill_count": 15,
+      "soft_skill_count": 0,
+      "knowledge_count": 32
+    },
+    "missing_components": [
+      "network_technology",
+      "game_modeling",
+      "graphics_multimedia",
+      "database_systems",
+      "ai_literacy_ethics",
+      "computational_thinking",
+      "audio_editing",
+      "data_analysis"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.577,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.52,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.323,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.32,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.499,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.676,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.264,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.458,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.471,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.324,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 0,
+    "gpt_skill_count": 15,
+    "fused_skill_count": 15,
+    "model_agreement": 0.0,
+    "match_count": 0,
+    "extraction_time": 4.090963125228882
+  }
+}

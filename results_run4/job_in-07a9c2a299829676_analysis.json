@@ -1,0 +1,661 @@
+{
+  "job_id": "in-07a9c2a299829676",
+  "text": "Expected work includes : Design & Build: Collaborate with stakeholders to gather requirements, define user stories, and map out conversational flows. Develop: Use Microsoft Copilot Studio to build, configure, and refine chatbot topics, entities, and logic. Integrate: Leverage Power Automate (Flows) to connect the Bot to backend systems, databases, and APIs (e.g., retrieving user data, creating support tickets, looking up information). Leverage AI: Implement and fine -tune generative AI capabilities within Copilot Studio, such as generative answers over company data (e.g., SharePoint, internal websites) to handle a wide range of user queries dynamically. Test & Debug: Conduct thorough testing to ensure the Bot is accurate, responsive, and provides a seamless user experience.",
+  "skills": [
+    {
+      "skill": "collaborate with stakeholders",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.871,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 1.26
+    },
+    {
+      "skill": "gather requirements",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.838,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 1.26
+    },
+    {
+      "skill": "define user stories",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.26
+    },
+    {
+      "skill": "map conversational flows",
+      "type": "Hard",
+      "bloom": "Understand",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "build chatbot topics",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.904,
+      "confidence_tier": "Very High",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.21
+    },
+    {
+      "skill": "configure chatbot topics",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.726,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "refine chatbot topics",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.958,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "build chatbot entities",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.722,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "configure chatbot entities",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.729,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "refine chatbot entities",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.611,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "build chatbot logic",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.718,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "configure chatbot logic",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.639,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "refine chatbot logic",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.635,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "connect bot to backend systems",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "connect bot to databases",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.716,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "connect bot to APIs",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.71,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.72,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "retrieve user data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "create support tickets",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "look up information",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.606,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "implement generative AI capabilities",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.73,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "fine-tune generative AI capabilities",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.644,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "handle user queries dynamically",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.639,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "conduct thorough testing",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.64,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "ensure bot accuracy",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.718,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "ensure bot responsiveness",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.727,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "provide seamless user experience",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.686,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "build",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.669,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.75,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "configure",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.686,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "entities",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.518,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "logic.",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.551,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "Integrate: Leverage Power Automate (Flows)",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.67,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.83,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "databases",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.521,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "APIs",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.505,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.72,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "looking up information).",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.516,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.82,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "Leverage AI:",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.478,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "Implement",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.686,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "fine -tune",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.546,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.74,
+      "context_agreement": 0.87
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Microsoft Copilot Studio",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Power Automate",
+      "confidence_score": 0.664,
+      "confidence_tier": "Medium",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Flows",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "APIs",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Generative AI",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "SharePoint",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Chatbot topics",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Chatbot entities",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Chatbot logic",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Backend systems",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Databases",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "User stories",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Conversational flows",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Microsoft",
+      "confidence_score": 0.557,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Copilot",
+      "confidence_score": 0.556,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Studio",
+      "confidence_score": 0.295,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.32162831223101945,
+      "digital_literacy": 0.3694388269159548,
+      "algorithms_programming": 0.3338590908363815,
+      "data_analysis": 0.31750586596046326,
+      "ai_literacy_ethics": 0.28615615606568984,
+      "ai_development": 0.9117745679029657,
+      "network_technology": 0.2670992241758557,
+      "oop": 0.2814111624408314,
+      "database_systems": 0.2193676836400842,
+      "web_development": 0.20283851331999236,
+      "mobile_development": 0.35068484819144324,
+      "game_programming": 0.45906778681336785
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.43359643220901495,
+      "digital_literacy": 0.3511469006538392,
+      "data_analysis": 0.4800100564956666,
+      "ai_literacy_ethics": 0.34824914932250983,
+      "ai_development": 0.5527140855789185,
+      "oop": 0.45902752876281744,
+      "database_systems": 0.39898889064788823,
+      "web_development": 0.5039577126502991,
+      "mobile_development": 0.44070568084716805
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.0,
+      "audio_editing": 0.0,
+      "data_analysis": 0.4800100564956666,
+      "digital_literacy": 0.3694388269159548,
+      "ai_development": 0.9117745679029657,
+      "ai_literacy_ethics": 0.34824914932250983,
+      "network_technology": 0.2670992241758557,
+      "database_systems": 0.39898889064788823,
+      "structured_programming": 0.0,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.3338590908363815,
+      "game_programming": 0.45906778681336785,
+      "workforce_insights": 0.0,
+      "computational_thinking": 0.43359643220901495,
+      "multimedia_programming": 0.0,
+      "web_development": 0.5039577126502991,
+      "graphics_multimedia": 0.0,
+      "oop": 0.45902752876281744,
+      "mobile_development": 0.44070568084716805
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 12,
+      "coverage_percentage": 0.28451447092525733,
+      "skill_coverage_pct": 0.22741221255231836,
+      "knowledge_coverage_pct": 0.20886297037726959,
+      "avg_skill_confidence": 0.7164821135646345,
+      "avg_knowledge_confidence": 0.6919777385145427,
+      "hard_skill_count": 34,
+      "soft_skill_count": 3,
+      "knowledge_count": 16
+    },
+    "missing_components": [
+      "basic_job_skills_ohs",
+      "audio_editing",
+      "structured_programming",
+      "game_modeling",
+      "workforce_insights",
+      "multimedia_programming",
+      "graphics_multimedia"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.48,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.369,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.348,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.267,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.399,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.334,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.459,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.434,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.504,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.459,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.441,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 19,
+    "gpt_skill_count": 26,
+    "fused_skill_count": 37,
+    "model_agreement": 0.33568473504139823,
+    "match_count": 9,
+    "extraction_time": 6.89366602897644
+  }
+}

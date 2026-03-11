@@ -1,0 +1,347 @@
+{
+  "job_id": "in-763e27dabb8eab92",
+  "text": "Security Governance & Compliance Conduct periodic security reviews to ensure adherence to IT Security Policies, Standards, Controls and industry best practices. Recommend and implement security initiatives and enhancement based on findings from tabletop exercises (TTX) and audits. Monitor and ensure compliance with secure configuration standards across network, systems and endpoint (i.e.",
+  "skills": [
+    {
+      "skill": "conduct periodic security reviews",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.66,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.0
+    },
+    {
+      "skill": "recommend security initiatives",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.715,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.88,
+      "context_agreement": 1.0
+    },
+    {
+      "skill": "implement security initiatives",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.88,
+      "context_agreement": 1.29
+    },
+    {
+      "skill": "monitor compliance with secure configuration standards",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.947,
+      "confidence_tier": "Very High",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.26
+    },
+    {
+      "skill": "ensure compliance with secure configuration standards",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.27
+    },
+    {
+      "skill": "ensure adherence to",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.629,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "Recommend",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.697,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "enhancement based",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.567,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "Monitor",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.697,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.9
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Security Governance",
+      "confidence_score": 0.814,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "IT Security Policies",
+      "confidence_score": 0.825,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Standards",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Controls",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "industry best practices",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "tabletop exercises",
+      "confidence_score": 0.721,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "audits",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "secure configuration standards",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "network security",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "systems security",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "endpoint security",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {},
+    "knowledge_coverage": {
+      "computational_thinking": 0.4132134675979615,
+      "digital_literacy": 0.5382579803466798,
+      "algorithms_programming": 0.39396221637725837,
+      "ai_literacy_ethics": 0.33169298171997075,
+      "workforce_insights": 0.4825197100639344,
+      "network_technology": 0.3785103678703309,
+      "structured_programming": 0.4132133960723878
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.0,
+      "audio_editing": 0.0,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.5382579803466798,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.33169298171997075,
+      "network_technology": 0.3785103678703309,
+      "database_systems": 0.0,
+      "structured_programming": 0.4132133960723878,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.39396221637725837,
+      "game_programming": 0.0,
+      "workforce_insights": 0.4825197100639344,
+      "computational_thinking": 0.4132134675979615,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 7,
+      "coverage_percentage": 0.15533526947623807,
+      "skill_coverage_pct": 0.0,
+      "knowledge_coverage_pct": 0.15533526947623807,
+      "avg_skill_confidence": 0.7679936382439596,
+      "avg_knowledge_confidence": 0.760066675903684,
+      "hard_skill_count": 8,
+      "soft_skill_count": 1,
+      "knowledge_count": 11
+    },
+    "missing_components": [
+      "basic_job_skills_ohs",
+      "audio_editing",
+      "data_analysis",
+      "ai_development",
+      "database_systems",
+      "game_modeling",
+      "game_programming",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "oop",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.538,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.332,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.379,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.413,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.394,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.483,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.413,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 6,
+    "gpt_skill_count": 5,
+    "fused_skill_count": 9,
+    "model_agreement": 0.47836747765541077,
+    "match_count": 3,
+    "extraction_time": 3.202824354171753
+  }
+}

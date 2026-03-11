@@ -1,0 +1,678 @@
+{
+  "job_id": "in-688c9596567360d1",
+  "text": "This role combines full -stack engineering with AI integration, focusing on building intelligent dashboards, predictive risk models, and smart automation to enhance user yield strategies. Key Responsibilities Design and implement front -end components (React, TypeScript) and back -end systems (Node.js, Python, Go), including vault logic, API endpoints, and integrations with lending and AMM protocols. Architect and deploy AI features such as predictive analytics, risk signal models, and recommender systems to inform vault strategies and user decisions. Collaborate with UI/UX designers to deliver intuitive, engaging experiences for DeFi users. Ensure secure development practices for smart contract interactions, vault mechanics, and chain interoperability. Build and maintain CI/CD pipelines, automated tests, and DevOps workflows for seamless deployment. Monitor, debug, and optimize protocol performance and reliability.",
+  "skills": [
+    {
+      "skill": "design front-end components",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.892,
+      "confidence_tier": "High",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 1.18
+    },
+    {
+      "skill": "implement front-end components",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.2
+    },
+    {
+      "skill": "design back-end systems",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.697,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "implement back-end systems",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.701,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "implement vault logic",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.612,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "implement API endpoints",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.724,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 1.0,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "implement integrations with lending protocols",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.702,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "implement integrations with AMM protocols",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.698,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "architect AI features",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.694,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "deploy AI features",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 1.21
+    },
+    {
+      "skill": "collaborate with UI/UX designers",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.739,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.19
+    },
+    {
+      "skill": "ensure secure development practices for smart contract interactions",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.617,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "ensure secure development practices for vault mechanics",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.615,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "ensure secure development practices for chain interoperability",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.618,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "build CI/CD pipelines",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.694,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "maintain CI/CD pipelines",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.698,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "build automated tests",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.694,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "maintain automated tests",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.616,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "build DevOps workflows",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.695,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "monitor protocol performance",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.724,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 1.0,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "debug protocol performance",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.724,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 1.0,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "optimize protocol performance",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.724,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 1.0,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "monitor protocol reliability",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.724,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 1.0,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "debug protocol reliability",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.724,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 1.0,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "optimize protocol reliability",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.724,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 1.0,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "building intelligent dashboards",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.531,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.89,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "predictive",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.533,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "enhance user yield strategies.",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.598,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.8,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "Design",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.648,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "Architect",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.66,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "inform vault strategies",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.531,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "user decisions.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.531,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.84
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "AI integration",
+      "confidence_score": 0.847,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "intelligent dashboards",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "predictive risk models",
+      "confidence_score": 0.8,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "smart automation",
+      "confidence_score": 0.845,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "user yield strategies",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "React",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "TypeScript",
+      "confidence_score": 0.842,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Node.js",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Python",
+      "confidence_score": 0.846,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Go",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "vault logic",
+      "confidence_score": 0.843,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "API endpoints",
+      "confidence_score": 0.842,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "lending protocols",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "AMM protocols",
+      "confidence_score": 0.771,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "predictive analytics",
+      "confidence_score": 0.848,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "risk signal models",
+      "confidence_score": 0.849,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "recommender systems",
+      "confidence_score": 0.809,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "vault strategies",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "UI/UX design",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "DeFi",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "smart contract interactions",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "vault mechanics",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "chain interoperability",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "CI/CD pipelines",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "automated tests",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "DevOps workflows",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "back",
+      "confidence_score": 0.309,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "-end",
+      "confidence_score": 0.377,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Go),",
+      "confidence_score": 0.559,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "lending",
+      "confidence_score": 0.555,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.4125294284887253,
+      "digital_literacy": 0.5240913281129831,
+      "algorithms_programming": 0.7260850745658338,
+      "ai_literacy_ethics": 0.552131439742912,
+      "ai_development": 0.9516904934181573,
+      "workforce_insights": 0.2795961855630179,
+      "network_technology": 0.368782513602087,
+      "structured_programming": 0.36664841212917254,
+      "oop": 0.5162751686587593,
+      "database_systems": 0.27359567893194026,
+      "multimedia_programming": 0.3899566831060345,
+      "web_development": 0.8237620851279158,
+      "mobile_development": 0.3745443590890309,
+      "game_modeling": 0.25243021302857555,
+      "game_programming": 0.3179479045414332,
+      "graphics_multimedia": 0.3169476677975296,
+      "audio_editing": 0.2695320459709155
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.45666063689505804,
+      "algorithms_programming": 0.4745249546783862,
+      "data_analysis": 0.42186327644285443,
+      "ai_literacy_ethics": 0.5471705654159789,
+      "ai_development": 0.6419752645531552,
+      "workforce_insights": 0.40268561840057376,
+      "basic_job_skills_ohs": 0.4754904983111664,
+      "oop": 0.761218057007747,
+      "multimedia_programming": 0.4368317127227784,
+      "web_development": 0.7577771015181577,
+      "mobile_development": 0.4617614987530032,
+      "game_programming": 0.4243120193481446,
+      "graphics_multimedia": 0.3638648986816407
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.7260850745658338,
+      "mobile_development": 0.4617614987530032,
+      "network_technology": 0.368782513602087,
+      "web_development": 0.8237620851279158,
+      "game_programming": 0.4243120193481446,
+      "game_modeling": 0.25243021302857555,
+      "ai_development": 0.9516904934181573,
+      "graphics_multimedia": 0.3638648986816407,
+      "database_systems": 0.27359567893194026,
+      "oop": 0.761218057007747,
+      "basic_job_skills_ohs": 0.4754904983111664,
+      "ai_literacy_ethics": 0.552131439742912,
+      "structured_programming": 0.36664841212917254,
+      "digital_literacy": 0.5240913281129831,
+      "computational_thinking": 0.45666063689505804,
+      "audio_editing": 0.2695320459709155,
+      "workforce_insights": 0.40268561840057376,
+      "data_analysis": 0.42186327644285443,
+      "multimedia_programming": 0.4368317127227784
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 19,
+      "coverage_percentage": 0.4901809211154452,
+      "skill_coverage_pct": 0.4061340358881591,
+      "knowledge_coverage_pct": 0.34874400540677075,
+      "avg_skill_confidence": 0.6901155073183226,
+      "avg_knowledge_confidence": 0.7397359902645645,
+      "hard_skill_count": 31,
+      "soft_skill_count": 1,
+      "knowledge_count": 30
+    },
+    "missing_components": [],
+    "coverage_gaps": [
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.462,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.369,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.424,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.252,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.364,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.274,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.475,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.552,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.367,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.524,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.457,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.27,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.403,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.422,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.437,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 10,
+    "gpt_skill_count": 25,
+    "fused_skill_count": 32,
+    "model_agreement": 0.152996666431427,
+    "match_count": 4,
+    "extraction_time": 4.830236434936523
+  }
+}

@@ -1,0 +1,323 @@
+{
+  "job_id": "in-086000ce40db58ea",
+  "text": "There\u2019s plenty of variety and opportunity to enhance your skills. What you\u2019ll do Build and evolve our Microsoft -centric data platform alongside internal colleagues and trusted partners. Design robust pipelines (ELT/ETL) for new data sources, and manage existing ones. Create insightful Power BI reporting, working with stakeholders to co -create the requirements. Deliver analysis that drives decisions.",
+  "skills": [
+    {
+      "skill": "build data platform",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.73,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.98
+    },
+    {
+      "skill": "design robust pipelines",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.28
+    },
+    {
+      "skill": "manage existing pipelines",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.669,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.98
+    },
+    {
+      "skill": "create Power BI reporting",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "co-create requirements with stakeholders",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.706,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.88,
+      "context_agreement": 0.98
+    },
+    {
+      "skill": "deliver analysis",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.998,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.28
+    },
+    {
+      "skill": "manage",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.626,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.88
+    },
+    {
+      "skill": "working with stakeholders",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.525,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.83,
+      "context_agreement": 0.88
+    },
+    {
+      "skill": "co -create the requirements.",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.499,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.79,
+      "context_agreement": 0.88
+    },
+    {
+      "skill": "drives decisions.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.514,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.88
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Microsoft data platform",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "ELT",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "ETL",
+      "confidence_score": 0.786,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Power BI",
+      "confidence_score": 0.759,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.502,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "data_analysis": 0.6330909213062549,
+      "mobile_development": 0.30626284226842426
+    },
+    "knowledge_coverage": {
+      "data_analysis": 0.6288047669474032
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.0,
+      "audio_editing": 0.0,
+      "data_analysis": 0.6330909213062549,
+      "digital_literacy": 0.0,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.0,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.0,
+      "game_programming": 0.0,
+      "workforce_insights": 0.0,
+      "computational_thinking": 0.0,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.30626284226842426
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 2,
+      "coverage_percentage": 0.049439671767088376,
+      "skill_coverage_pct": 0.049439671767088376,
+      "knowledge_coverage_pct": 0.03309498773407385,
+      "avg_skill_confidence": 0.7265951599168865,
+      "avg_knowledge_confidence": 0.7093547950522041,
+      "hard_skill_count": 7,
+      "soft_skill_count": 3,
+      "knowledge_count": 5
+    },
+    "missing_components": [
+      "basic_job_skills_ohs",
+      "audio_editing",
+      "digital_literacy",
+      "ai_development",
+      "ai_literacy_ethics",
+      "network_technology",
+      "database_systems",
+      "structured_programming",
+      "game_modeling",
+      "algorithms_programming",
+      "game_programming",
+      "workforce_insights",
+      "computational_thinking",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "oop"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.633,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.306,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 7,
+    "gpt_skill_count": 6,
+    "fused_skill_count": 10,
+    "model_agreement": 0.4154800772666931,
+    "match_count": 3,
+    "extraction_time": 3.0379796028137207
+  }
+}

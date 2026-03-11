@@ -1,0 +1,320 @@
+{
+  "job_id": "in-8ad8e7c8de4037c3",
+  "text": "When we feel supported in the workplace and at home, there\u2019s nothing we can\u2019t achieve in the cloud. BASIC QUALIFICATIONS ------------------------ Experience as a technical Security consultant with hands -on technical expertise in building AWS cloud security capabilities in code and deploying infrastructure in code Implementation experience with enterprise security solutions such as WAF, IPS, Anti -DDOS, and SIEM Experience in supporting internal and external customers.",
+  "skills": [
+    {
+      "skill": "build AWS cloud security capabilities in code",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "deploy infrastructure in code",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "implement enterprise security solutions",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.761,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "support internal customers",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.656,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "support external customers",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.611,
+      "confidence_tier": "Medium",
+      "source": "BERT+LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "code",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.624,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.72,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "Implementation",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.507,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "supporting internal",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.559,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.87
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "AWS",
+      "confidence_score": 0.844,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "cloud security",
+      "confidence_score": 0.614,
+      "confidence_tier": "Medium",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "enterprise security solutions",
+      "confidence_score": 0.842,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "WAF",
+      "confidence_score": 0.846,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "IPS",
+      "confidence_score": 0.848,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Anti-DDOS",
+      "confidence_score": 0.839,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "SIEM",
+      "confidence_score": 0.852,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Anti",
+      "confidence_score": 0.559,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.19047918295025562,
+      "algorithms_programming": 0.4815810576925426,
+      "structured_programming": 0.24345155770204446,
+      "oop": 0.26423000614021963
+    },
+    "knowledge_coverage": {
+      "digital_literacy": 0.42112075372162855,
+      "ai_literacy_ethics": 0.25161743248704993,
+      "workforce_insights": 0.25438621945641754,
+      "network_technology": 0.49434329220935264
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.4815810576925426,
+      "mobile_development": 0.0,
+      "network_technology": 0.49434329220935264,
+      "web_development": 0.0,
+      "game_programming": 0.0,
+      "game_modeling": 0.0,
+      "ai_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "database_systems": 0.0,
+      "oop": 0.26423000614021963,
+      "basic_job_skills_ohs": 0.0,
+      "ai_literacy_ethics": 0.25161743248704993,
+      "structured_programming": 0.24345155770204446,
+      "digital_literacy": 0.42112075372162855,
+      "computational_thinking": 0.19047918295025562,
+      "audio_editing": 0.0,
+      "workforce_insights": 0.25438621945641754,
+      "data_analysis": 0.0,
+      "multimedia_programming": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 8,
+      "coverage_percentage": 0.13690576328207954,
+      "skill_coverage_pct": 0.06209167392026643,
+      "knowledge_coverage_pct": 0.0748140893618131,
+      "avg_skill_confidence": 0.7146782726000438,
+      "avg_knowledge_confidence": 0.7804560705123365,
+      "hard_skill_count": 6,
+      "soft_skill_count": 2,
+      "knowledge_count": 8
+    },
+    "missing_components": [
+      "mobile_development",
+      "web_development",
+      "game_programming",
+      "game_modeling",
+      "ai_development",
+      "graphics_multimedia",
+      "database_systems",
+      "basic_job_skills_ohs",
+      "audio_editing",
+      "data_analysis",
+      "multimedia_programming"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.482,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.494,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.264,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.252,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.243,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.421,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.19,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.254,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 6,
+    "gpt_skill_count": 5,
+    "fused_skill_count": 8,
+    "model_agreement": 0.31205963095029193,
+    "match_count": 2,
+    "extraction_time": 2.7736151218414307
+  }
+}

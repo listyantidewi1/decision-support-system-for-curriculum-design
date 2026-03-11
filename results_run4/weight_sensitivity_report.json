@@ -1,0 +1,189 @@
+{
+  "baseline_weights": {
+    "demand": 0.4,
+    "trend": 0.3,
+    "future": 0.3
+  },
+  "configs": {
+    "d0.3_t0.35_f0.35": {
+      "weights": {
+        "demand": 0.3,
+        "trend": 0.35,
+        "future": 0.35
+      },
+      "jaccard_vs_baseline": 0.7391,
+      "top_skills": [
+        "solve problems",
+        "design",
+        "lead the delivery of AI solutions",
+        "implement AI/ML models",
+        "leverage AI development tools",
+        "create AI Assisted Product Development",
+        "operate AI / ML models",
+        "develop AI-powered solutions",
+        "develop machine learning technologies",
+        "apply critical thinking",
+        "develop enterprise AI software solutions",
+        "design AI/ML models",
+        "integrate AI to improve engineering craft",
+        "lead development of AI experiences",
+        "conduct AI research",
+        "architecting AI /",
+        "operate cloud environments",
+        "plan enterprise AI software solutions",
+        "develop",
+        "operate AI/ML models and pipelines"
+      ]
+    },
+    "d0.4_t0.3_f0.3": {
+      "weights": {
+        "demand": 0.4,
+        "trend": 0.3,
+        "future": 0.3
+      },
+      "jaccard_vs_baseline": 1.0,
+      "top_skills": [
+        "solve problems",
+        "design",
+        "develop",
+        "collaborate with team",
+        "lead the delivery of AI solutions",
+        "designing",
+        "implement AI/ML models",
+        "leverage AI development tools",
+        "create AI Assisted Product Development",
+        "operate AI / ML models",
+        "develop AI-powered solutions",
+        "develop machine learning technologies",
+        "communication skills",
+        "apply critical thinking",
+        "develop enterprise AI software solutions",
+        "design AI/ML models",
+        "integrate AI to improve engineering craft",
+        "lead development of AI experiences",
+        "conduct AI research",
+        "architecting AI /"
+      ]
+    },
+    "d0.5_t0.25_f0.25": {
+      "weights": {
+        "demand": 0.5,
+        "trend": 0.25,
+        "future": 0.25
+      },
+      "jaccard_vs_baseline": 0.7391,
+      "top_skills": [
+        "design",
+        "solve problems",
+        "develop",
+        "collaborate with team",
+        "designing",
+        "communication skills",
+        "communicate effectively",
+        "lead the delivery of AI solutions",
+        "implement AI/ML models",
+        "collaborate with cross-functional teams",
+        "leverage AI development tools",
+        "create AI Assisted Product Development",
+        "operate AI / ML models",
+        "develop AI-powered solutions",
+        "develop machine learning technologies",
+        "apply critical thinking",
+        "-solving skills",
+        "develop enterprise AI software solutions",
+        "design AI/ML models",
+        "integrate AI to improve engineering craft"
+      ]
+    },
+    "d0.3_t0.2_f0.5": {
+      "weights": {
+        "demand": 0.3,
+        "trend": 0.2,
+        "future": 0.5
+      },
+      "jaccard_vs_baseline": 0.6667,
+      "top_skills": [
+        "solve problems",
+        "lead the delivery of AI solutions",
+        "implement AI/ML models",
+        "leverage AI development tools",
+        "design",
+        "create AI Assisted Product Development",
+        "operate AI / ML models",
+        "develop AI-powered solutions",
+        "develop machine learning technologies",
+        "apply critical thinking",
+        "develop enterprise AI software solutions",
+        "design AI/ML models",
+        "integrate AI to improve engineering craft",
+        "lead development of AI experiences",
+        "conduct AI research",
+        "architecting AI /",
+        "operate cloud environments",
+        "plan enterprise AI software solutions",
+        "operate AI/ML models and pipelines",
+        "manage cloud infrastructure"
+      ]
+    },
+    "d0.4_t0.2_f0.4": {
+      "weights": {
+        "demand": 0.4,
+        "trend": 0.2,
+        "future": 0.4
+      },
+      "jaccard_vs_baseline": 0.7391,
+      "top_skills": [
+        "solve problems",
+        "design",
+        "lead the delivery of AI solutions",
+        "develop",
+        "implement AI/ML models",
+        "leverage AI development tools",
+        "create AI Assisted Product Development",
+        "operate AI / ML models",
+        "develop AI-powered solutions",
+        "develop machine learning technologies",
+        "apply critical thinking",
+        "develop enterprise AI software solutions",
+        "design AI/ML models",
+        "integrate AI to improve engineering craft",
+        "lead development of AI experiences",
+        "conduct AI research",
+        "architecting AI /",
+        "operate cloud environments",
+        "plan enterprise AI software solutions",
+        "operate AI/ML models and pipelines"
+      ]
+    },
+    "d0.5_t0.2_f0.3": {
+      "weights": {
+        "demand": 0.5,
+        "trend": 0.2,
+        "future": 0.3
+      },
+      "jaccard_vs_baseline": 0.9048,
+      "top_skills": [
+        "design",
+        "solve problems",
+        "develop",
+        "collaborate with team",
+        "designing",
+        "communication skills",
+        "lead the delivery of AI solutions",
+        "implement AI/ML models",
+        "leverage AI development tools",
+        "create AI Assisted Product Development",
+        "operate AI / ML models",
+        "develop AI-powered solutions",
+        "develop machine learning technologies",
+        "apply critical thinking",
+        "develop enterprise AI software solutions",
+        "design AI/ML models",
+        "communicate effectively",
+        "integrate AI to improve engineering craft",
+        "lead development of AI experiences",
+        "conduct AI research"
+      ]
+    }
+  }
+}

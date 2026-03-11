@@ -1,0 +1,510 @@
+{
+  "job_id": "in-ea31eccb146e511e",
+  "text": "Manage relevant data wrangling exercise and ensure backups are planned and performed to maintain integrity and records Evaluate and plan future needs of storage and archival resources. Ensure the equipment is operational and functioning at optimal level. Ensure that completed projects are clear from operational storage and archived into the appropriate storage resource. Publish approved content into relevant server and liaise with stakeholders to ensure projects are rolled out to the learners efficiently and effectively. Ensure that faculty and project owners can review and approve their content before publishing.",
+  "skills": [
+    {
+      "skill": "manage data wrangling exercise",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "plan backups",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.684,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "perform backups",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.722,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "maintain integrity of records",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.967,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "evaluate future needs of storage resources",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.718,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "plan future needs of storage resources",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "evaluate future needs of archival resources",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.719,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "plan future needs of archival resources",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.685,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "ensure equipment is operational",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "ensure equipment is functioning at optimal level",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.717,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "archive completed projects into appropriate storage resource",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.639,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "publish approved content into relevant server",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "liaise with stakeholders",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "ensure projects are rolled out efficiently",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.679,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "ensure projects are rolled out effectively",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.679,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "review content",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.68,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "approve content",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.878,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "ensure backups are planned",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.566,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "performed",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.559,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "records",
+      "type": "Hard",
+      "bloom": "Remember",
+      "confidence_score": 0.549,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "Evaluate",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.679,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "archival resources.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.52,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "functioning at optimal level.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.511,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.8,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "Ensure that completed projects are clear from",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.639,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "ensure projects are rolled out to the learners efficiently",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.668,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "effectively.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.523,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "Ensure that faculty",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.663,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "project owners can review",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.662,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.87
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "data wrangling",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "backups",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "storage resources",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "archival resources",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "operational storage",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "server",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "digital_literacy": 0.4599521952779931,
+      "data_analysis": 0.5495516085852432
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.36426665782928475,
+      "digital_literacy": 0.364120888710022,
+      "data_analysis": 0.40039283037185674,
+      "web_development": 0.3494697332382203
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.0,
+      "mobile_development": 0.0,
+      "network_technology": 0.0,
+      "web_development": 0.3494697332382203,
+      "game_programming": 0.0,
+      "game_modeling": 0.0,
+      "ai_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "database_systems": 0.0,
+      "oop": 0.0,
+      "basic_job_skills_ohs": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "structured_programming": 0.0,
+      "digital_literacy": 0.4599521952779931,
+      "computational_thinking": 0.36426665782928475,
+      "audio_editing": 0.0,
+      "workforce_insights": 0.0,
+      "data_analysis": 0.5495516085852432,
+      "multimedia_programming": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 4,
+      "coverage_percentage": 0.09069685236477587,
+      "skill_coverage_pct": 0.05313177915069665,
+      "knowledge_coverage_pct": 0.07780263737628336,
+      "avg_skill_confidence": 0.7251889389839776,
+      "avg_knowledge_confidence": 0.75,
+      "hard_skill_count": 22,
+      "soft_skill_count": 6,
+      "knowledge_count": 6
+    },
+    "missing_components": [
+      "algorithms_programming",
+      "mobile_development",
+      "network_technology",
+      "game_programming",
+      "game_modeling",
+      "ai_development",
+      "graphics_multimedia",
+      "database_systems",
+      "oop",
+      "basic_job_skills_ohs",
+      "ai_literacy_ethics",
+      "structured_programming",
+      "audio_editing",
+      "workforce_insights",
+      "multimedia_programming"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.349,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.46,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.364,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.55,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 18,
+    "gpt_skill_count": 17,
+    "fused_skill_count": 28,
+    "model_agreement": 0.3198754025830163,
+    "match_count": 6,
+    "extraction_time": 3.9851951599121094
+  }
+}

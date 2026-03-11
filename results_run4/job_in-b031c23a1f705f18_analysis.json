@@ -1,0 +1,399 @@
+{
+  "job_id": "in-b031c23a1f705f18",
+  "text": "Day to day responsibilities will include, but are not limited to: Developing PLC programming logic and SCADA HMI graphic screens for automation of water and wastewater treatment control systems. Working closely with other team members, including electrical, I &C, process, and process mechanical team members to coordinate the project requirements. Collaborating on automation control system design, including P &ID drawings, network architecture, and control schematics. Implementing PLC and SCADA HMI applications during system commissioning at the project sites. Working closely with contractors and plant operators during construction and commissioning of automation control systems. Maintain and update documentation for existing automation control systems. Provide timely resolution and troubleshooting of technical issues related to instrumentation and automation control systems.",
+  "skills": [
+    {
+      "skill": "develop PLC programming logic",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.33
+    },
+    {
+      "skill": "develop SCADA HMI graphic screens",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.794,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.02
+    },
+    {
+      "skill": "coordinate project requirements",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.721,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 1.3
+    },
+    {
+      "skill": "collaborate on automation control system design",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.908,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.33
+    },
+    {
+      "skill": "implement PLC applications",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.3
+    },
+    {
+      "skill": "implement SCADA HMI applications",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.32
+    },
+    {
+      "skill": "maintain documentation for automation control systems",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.805,
+      "confidence_tier": "High",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.02
+    },
+    {
+      "skill": "update documentation for automation control systems",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.709,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.02
+    },
+    {
+      "skill": "troubleshoot technical issues",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.81,
+      "confidence_tier": "High",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 1.02
+    },
+    {
+      "skill": "Working closely with other team members",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.752,
+      "confidence_tier": "Medium High",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "Working closely with contractors",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.545,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.82,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "plant operators",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.606,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.92
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "PLC programming",
+      "confidence_score": 0.815,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "SCADA HMI graphic screens",
+      "confidence_score": 0.832,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Water treatment control systems",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Wastewater treatment control systems",
+      "confidence_score": 0.727,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Automation control system design",
+      "confidence_score": 0.715,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "P&ID drawings",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Network architecture",
+      "confidence_score": 0.848,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Control schematics",
+      "confidence_score": 0.836,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Instrumentation",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "water and",
+      "confidence_score": 0.413,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "P",
+      "confidence_score": 0.558,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "&ID drawings,",
+      "confidence_score": 0.54,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "PLC",
+      "confidence_score": 0.547,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "SCADA HMI",
+      "confidence_score": 0.418,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "algorithms_programming": 0.5067063788289013,
+      "network_technology": 0.46572029665345605,
+      "structured_programming": 0.5089772385049987
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.5348386560293932,
+      "digital_literacy": 0.5362108080155871,
+      "algorithms_programming": 0.49591288512367554,
+      "network_technology": 0.5439942014871741,
+      "structured_programming": 0.46593370095575554,
+      "oop": 0.4780692093226533
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.0,
+      "audio_editing": 0.0,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.5362108080155871,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.5439942014871741,
+      "database_systems": 0.0,
+      "structured_programming": 0.5089772385049987,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.5067063788289013,
+      "game_programming": 0.0,
+      "workforce_insights": 0.0,
+      "computational_thinking": 0.5348386560293932,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.4780692093226533,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 6,
+      "coverage_percentage": 0.16362086800993197,
+      "skill_coverage_pct": 0.07796862705196611,
+      "knowledge_coverage_pct": 0.16078734004917045,
+      "avg_skill_confidence": 0.804278856571539,
+      "avg_knowledge_confidence": 0.6784888634764167,
+      "hard_skill_count": 9,
+      "soft_skill_count": 3,
+      "knowledge_count": 14
+    },
+    "missing_components": [
+      "basic_job_skills_ohs",
+      "audio_editing",
+      "data_analysis",
+      "ai_development",
+      "ai_literacy_ethics",
+      "database_systems",
+      "game_modeling",
+      "game_programming",
+      "workforce_insights",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.536,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.544,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.509,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.507,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.535,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.478,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 8,
+    "gpt_skill_count": 9,
+    "fused_skill_count": 12,
+    "model_agreement": 0.6234232650862799,
+    "match_count": 6,
+    "extraction_time": 3.015925645828247
+  }
+}

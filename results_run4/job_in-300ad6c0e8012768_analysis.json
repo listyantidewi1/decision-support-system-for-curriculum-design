@@ -1,0 +1,502 @@
+{
+  "job_id": "in-300ad6c0e8012768",
+  "text": "Through consultation from early stages of design through to construction and operation, we are able to advise our clients on how to best identify opportunities and manage potential impacts and from an environmental and engineering perspective. Responsibilities: Develop Client relationships and identify local and regional opportunities to secure Hydrogeology, Engineering Geology, and Contaminated Land scopes. Provide training and mentoring of team members, fostering of strong working relationships across Arup. Manage communications with Client and the Project Engineer to understand the project requirements and set clear scopes and budgets for delivery. You will need to take a longer -term strategic view of the business to contribute to the development plan of Arup. You will be responsible for executing responsibilities as outlined in Arup\u2019s Quality Management System You will be required to represent Arup at internal and external meetings.",
+  "skills": [
+    {
+      "skill": "advise clients on identifying opportunities",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.68,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "advise clients on managing potential impacts",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.674,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "develop client relationships",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "identify local opportunities",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.683,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "identify regional opportunities",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.816,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 1.23
+    },
+    {
+      "skill": "secure Hydrogeology scopes",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.963,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "secure Engineering Geology scopes",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.633,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "secure Contaminated Land scopes",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.697,
+      "confidence_tier": "Medium",
+      "source": "BERT+LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "provide training to team members",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.699,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "mentor team members",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "foster strong working relationships",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "manage communications with client",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.967,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "manage communications with Project Engineer",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.739,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "understand project requirements",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.788,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 1.23
+    },
+    {
+      "skill": "set clear scopes for delivery",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.668,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "set clear budgets for delivery",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.669,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "take a longer-term strategic view of the business",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.669,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "contribute to the development plan",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.672,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "execute responsibilities as outlined in Quality Management System",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.648,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "represent Arup at internal meetings",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.673,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "represent Arup at external meetings",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.673,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "identify opportunities",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.554,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.86
+    },
+    {
+      "skill": "manage potential impacts",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.541,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.82,
+      "context_agreement": 0.86
+    },
+    {
+      "skill": "identify local",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.66,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.8,
+      "context_agreement": 0.86
+    },
+    {
+      "skill": "Engineering Geology",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.512,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.86
+    },
+    {
+      "skill": "Provide training",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.509,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.83,
+      "context_agreement": 0.86
+    },
+    {
+      "skill": "set clear scopes",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.497,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.74,
+      "context_agreement": 0.86
+    },
+    {
+      "skill": "budgets for delivery.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.502,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.79,
+      "context_agreement": 0.86
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Hydrogeology",
+      "confidence_score": 0.712,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Engineering Geology",
+      "confidence_score": 0.794,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Contaminated Land",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Quality Management System",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Contaminated",
+      "confidence_score": 0.401,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "workforce_insights": 0.1717360424957874
+    },
+    "knowledge_coverage": {
+      "digital_literacy": 0.3331200957298279,
+      "basic_job_skills_ohs": 0.42318227291107186
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.42318227291107186,
+      "audio_editing": 0.0,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.3331200957298279,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.0,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.0,
+      "game_programming": 0.0,
+      "workforce_insights": 0.1717360424957874,
+      "computational_thinking": 0.0,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 3,
+      "coverage_percentage": 0.04884412690193091,
+      "skill_coverage_pct": 0.009038739078725651,
+      "knowledge_coverage_pct": 0.03980538782320525,
+      "avg_skill_confidence": 0.7065952814602534,
+      "avg_knowledge_confidence": 0.6814988208604774,
+      "hard_skill_count": 9,
+      "soft_skill_count": 19,
+      "knowledge_count": 5
+    },
+    "missing_components": [
+      "audio_editing",
+      "data_analysis",
+      "ai_development",
+      "ai_literacy_ethics",
+      "network_technology",
+      "database_systems",
+      "structured_programming",
+      "game_modeling",
+      "algorithms_programming",
+      "game_programming",
+      "computational_thinking",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "oop",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.423,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.333,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.172,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 15,
+    "gpt_skill_count": 21,
+    "fused_skill_count": 28,
+    "model_agreement": 0.27501606941223145,
+    "match_count": 6,
+    "extraction_time": 5.632136344909668
+  }
+}

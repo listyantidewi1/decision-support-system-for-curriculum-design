@@ -1,0 +1,324 @@
+{
+  "job_id": "in-fbde9dda38466e73",
+  "text": "Graduate Delivery Manager Work closely with stakeholders to manage scope, risks, and budgets for strategic IT projects. Contribute to initiatives spanning Technology, Education, Research, Administration, and Engagement and Dissemination. Support feature enhancements, implement change control, and assist with financial planning. 2 .",
+  "skills": [
+    {
+      "skill": "manage scope",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.33
+    },
+    {
+      "skill": "manage risks",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.598,
+      "confidence_tier": "Medium Low",
+      "source": "BERT+LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 1.02
+    },
+    {
+      "skill": "manage budgets",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.691,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.02
+    },
+    {
+      "skill": "contribute to initiatives",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.856,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.33
+    },
+    {
+      "skill": "support feature enhancements",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.9,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 1.33
+    },
+    {
+      "skill": "implement change control",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 1.33
+    },
+    {
+      "skill": "assist with financial planning",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.32
+    },
+    {
+      "skill": "Work closely with stakeholders",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.535,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.8,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "budgets for strategic IT projects.",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.518,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.92
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "IT projects",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Technology",
+      "confidence_score": 0.809,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Education",
+      "confidence_score": 0.791,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Research",
+      "confidence_score": 0.817,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Administration",
+      "confidence_score": 0.742,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Engagement",
+      "confidence_score": 0.777,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Dissemination",
+      "confidence_score": 0.594,
+      "confidence_tier": "Medium Low",
+      "source": "BERT+LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.5651653606745035,
+      "algorithms_programming": 0.6804991845636301,
+      "structured_programming": 0.5651652477657608
+    },
+    "knowledge_coverage": {
+      "digital_literacy": 0.44636723524099564,
+      "ai_literacy_ethics": 0.47132423276425994,
+      "ai_development": 0.34069447517395024,
+      "workforce_insights": 0.4626033641645901,
+      "network_technology": 0.39187267646348006
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.0,
+      "audio_editing": 0.0,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.44636723524099564,
+      "ai_development": 0.34069447517395024,
+      "ai_literacy_ethics": 0.47132423276425994,
+      "network_technology": 0.39187267646348006,
+      "database_systems": 0.0,
+      "structured_programming": 0.5651652477657608,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.6804991845636301,
+      "game_programming": 0.0,
+      "workforce_insights": 0.4626033641645901,
+      "computational_thinking": 0.5651653606745035,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 8,
+      "coverage_percentage": 0.2065100935163774,
+      "skill_coverage_pct": 0.09530683121073129,
+      "knowledge_coverage_pct": 0.11120326230564612,
+      "avg_skill_confidence": 0.7887487696401537,
+      "avg_knowledge_confidence": 0.7541104041051593,
+      "hard_skill_count": 4,
+      "soft_skill_count": 5,
+      "knowledge_count": 7
+    },
+    "missing_components": [
+      "basic_job_skills_ohs",
+      "audio_editing",
+      "data_analysis",
+      "database_systems",
+      "game_modeling",
+      "game_programming",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "oop",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.446,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.341,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.471,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.392,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.565,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.68,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.463,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.565,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 8,
+    "gpt_skill_count": 7,
+    "fused_skill_count": 9,
+    "model_agreement": 0.6202248856425285,
+    "match_count": 5,
+    "extraction_time": 2.5978100299835205
+  }
+}

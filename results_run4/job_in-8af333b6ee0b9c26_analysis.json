@@ -1,0 +1,364 @@
+{
+  "job_id": "in-8af333b6ee0b9c26",
+  "text": "Qualifications: BSc, MSc or equivalent in Pharmaceutical - or Life Sciences, Statistics/Mathematics/Bio -Informatics, or related fields with 1 - 5 years\u2019 experience in data management and analysis, report writing, and regulatory drug submissions. Advanced user of SAS software (SAS9 -Base) with proven experience in life sciences and clinical trials. Familiar in working with CDISC data formats.",
+  "skills": [
+    {
+      "skill": "manage data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.694,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "analyze data",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.696,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "write reports",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.699,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "prepare regulatory drug submissions",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.707,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use SAS software",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.693,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "work with CDISC data formats",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.585,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.9
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Pharmaceutical",
+      "confidence_score": 0.798,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Life Sciences",
+      "confidence_score": 0.847,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Statistics",
+      "confidence_score": 0.849,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Mathematics",
+      "confidence_score": 0.757,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Bio-Informatics",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "SAS software",
+      "confidence_score": 0.843,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "SAS9 -Base",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "clinical trials",
+      "confidence_score": 0.845,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "CDISC data formats",
+      "confidence_score": 0.842,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "BSc,",
+      "confidence_score": 0.557,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "MSc",
+      "confidence_score": 0.458,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.323,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Bio",
+      "confidence_score": 0.526,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "-Informatics,",
+      "confidence_score": 0.506,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "data management and analysis,",
+      "confidence_score": 0.55,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "report writing,",
+      "confidence_score": 0.558,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "regulatory drug submissions.",
+      "confidence_score": 0.557,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "-Base)",
+      "confidence_score": 0.513,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.24369936666863068,
+      "algorithms_programming": 0.2609936861584407,
+      "data_analysis": 0.45235924334670197,
+      "ai_literacy_ethics": 0.32368968384040536
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.18166238375402438,
+      "digital_literacy": 0.23297483755747364,
+      "algorithms_programming": 0.1864945517625233,
+      "data_analysis": 0.2199098083703944,
+      "ai_literacy_ethics": 0.19002220195049965,
+      "basic_job_skills_ohs": 0.1928329559352017
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.1928329559352017,
+      "audio_editing": 0.0,
+      "data_analysis": 0.45235924334670197,
+      "digital_literacy": 0.23297483755747364,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.32368968384040536,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.0,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.2609936861584407,
+      "game_programming": 0.0,
+      "workforce_insights": 0.0,
+      "computational_thinking": 0.24369936666863068,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 6,
+      "coverage_percentage": 0.08981840913193968,
+      "skill_coverage_pct": 0.06740747263232519,
+      "knowledge_coverage_pct": 0.06336298628053247,
+      "avg_skill_confidence": 0.6791514048000001,
+      "avg_knowledge_confidence": 0.6571196414978135,
+      "hard_skill_count": 6,
+      "soft_skill_count": 0,
+      "knowledge_count": 18
+    },
+    "missing_components": [
+      "audio_editing",
+      "ai_development",
+      "network_technology",
+      "database_systems",
+      "structured_programming",
+      "game_modeling",
+      "game_programming",
+      "workforce_insights",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "oop",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.193,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.452,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.233,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.324,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.261,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.244,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 0,
+    "gpt_skill_count": 6,
+    "fused_skill_count": 6,
+    "model_agreement": 0.0,
+    "match_count": 0,
+    "extraction_time": 3.4496002197265625
+  }
+}

@@ -1,0 +1,579 @@
+{
+  "job_id": "in-3a39cfdef1dc8c0a",
+  "text": "JS, or JavaScript. Experience with Salesforce DX, SFDX CLI, CI/CD tooling (GitHub/Bitbucket, Splunk/Sumologic) and test automation frameworks. Knowledge and understanding building APEX code/classes, triggers, integrations, Visualforce/ Lightning UI components. Experience in design and implementation of real -time and batch integration with Salesforce and other systems using REST/Bulk APIs. Experience with Agile development environments, secure coding practices and security implementations. Salesforce Certified Developer or Architect highly preferred Experience in Data Cloud, Revenue Cloud and AI highly desirable. Our Culture & Benefits At MYOB our values are at the heart of everything we do.",
+  "skills": [
+    {
+      "skill": "build APEX code",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.711,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.73,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "build APEX classes",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 1.17
+    },
+    {
+      "skill": "build triggers",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.721,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "build integrations",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.749,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.88,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "build Visualforce components",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.73,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "build Lightning UI components",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.721,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "design real-time integration with Salesforce",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.727,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "design batch integration with Salesforce",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.724,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "implement real-time integration with Salesforce",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.73,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "implement batch integration with Salesforce",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.17
+    },
+    {
+      "skill": "use REST APIs",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.708,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.71,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "use Bulk APIs",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.708,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.71,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "apply secure coding practices",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.721,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "implement security",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.73,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.93
+    },
+    {
+      "skill": "triggers",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.494,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.83
+    },
+    {
+      "skill": "design",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.644,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.83
+    },
+    {
+      "skill": "implementation of real -time",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.528,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.79,
+      "context_agreement": 0.83
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "JavaScript",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Salesforce DX",
+      "confidence_score": 0.763,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "SFDX CLI",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "CI/CD tooling",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "GitHub",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Bitbucket",
+      "confidence_score": 0.85,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Splunk",
+      "confidence_score": 0.852,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Sumologic",
+      "confidence_score": 0.844,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "test automation frameworks",
+      "confidence_score": 0.833,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "APEX code",
+      "confidence_score": 0.759,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Visualforce",
+      "confidence_score": 0.755,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Lightning UI",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "REST APIs",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Bulk APIs",
+      "confidence_score": 0.839,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Agile development environments",
+      "confidence_score": 0.847,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "secure coding practices",
+      "confidence_score": 0.851,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "security implementations",
+      "confidence_score": 0.842,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Salesforce Certified Developer",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Salesforce Certified Architect",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Data Cloud",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Revenue Cloud",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "AI",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "JS,",
+      "confidence_score": 0.549,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "JavaScript.",
+      "confidence_score": 0.537,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "SFDX",
+      "confidence_score": 0.559,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "CLI,",
+      "confidence_score": 0.483,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "CI",
+      "confidence_score": 0.557,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.549,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "CD tooling",
+      "confidence_score": 0.463,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.532,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.548,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Lightning UI components.",
+      "confidence_score": 0.526,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Salesforce",
+      "confidence_score": 0.558,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "REST",
+      "confidence_score": 0.56,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.558,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Salesforce",
+      "confidence_score": 0.393,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.24254091901737282,
+      "digital_literacy": 0.401797127618677,
+      "algorithms_programming": 0.3183805880234805,
+      "ai_literacy_ethics": 0.290338874844426,
+      "structured_programming": 0.29018940459827375,
+      "oop": 0.5207890353644602,
+      "database_systems": 0.4250488775756893,
+      "web_development": 0.7214441971979901,
+      "mobile_development": 0.4557826963146422,
+      "game_modeling": 0.2508053097197659,
+      "game_programming": 0.26743418551496007,
+      "graphics_multimedia": 0.3149074020456876,
+      "audio_editing": 0.26779705581076596
+    },
+    "knowledge_coverage": {
+      "digital_literacy": 0.453998351676145,
+      "algorithms_programming": 0.44832564101113337,
+      "ai_literacy_ethics": 0.506936001777649,
+      "ai_development": 0.4692136645317078,
+      "workforce_insights": 0.5924129458866784,
+      "basic_job_skills_ohs": 0.4555202722549439,
+      "structured_programming": 0.3578670311318972,
+      "oop": 0.4361258001156965,
+      "multimedia_programming": 0.42339529994495934,
+      "web_development": 0.6000001430511476,
+      "mobile_development": 0.44433038737387986
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.4555202722549439,
+      "audio_editing": 0.26779705581076596,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.453998351676145,
+      "ai_development": 0.4692136645317078,
+      "ai_literacy_ethics": 0.506936001777649,
+      "network_technology": 0.0,
+      "database_systems": 0.4250488775756893,
+      "structured_programming": 0.3578670311318972,
+      "game_modeling": 0.2508053097197659,
+      "algorithms_programming": 0.44832564101113337,
+      "game_programming": 0.26743418551496007,
+      "workforce_insights": 0.5924129458866784,
+      "computational_thinking": 0.24254091901737282,
+      "multimedia_programming": 0.42339529994495934,
+      "web_development": 0.7214441971979901,
+      "graphics_multimedia": 0.3149074020456876,
+      "oop": 0.5207890353644602,
+      "mobile_development": 0.4557826963146422
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 17,
+      "coverage_percentage": 0.37759046772507626,
+      "skill_coverage_pct": 0.2509081933497996,
+      "knowledge_coverage_pct": 0.2730592388818862,
+      "avg_skill_confidence": 0.7260910388601126,
+      "avg_knowledge_confidence": 0.6849001619404531,
+      "hard_skill_count": 17,
+      "soft_skill_count": 0,
+      "knowledge_count": 36
+    },
+    "missing_components": [
+      "data_analysis",
+      "network_technology"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.456,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.268,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.454,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.469,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.507,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.425,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.358,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.251,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.448,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.267,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.592,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.243,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.423,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.315,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.521,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.456,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 6,
+    "gpt_skill_count": 14,
+    "fused_skill_count": 17,
+    "model_agreement": 0.12629120690482,
+    "match_count": 2,
+    "extraction_time": 4.590152025222778
+  }
+}

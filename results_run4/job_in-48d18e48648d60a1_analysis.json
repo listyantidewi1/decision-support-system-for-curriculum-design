@@ -1,0 +1,438 @@
+{
+  "job_id": "in-48d18e48648d60a1",
+  "text": "What You'll Do Work on our infrastructure together with the squad, making it reliable and efficient while delivering value to data producers and consumers within Spotify. Build large -scale Java and Apollo based backend systems and batch and real -time data pipelines with data processing frameworks like Scio and Apache Beam. Take an active part in the operational responsibilities for our own infrastructure Work in an autonomous, multi -functional agile team and collaborate with other squads in our product area to continuously iterate and deliver on new product objectives.",
+  "skills": [
+    {
+      "skill": "build large-scale Java backend systems",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.897,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "build Apollo based backend systems",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.23
+    },
+    {
+      "skill": "build batch data pipelines",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.712,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "build real-time data pipelines",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.717,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "work with data processing frameworks",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.604,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "take part in operational responsibilities",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.793,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "collaborate with other squads",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.718,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "iterate on new product objectives",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.674,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "deliver on new product objectives",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.804,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "make infrastructure reliable",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.64,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "make infrastructure efficient",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.641,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "deliver value to data producers",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.672,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "deliver value to data consumers",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.672,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 0.96
+    },
+    {
+      "skill": "Work on our infrastructure",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.527,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.86
+    },
+    {
+      "skill": "delivering value",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.508,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.83,
+      "context_agreement": 0.86
+    },
+    {
+      "skill": "Work in an autonomous",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.494,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.74,
+      "context_agreement": 0.86
+    },
+    {
+      "skill": "multi -functional agile team",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.7,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.79,
+      "context_agreement": 0.86
+    },
+    {
+      "skill": "continuously",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.503,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.86
+    },
+    {
+      "skill": "iterate",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.547,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.86
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Java",
+      "confidence_score": 0.845,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Apollo based backend systems",
+      "confidence_score": 0.822,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "batch data pipelines",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "real-time data pipelines",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "data processing frameworks",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Scio",
+      "confidence_score": 0.851,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Apache Beam",
+      "confidence_score": 0.81,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Agile methodologies",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "batch and real",
+      "confidence_score": 0.387,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "data processing",
+      "confidence_score": 0.552,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "data_analysis": 0.575724683923834,
+      "ai_literacy_ethics": 0.1221657317380672,
+      "structured_programming": 0.2110142147311363,
+      "web_development": 0.42755232095313705
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.1939410067550162,
+      "digital_literacy": 0.23016425064164578,
+      "algorithms_programming": 0.4331882127090132,
+      "data_analysis": 0.5059075713157655,
+      "workforce_insights": 0.54905344247818,
+      "oop": 0.760925663034683,
+      "multimedia_programming": 0.4477816765428281,
+      "web_development": 0.3494684457778931,
+      "mobile_development": 0.5739790839878031
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.0,
+      "audio_editing": 0.0,
+      "data_analysis": 0.575724683923834,
+      "digital_literacy": 0.23016425064164578,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.1221657317380672,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.2110142147311363,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.4331882127090132,
+      "game_programming": 0.0,
+      "workforce_insights": 0.54905344247818,
+      "computational_thinking": 0.1939410067550162,
+      "multimedia_programming": 0.4477816765428281,
+      "web_development": 0.42755232095313705,
+      "graphics_multimedia": 0.0,
+      "oop": 0.760925663034683,
+      "mobile_development": 0.5739790839878031
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 11,
+      "coverage_percentage": 0.23818369934186018,
+      "skill_coverage_pct": 0.0703398395445355,
+      "knowledge_coverage_pct": 0.21286365017067516,
+      "avg_skill_confidence": 0.6748523959913553,
+      "avg_knowledge_confidence": 0.7267530291274875,
+      "hard_skill_count": 12,
+      "soft_skill_count": 7,
+      "knowledge_count": 10
+    },
+    "missing_components": [
+      "basic_job_skills_ohs",
+      "audio_editing",
+      "ai_development",
+      "network_technology",
+      "database_systems",
+      "game_modeling",
+      "game_programming",
+      "graphics_multimedia"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.576,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.23,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.122,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.211,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.433,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.549,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.194,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.448,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.428,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.574,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 11,
+    "gpt_skill_count": 13,
+    "fused_skill_count": 19,
+    "model_agreement": 0.29550912288519054,
+    "match_count": 4,
+    "extraction_time": 4.34663724899292
+  }
+}

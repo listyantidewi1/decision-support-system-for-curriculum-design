@@ -1,0 +1,253 @@
+{
+  "job_id": "in-47d18ebfd4172c79",
+  "text": "About the Role Love what you do and leave your mark Hybrid/ Onsite working Fixed -term contract role of 12 months The Senior Network Engineer - provides pivotal support for our business (including hospitality, operational sites, support offices and retail) through the effective management of Network infrastructure and third parties, from design through to system maintenance.",
+  "skills": [
+    {
+      "skill": "manage network infrastructure",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.964,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 1.21
+    },
+    {
+      "skill": "manage third parties",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.736,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "design network infrastructure",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.718,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "perform system maintenance",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.713,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.95
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Network infrastructure",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "system maintenance",
+      "confidence_score": 0.801,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "design",
+      "confidence_score": 0.471,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.26290931275369117,
+      "digital_literacy": 0.4565062483146526,
+      "network_technology": 0.6759367229131467
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.14259483638130985,
+      "digital_literacy": 0.3572201371192933,
+      "algorithms_programming": 0.15791600961498628,
+      "network_technology": 0.4463819861412049,
+      "oop": 0.14583754110680044,
+      "database_systems": 0.15096061078571663,
+      "game_modeling": 0.14500386211215496,
+      "graphics_multimedia": 0.1624810828169174,
+      "audio_editing": 0.14983528885449002
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.0,
+      "audio_editing": 0.14983528885449002,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.4565062483146526,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.6759367229131467,
+      "database_systems": 0.15096061078571663,
+      "structured_programming": 0.0,
+      "game_modeling": 0.14500386211215496,
+      "algorithms_programming": 0.15791600961498628,
+      "game_programming": 0.0,
+      "workforce_insights": 0.0,
+      "computational_thinking": 0.26290931275369117,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.1624810828169174,
+      "oop": 0.14583754110680044,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 9,
+      "coverage_percentage": 0.1214414041722398,
+      "skill_coverage_pct": 0.07343959389376266,
+      "knowledge_coverage_pct": 0.09780165025962494,
+      "avg_skill_confidence": 0.7826577769720754,
+      "avg_knowledge_confidence": 0.6740825374400835,
+      "hard_skill_count": 4,
+      "soft_skill_count": 0,
+      "knowledge_count": 3
+    },
+    "missing_components": [
+      "basic_job_skills_ohs",
+      "data_analysis",
+      "ai_development",
+      "ai_literacy_ethics",
+      "structured_programming",
+      "game_programming",
+      "workforce_insights",
+      "multimedia_programming",
+      "web_development",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.15,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.457,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.676,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.151,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.145,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.158,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.263,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.162,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.146,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 2,
+    "gpt_skill_count": 4,
+    "fused_skill_count": 4,
+    "model_agreement": 0.233454167842865,
+    "match_count": 1,
+    "extraction_time": 3.0501561164855957
+  }
+}

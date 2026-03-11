@@ -1,0 +1,402 @@
+{
+  "job_id": "in-fdd94069005a93db",
+  "text": "Job Requirements: A PhD degree in Robotics, Mechanical Engineering, Electrical Engineering, Computer Science, Applied Maths, Physics, or any related field Strong background in machine learning, PINNs and control theory Excellent verbal and written communication skills Proficiency in programming languages in Python and/or C/C + +. A curious and ambitious mindset for research A strong work ethic, effective time management skills, and a capability to work independently and collaboratively We regret to inform that only shortlisted candidates will be notified.",
+  "skills": [
+    {
+      "skill": "communicate verbally",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.678,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.89,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "write effectively",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.672,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "program in Python",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.698,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "program in C/C++",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.696,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "manage time effectively",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.595,
+      "confidence_tier": "Medium Low",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "work independently",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.816,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 1.23
+    },
+    {
+      "skill": "work collaboratively",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.714,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.89,
+      "context_agreement": 1.09
+    },
+    {
+      "skill": "communication skills",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.621,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.89,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "curious",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.502,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "ambitious mindset",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.484,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "work ethic",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.699,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.74,
+      "context_agreement": 0.85
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Robotics",
+      "confidence_score": 0.834,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Mechanical Engineering",
+      "confidence_score": 0.841,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Electrical Engineering",
+      "confidence_score": 0.845,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Computer Science",
+      "confidence_score": 0.843,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Applied Maths",
+      "confidence_score": 0.841,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Physics",
+      "confidence_score": 0.824,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "machine learning",
+      "confidence_score": 0.843,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "PINNs",
+      "confidence_score": 0.851,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "control theory",
+      "confidence_score": 0.841,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Python",
+      "confidence_score": 0.852,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "C/C++",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "PhD degree",
+      "confidence_score": 0.553,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "programming languages",
+      "confidence_score": 0.418,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "C",
+      "confidence_score": 0.559,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.538,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "C",
+      "confidence_score": 0.557,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "+",
+      "confidence_score": 0.456,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "+.",
+      "confidence_score": 0.52,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.29288379565626366,
+      "algorithms_programming": 0.2825793931993779,
+      "structured_programming": 0.36321264467047976,
+      "oop": 0.5616592603874456
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.5262649244543293,
+      "algorithms_programming": 0.4955708987353649,
+      "data_analysis": 0.43313553908777913,
+      "ai_literacy_ethics": 0.5774397723909761,
+      "ai_development": 0.7583409788493903,
+      "basic_job_skills_ohs": 0.4629242331473193,
+      "structured_programming": 0.5262648342220115,
+      "oop": 0.7664749574661256,
+      "multimedia_programming": 0.43139562654876845
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.4629242331473193,
+      "audio_editing": 0.0,
+      "data_analysis": 0.43313553908777913,
+      "digital_literacy": 0.0,
+      "ai_development": 0.7583409788493903,
+      "ai_literacy_ethics": 0.5774397723909761,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.5262648342220115,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.4955708987353649,
+      "game_programming": 0.0,
+      "workforce_insights": 0.0,
+      "computational_thinking": 0.5262649244543293,
+      "multimedia_programming": 0.43139562654876845,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.7664749574661256,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 9,
+      "coverage_percentage": 0.26199009288958236,
+      "skill_coverage_pct": 0.07896500494281931,
+      "knowledge_coverage_pct": 0.26199009288958236,
+      "avg_skill_confidence": 0.652335147308089,
+      "avg_knowledge_confidence": 0.7091397114349264,
+      "hard_skill_count": 4,
+      "soft_skill_count": 7,
+      "knowledge_count": 18
+    },
+    "missing_components": [
+      "audio_editing",
+      "digital_literacy",
+      "network_technology",
+      "database_systems",
+      "game_modeling",
+      "game_programming",
+      "workforce_insights",
+      "web_development",
+      "graphics_multimedia",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.463,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.433,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.577,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.526,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.496,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.526,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.431,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 7,
+    "gpt_skill_count": 7,
+    "fused_skill_count": 11,
+    "model_agreement": 0.21785715988704135,
+    "match_count": 2,
+    "extraction_time": 3.253267288208008
+  }
+}

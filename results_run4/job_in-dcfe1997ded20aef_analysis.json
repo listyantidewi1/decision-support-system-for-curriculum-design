@@ -1,0 +1,479 @@
+{
+  "job_id": "in-dcfe1997ded20aef",
+  "text": "Qualifications & Requirements: Experience or exposure to CSA construction management, design coordination, or site execution. Understanding of construction drawings, specifications, and quality assurance related to civil, structural, and architectural works. Willingness to broaden expertise through ongoing learning about other engineering disciplines (MEP, process, etc.). Proficiency in the Microsoft Office suite (and familiarity with tools such as AutoCAD or Revit is advantageous). Strong oral and written communication skills, with an emphasis on teamwork and collaboration. Commercial awareness or an aptitude to develop this skill. Willingness to travel across the UK and Europe for project delivery.",
+  "skills": [
+    {
+      "skill": "manage construction",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.629,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "coordinate designs",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.611,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "execute site operations",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.686,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "understand construction drawings",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.617,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "understand specifications",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.59,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "understand quality assurance",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.585,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "broaden expertise",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.786,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.19
+    },
+    {
+      "skill": "use Microsoft Office suite",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.681,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "communicate orally",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.655,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "communicate in writing",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.648,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "collaborate with team",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.674,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "develop commercial awareness",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.656,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "ongoing learning",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.419,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.83,
+      "context_agreement": 0.83
+    },
+    {
+      "skill": "communication skills",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.653,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.89,
+      "context_agreement": 0.83
+    },
+    {
+      "skill": "teamwork",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.595,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.83
+    },
+    {
+      "skill": "collaboration.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.327,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.83
+    },
+    {
+      "skill": "Commercial",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.301,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.83
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "CSA",
+      "confidence_score": 0.852,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "construction management",
+      "confidence_score": 0.8,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "design coordination",
+      "confidence_score": 0.847,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "site execution",
+      "confidence_score": 0.84,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "construction drawings",
+      "confidence_score": 0.789,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "specifications",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "quality assurance",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "civil works",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "structural works",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "architectural works",
+      "confidence_score": 0.82,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "MEP",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "process engineering",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Microsoft Office suite",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "AutoCAD",
+      "confidence_score": 0.85,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Revit",
+      "confidence_score": 0.851,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "civil,",
+      "confidence_score": 0.559,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "process,",
+      "confidence_score": 0.556,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Microsoft",
+      "confidence_score": 0.53,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Office",
+      "confidence_score": 0.37,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.3555964850074241,
+      "digital_literacy": 0.5011751455517797,
+      "basic_job_skills_ohs": 0.4929875699357388
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.45878780091907134,
+      "digital_literacy": 0.5293529391288758,
+      "algorithms_programming": 0.47513813773020797,
+      "ai_development": 0.44543677076078264,
+      "workforce_insights": 0.37567476498248403,
+      "basic_job_skills_ohs": 0.6000000000000001,
+      "oop": 0.5157499140573066,
+      "game_modeling": 0.4271992989196914,
+      "graphics_multimedia": 0.45483989713148865
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.6000000000000001,
+      "audio_editing": 0.0,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.5293529391288758,
+      "ai_development": 0.44543677076078264,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.0,
+      "game_modeling": 0.4271992989196914,
+      "algorithms_programming": 0.47513813773020797,
+      "game_programming": 0.0,
+      "workforce_insights": 0.37567476498248403,
+      "computational_thinking": 0.45878780091907134,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.45483989713148865,
+      "oop": 0.5157499140573066,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 9,
+      "coverage_percentage": 0.22537786966473203,
+      "skill_coverage_pct": 0.07103995792078645,
+      "knowledge_coverage_pct": 0.22537786966473203,
+      "avg_skill_confidence": 0.5947919310079866,
+      "avg_knowledge_confidence": 0.7322435364199896,
+      "hard_skill_count": 9,
+      "soft_skill_count": 8,
+      "knowledge_count": 19
+    },
+    "missing_components": [
+      "audio_editing",
+      "data_analysis",
+      "ai_literacy_ethics",
+      "network_technology",
+      "database_systems",
+      "structured_programming",
+      "game_programming",
+      "multimedia_programming",
+      "web_development",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.6,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.529,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.445,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.427,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.475,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.376,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.459,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.455,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.516,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 6,
+    "gpt_skill_count": 12,
+    "fused_skill_count": 17,
+    "model_agreement": 0.0833333432674408,
+    "match_count": 1,
+    "extraction_time": 6.962835073471069
+  }
+}

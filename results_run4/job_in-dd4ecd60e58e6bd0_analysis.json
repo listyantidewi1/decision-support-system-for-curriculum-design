@@ -1,0 +1,473 @@
+{
+  "job_id": "in-dd4ecd60e58e6bd0",
+  "text": "Eng, RCDD, PSP, CTS, CTS -D, MCSE, CCIE Certifications are an asset. Knowledgeable about industry standards including AVIXA, BISCI, EIA/TIA, ASIS and CSA. Strong knowledge of Microsoft Office, CAD/Revit, MS Project. Demonstrate a strong leadership qualities and ability to work independently. Demonstrate the ability to work in a complex environment, dealing with multiple projects and clients. Possess sound communication skills as demonstrated through client and staff relations. Demonstrate experience working with other consultants and contractors, and coordination of major project. Display strong sense of urgency and ability to prioritize tasks. Have excellent problem solving and decision -making skills. Accommodations Appropriate accommodations will be provided to candidates upon request throughout the recruitment and hiring process.",
+  "skills": [
+    {
+      "skill": "work independently",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.852,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 1.29
+    },
+    {
+      "skill": "work in a complex environment",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.849,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 1.3
+    },
+    {
+      "skill": "deal with multiple projects",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.849,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 1.3
+    },
+    {
+      "skill": "deal with multiple clients",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.705,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.0
+    },
+    {
+      "skill": "demonstrate communication skills",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.89,
+      "context_agreement": 1.26
+    },
+    {
+      "skill": "work with other consultants",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.853,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 1.3
+    },
+    {
+      "skill": "work with contractors",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.83,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 1.27
+    },
+    {
+      "skill": "coordinate major project",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.712,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 1.0
+    },
+    {
+      "skill": "prioritize tasks",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.713,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.0
+    },
+    {
+      "skill": "solve problems",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.708,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.0
+    },
+    {
+      "skill": "make decisions",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.708,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.0
+    },
+    {
+      "skill": "leadership qualities",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.517,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.89,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "clients.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.538,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.9
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Eng",
+      "confidence_score": 0.673,
+      "confidence_tier": "Medium",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "RCDD",
+      "confidence_score": 0.833,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "PSP",
+      "confidence_score": 0.8,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "CTS",
+      "confidence_score": 0.78,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "CTS-D",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "MCSE",
+      "confidence_score": 0.778,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "CCIE Certifications",
+      "confidence_score": 0.752,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "AVIXA",
+      "confidence_score": 0.846,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "BISCI",
+      "confidence_score": 0.839,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "EIA/TIA",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "ASIS",
+      "confidence_score": 0.811,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "CSA",
+      "confidence_score": 0.822,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Microsoft Office",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "CAD/Revit",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "MS Project",
+      "confidence_score": 0.788,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "-D,",
+      "confidence_score": 0.387,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "industry standards",
+      "confidence_score": 0.53,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "EIA",
+      "confidence_score": 0.538,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.515,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "TIA,",
+      "confidence_score": 0.398,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Microsoft",
+      "confidence_score": 0.557,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Office,",
+      "confidence_score": 0.485,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "CAD",
+      "confidence_score": 0.556,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.512,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Revit,",
+      "confidence_score": 0.533,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "workforce_insights": 0.2174415849195913
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.19330507867867935,
+      "digital_literacy": 0.5999999642372132,
+      "data_analysis": 0.4638991690400551,
+      "ai_development": 0.36670902187103005,
+      "workforce_insights": 0.4104422705845154,
+      "oop": 0.20621492883503265,
+      "game_modeling": 0.44571760519919695
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.0,
+      "audio_editing": 0.0,
+      "data_analysis": 0.4638991690400551,
+      "digital_literacy": 0.5999999642372132,
+      "ai_development": 0.36670902187103005,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.0,
+      "game_modeling": 0.44571760519919695,
+      "algorithms_programming": 0.0,
+      "game_programming": 0.0,
+      "workforce_insights": 0.4104422705845154,
+      "computational_thinking": 0.19330507867867935,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.20621492883503265,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 7,
+      "coverage_percentage": 0.1413835809708275,
+      "skill_coverage_pct": 0.011444293943136384,
+      "knowledge_coverage_pct": 0.1413835809708275,
+      "avg_skill_confidence": 0.7564406792684216,
+      "avg_knowledge_confidence": 0.6693566779422995,
+      "hard_skill_count": 2,
+      "soft_skill_count": 11,
+      "knowledge_count": 25
+    },
+    "missing_components": [
+      "basic_job_skills_ohs",
+      "audio_editing",
+      "ai_literacy_ethics",
+      "network_technology",
+      "database_systems",
+      "structured_programming",
+      "algorithms_programming",
+      "game_programming",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.464,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.6,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.367,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.446,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.41,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.193,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.206,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 8,
+    "gpt_skill_count": 11,
+    "fused_skill_count": 13,
+    "model_agreement": 0.5162826505574313,
+    "match_count": 6,
+    "extraction_time": 3.1093759536743164
+  }
+}

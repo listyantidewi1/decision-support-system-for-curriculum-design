@@ -42,10 +42,11 @@ from sklearn.cluster import KMeans
 
 # Your project config (for curriculum, etc.)
 try:
-    from config import CURRICULUM_COMPONENTS, OUTPUT_DIR as CONFIG_OUTPUT_DIR
+    from config import CURRICULUM_COMPONENTS, OUTPUT_DIR as CONFIG_OUTPUT_DIR, RANDOM_SEED as CONFIG_RANDOM_SEED
 except ImportError:
     CURRICULUM_COMPONENTS = {}
     CONFIG_OUTPUT_DIR = "results"
+    CONFIG_RANDOM_SEED = 42
 
 
 # -------------------------------------------------------------------
@@ -526,7 +527,7 @@ def cluster_and_plot_texts(texts, weights, fig_path: Path, title: str, n_cluster
     if k <= 1:
         labels = np.zeros(len(texts), dtype=int)
     else:
-        kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+        kmeans = KMeans(n_clusters=k, random_state=CONFIG_RANDOM_SEED, n_init=10)
         labels = kmeans.fit_predict(embeddings)
 
     plt.figure(figsize=(10, 7))

@@ -1,0 +1,665 @@
+{
+  "job_id": "in-0b1202bf3556f0ec",
+  "text": "Manage procurement and tendering of design -related services. What you'll bring: Design & Technical Expertise: Strong analytical, design, technical and commercial skills, with excellent attention to detail and understanding of project constraints. Leadership Experience: Proven ability to lead, motivate, inspire and manage staff to achieve demanding objectives. Stakeholder & Communication Skills: Strong collaboration, negotiation, influencing, presentation, and networking capabilities. Project Coordination Skills: Ability to multitask, manage deadlines, and coordinate activities across multiple live projects. Digital & Commercial Acumen: Proficiency in MS Office and MS Project/Asta, with strong financial and commercial awareness including contract and risk management. Professional Qualifications: A post -degree qualification in a relevant design discipline, with accreditation or progress toward CIOB, RIBA, or an equivalent body.",
+  "skills": [
+    {
+      "skill": "manage procurement of design-related services",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.65,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "manage tendering of design-related services",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 1.2
+    },
+    {
+      "skill": "analyze projects",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.734,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "design projects",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.731,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "understand project constraints",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.643,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.88,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "lead staff",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.624,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "motivate staff",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.632,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "inspire staff",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.63,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "manage staff to achieve objectives",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.63,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "collaborate with stakeholders",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.642,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "negotiate with stakeholders",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.639,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "influence stakeholders",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.646,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "present information",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.642,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "network professionally",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.646,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "multitask",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.793,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "manage deadlines",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.871,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "coordinate activities across multiple projects",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.718,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.18
+    },
+    {
+      "skill": "use MS Office",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.716,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.71,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "use MS Project/Asta",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.725,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "manage contracts",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.734,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "manage risk",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.722,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "Manage procurement",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.662,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.86,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "analytical",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.501,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "design",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.44,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "technical",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.341,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "attention to detail",
+      "type": "Hard",
+      "bloom": "Understand",
+      "confidence_score": 0.627,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "lead",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.465,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.72,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "motivate",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.477,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "inspire",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.474,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "manage staff",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.618,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "collaboration",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.505,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "negotiation",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.625,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "influencing",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.44,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "presentation",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.603,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "networking capabilities.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.44,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.84
+    },
+    {
+      "skill": "and",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.449,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.69,
+      "context_agreement": 0.84
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Design",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Technical skills",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Commercial skills",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Project constraints",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Leadership",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Stakeholder management",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Communication",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Project coordination",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Digital acumen",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Commercial acumen",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "MS Office",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "MS Project",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Asta",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Financial awareness",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Contract management",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Risk management",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "CIOB",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "RIBA",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.29188859113168764,
+      "digital_literacy": 0.7130524885935335,
+      "algorithms_programming": 0.5264660926899439,
+      "ai_development": 0.31526151089089915,
+      "workforce_insights": 0.4354392601324647,
+      "basic_job_skills_ohs": 0.46613255212259375,
+      "network_technology": 0.1267736882457792,
+      "oop": 0.30554531444599653,
+      "database_systems": 0.13255427607667647,
+      "multimedia_programming": 0.2839017895261388,
+      "game_modeling": 0.34849649208329114,
+      "graphics_multimedia": 0.3857611632322218,
+      "audio_editing": 0.13058548831071146
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.36296871900558475,
+      "digital_literacy": 0.5624771118164064,
+      "algorithms_programming": 0.4019681096076966,
+      "data_analysis": 0.3450828552246094,
+      "ai_development": 0.39320704936981205,
+      "workforce_insights": 0.4453244805335999,
+      "basic_job_skills_ohs": 0.45269225835800175,
+      "oop": 0.3712228417396546,
+      "database_systems": 0.38426342010498055,
+      "game_modeling": 0.3691008567810059,
+      "graphics_multimedia": 0.41358833312988286,
+      "audio_editing": 0.3813990712165833
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.5264660926899439,
+      "mobile_development": 0.0,
+      "network_technology": 0.1267736882457792,
+      "web_development": 0.0,
+      "game_programming": 0.0,
+      "game_modeling": 0.3691008567810059,
+      "ai_development": 0.39320704936981205,
+      "graphics_multimedia": 0.41358833312988286,
+      "database_systems": 0.38426342010498055,
+      "oop": 0.3712228417396546,
+      "basic_job_skills_ohs": 0.46613255212259375,
+      "ai_literacy_ethics": 0.0,
+      "structured_programming": 0.0,
+      "digital_literacy": 0.7130524885935335,
+      "computational_thinking": 0.36296871900558475,
+      "audio_editing": 0.3813990712165833,
+      "workforce_insights": 0.4453244805335999,
+      "data_analysis": 0.3450828552246094,
+      "multimedia_programming": 0.2839017895261388
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 14,
+      "coverage_percentage": 0.29381495990966855,
+      "skill_coverage_pct": 0.23483466881483886,
+      "knowledge_coverage_pct": 0.2570155319414641,
+      "avg_skill_confidence": 0.6230739763862255,
+      "avg_knowledge_confidence": 0.75,
+      "hard_skill_count": 21,
+      "soft_skill_count": 15,
+      "knowledge_count": 18
+    },
+    "missing_components": [
+      "mobile_development",
+      "web_development",
+      "game_programming",
+      "ai_literacy_ethics",
+      "structured_programming"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.526,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.127,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.369,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.393,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.414,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.384,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.371,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.466,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.363,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.381,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.445,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.345,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.284,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 19,
+    "gpt_skill_count": 21,
+    "fused_skill_count": 36,
+    "model_agreement": 0.18053711595989408,
+    "match_count": 4,
+    "extraction_time": 5.16515851020813
+  }
+}

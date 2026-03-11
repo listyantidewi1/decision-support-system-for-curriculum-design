@@ -1,0 +1,400 @@
+{
+  "job_id": "in-3ce2d2a445b01e20",
+  "text": "Continuous Service Improvement (CSI) Identify and implement automation, orchestration, and optimization opportunities. Review operational trends to reduce recurring incidents and improve MTTR. Champion problem management initiatives and share lessons learned. Introduce knowledge management practices to build operational maturity. Develop and track improvement roadmaps aligned with client objectives. 6 .",
+  "skills": [
+    {
+      "skill": "identify automation opportunities",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.797,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 1.04
+    },
+    {
+      "skill": "implement automation",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.89,
+      "context_agreement": 1.36
+    },
+    {
+      "skill": "implement orchestration",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 1.31
+    },
+    {
+      "skill": "implement optimization opportunities",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 1.32
+    },
+    {
+      "skill": "review operational trends",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.36
+    },
+    {
+      "skill": "reduce recurring incidents",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.36
+    },
+    {
+      "skill": "improve MTTR",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.775,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.04
+    },
+    {
+      "skill": "champion problem management initiatives",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.941,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 1.36
+    },
+    {
+      "skill": "share lessons learned",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.93,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.35
+    },
+    {
+      "skill": "introduce knowledge management practices",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.88,
+      "context_agreement": 1.36
+    },
+    {
+      "skill": "develop improvement roadmaps",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.79,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 1.04
+    },
+    {
+      "skill": "track improvement roadmaps",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.36
+    },
+    {
+      "skill": "Identify",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.736,
+      "confidence_tier": "Medium High",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "build operational maturity.",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.736,
+      "confidence_tier": "Medium High",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.85,
+      "context_agreement": 0.94
+    },
+    {
+      "skill": "Develop",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.732,
+      "confidence_tier": "Medium High",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.94
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Continuous Service Improvement",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "automation",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "orchestration",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "optimization",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "operational trends",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "MTTR",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "problem management",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "knowledge management",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "operational maturity",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "improvement roadmaps",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.8349379592445415,
+      "algorithms_programming": 0.32962030659261,
+      "workforce_insights": 0.27538377684277193,
+      "basic_job_skills_ohs": 0.3033917442428701,
+      "structured_programming": 0.5337516022036835,
+      "game_programming": 0.39957593062978053
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.4270278453826905,
+      "algorithms_programming": 0.3448961019515992,
+      "data_analysis": 0.33204560279846196,
+      "ai_literacy_ethics": 0.34472054243087774,
+      "workforce_insights": 0.38596522808074957,
+      "structured_programming": 0.45274658203125007
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.3033917442428701,
+      "audio_editing": 0.0,
+      "data_analysis": 0.33204560279846196,
+      "digital_literacy": 0.0,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.34472054243087774,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.5337516022036835,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.3448961019515992,
+      "game_programming": 0.39957593062978053,
+      "workforce_insights": 0.38596522808074957,
+      "computational_thinking": 0.8349379592445415,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 8,
+      "coverage_percentage": 0.1831202479780297,
+      "skill_coverage_pct": 0.1408769115661188,
+      "knowledge_coverage_pct": 0.1203895738250331,
+      "avg_skill_confidence": 0.8957618087422442,
+      "avg_knowledge_confidence": 0.75,
+      "hard_skill_count": 13,
+      "soft_skill_count": 2,
+      "knowledge_count": 10
+    },
+    "missing_components": [
+      "audio_editing",
+      "digital_literacy",
+      "ai_development",
+      "network_technology",
+      "database_systems",
+      "game_modeling",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "oop",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.303,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.332,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.345,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.534,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.345,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.4,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.386,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 12,
+    "gpt_skill_count": 12,
+    "fused_skill_count": 15,
+    "model_agreement": 0.7238147507111231,
+    "match_count": 9,
+    "extraction_time": 3.5970356464385986
+  }
+}

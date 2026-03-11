@@ -1,0 +1,471 @@
+{
+  "job_id": "in-2852318d9eae20d7",
+  "text": "Quality Assurance & Continuous Improvement Lead on service improvement initiatives to enhance care quality and client outcomes. Support tender submissions, commissioner reporting, and quality monitoring visits. Use data, clinical KPIs, and audits to drive improvements in care delivery. Champion a culture of safeguarding, dignity, safety, and positive behaviour support. F.",
+  "skills": [
+    {
+      "skill": "lead service improvement initiatives",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.704,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "enhance care quality",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.884,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.28
+    },
+    {
+      "skill": "support tender submissions",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.919,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.28
+    },
+    {
+      "skill": "support commissioner reporting",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.823,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.89,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "support quality monitoring visits",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.804,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "use data to drive improvements",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.644,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "use clinical KPIs to drive improvements",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.961,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "use audits to drive improvements",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.646,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "champion a culture of safeguarding",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.808,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.28
+    },
+    {
+      "skill": "champion a culture of dignity",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.69,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "champion a culture of safety",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.689,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "champion a culture of positive behaviour support",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.694,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "client outcomes.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.444,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.83,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "Use data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.675,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.71,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "audits",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.561,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "drive improvements in care delivery.",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.549,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.79,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "dignity",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.484,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "safety",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.481,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "positive behaviour support.",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.525,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.85,
+      "context_agreement": 0.89
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Quality Assurance",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Continuous Improvement",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "client outcomes",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "tender submissions",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "commissioner reporting",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "quality monitoring",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "data",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "clinical KPIs",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "audits",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "care delivery",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "safeguarding",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "dignity",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "safety",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "positive behaviour support",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.2355282430549036,
+      "digital_literacy": 0.2554100563535141,
+      "data_analysis": 0.313742720301063,
+      "ai_literacy_ethics": 0.3211650737029965,
+      "basic_job_skills_ohs": 0.22833161435536342
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.3707568883895875,
+      "digital_literacy": 0.37815817594528206,
+      "data_analysis": 0.4082500576972962,
+      "ai_literacy_ethics": 0.37815824747085575,
+      "basic_job_skills_ohs": 0.5999999642372132
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.5999999642372132,
+      "audio_editing": 0.0,
+      "data_analysis": 0.4082500576972962,
+      "digital_literacy": 0.37815817594528206,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.37815824747085575,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.0,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.0,
+      "game_programming": 0.0,
+      "workforce_insights": 0.0,
+      "computational_thinking": 0.3707568883895875,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 5,
+      "coverage_percentage": 0.11238543861790709,
+      "skill_coverage_pct": 0.07127251093514951,
+      "knowledge_coverage_pct": 0.11238543861790709,
+      "avg_skill_confidence": 0.6833162190284029,
+      "avg_knowledge_confidence": 0.75,
+      "hard_skill_count": 10,
+      "soft_skill_count": 9,
+      "knowledge_count": 14
+    },
+    "missing_components": [
+      "audio_editing",
+      "ai_development",
+      "network_technology",
+      "database_systems",
+      "structured_programming",
+      "game_modeling",
+      "algorithms_programming",
+      "game_programming",
+      "workforce_insights",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "oop",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.6,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.408,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.378,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.378,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.371,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 13,
+    "gpt_skill_count": 12,
+    "fused_skill_count": 19,
+    "model_agreement": 0.43331358065971964,
+    "match_count": 6,
+    "extraction_time": 3.4294331073760986
+  }
+}

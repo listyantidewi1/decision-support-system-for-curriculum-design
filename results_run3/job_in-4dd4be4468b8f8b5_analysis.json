@@ -1,0 +1,792 @@
+{
+  "job_id": "in-4dd4be4468b8f8b5",
+  "text": "KEY RESPONSIBILITIES Collect, validate, analyse, consolidate and maintain HR, Sustainability, contract and supplier performance data. Produce dashboard reports from contract delivery data to assist contract compliance, budget and strategic reviews and trends. Build, update and maintain Power BI dashboards and reports for internal and external use. Support the production of monthly and quarterly performance reports, including HR KPIs, engagement, turnover, absence, and ESG metrics. Identify and implement quality and efficiency improvement initiatives.",
+  "skills": [
+    {
+      "skill": "collect HR data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.59,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.73,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "validate HR data",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.701,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "analyse HR data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.59,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.73,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "consolidate HR data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.595,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "maintain HR data",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.83,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "collect Sustainability data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.605,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "validate Sustainability data",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.718,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "analyse Sustainability data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.605,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "consolidate Sustainability data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.61,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.89,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "maintain Sustainability data",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.718,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "collect contract data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.598,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "validate contract data",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.709,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "analyse contract data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.598,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "consolidate contract data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.603,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "maintain contract data",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.709,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "collect supplier performance data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.796,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.2
+    },
+    {
+      "skill": "validate supplier performance data",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.714,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "analyse supplier performance data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.97,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.21
+    },
+    {
+      "skill": "consolidate supplier performance data",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.633,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "maintain supplier performance data",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.898,
+      "confidence_tier": "High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.19
+    },
+    {
+      "skill": "produce dashboard reports from contract delivery data",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 1.19
+    },
+    {
+      "skill": "build Power BI dashboards",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.891,
+      "confidence_tier": "High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.2
+    },
+    {
+      "skill": "update Power BI dashboards",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.595,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "maintain Power BI dashboards",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "build Power BI reports",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.701,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "update Power BI reports",
+      "type": "Hard",
+      "bloom": "Understand",
+      "confidence_score": 0.619,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "maintain Power BI reports",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.704,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "support production of monthly performance reports",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.674,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "support production of quarterly performance reports",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.809,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 1.2
+    },
+    {
+      "skill": "identify quality improvement initiatives",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.682,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.88,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "implement quality improvement initiatives",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.683,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.89,
+      "context_agreement": 0.95
+    },
+    {
+      "skill": "identify efficiency improvement initiatives",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.881,
+      "confidence_tier": "High",
+      "source": "LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "implement efficiency improvement initiatives",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.847,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "Collect",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.49,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "validate",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.648,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "analyse",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.49,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "consolidate",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.499,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "Sustainability",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.499,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "contract",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.493,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "assist contract compliance",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.505,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "budget",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.499,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "strategic reviews",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.544,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "trends.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.502,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "Build",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.656,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.75,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "update",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.502,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "reports",
+      "type": "Hard",
+      "bloom": "Understand",
+      "confidence_score": 0.544,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "Support the production of monthly",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.653,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "Identify",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.67,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.85
+    },
+    {
+      "skill": "implement quality",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.67,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.85
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "HR",
+      "confidence_score": 0.81,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Sustainability",
+      "confidence_score": 0.674,
+      "confidence_tier": "Medium",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "contract",
+      "confidence_score": 0.715,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "supplier performance data",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "dashboard reports",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "contract delivery data",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "contract compliance",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "budget reviews",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "strategic reviews",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "trends",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Power BI",
+      "confidence_score": 0.775,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "monthly performance reports",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "quarterly performance reports",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "HR KPIs",
+      "confidence_score": 0.795,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "engagement",
+      "confidence_score": 0.819,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "turnover",
+      "confidence_score": 0.817,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "absence",
+      "confidence_score": 0.707,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "ESG metrics",
+      "confidence_score": 0.788,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "digital_literacy": 0.3054221884937693,
+      "algorithms_programming": 0.32765603982978864,
+      "data_analysis": 0.5296467102023145,
+      "ai_literacy_ethics": 0.2711387218724989,
+      "workforce_insights": 0.15724851622945435,
+      "basic_job_skills_ohs": 0.38243663112709214,
+      "game_programming": 0.45053840003146145
+    },
+    "knowledge_coverage": {
+      "data_analysis": 0.6201730091468666,
+      "workforce_insights": 0.3860059261322022
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.32765603982978864,
+      "mobile_development": 0.0,
+      "network_technology": 0.0,
+      "web_development": 0.0,
+      "game_programming": 0.45053840003146145,
+      "game_modeling": 0.0,
+      "ai_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "database_systems": 0.0,
+      "oop": 0.0,
+      "basic_job_skills_ohs": 0.38243663112709214,
+      "ai_literacy_ethics": 0.2711387218724989,
+      "structured_programming": 0.0,
+      "digital_literacy": 0.3054221884937693,
+      "computational_thinking": 0.0,
+      "audio_editing": 0.0,
+      "workforce_insights": 0.3860059261322022,
+      "data_analysis": 0.6201730091468666,
+      "multimedia_programming": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 7,
+      "coverage_percentage": 0.14438794298071997,
+      "skill_coverage_pct": 0.1275835372519147,
+      "knowledge_coverage_pct": 0.052956786067319406,
+      "avg_skill_confidence": 0.6682470531980708,
+      "avg_knowledge_confidence": 0.7583588242902184,
+      "hard_skill_count": 43,
+      "soft_skill_count": 6,
+      "knowledge_count": 18
+    },
+    "missing_components": [
+      "mobile_development",
+      "network_technology",
+      "web_development",
+      "game_modeling",
+      "ai_development",
+      "graphics_multimedia",
+      "database_systems",
+      "oop",
+      "structured_programming",
+      "computational_thinking",
+      "audio_editing",
+      "multimedia_programming"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.328,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.451,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.382,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.271,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.305,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.386,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.62,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 22,
+    "gpt_skill_count": 33,
+    "fused_skill_count": 49,
+    "model_agreement": 0.2483467658360799,
+    "match_count": 9,
+    "extraction_time": 6.840558290481567
+  }
+}

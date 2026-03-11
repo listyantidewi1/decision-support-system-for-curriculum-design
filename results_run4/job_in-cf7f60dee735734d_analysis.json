@@ -1,0 +1,536 @@
+{
+  "job_id": "in-cf7f60dee735734d",
+  "text": "We are dedicated to making Google experiences centered around the user.Responsibilities -------------------- Write product or system development code. Participate in, or lead design reviews with peers and stakeholders to decide among available technologies. Review code developed by other developers and provide feedback to ensure best practices (e.g., style guidelines, checking code in, accuracy, testability, and efficiency). Contribute to existing documentation or educational content and adapt content based on product/program updates and user feedback. Triage product or system issues and debug/track/resolve by analyzing the sources of issues and the impact on hardware, network, or service operations and quality.",
+  "skills": [
+    {
+      "skill": "write product development code",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.721,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "write system development code",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.72,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "lead design reviews",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.621,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "participate in design reviews",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.624,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "review code",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.18
+    },
+    {
+      "skill": "provide feedback on code",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.546,
+      "confidence_tier": "Medium Low",
+      "source": "BERT+LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "contribute to documentation",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.6,
+      "confidence_tier": "Medium",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "contribute to educational content",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.628,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "adapt content based on product updates",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.848,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 1.18
+    },
+    {
+      "skill": "adapt content based on program updates",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.788,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.18
+    },
+    {
+      "skill": "adapt content based on user feedback",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.619,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "triage product issues",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.607,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "triage system issues",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.606,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "debug issues",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.715,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "track issues",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.604,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "resolve issues",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.635,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "analyze sources of issues",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.715,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "analyze impact on hardware operations",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.72,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "analyze impact on network operations",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.719,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "analyze impact on service operations",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.719,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "analyze impact on hardware quality",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.717,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "analyze impact on network quality",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.716,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "analyze impact on service quality",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.716,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "ensure best practices",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.63,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.79,
+      "context_agreement": 0.83
+    },
+    {
+      "skill": "checking code in",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.51,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.74,
+      "context_agreement": 0.83
+    },
+    {
+      "skill": "accuracy",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.484,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.83
+    },
+    {
+      "skill": "testability",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.528,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.83
+    },
+    {
+      "skill": "efficiency).",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.49,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.83
+    },
+    {
+      "skill": "user feedback.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.514,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.8,
+      "context_agreement": 0.83
+    },
+    {
+      "skill": "Triage",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.318,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.83
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "style guidelines",
+      "confidence_score": 0.814,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "best practices",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "product updates",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "program updates",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "user feedback",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "hardware operations",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "network operations",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "service operations",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.37848721786467193,
+      "algorithms_programming": 1.2591581256068156,
+      "workforce_insights": 0.3239794263756661,
+      "basic_job_skills_ohs": 0.27485827201884677,
+      "network_technology": 0.5080775374630285,
+      "structured_programming": 0.6806010393221563,
+      "game_programming": 0.4675561255109363
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.3927237510681153,
+      "digital_literacy": 0.35842241048812873,
+      "network_technology": 0.42906199693679814
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.27485827201884677,
+      "audio_editing": 0.0,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.35842241048812873,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.5080775374630285,
+      "database_systems": 0.0,
+      "structured_programming": 0.6806010393221563,
+      "game_modeling": 0.0,
+      "algorithms_programming": 1.2591581256068156,
+      "game_programming": 0.4675561255109363,
+      "workforce_insights": 0.3239794263756661,
+      "computational_thinking": 0.3927237510681153,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 8,
+      "coverage_percentage": 0.2244935098870365,
+      "skill_coverage_pct": 0.2048798812716906,
+      "knowledge_coverage_pct": 0.06211621886805485,
+      "avg_skill_confidence": 0.6459346014501651,
+      "avg_knowledge_confidence": 0.757954903856883,
+      "hard_skill_count": 22,
+      "soft_skill_count": 8,
+      "knowledge_count": 8
+    },
+    "missing_components": [
+      "audio_editing",
+      "data_analysis",
+      "ai_development",
+      "ai_literacy_ethics",
+      "database_systems",
+      "game_modeling",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "oop",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.275,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.358,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.508,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.681,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.468,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.324,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.393,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 11,
+    "gpt_skill_count": 23,
+    "fused_skill_count": 30,
+    "model_agreement": 0.12072775156601616,
+    "match_count": 3,
+    "extraction_time": 5.004634141921997
+  }
+}

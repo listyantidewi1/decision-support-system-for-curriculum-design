@@ -1,0 +1,444 @@
+{
+  "job_id": "in-0a5a395a96ddcbe9",
+  "text": "Experience in back -end technologies, like .NET Core/C #, is a welcome bonus. Testing & Quality Assurance: Write and implement unit, integration, and end -to -end tests (e.g., using Jest, Enzyme, or testing -library) to ensure code quality, application stability, and reliability. Deployment & Maintenance: Manage the mobile application release lifecycle, including store submissions (Apple App Store and Google Play Store).",
+  "skills": [
+    {
+      "skill": "write unit tests",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.746,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "implement unit tests",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.839,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "write integration tests",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.757,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "implement integration tests",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.673,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "write end-to-end tests",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.95,
+      "confidence_tier": "Very High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "implement end-to-end tests",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.23
+    },
+    {
+      "skill": "manage mobile application release lifecycle",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 1.26
+    },
+    {
+      "skill": "manage store submissions",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.695,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "Write",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.671,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.75,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "integration",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.526,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "ensure code quality",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.671,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "application stability",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.524,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "reliability.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.524,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.87
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": ".NET Core",
+      "confidence_score": 0.832,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "C#",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Jest",
+      "confidence_score": 0.847,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Enzyme",
+      "confidence_score": 0.848,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "testing-library",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Apple App Store",
+      "confidence_score": 0.697,
+      "confidence_tier": "Medium",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Google Play Store",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "back",
+      "confidence_score": 0.559,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "-end",
+      "confidence_score": 0.54,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.367,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "C",
+      "confidence_score": 0.547,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "#,",
+      "confidence_score": 0.482,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Testing",
+      "confidence_score": 0.338,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "testing",
+      "confidence_score": 0.559,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "-library)",
+      "confidence_score": 0.514,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "mobile",
+      "confidence_score": 0.535,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "application release",
+      "confidence_score": 0.328,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "store submissions",
+      "confidence_score": 0.537,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Google",
+      "confidence_score": 0.46,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Play Store).",
+      "confidence_score": 0.422,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "algorithms_programming": 0.6935054129632322,
+      "mobile_development": 0.5894335253190416
+    },
+    "knowledge_coverage": {
+      "digital_literacy": 0.14863801576440097,
+      "algorithms_programming": 0.06745474649789475,
+      "structured_programming": 0.18612346598156362,
+      "oop": 0.6000000000000001,
+      "web_development": 0.3806914687156678,
+      "mobile_development": 0.5027098059654237,
+      "game_programming": 0.24635178013222964
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.6935054129632322,
+      "mobile_development": 0.5894335253190416,
+      "network_technology": 0.0,
+      "web_development": 0.3806914687156678,
+      "game_programming": 0.24635178013222964,
+      "game_modeling": 0.0,
+      "ai_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "database_systems": 0.0,
+      "oop": 0.6000000000000001,
+      "basic_job_skills_ohs": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "structured_programming": 0.18612346598156362,
+      "digital_literacy": 0.14863801576440097,
+      "computational_thinking": 0.0,
+      "audio_editing": 0.0,
+      "workforce_insights": 0.0,
+      "data_analysis": 0.0,
+      "multimedia_programming": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 7,
+      "coverage_percentage": 0.14972335099348086,
+      "skill_coverage_pct": 0.06752310201485652,
+      "knowledge_coverage_pct": 0.11220890963458845,
+      "avg_skill_confidence": 0.7367099057530792,
+      "avg_knowledge_confidence": 0.5830019519600181,
+      "hard_skill_count": 13,
+      "soft_skill_count": 0,
+      "knowledge_count": 20
+    },
+    "missing_components": [
+      "network_technology",
+      "game_modeling",
+      "ai_development",
+      "graphics_multimedia",
+      "database_systems",
+      "basic_job_skills_ohs",
+      "ai_literacy_ethics",
+      "computational_thinking",
+      "audio_editing",
+      "workforce_insights",
+      "data_analysis",
+      "multimedia_programming"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.694,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.589,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.381,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.246,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.6,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.186,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.149,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 8,
+    "gpt_skill_count": 8,
+    "fused_skill_count": 13,
+    "model_agreement": 0.3458397835493088,
+    "match_count": 3,
+    "extraction_time": 2.8259634971618652
+  }
+}

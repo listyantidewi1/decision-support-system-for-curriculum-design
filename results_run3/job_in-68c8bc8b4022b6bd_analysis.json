@@ -1,0 +1,621 @@
+{
+  "job_id": "in-68c8bc8b4022b6bd",
+  "text": "We don\u2019t expect you to know them all but experience or exposure with some of these (or equivalents) will set you up for success in this team; Backend: .NET, C #, or willingness to learn Frontend: React.js, Next.js, Angular.js Architecture: Deep expertise in Microservices, GraphQL (Apollo), RESTful APIs, and domain -driven design. CI/CD: GitHub Actions, Jenkins, Bitbucket Pipelines, Gitlab Runners. Cloud knowledge with AWS Containerization using docker or kubernetes GenAI Studio(Copilot/RooCode/Cline) (Preferred) Working with us: Whether you\u2019re passionate about customer service, driven by data, or called by creativity, a career with CommBank is for you.",
+  "skills": [
+    {
+      "skill": "learn .NET",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.584,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "learn C#",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.58,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.71,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use React.js",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.696,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use Next.js",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.694,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use Angular.js",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.701,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "work with Microservices",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.593,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "work with GraphQL (Apollo)",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.589,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "work with RESTful APIs",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.585,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "work with domain-driven design",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.702,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use GitHub Actions",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.696,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use Jenkins",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.694,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use Bitbucket Pipelines",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.703,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use Gitlab Runners",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.696,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "work with AWS",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.581,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.71,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use Docker",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.692,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use Kubernetes",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.701,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use Copilot",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.694,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use RooCode",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.694,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "use Cline",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.69,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.72,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "provide customer service",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.611,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "work with data",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.598,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.72,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "apply creativity",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.611,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.9
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": ".NET",
+      "confidence_score": 0.847,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "C#",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "React.js",
+      "confidence_score": 0.838,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Next.js",
+      "confidence_score": 0.85,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Angular.js",
+      "confidence_score": 0.851,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Microservices",
+      "confidence_score": 0.85,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "GraphQL (Apollo)",
+      "confidence_score": 0.797,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "RESTful APIs",
+      "confidence_score": 0.85,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Domain-driven design",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "CI/CD",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "GitHub Actions",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Jenkins",
+      "confidence_score": 0.849,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Bitbucket Pipelines",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Gitlab Runners",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Cloud",
+      "confidence_score": 0.782,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "AWS",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Docker",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Kubernetes",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "GenAI Studio",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Copilot",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "RooCode",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Cline",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "C",
+      "confidence_score": 0.559,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "#,",
+      "confidence_score": 0.55,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Architecture:",
+      "confidence_score": 0.39,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "domain",
+      "confidence_score": 0.56,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "-driven design.",
+      "confidence_score": 0.556,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "CI",
+      "confidence_score": 0.558,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "/",
+      "confidence_score": 0.558,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "CD:",
+      "confidence_score": 0.553,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "GitHub",
+      "confidence_score": 0.552,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Actions,",
+      "confidence_score": 0.508,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Bitbucket",
+      "confidence_score": 0.56,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Pipelines,",
+      "confidence_score": 0.545,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Gitlab",
+      "confidence_score": 0.56,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Runners.",
+      "confidence_score": 0.292,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.3075204509081792,
+      "ai_development": 0.49614218048169423,
+      "oop": 0.4040681913284716,
+      "web_development": 0.5492299114473692,
+      "mobile_development": 0.3569908416929297
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.3780646562576295,
+      "digital_literacy": 0.4754831465666328,
+      "algorithms_programming": 0.19722849814374036,
+      "data_analysis": 0.24190766252362209,
+      "ai_development": 0.6000000000000001,
+      "workforce_insights": 0.4176160106810423,
+      "basic_job_skills_ohs": 0.3514764189720154,
+      "network_technology": 0.2122889149046558,
+      "structured_programming": 0.19032992758366846,
+      "oop": 0.7621510039805097,
+      "web_development": 0.7355641067390216,
+      "mobile_development": 0.5350156192141134,
+      "graphics_multimedia": 0.19614258665180923
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.19722849814374036,
+      "mobile_development": 0.5350156192141134,
+      "network_technology": 0.2122889149046558,
+      "web_development": 0.7355641067390216,
+      "game_programming": 0.0,
+      "game_modeling": 0.0,
+      "ai_development": 0.6000000000000001,
+      "graphics_multimedia": 0.19614258665180923,
+      "database_systems": 0.0,
+      "oop": 0.7621510039805097,
+      "basic_job_skills_ohs": 0.3514764189720154,
+      "ai_literacy_ethics": 0.0,
+      "structured_programming": 0.19032992758366846,
+      "digital_literacy": 0.4754831465666328,
+      "computational_thinking": 0.3780646562576295,
+      "audio_editing": 0.0,
+      "workforce_insights": 0.4176160106810423,
+      "data_analysis": 0.24190766252362209,
+      "multimedia_programming": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 13,
+      "coverage_percentage": 0.27859308169570846,
+      "skill_coverage_pct": 0.11126060925571811,
+      "knowledge_coverage_pct": 0.27859308169570846,
+      "avg_skill_confidence": 0.6539610308072729,
+      "avg_knowledge_confidence": 0.6823766704874884,
+      "hard_skill_count": 19,
+      "soft_skill_count": 3,
+      "knowledge_count": 36
+    },
+    "missing_components": [
+      "game_programming",
+      "game_modeling",
+      "database_systems",
+      "ai_literacy_ethics",
+      "audio_editing",
+      "multimedia_programming"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.197,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.535,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.212,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.6,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.196,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.351,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.19,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.475,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.378,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.418,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.242,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 0,
+    "gpt_skill_count": 22,
+    "fused_skill_count": 22,
+    "model_agreement": 0.0,
+    "match_count": 0,
+    "extraction_time": 5.7701427936553955
+  }
+}

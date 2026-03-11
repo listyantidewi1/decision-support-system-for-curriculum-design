@@ -1,0 +1,414 @@
+{
+  "job_id": "in-712828cffdaa826c",
+  "text": "Employing some of the most talented, dedicated people on the planet is not by chance. This is a hybrid position in Puerto Rico What YOU will do: Provide IT systems administration for the eQube DaaS platform hosted on AWS Linux environment. Install logging, monitoring and Anti -virus and other software as required to keep the infrastructure in compliance with Collins standards Work with Cybersecurity, GT and the ATO office as required to keep the infrastructure in compliance . Develop and maintain automation scripts to automate the deployment of the eQube DaaS platform and the applications/solutions built using the platform Monitor infrastructure health and scaling needs Own tickets on infrastructure stability, network issues, scalability Working as a team member in a fast -paced technological environment.",
+  "skills": [
+    {
+      "skill": "provide IT systems administration",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.28
+    },
+    {
+      "skill": "install logging software",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "install monitoring software",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.684,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.98
+    },
+    {
+      "skill": "install Anti-virus software",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.775,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 0.98
+    },
+    {
+      "skill": "develop automation scripts",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.971,
+      "confidence_tier": "Very High",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "maintain automation scripts",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 1.26
+    },
+    {
+      "skill": "monitor infrastructure health",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.778,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 0.98
+    },
+    {
+      "skill": "monitor scaling needs",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.765,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.98
+    },
+    {
+      "skill": "work as a team member",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.71,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.7,
+      "context_agreement": 0.98
+    },
+    {
+      "skill": "monitoring",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.56,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "Anti -virus",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.504,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.75,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "other software",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.509,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.8,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "keep the infrastructure in",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.486,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "Develop",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.689,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "automate the deployment of",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.66,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.92,
+      "context_agreement": 0.89
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "eQube DaaS platform",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "AWS",
+      "confidence_score": 0.85,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Linux environment",
+      "confidence_score": 0.797,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Cybersecurity",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "GT",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "ATO office",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Anti-virus",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "eQube",
+      "confidence_score": 0.41,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Anti",
+      "confidence_score": 0.552,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "-virus",
+      "confidence_score": 0.551,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "eQube",
+      "confidence_score": 0.364,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "DaaS",
+      "confidence_score": 0.345,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.49781566074959416,
+      "algorithms_programming": 0.5590902402489595,
+      "workforce_insights": 0.22682332994674537,
+      "basic_job_skills_ohs": 0.24989244644868536,
+      "network_technology": 0.31914582811430253,
+      "structured_programming": 0.5640357348717318,
+      "multimedia_programming": 0.1497152842229741,
+      "web_development": 0.24337944911891496,
+      "mobile_development": 0.25908392829809584,
+      "game_programming": 0.3291156525885807
+    },
+    "knowledge_coverage": {
+      "digital_literacy": 0.3692556381225586,
+      "graphics_multimedia": 0.3531122798903877,
+      "audio_editing": 0.05789422035416009
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.24989244644868536,
+      "audio_editing": 0.05789422035416009,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.3692556381225586,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.31914582811430253,
+      "database_systems": 0.0,
+      "structured_programming": 0.5640357348717318,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.5590902402489595,
+      "game_programming": 0.3291156525885807,
+      "workforce_insights": 0.22682332994674537,
+      "computational_thinking": 0.49781566074959416,
+      "multimedia_programming": 0.1497152842229741,
+      "web_development": 0.24337944911891496,
+      "graphics_multimedia": 0.3531122798903877,
+      "oop": 0.0,
+      "mobile_development": 0.25908392829809584
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 13,
+      "coverage_percentage": 0.21991366805135212,
+      "skill_coverage_pct": 0.17884723971624128,
+      "knowledge_coverage_pct": 0.041066428335110865,
+      "avg_skill_confidence": 0.7394445746629823,
+      "avg_knowledge_confidence": 0.634878133547582,
+      "hard_skill_count": 14,
+      "soft_skill_count": 1,
+      "knowledge_count": 12
+    },
+    "missing_components": [
+      "data_analysis",
+      "ai_development",
+      "ai_literacy_ethics",
+      "database_systems",
+      "game_modeling",
+      "oop"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.25,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.058,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.369,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.319,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.564,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.559,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.329,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.227,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.498,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.15,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.243,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.353,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.259,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 9,
+    "gpt_skill_count": 9,
+    "fused_skill_count": 15,
+    "model_agreement": 0.41837800873650444,
+    "match_count": 4,
+    "extraction_time": 3.855369806289673
+  }
+}

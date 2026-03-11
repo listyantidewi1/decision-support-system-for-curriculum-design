@@ -1,0 +1,486 @@
+{
+  "job_id": "in-80759602520c230d",
+  "text": "Review and authorize work done by direct reports. Team Leadership and Development: + Oversee programs for technical competency and quality and monitor technical competency of teams. + Ensure team member adherence to company processes, generally accepted engineering and design practices, regulatory requirements, and customer specifications. + Support global standardization and use of drawing and document templates. + Assure the understanding of technical knowledge, legal requirements, and customer specifications whenever viable and lawful. + Use local/global standards to support technical excellence.",
+  "skills": [
+    {
+      "skill": "review work",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.857,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.24
+    },
+    {
+      "skill": "authorize work",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.835,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.27
+    },
+    {
+      "skill": "oversee programs for technical competency and quality",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.846,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.27
+    },
+    {
+      "skill": "monitor technical competency of teams",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.28
+    },
+    {
+      "skill": "ensure team member adherence to company processes",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.29
+    },
+    {
+      "skill": "ensure team member adherence to generally accepted engineering and design practices",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.729,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "ensure team member adherence to regulatory requirements",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.731,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "ensure team member adherence to customer specifications",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.731,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "support global standardization",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.904,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.88,
+      "context_agreement": 1.29
+    },
+    {
+      "skill": "use drawing and document templates",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.768,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "assure understanding of technical knowledge",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.856,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 1.28
+    },
+    {
+      "skill": "assure understanding of legal requirements",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.621,
+      "confidence_tier": "Medium",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "assure understanding of customer specifications",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.677,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "use local/global standards to support technical excellence",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.672,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "quality",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.527,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "use of drawing",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.647,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.72,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "document templates.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.668,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "customer specifications whenever viable",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.53,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "lawful.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.523,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "Use local / global standards",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.684,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.74,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "support technical excellence.",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.697,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.89
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Team Leadership",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Development",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "technical competency",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "quality",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "company processes",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "engineering practices",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "design practices",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "regulatory requirements",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "customer specifications",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "drawing and document templates",
+      "confidence_score": 0.706,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "technical knowledge",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "legal requirements",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "global standards",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.1952675973802114,
+      "digital_literacy": 0.2401777883953977,
+      "workforce_insights": 0.23035123841718708,
+      "basic_job_skills_ohs": 0.22029012883316607,
+      "web_development": 0.243965905192673,
+      "graphics_multimedia": 0.37373567011032555
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.3768804073333741,
+      "digital_literacy": 0.38745982646942145,
+      "algorithms_programming": 0.39120426177978523,
+      "ai_development": 0.3376540660858155,
+      "workforce_insights": 0.4345190048217774,
+      "basic_job_skills_ohs": 0.40887143611907967,
+      "web_development": 0.3672815680503846,
+      "game_programming": 0.37859473228454593,
+      "graphics_multimedia": 0.40583739280700687
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.39120426177978523,
+      "mobile_development": 0.0,
+      "network_technology": 0.0,
+      "web_development": 0.3672815680503846,
+      "game_programming": 0.37859473228454593,
+      "game_modeling": 0.0,
+      "ai_development": 0.3376540660858155,
+      "graphics_multimedia": 0.40583739280700687,
+      "database_systems": 0.0,
+      "oop": 0.0,
+      "basic_job_skills_ohs": 0.40887143611907967,
+      "ai_literacy_ethics": 0.0,
+      "structured_programming": 0.0,
+      "digital_literacy": 0.38745982646942145,
+      "computational_thinking": 0.3768804073333741,
+      "audio_editing": 0.0,
+      "workforce_insights": 0.4345190048217774,
+      "data_analysis": 0.0,
+      "multimedia_programming": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 9,
+      "coverage_percentage": 0.18359487872374688,
+      "skill_coverage_pct": 0.07914675412257688,
+      "knowledge_coverage_pct": 0.18359487872374688,
+      "avg_skill_confidence": 0.7382957774705471,
+      "avg_knowledge_confidence": 0.7466104611706091,
+      "hard_skill_count": 8,
+      "soft_skill_count": 13,
+      "knowledge_count": 13
+    },
+    "missing_components": [
+      "mobile_development",
+      "network_technology",
+      "game_modeling",
+      "database_systems",
+      "oop",
+      "ai_literacy_ethics",
+      "structured_programming",
+      "audio_editing",
+      "data_analysis",
+      "multimedia_programming"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.391,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.367,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.379,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.338,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.406,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.409,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.387,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.377,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.435,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 15,
+    "gpt_skill_count": 14,
+    "fused_skill_count": 21,
+    "model_agreement": 0.4477961500485738,
+    "match_count": 7,
+    "extraction_time": 5.24175763130188
+  }
+}

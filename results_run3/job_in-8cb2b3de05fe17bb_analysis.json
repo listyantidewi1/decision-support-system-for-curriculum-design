@@ -1,0 +1,427 @@
+{
+  "job_id": "in-8cb2b3de05fe17bb",
+  "text": "While mastery across all phases isn\u2019t a requirement, you will have the opportunity to experience the full lifecycle, polish your skills as a consultant who delivers real value, and most importantly, share your perspective as a technical specialist to ensure the proposed solution is technically awesome, fit -for -purpose and value -adding. Qualifications ------------------ To be successful in this role, you will need to demonstrate the following: Passionate about how customers can use technology to unlock value and able to identify the \u201cwhy\u201d. Able to confidently speak to clients and colleagues at various levels, clearly present solutions and articulate how they work and the value they bring to the client\u2019s organisation. Proven experience developing on Cloud and/or Container platforms, with a solid understanding of when and how to leverage Cloud middleware/PaaS such as Azure Service Bus, Amazon EventBridge. Skilled in writing clean, high -quality code.",
+  "skills": [
+    {
+      "skill": "deliver real value as a consultant",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.609,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "share perspective as a technical specialist",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.615,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "ensure proposed solution is technically awesome",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.824,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.16
+    },
+    {
+      "skill": "ensure proposed solution is fit-for-purpose",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.62,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "ensure proposed solution is value-adding",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.618,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "identify why customers use technology to unlock value",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.612,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "speak to clients and colleagues at various levels",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.61,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "present solutions clearly",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.62,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "articulate how solutions work",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.615,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "articulate value solutions bring to client's organisation",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.618,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "develop on Cloud platforms",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.706,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "develop on Container platforms",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.711,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "leverage Cloud middleware",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.603,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "leverage PaaS",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.597,
+      "confidence_tier": "Medium Low",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "write clean code",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.701,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "write high-quality code",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.712,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 0.91
+    },
+    {
+      "skill": "delivers real value",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 0.563,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.82
+    },
+    {
+      "skill": "share your perspective",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.518,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.8,
+      "context_agreement": 0.82
+    },
+    {
+      "skill": "identify the \u201cwhy\u201d.",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.617,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.82
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "Cloud platforms",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Container platforms",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Cloud middleware",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "PaaS",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Azure Service Bus",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Amazon EventBridge",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "full lifecycle,",
+      "confidence_score": 0.522,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "digital_literacy": 0.23106816694221047,
+      "algorithms_programming": 0.3008964880409214,
+      "workforce_insights": 0.2609544678050384,
+      "structured_programming": 0.3316594714041958,
+      "mobile_development": 0.376547495966062
+    },
+    "knowledge_coverage": {
+      "digital_literacy": 0.4136073589324952,
+      "workforce_insights": 0.41508125066757207,
+      "mobile_development": 0.3501152873039246
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.3008964880409214,
+      "mobile_development": 0.376547495966062,
+      "network_technology": 0.0,
+      "web_development": 0.0,
+      "game_programming": 0.0,
+      "game_modeling": 0.0,
+      "ai_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "database_systems": 0.0,
+      "oop": 0.0,
+      "basic_job_skills_ohs": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "structured_programming": 0.3316594714041958,
+      "digital_literacy": 0.4136073589324952,
+      "computational_thinking": 0.0,
+      "audio_editing": 0.0,
+      "workforce_insights": 0.41508125066757207,
+      "data_analysis": 0.0,
+      "multimedia_programming": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 5,
+      "coverage_percentage": 0.09672589815848666,
+      "skill_coverage_pct": 0.07900663632412779,
+      "knowledge_coverage_pct": 0.06204231036336799,
+      "avg_skill_confidence": 0.6362960495714156,
+      "avg_knowledge_confidence": 0.717400006226131,
+      "hard_skill_count": 9,
+      "soft_skill_count": 10,
+      "knowledge_count": 7
+    },
+    "missing_components": [
+      "network_technology",
+      "web_development",
+      "game_programming",
+      "game_modeling",
+      "ai_development",
+      "graphics_multimedia",
+      "database_systems",
+      "oop",
+      "basic_job_skills_ohs",
+      "ai_literacy_ethics",
+      "computational_thinking",
+      "audio_editing",
+      "data_analysis",
+      "multimedia_programming"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.301,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.377,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.332,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.414,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.415,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 4,
+    "gpt_skill_count": 16,
+    "fused_skill_count": 19,
+    "model_agreement": 0.055885232985019684,
+    "match_count": 1,
+    "extraction_time": 3.145861864089966
+  }
+}

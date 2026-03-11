@@ -1,0 +1,366 @@
+{
+  "job_id": "in-346052fa7b080742",
+  "text": "Give and solicit feedback from UX design peers to build the best products. Minimum Qualifications: Bachelor\u2019s degree in Communications, English, Design, or a related field 5 + years of experience in UX writing Proven ability to simplify and communicate complex ideas to broad audiences Familiarity with content management tools and design systems Demonstrated experience leading projects with minimal direction and navigating ambiguity Preferred Qualifications: Experience interacting with executive leadership Experience in an agency setting or complex, cross -functional technology organization Familiarity with user experience research principles and practices Knowledge of online technology, web, and mobile UI tools",
+  "skills": [
+    {
+      "skill": "give and solicit feedback from UX design peers",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.647,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "simplify and communicate complex ideas to broad audiences",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.652,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "lead projects with minimal direction",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.759,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "navigate ambiguity",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.773,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 1.22
+    },
+    {
+      "skill": "interact with executive leadership",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.806,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "Give",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.505,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.72,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "solicit feedback",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.516,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.83,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "build",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.425,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.75,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "simplify and",
+      "type": "Hard",
+      "bloom": "Understand",
+      "confidence_score": 0.668,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "communicate complex ideas",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.46,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.83,
+      "context_agreement": 0.87
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "UX writing",
+      "confidence_score": 0.84,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "content management tools",
+      "confidence_score": 0.804,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "design systems",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "user experience research principles",
+      "confidence_score": 0.822,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "user experience research practices",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "online technology",
+      "confidence_score": 0.846,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "web",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "mobile UI tools",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Bachelor\u2019s degree",
+      "confidence_score": 0.548,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Communications,",
+      "confidence_score": 0.531,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "English,",
+      "confidence_score": 0.529,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Design,",
+      "confidence_score": 0.486,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.11466847488488643,
+      "algorithms_programming": 0.15167534901849586,
+      "game_programming": 0.20855882629486383
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.37855453491210944,
+      "digital_literacy": 0.6169526874004083,
+      "algorithms_programming": 0.46044420003890996,
+      "data_analysis": 0.4072843596530374,
+      "ai_development": 0.3614815950393677,
+      "basic_job_skills_ohs": 0.4422895590948987,
+      "oop": 0.3873209953308106,
+      "web_development": 0.4228903770446778,
+      "mobile_development": 0.38195700645446784,
+      "game_modeling": 0.46259232759475716,
+      "graphics_multimedia": 0.44811494350433356
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.4422895590948987,
+      "audio_editing": 0.0,
+      "data_analysis": 0.4072843596530374,
+      "digital_literacy": 0.6169526874004083,
+      "ai_development": 0.3614815950393677,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.0,
+      "game_modeling": 0.46259232759475716,
+      "algorithms_programming": 0.46044420003890996,
+      "game_programming": 0.20855882629486383,
+      "workforce_insights": 0.0,
+      "computational_thinking": 0.37855453491210944,
+      "multimedia_programming": 0.0,
+      "web_development": 0.4228903770446778,
+      "graphics_multimedia": 0.44811494350433356,
+      "oop": 0.3873209953308106,
+      "mobile_development": 0.38195700645446784
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 12,
+      "coverage_percentage": 0.2620232322296127,
+      "skill_coverage_pct": 0.02499487632622348,
+      "knowledge_coverage_pct": 0.2510464518983041,
+      "avg_skill_confidence": 0.6212344729069688,
+      "avg_knowledge_confidence": 0.7005892005150018,
+      "hard_skill_count": 5,
+      "soft_skill_count": 5,
+      "knowledge_count": 12
+    },
+    "missing_components": [
+      "audio_editing",
+      "ai_literacy_ethics",
+      "network_technology",
+      "database_systems",
+      "structured_programming",
+      "workforce_insights",
+      "multimedia_programming"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.442,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.407,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.617,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.361,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.463,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.46,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.209,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.379,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.423,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.448,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.387,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.382,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 8,
+    "gpt_skill_count": 5,
+    "fused_skill_count": 10,
+    "model_agreement": 0.3378666192293167,
+    "match_count": 3,
+    "extraction_time": 2.5233941078186035
+  }
+}

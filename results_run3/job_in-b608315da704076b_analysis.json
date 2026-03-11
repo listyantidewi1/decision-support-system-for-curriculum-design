@@ -1,0 +1,316 @@
+{
+  "job_id": "in-b608315da704076b",
+  "text": "We are using an API -first architecture, and youll need a deep understanding of scientific software development, a user -centric mindset, and proficiency in Python, C + +, CUDA and relevant cheminformatics toolkits.",
+  "skills": [
+    {
+      "skill": "understand scientific software development",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.631,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.89,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "develop with Python",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.697,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "develop with C++",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.693,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "develop with CUDA",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.694,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "develop with cheminformatics toolkits",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.71,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.9
+    },
+    {
+      "skill": "-centric mindset",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.445,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.83,
+      "context_agreement": 0.81
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "API-first architecture",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "scientific software development",
+      "confidence_score": 0.848,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "Python",
+      "confidence_score": 0.845,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "C++",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "CUDA",
+      "confidence_score": 0.851,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "cheminformatics toolkits",
+      "confidence_score": 0.802,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "API",
+      "confidence_score": 0.506,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "-first",
+      "confidence_score": 0.544,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "C",
+      "confidence_score": 0.559,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "+",
+      "confidence_score": 0.546,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "+,",
+      "confidence_score": 0.556,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "algorithms_programming": 0.2795718702118577,
+      "workforce_insights": 0.28059405273997184,
+      "basic_job_skills_ohs": 0.20339097313525356,
+      "oop": 0.3918843034556087
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.34595739841461187,
+      "algorithms_programming": 0.5096471483351525,
+      "data_analysis": 0.42170900019873975,
+      "workforce_insights": 0.4850064324588976,
+      "basic_job_skills_ohs": 0.4355039773584563,
+      "structured_programming": 0.40112950801849373,
+      "oop": 0.760939678041515,
+      "multimedia_programming": 0.4282802467854016,
+      "web_development": 0.22403596677187945,
+      "mobile_development": 0.36406098604202275,
+      "graphics_multimedia": 0.42494698279557863
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.5096471483351525,
+      "mobile_development": 0.36406098604202275,
+      "network_technology": 0.0,
+      "web_development": 0.22403596677187945,
+      "game_programming": 0.0,
+      "game_modeling": 0.0,
+      "ai_development": 0.0,
+      "graphics_multimedia": 0.42494698279557863,
+      "database_systems": 0.0,
+      "oop": 0.760939678041515,
+      "basic_job_skills_ohs": 0.4355039773584563,
+      "ai_literacy_ethics": 0.0,
+      "structured_programming": 0.40112950801849373,
+      "digital_literacy": 0.0,
+      "computational_thinking": 0.34595739841461187,
+      "audio_editing": 0.0,
+      "workforce_insights": 0.4850064324588976,
+      "data_analysis": 0.42170900019873975,
+      "multimedia_programming": 0.4282802467854016
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 11,
+      "coverage_percentage": 0.2526956486958289,
+      "skill_coverage_pct": 0.06081269471277326,
+      "knowledge_coverage_pct": 0.2526956486958289,
+      "avg_skill_confidence": 0.6449645620741636,
+      "avg_knowledge_confidence": 0.6870717223178924,
+      "hard_skill_count": 6,
+      "soft_skill_count": 0,
+      "knowledge_count": 11
+    },
+    "missing_components": [
+      "network_technology",
+      "game_programming",
+      "game_modeling",
+      "ai_development",
+      "database_systems",
+      "ai_literacy_ethics",
+      "digital_literacy",
+      "audio_editing"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.51,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.364,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.224,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.425,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.436,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.401,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.346,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.485,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.422,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.428,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 1,
+    "gpt_skill_count": 5,
+    "fused_skill_count": 6,
+    "model_agreement": 0.0,
+    "match_count": 0,
+    "extraction_time": 1.8604953289031982
+  }
+}

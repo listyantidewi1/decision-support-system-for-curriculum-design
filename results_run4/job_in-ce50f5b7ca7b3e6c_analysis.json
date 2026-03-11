@@ -1,0 +1,496 @@
+{
+  "job_id": "in-ce50f5b7ca7b3e6c",
+  "text": "In addition to the above, you will: Identify and understand business problems and opportunities. Map out journey from current to future state. Gather, analyse and document requirements through workshops. Model solution requirements. Facilitate communication and collaboration. Propose and evaluate solutions. Support the implementation and testing of solutions. Identify and manage risks, quality and schedule related to your projects.",
+  "skills": [
+    {
+      "skill": "identify business problems",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.813,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "understand business opportunities",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.711,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "map journey from current to future state",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.899,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 1.27
+    },
+    {
+      "skill": "gather requirements through workshops",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.704,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "analyse requirements",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.709,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.89,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "document requirements",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.923,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 1.28
+    },
+    {
+      "skill": "model solution requirements",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.914,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 1.27
+    },
+    {
+      "skill": "facilitate communication",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 1.28
+    },
+    {
+      "skill": "facilitate collaboration",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.711,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.9,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "propose solutions",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.702,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.84,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "evaluate solutions",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.911,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 1.27
+    },
+    {
+      "skill": "support the implementation of solutions",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.692,
+      "confidence_tier": "Medium",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "support the testing of solutions",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.834,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "identify risks",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.695,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "manage risks",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.911,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 1.28
+    },
+    {
+      "skill": "manage quality related to projects",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.693,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "manage schedule related to projects",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.694,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 0.99
+    },
+    {
+      "skill": "Identify",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.695,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "opportunities.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.535,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "Gather",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.522,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "analyse",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.525,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "collaboration.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.534,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "Propose",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.525,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "Identify",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.687,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "quality",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.519,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.89
+    },
+    {
+      "skill": "schedule related",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.685,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.83,
+      "context_agreement": 0.89
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "business problems",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "business opportunities",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "requirements",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "solutions",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "risks",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "quality management",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "schedule management",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.30254104766639917,
+      "digital_literacy": 0.25493292647612803,
+      "basic_job_skills_ohs": 0.21681134014849265
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.3936227917671204,
+      "workforce_insights": 0.3622331500053406,
+      "basic_job_skills_ohs": 0.4487367510795594,
+      "structured_programming": 0.3681161999702454
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.4487367510795594,
+      "audio_editing": 0.0,
+      "data_analysis": 0.0,
+      "digital_literacy": 0.25493292647612803,
+      "ai_development": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.0,
+      "database_systems": 0.0,
+      "structured_programming": 0.3681161999702454,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.0,
+      "game_programming": 0.0,
+      "workforce_insights": 0.3622331500053406,
+      "computational_thinking": 0.3936227917671204,
+      "multimedia_programming": 0.0,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 5,
+      "coverage_percentage": 0.09619167469991546,
+      "skill_coverage_pct": 0.04075185864689578,
+      "knowledge_coverage_pct": 0.08277415225380347,
+      "avg_skill_confidence": 0.7208246192541432,
+      "avg_knowledge_confidence": 0.75,
+      "hard_skill_count": 9,
+      "soft_skill_count": 17,
+      "knowledge_count": 7
+    },
+    "missing_components": [
+      "audio_editing",
+      "data_analysis",
+      "ai_development",
+      "ai_literacy_ethics",
+      "network_technology",
+      "database_systems",
+      "game_modeling",
+      "algorithms_programming",
+      "game_programming",
+      "multimedia_programming",
+      "web_development",
+      "graphics_multimedia",
+      "oop",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.449,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.255,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.368,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.362,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.394,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 18,
+    "gpt_skill_count": 17,
+    "fused_skill_count": 26,
+    "model_agreement": 0.426778687371148,
+    "match_count": 8,
+    "extraction_time": 5.1206653118133545
+  }
+}

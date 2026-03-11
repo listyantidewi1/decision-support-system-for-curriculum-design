@@ -9,9 +9,18 @@ to control false discoveries across many skills.
 Scientific methods (see SCIENTIFIC_METHODOLOGY.md §8):
     - Linear regression per skill (freq vs month_idx)
     - Benjamini-Hochberg q-values; trend_label: Emerging/Declining/Stable (q < 0.05)
+    - Minimum-slope filter to require practical significance alongside statistical significance
+    - Durbin-Watson test to flag potential autocorrelation in residuals
+
+Limitations:
+    - Linear model assumes monotonic trend; non-linear patterns (U-shaped, seasonal)
+      are not captured.  Residual plots should be inspected for high-value skills.
+    - Autocorrelation in monthly counts is plausible (e.g., hiring seasonality).
+      The Durbin-Watson statistic is reported but no correction is applied;
+      p-values may be anti-conservative when DW << 2 or DW >> 2.
 
 Outputs:
-    skill_time_trends.csv  (with slope, p_value, q_value, r_squared, trend_label)
+    skill_time_trends.csv  (with slope, p_value, q_value, r_squared, trend_label, durbin_watson)
     trend_stability_report.json  (optional, with --stability flag)
 """
 
@@ -29,16 +38,26 @@ from scipy import stats as sp_stats
 import config
 
 
-def compute_trend_group(grp: pd.DataFrame) -> Tuple[float, float, float]:
-    """Return (slope, p_value, r_squared) from linear regression."""
+MIN_DATA_POINTS = 5
+
+
+def compute_trend_group(grp: pd.DataFrame) -> Tuple[float, float, float, float]:
+    """Return (slope, p_value, r_squared, durbin_watson) from linear regression.
+
+    Durbin-Watson tests for serial autocorrelation in residuals (2.0 = none,
+    <1.5 = positive autocorrelation, >2.5 = negative autocorrelation).
+    """
     x = grp["month_idx"].values.astype(float)
     y = grp["freq"].values.astype(float)
 
-    if len(x) < 3:
-        return 0.0, 1.0, 0.0
+    if len(x) < MIN_DATA_POINTS:
+        return 0.0, 1.0, 0.0, float("nan")
 
     result = sp_stats.linregress(x, y)
-    return float(result.slope), float(result.pvalue), float(result.rvalue ** 2)
+    residuals = y - (result.slope * x + result.intercept)
+    diffs = np.diff(residuals)
+    dw = float(np.sum(diffs ** 2) / np.sum(residuals ** 2)) if np.sum(residuals ** 2) > 0 else float("nan")
+    return float(result.slope), float(result.pvalue), float(result.rvalue ** 2), dw
 
 
 def benjamini_hochberg(p_values: np.ndarray, alpha: float = 0.05) -> np.ndarray:
@@ -61,14 +80,22 @@ def benjamini_hochberg(p_values: np.ndarray, alpha: float = 0.05) -> np.ndarray:
     return np.clip(q_values, 0, 1)
 
 
-def label_trend_fdr(slope: float, q_value: float, alpha: float = 0.05) -> str:
-    """Label trend using FDR-corrected q-value instead of raw p-value."""
+def label_trend_fdr(slope: float, q_value: float, alpha: float = 0.05,
+                    min_slope: float = 0.0) -> str:
+    """Label trend using FDR-corrected q-value and minimum effect-size filter.
+
+    A skill must pass *both* statistical significance (q < alpha) and
+    practical significance (|slope| >= min_slope) to be labeled non-Stable.
+    """
     if q_value > alpha:
+        return "Stable"
+    if abs(slope) < min_slope:
         return "Stable"
     return "Emerging" if slope > 0 else "Declining"
 
 
-def compute_trends_for_df(df: pd.DataFrame, min_jobs: int, fdr_alpha: float = 0.05) -> pd.DataFrame:
+def compute_trends_for_df(df: pd.DataFrame, min_jobs: int, fdr_alpha: float = 0.05,
+                          min_slope: float = 0.0) -> pd.DataFrame:
     """Core trend computation (reusable for stability analysis)."""
     df["year_month"] = df["job_date"].dt.to_period("M").astype(str)
     months_sorted = sorted(df["year_month"].unique())
@@ -91,7 +118,7 @@ def compute_trends_for_df(df: pd.DataFrame, min_jobs: int, fdr_alpha: float = 0.
     trend_rows = []
     for skill, g in grp.groupby("skill"):
         g_sorted = g.sort_values("month_idx")
-        slope, p_value, r_squared = compute_trend_group(g_sorted)
+        slope, p_value, r_squared, dw = compute_trend_group(g_sorted)
         trend_rows.append({
             "skill": skill,
             "total_freq": g_sorted["freq"].sum(),
@@ -99,6 +126,7 @@ def compute_trends_for_df(df: pd.DataFrame, min_jobs: int, fdr_alpha: float = 0.
             "slope": slope,
             "p_value": p_value,
             "r_squared": r_squared,
+            "durbin_watson": round(dw, 4) if not np.isnan(dw) else None,
         })
 
     trends = pd.DataFrame(trend_rows)
@@ -107,21 +135,26 @@ def compute_trends_for_df(df: pd.DataFrame, min_jobs: int, fdr_alpha: float = 0.
     trends["q_value"] = benjamini_hochberg(p_vals)
 
     trends["trend_label"] = trends.apply(
-        lambda r: label_trend_fdr(r["slope"], r["q_value"], alpha=fdr_alpha), axis=1
+        lambda r: label_trend_fdr(r["slope"], r["q_value"], alpha=fdr_alpha,
+                                  min_slope=min_slope),
+        axis=1,
     )
 
     return trends
 
 
 def stability_analysis(df: pd.DataFrame, min_jobs_values: List[int],
-                       top_n: int = 20, n_seeds: int = 3) -> dict:
+                       top_n: int = 20, n_seeds: int = 3,
+                       base_seed: int | None = None) -> dict:
     """Measure stability of top-N emerging skills across min_jobs and seeds."""
+    if base_seed is None:
+        base_seed = config.RANDOM_SEED
     results = []
 
     for mj in min_jobs_values:
         seed_sets = []
-        for seed in range(n_seeds):
-            df_sampled = df.sample(frac=0.9, random_state=seed).copy()
+        for seed_offset in range(n_seeds):
+            df_sampled = df.sample(frac=0.9, random_state=base_seed + seed_offset).copy()
             trends = compute_trends_for_df(df_sampled, mj)
             if trends.empty:
                 continue
@@ -187,6 +220,12 @@ def main():
         help="FDR significance threshold (default: 0.05).",
     )
     parser.add_argument(
+        "--min_slope", type=float, default=0.0,
+        help="Minimum absolute slope to label a skill as Emerging/Declining. "
+             "Ensures practical significance alongside statistical significance "
+             "(e.g., 0.5 = at least 0.5 additional jobs/month).",
+    )
+    parser.add_argument(
         "--stability", action="store_true",
         help="Run stability analysis across min_jobs settings and seeds.",
     )
@@ -212,7 +251,11 @@ def main():
     if args.only_hard and "type" in df.columns:
         df = df[df["type"].astype(str).str.lower().isin(["hard", "both"])].copy()
 
-    trends = compute_trends_for_df(df, args.min_jobs, fdr_alpha=args.fdr_alpha)
+    if args.min_slope > 0:
+        print(f"[INFO] Minimum slope filter: |slope| >= {args.min_slope}")
+
+    trends = compute_trends_for_df(df, args.min_jobs, fdr_alpha=args.fdr_alpha,
+                                   min_slope=args.min_slope)
 
     if trends.empty:
         print("[WARN] No skills passed the min_jobs filter; nothing to analyze.")
@@ -225,6 +268,14 @@ def main():
           f"Emerging={n_emerging}, Declining={n_declining}, Stable={n_stable}")
     print(f"[INFO] q-value stats: mean={trends['q_value'].mean():.4f}, "
           f"median={trends['q_value'].median():.4f}")
+
+    if "durbin_watson" in trends.columns:
+        dw_valid = trends["durbin_watson"].dropna()
+        if not dw_valid.empty:
+            dw_warn = ((dw_valid < 1.5) | (dw_valid > 2.5)).sum()
+            print(f"[INFO] Durbin-Watson stats: mean={dw_valid.mean():.2f}, "
+                  f"median={dw_valid.median():.2f}, "
+                  f"flagged (DW<1.5 or >2.5): {dw_warn}/{len(dw_valid)}")
 
     out_path = out_dir / args.output
     trends.to_csv(out_path, index=False, encoding="utf-8-sig")

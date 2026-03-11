@@ -1,0 +1,532 @@
+{
+  "job_id": "in-816ac9d92b1f2c12",
+  "text": "You will: Lead data -driven solution design + deliver value -focused outcomes \ufe0f Champion data governance, privacy + compliance frameworks Define KPIs + measure benefits realisation Guide delivery: backlog, ceremonies, stakeholder workshops, UAT Validate data integrity, quality + readiness for enterprise scale Work with technical teams to uplift our enterprise data platform Evaluate tools, tech + platforms for AA\u2019s future data ecosystem What you\u2019ll bring 8 + years Business Analysis with 2 + years at Senior level Solid experience in data analysis, governance + platform delivery Proven ability turning complex requirements into business value Strong stakeholder engagement + communication skills Comfortable influencing, challenging and leading at pace Bonus points for: SQL, Tableau, advanced analytics, data ethics, GenAI exposure.",
+  "skills": [
+    {
+      "skill": "lead solution design",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.685,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.02
+    },
+    {
+      "skill": "deliver value-focused outcomes",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.917,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.32
+    },
+    {
+      "skill": "champion data governance",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.854,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 1.32
+    },
+    {
+      "skill": "define KPIs",
+      "type": "Hard",
+      "bloom": "Remember",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 1.32
+    },
+    {
+      "skill": "measure benefits realisation",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 1.32
+    },
+    {
+      "skill": "guide delivery",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.846,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.32
+    },
+    {
+      "skill": "validate data integrity",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.32
+    },
+    {
+      "skill": "uplift enterprise data platform",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.3
+    },
+    {
+      "skill": "evaluate tools",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 1.32
+    },
+    {
+      "skill": "turn complex requirements into business value",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.908,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.81,
+      "context_agreement": 1.32
+    },
+    {
+      "skill": "engage stakeholders",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.698,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 1.02
+    },
+    {
+      "skill": "communicate skills",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.696,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.86,
+      "context_agreement": 1.02
+    },
+    {
+      "skill": "influence at pace",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.681,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 1.02
+    },
+    {
+      "skill": "challenge at pace",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.681,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.75,
+      "context_agreement": 1.02
+    },
+    {
+      "skill": "lead at pace",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.674,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.7,
+      "context_agreement": 1.02
+    },
+    {
+      "skill": "Lead data -driven solution design",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.708,
+      "confidence_tier": "Medium High",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "quality + readiness for enterprise scale",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.525,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "Work with technical teams",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.752,
+      "confidence_tier": "Medium High",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.77,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "tech + platforms",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.535,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.74,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "stakeholder",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.534,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.9,
+      "context_agreement": 0.92
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "data governance",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "privacy frameworks",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "compliance frameworks",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "KPIs",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "backlog",
+      "confidence_score": 0.822,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "ceremonies",
+      "confidence_score": 0.825,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "stakeholder workshops",
+      "confidence_score": 0.846,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "UAT",
+      "confidence_score": 0.846,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "data integrity",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "data quality",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "enterprise data platform",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Business Analysis",
+      "confidence_score": 0.85,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "data analysis",
+      "confidence_score": 0.844,
+      "confidence_tier": "High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "platform delivery",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "SQL",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "Tableau",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "advanced analytics",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "data ethics",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "GenAI",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "data",
+      "confidence_score": 0.35,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "privacy + compliance",
+      "confidence_score": 0.463,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "enterprise",
+      "confidence_score": 0.339,
+      "confidence_tier": "Very Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "governance + platform delivery",
+      "confidence_score": 0.503,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "basic_job_skills_ohs": 0.5572285704493803,
+      "mobile_development": 0.2052494707672512,
+      "game_programming": 0.5382659438692659
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.06495805645856,
+      "digital_literacy": 0.4314369678497315,
+      "data_analysis": 0.6000000000000001,
+      "ai_literacy_ethics": 0.5999999284744264,
+      "ai_development": 0.4214317077522091,
+      "workforce_insights": 0.4393573517235192,
+      "basic_job_skills_ohs": 0.34300879240036014,
+      "structured_programming": 0.43525697873430913,
+      "database_systems": 0.4417659759521485,
+      "web_development": 0.43234402847037856,
+      "mobile_development": 0.36841439008712773
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.5572285704493803,
+      "audio_editing": 0.0,
+      "data_analysis": 0.6000000000000001,
+      "digital_literacy": 0.4314369678497315,
+      "ai_development": 0.4214317077522091,
+      "ai_literacy_ethics": 0.5999999284744264,
+      "network_technology": 0.0,
+      "database_systems": 0.4417659759521485,
+      "structured_programming": 0.43525697873430913,
+      "game_modeling": 0.0,
+      "algorithms_programming": 0.0,
+      "game_programming": 0.5382659438692659,
+      "workforce_insights": 0.4393573517235192,
+      "computational_thinking": 0.06495805645856,
+      "multimedia_programming": 0.0,
+      "web_development": 0.43234402847037856,
+      "graphics_multimedia": 0.0,
+      "oop": 0.0,
+      "mobile_development": 0.36841439008712773
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 12,
+      "coverage_percentage": 0.2805505210432135,
+      "skill_coverage_pct": 0.06846020974136302,
+      "knowledge_coverage_pct": 0.24094600936330368,
+      "avg_skill_confidence": 0.7847367763405264,
+      "avg_knowledge_confidence": 0.7146741626251374,
+      "hard_skill_count": 8,
+      "soft_skill_count": 12,
+      "knowledge_count": 23
+    },
+    "missing_components": [
+      "audio_editing",
+      "network_technology",
+      "game_modeling",
+      "algorithms_programming",
+      "multimedia_programming",
+      "graphics_multimedia",
+      "oop"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.557,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.6,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.431,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.421,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.6,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.442,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.435,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.538,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.439,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.065,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.432,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.368,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 14,
+    "gpt_skill_count": 15,
+    "fused_skill_count": 20,
+    "model_agreement": 0.5925944765408834,
+    "match_count": 9,
+    "extraction_time": 4.510396242141724
+  }
+}

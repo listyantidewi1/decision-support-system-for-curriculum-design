@@ -1,0 +1,372 @@
+{
+  "job_id": "in-042b565c84045356",
+  "text": "This role may involve local travel across Dunedin from time to time, so flexibility is important. Must be a NZ Citizen or hold Permanent Residency Must have a NZ Driver's License (Full or Restricted) Responsibilities: Respond to client inquiries and provide technical support via various channels (phone, email, chat, etc.) Diagnoses and troubleshoot technical issues reported by clients. Document and track client issues using a ticketing system. Escalate unresolved issues to appropriate teams and follow up until resolution. Stay up to date with product knowledge and industry trends to provide accurate and timely support.",
+  "skills": [
+    {
+      "skill": "respond to client inquiries",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.804,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "provide technical support",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "diagnose technical issues",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.757,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "troubleshoot technical issues",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.763,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "document client issues",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.752,
+      "confidence_tier": "Medium High",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "track client issues",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.718,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.77,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "escalate unresolved issues",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.896,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "follow up until resolution",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.763,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.23
+    },
+    {
+      "skill": "stay up to date with product knowledge",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.808,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.74,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "stay up to date with industry trends",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.643,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.73,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "provide accurate support",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.655,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.82,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "provide timely support",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.652,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.8,
+      "context_agreement": 0.97
+    },
+    {
+      "skill": "Diagnoses",
+      "type": "Hard",
+      "bloom": "Analyze",
+      "confidence_score": 0.545,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.87,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "troubleshoot technical issues reported by clients.",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.659,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.83,
+      "context_agreement": 0.87
+    },
+    {
+      "skill": "Document",
+      "type": "Hard",
+      "bloom": "Apply",
+      "confidence_score": 0.644,
+      "confidence_tier": "Medium",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.84,
+      "context_agreement": 0.87
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "ticketing system",
+      "confidence_score": 0.72,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM"
+    },
+    {
+      "knowledge": "product knowledge",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "industry trends",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "NZ",
+      "confidence_score": 0.521,
+      "confidence_tier": "Medium Low",
+      "source": "BERT (standalone)"
+    },
+    {
+      "knowledge": "Driver's License",
+      "confidence_score": 0.466,
+      "confidence_tier": "Low",
+      "source": "BERT (standalone)"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.47630813327453914,
+      "digital_literacy": 0.30968523471581866,
+      "network_technology": 0.38992986330040924,
+      "structured_programming": 0.3369969697196709,
+      "web_development": 0.22531426582306374
+    },
+    "knowledge_coverage": {
+      "ai_development": 0.3875005245208741,
+      "workforce_insights": 0.4287658095359803
+    },
+    "combined_coverage": {
+      "algorithms_programming": 0.0,
+      "mobile_development": 0.0,
+      "network_technology": 0.38992986330040924,
+      "web_development": 0.22531426582306374,
+      "game_programming": 0.0,
+      "game_modeling": 0.0,
+      "ai_development": 0.3875005245208741,
+      "graphics_multimedia": 0.0,
+      "database_systems": 0.0,
+      "oop": 0.0,
+      "basic_job_skills_ohs": 0.0,
+      "ai_literacy_ethics": 0.0,
+      "structured_programming": 0.3369969697196709,
+      "digital_literacy": 0.30968523471581866,
+      "computational_thinking": 0.47630813327453914,
+      "audio_editing": 0.0,
+      "workforce_insights": 0.4287658095359803,
+      "data_analysis": 0.0,
+      "multimedia_programming": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 7,
+      "coverage_percentage": 0.13444741057317663,
+      "skill_coverage_pct": 0.0914860245701843,
+      "knowledge_coverage_pct": 0.04296138600299233,
+      "avg_skill_confidence": 0.7371974034519275,
+      "avg_knowledge_confidence": 0.641444794086002,
+      "hard_skill_count": 8,
+      "soft_skill_count": 7,
+      "knowledge_count": 5
+    },
+    "missing_components": [
+      "algorithms_programming",
+      "mobile_development",
+      "game_programming",
+      "game_modeling",
+      "graphics_multimedia",
+      "database_systems",
+      "oop",
+      "basic_job_skills_ohs",
+      "ai_literacy_ethics",
+      "audio_editing",
+      "data_analysis",
+      "multimedia_programming"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "algorithms_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.39,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.225,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.388,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.337,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.31,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.476,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.429,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 9,
+    "gpt_skill_count": 12,
+    "fused_skill_count": 15,
+    "model_agreement": 0.32585301995277405,
+    "match_count": 4,
+    "extraction_time": 3.149676561355591
+  }
+}

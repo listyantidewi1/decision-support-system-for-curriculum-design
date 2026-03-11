@@ -144,17 +144,26 @@ def get_config():
 
 @app.get("/api/domains")
 def get_future_domains():
-    """Return domain_id list for domain labeling dropdown."""
+    """Return domain_id + future_domain name for domain labeling dropdown."""
     path = PROJECT_ROOT / "future_domains.csv"
     if not path.exists():
-        return {"domains": [], "fallback": ["WEF01", "WEF02", "WEF03", "WEF04", "WEF05", "WEF06", "WEF07",
-                                            "ONET01", "ONET02", "ONET03", "ONET04", "MCK01", "MCK02",
-                                            "none", "unclear"]}
+        return {"domains": [], "fallback": [
+            {"id": "WEF01", "name": "WEF01"},
+            {"id": "none", "name": "none"},
+            {"id": "unclear", "name": "unclear"},
+        ]}
     df = pd.read_csv(path)
     if "domain_id" not in df.columns:
-        return {"domains": ["none", "unclear"]}
-    ids = df["domain_id"].astype(str).tolist()
-    return {"domains": ids + ["none", "unclear"]}
+        return {"domains": [{"id": "none", "name": "none"}, {"id": "unclear", "name": "unclear"}]}
+    has_name = "future_domain" in df.columns
+    items = []
+    for _, row in df.iterrows():
+        did = str(row["domain_id"])
+        dname = str(row["future_domain"]) if has_name else did
+        items.append({"id": did, "name": dname})
+    items.append({"id": "none", "name": "none — no domain fits"})
+    items.append({"id": "unclear", "name": "unclear — cannot decide"})
+    return {"domains": items}
 
 
 @app.get("/api/skills")

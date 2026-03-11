@@ -1,0 +1,384 @@
+{
+  "job_id": "in-70a2eb5261b8c030",
+  "text": "Design and Develop software and technology solutions consistent with stated architectural principles and guidelines Design, develop, and unit test resolution for production defects Design and develop complex data integrations solutions consistent with stated architectural principles and guidelines Participate in peer code review, collaborate with Architects, and share insights/input with fellow developers/Sr developers Collaborate with Quality Assurance to solve complex problems/defects, and lead defect root cause analysis Other duties as assigned. What We\u2019ll Provide: More than just pay, our DaVita Rewards package connects teammates to what matters most.",
+  "skills": [
+    {
+      "skill": "design software solutions",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.806,
+      "confidence_tier": "High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.03
+    },
+    {
+      "skill": "develop software solutions",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.931,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.03
+    },
+    {
+      "skill": "design technology solutions",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.935,
+      "confidence_tier": "Very High",
+      "source": "LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 1.19
+    },
+    {
+      "skill": "develop technology solutions",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.87,
+      "context_agreement": 1.25
+    },
+    {
+      "skill": "unit test resolution for production defects",
+      "type": "Hard",
+      "bloom": "Evaluate",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.79,
+      "context_agreement": 1.34
+    },
+    {
+      "skill": "design complex data integrations solutions",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.32
+    },
+    {
+      "skill": "develop complex data integrations solutions",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 1.0,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.33
+    },
+    {
+      "skill": "participate in peer code review",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.689,
+      "confidence_tier": "Medium",
+      "source": "LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 1.03
+    },
+    {
+      "skill": "collaborate with Architects",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.9,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.85,
+      "context_agreement": 1.34
+    },
+    {
+      "skill": "share insights with developers",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.829,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.31
+    },
+    {
+      "skill": "collaborate with Quality Assurance",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.837,
+      "confidence_tier": "High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.83,
+      "context_agreement": 1.34
+    },
+    {
+      "skill": "solve complex problems / defects",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.704,
+      "confidence_tier": "Medium High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.78,
+      "context_agreement": 1.03
+    },
+    {
+      "skill": "lead defect root cause analysis",
+      "type": "Soft",
+      "bloom": "N/A",
+      "confidence_score": 0.91,
+      "confidence_tier": "Very High",
+      "source": "BERT+LLM",
+      "semantic_density": 0.76,
+      "context_agreement": 1.34
+    },
+    {
+      "skill": "Design",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.703,
+      "confidence_tier": "Medium High",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "Design",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.71,
+      "confidence_tier": "Medium High",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "develop",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.715,
+      "confidence_tier": "Medium High",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.81,
+      "context_agreement": 0.92
+    },
+    {
+      "skill": "Design",
+      "type": "Hard",
+      "bloom": "Create",
+      "confidence_score": 0.715,
+      "confidence_tier": "Medium High",
+      "source": "BERT (standalone)",
+      "semantic_density": 0.78,
+      "context_agreement": 0.92
+    }
+  ],
+  "knowledge": [
+    {
+      "knowledge": "architectural principles",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "architectural guidelines",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "production defects",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    },
+    {
+      "knowledge": "data integrations",
+      "confidence_score": 0.75,
+      "confidence_tier": "Medium High",
+      "source": "LLM"
+    }
+  ],
+  "coverage_analysis": {
+    "skill_coverage": {
+      "computational_thinking": 0.5943276414398816,
+      "algorithms_programming": 1.368865818038578,
+      "data_analysis": 0.5324242563957352,
+      "ai_development": 0.518801269391911,
+      "workforce_insights": 0.5986032008071607,
+      "basic_job_skills_ohs": 0.5049328433146895,
+      "structured_programming": 0.46444384094489827,
+      "oop": 0.33544851573309337,
+      "database_systems": 0.3450551751599624,
+      "multimedia_programming": 0.42834709644522967,
+      "game_modeling": 0.4859465216719828,
+      "game_programming": 0.3902226814722614,
+      "graphics_multimedia": 0.5758381976004416,
+      "audio_editing": 0.3399301766270333
+    },
+    "knowledge_coverage": {
+      "computational_thinking": 0.375768792629242,
+      "data_analysis": 0.3753135323524476,
+      "structured_programming": 0.3395378708839417,
+      "oop": 0.39529988765716556
+    },
+    "combined_coverage": {
+      "basic_job_skills_ohs": 0.5049328433146895,
+      "audio_editing": 0.3399301766270333,
+      "data_analysis": 0.5324242563957352,
+      "digital_literacy": 0.0,
+      "ai_development": 0.518801269391911,
+      "ai_literacy_ethics": 0.0,
+      "network_technology": 0.0,
+      "database_systems": 0.3450551751599624,
+      "structured_programming": 0.46444384094489827,
+      "game_modeling": 0.4859465216719828,
+      "algorithms_programming": 1.368865818038578,
+      "game_programming": 0.3902226814722614,
+      "workforce_insights": 0.5986032008071607,
+      "computational_thinking": 0.5943276414398816,
+      "multimedia_programming": 0.42834709644522967,
+      "web_development": 0.0,
+      "graphics_multimedia": 0.5758381976004416,
+      "oop": 0.39529988765716556,
+      "mobile_development": 0.0
+    },
+    "metrics": {
+      "total_components": 19,
+      "covered_components": 14,
+      "coverage_percentage": 0.39700203194562794,
+      "skill_coverage_pct": 0.39385195973909787,
+      "knowledge_coverage_pct": 0.07820632018541036,
+      "avg_skill_confidence": 0.8460404295978817,
+      "avg_knowledge_confidence": 0.75,
+      "hard_skill_count": 11,
+      "soft_skill_count": 6,
+      "knowledge_count": 4
+    },
+    "missing_components": [
+      "digital_literacy",
+      "ai_literacy_ethics",
+      "network_technology",
+      "web_development",
+      "mobile_development"
+    ],
+    "coverage_gaps": [
+      {
+        "component": "basic_job_skills_ohs",
+        "coverage_weight": 0.505,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "audio_editing",
+        "coverage_weight": 0.34,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "data_analysis",
+        "coverage_weight": 0.532,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "digital_literacy",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "ai_development",
+        "coverage_weight": 0.519,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "ai_literacy_ethics",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "network_technology",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "database_systems",
+        "coverage_weight": 0.345,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "structured_programming",
+        "coverage_weight": 0.464,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_modeling",
+        "coverage_weight": 0.486,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "game_programming",
+        "coverage_weight": 0.39,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "workforce_insights",
+        "coverage_weight": 0.599,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "computational_thinking",
+        "coverage_weight": 0.594,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "multimedia_programming",
+        "coverage_weight": 0.428,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "web_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      },
+      {
+        "component": "graphics_multimedia",
+        "coverage_weight": 0.576,
+        "severity": "low",
+        "suggestion": "Add both theoretical and practical aspects"
+      },
+      {
+        "component": "oop",
+        "coverage_weight": 0.395,
+        "severity": "medium",
+        "suggestion": "Include more technical knowledge items"
+      },
+      {
+        "component": "mobile_development",
+        "coverage_weight": 0.0,
+        "severity": "high",
+        "suggestion": "Consider adding more specific skills in this area"
+      }
+    ]
+  },
+  "extraction_metrics": {
+    "bert_skill_count": 13,
+    "gpt_skill_count": 13,
+    "fused_skill_count": 17,
+    "model_agreement": 0.6346728351720718,
+    "match_count": 9,
+    "extraction_time": 3.595909833908081
+  }
+}
