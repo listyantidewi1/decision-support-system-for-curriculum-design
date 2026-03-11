@@ -82,11 +82,14 @@ This produces:
 | 7 | `enrich_with_dates.py` | advanced_skills.csv, jobs_metadata.csv | advanced_skills_with_dates.csv, etc. |
 | 8 | `skill_time_trend_analysis.py --only_hard --stability` | advanced_skills_with_dates.csv | skill_time_trends.csv (FDR q-values), trend_stability_report.json |
 | 9 | `generate_competencies.py` | verified_skills.csv, future_skill_weights.csv, skill_time_trends.csv, future_domains.csv | competency_proposals.json (domain-based batching by default) |
-| 10 | `recommendations.py --ablation` | all outputs above | recommendations.csv, recommendations_report.json |
+| 10 | `recommendations.py --ablation --sensitivity` | all outputs above | recommendations.csv, recommendations_report.json, weight_sensitivity_report.json |
 | 11 | `export_gold_set.py` | verified_skills, advanced_knowledge, future_weights | DATA/labels/gold_*.csv |
 | 12 | `export_for_review.py` | comprehensive_analysis, verified_skills, advanced_knowledge | expert_review_*.csv |
 | 13 | `export_competencies_for_review.py` | competency_proposals.json | expert_review_competencies.csv |
-| 14 | `evaluate_extraction.py` | DATA/labels/gold_*.csv | extraction_evaluation_report.json |
+| 14 | `merge_gold_labels.py` | DATA/labels/gold_labels/*.csv | DATA/labels/gold_*_merged.csv |
+| 15 | `evaluate_extraction.py` | DATA/labels/gold_*.csv | extraction_evaluation_report.json |
+| 16 | `evaluate_future_mapping.py` | gold_future_domain.csv, future_skill_weights.csv | future_mapping_evaluation_report.json |
+| 17 | `plot_scientific_analysis.py` | evaluation reports, trends, calibration | Scientific plots in results/figures/ |
 
 **Note:** Competency generation and recommendations run *after* future-weight mapping and FDR-controlled trend analysis so outputs incorporate both domain forecasts and empirical emerging/declining signals.
 
@@ -251,7 +254,7 @@ Phase 2 has **13 steps**. Run after expert review is complete.
 | File | Description |
 |------|-------------|
 | `parameter_validation_report.json` | AUC-ROC, Brier score, calibration curve, cross-validated AUC |
-| `extraction_evaluation_report.json` | P/R/F1 per extractor source with Wilson CIs |
+| `extraction_evaluation_report.json` | Precision per extractor source with Wilson CIs |
 | `future_mapping_evaluation_report.json` | Top-1 accuracy, confusion pairs, mapping margin stats |
 | `recommendations.csv` | Ranked curriculum recommendations with evidence traces |
 | `recommendations_report.json` | Top-N summary, ablation results, P@N/NDCG evaluation |
@@ -366,7 +369,7 @@ evaluate_future_mapping.py → future_mapping_evaluation_report.json
 | Script | Purpose |
 |--------|---------|
 | `export_gold_set.py` | Export stratified gold set for labeling |
-| `evaluate_extraction.py` | Precision/recall/F1 per extractor (BERT/LLM/Hybrid) |
+| `evaluate_extraction.py` | Extraction precision per source (BERT/LLM/Hybrid) with Wilson CI |
 | `validate_parameters.py` | AUC-ROC, Brier score, calibration curve, cross-validated AUC |
 | `evaluate_competency_generation.py` | Competency quality metrics (mean, CI, per-batch) |
 | `evaluate_future_mapping.py` | Domain mapping accuracy vs gold labels |
@@ -483,7 +486,7 @@ For multiple experimental runs:
 
 ### Scientific Rigor Upgrade (Phase A-F)
 - **Gold set**: `export_gold_set.py` produces `DATA/labels/gold_skills.csv`, `gold_knowledge.csv`, `gold_future_domain.csv`
-- **Extraction evaluation**: `evaluate_extraction.py` computes P/R/F1 per source with Wilson CIs and IRR
+- **Extraction evaluation**: `evaluate_extraction.py` computes precision per source with Wilson CIs and IRR (recall is not estimable; see SCIENTIFIC_METHODOLOGY.md §10)
 - **Calibrated verification**: `verify_skills.py` uses calibrated threshold from `validate_parameters.py` (AUC, Brier, 5-fold CV)
 - **FDR-controlled trends**: `skill_time_trend_analysis.py` uses Benjamini-Hochberg; exports q-values + stability report
 - **Future-domain ingestion**: `ingest_future_domains.py` normalizes WEF/O*NET/McKinsey into `future_domains.csv`

@@ -1,8 +1,14 @@
 """
 evaluate_extraction.py
 
-Evaluates extraction quality (precision, recall, F1) using a labeled gold set.
-Computes metrics overall and per extraction source (BERT / LLM / Hybrid).
+Evaluates extraction **precision** using a labeled gold set.
+
+NOTE ON RECALL: True recall is not estimable with this gold-set design.
+The gold set contains items sampled from pipeline *outputs*, so we can
+measure "what fraction of extracted items are correct" (precision) but NOT
+"what fraction of true items were extracted" (recall).  Any metric labelled
+recall_estimate in older reports is numerically identical to precision and
+should be interpreted as such.  F1 is therefore omitted.
 
 Scientific methods (see SCIENTIFIC_METHODOLOGY.md):
     - Binomial test: H0 precision=0.5 vs H1 precision>0.5
@@ -45,35 +51,27 @@ def _load_labeled(path: Path, id_col: str = "gold_id") -> pd.DataFrame:
     return df
 
 
-def precision_recall_f1(y_true: List[int]) -> Dict[str, float]:
-    """Compute precision, recall, F1 for extraction correctness.
+def compute_precision(y_true: List[int]) -> Dict[str, float]:
+    """Compute extraction precision from gold-set labels.
 
-    In the gold-set paradigm:
-      - precision = fraction of extracted items that are correct
-      - recall is approximated as the fraction of correct items
-        (true recall requires knowing all true items, which we
-        estimate from the gold set's positive rate)
+    precision = (items labeled correct) / (total labeled items).
+
+    True recall is NOT estimable: the gold set samples from pipeline
+    outputs, so we cannot know how many real skills were *missed*.
     """
     n = len(y_true)
     if n == 0:
-        return {"n": 0, "precision": 0.0, "recall": 0.0, "f1": 0.0}
+        return {"n": 0, "n_correct": 0, "n_incorrect": 0, "precision": 0.0}
 
     tp = sum(y_true)
     fp = n - tp
-
-    precision = tp / n if n > 0 else 0.0
-
-    recall = tp / n if n > 0 else 0.0
-
-    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
+    precision = tp / n
 
     return {
         "n": n,
         "n_correct": tp,
         "n_incorrect": fp,
         "precision": round(precision, 4),
-        "recall_estimate": round(recall, 4),
-        "f1": round(f1, 4),
     }
 
 
@@ -114,7 +112,7 @@ def wilson_ci(p: float, n: int, z: float = 1.96) -> Tuple[float, float]:
 
 
 def _add_binomial_and_effect(metrics: Dict, p0: float = 0.5) -> None:
-    """Add binomial test, effect sizes, and recall_estimate key (already in metrics)."""
+    """Add binomial test and effect sizes to a precision metrics dict."""
     n_correct = metrics.get("n_correct", 0)
     n = metrics.get("n", 0)
     precision = metrics.get("precision", 0.0)
@@ -199,7 +197,7 @@ def _apply_multi_comparison_correction(results: List[Dict], alpha: float = 0.05)
 def evaluate_by_source(df: pd.DataFrame, source_col: str = "source") -> List[Dict]:
     results = []
     if source_col not in df.columns:
-        metrics = precision_recall_f1(df["is_correct_bin"].tolist())
+        metrics = compute_precision(df["is_correct_bin"].tolist())
         metrics["source"] = "all"
         ci = wilson_ci(metrics["precision"], metrics["n"])
         metrics["precision_ci_95"] = list(ci)
@@ -208,14 +206,14 @@ def evaluate_by_source(df: pd.DataFrame, source_col: str = "source") -> List[Dic
         return results
 
     for src, grp in df.groupby(source_col):
-        metrics = precision_recall_f1(grp["is_correct_bin"].tolist())
+        metrics = compute_precision(grp["is_correct_bin"].tolist())
         metrics["source"] = str(src)
         ci = wilson_ci(metrics["precision"], metrics["n"])
         metrics["precision_ci_95"] = list(ci)
         _add_binomial_and_effect(metrics)
         results.append(metrics)
 
-    overall = precision_recall_f1(df["is_correct_bin"].tolist())
+    overall = compute_precision(df["is_correct_bin"].tolist())
     overall["source"] = "all"
     ci = wilson_ci(overall["precision"], overall["n"])
     overall["precision_ci_95"] = list(ci)
@@ -226,8 +224,36 @@ def evaluate_by_source(df: pd.DataFrame, source_col: str = "source") -> List[Dic
     return results
 
 
-def _load_irr_from_gold_labels(labels_dir: Path, kind: str, overlap_n: int = 20) -> Dict:
-    """Load IRR from gold_labels/ (multi-reviewer UI format)."""
+def _fleiss_kappa(matrix) -> float:
+    """Compute Fleiss' Kappa for 3+ raters on binary categories.
+
+    ``matrix`` is (N x C) where N = items and C = categories (e.g. 2 for
+    binary).  Each cell is the count of raters who placed item i into
+    category c.
+    """
+    N, C = matrix.shape
+    n_raters = matrix[0].sum()
+    if N == 0 or n_raters <= 1:
+        return 0.0
+
+    p_j = matrix.sum(axis=0) / (N * n_raters)
+    P_i = (matrix ** 2).sum(axis=1)
+    P_i = (P_i - n_raters) / (n_raters * (n_raters - 1))
+    P_bar = P_i.mean()
+    P_e = (p_j ** 2).sum()
+
+    if P_e >= 1.0:
+        return 0.0
+    return float((P_bar - P_e) / (1 - P_e))
+
+
+def _load_irr_from_gold_labels(labels_dir: Path, kind: str) -> Dict:
+    """Load IRR from gold_labels/ (multi-reviewer UI format).
+
+    Overlap items are identified by the ``is_overlap`` column in the gold
+    template (randomly sampled at export time).  Falls back to first-N
+    if the column is absent.
+    """
     path = labels_dir / "gold_labels" / f"{kind}_labels.csv"
     if not path.exists():
         return {"status": "no_gold_labels"}
@@ -238,13 +264,20 @@ def _load_irr_from_gold_labels(labels_dir: Path, kind: str, overlap_n: int = 20)
     df = df[df["is_correct"].isin(["yes", "no"])].copy()
     df["is_correct_bin"] = (df["is_correct"] == "yes").astype(int)
 
-    # Overlap: first N unique gold_ids from template
     template_path = labels_dir / ("gold_skills.csv" if kind == "skill" else "gold_knowledge.csv")
     if template_path.exists():
         tpl = pd.read_csv(template_path)
-        overlap_ids = tpl["gold_id"].head(overlap_n).tolist() if "gold_id" in tpl.columns else []
+        if "is_overlap" in tpl.columns and "gold_id" in tpl.columns:
+            overlap_ids = tpl.loc[
+                tpl["is_overlap"].astype(str).str.strip().str.lower().isin(["true", "1"]),
+                "gold_id",
+            ].tolist()
+        elif "gold_id" in tpl.columns:
+            overlap_ids = tpl["gold_id"].head(30).tolist()
+        else:
+            overlap_ids = []
     else:
-        overlap_ids = df["gold_id"].unique()[:overlap_n].tolist()
+        overlap_ids = df["gold_id"].unique()[:30].tolist()
 
     df_overlap = df[df["gold_id"].isin(overlap_ids)].copy()
     labelers = df_overlap["labeler_id"].astype(str).str.strip().unique()
@@ -262,29 +295,62 @@ def _load_irr_from_gold_labels(labels_dir: Path, kind: str, overlap_n: int = 20)
     if len(pivot) < 5:
         return {"status": "insufficient_overlap", "overlap_items": len(pivot)}
 
-    l1, l2 = valid_labelers[0], valid_labelers[1]
-    a, b = pivot[l1].values, pivot[l2].values
-    agree = (a == b).sum()
-    n = len(a)
-    po = agree / n
-    pe = ((a == 1).sum() / n * (b == 1).sum() / n +
-          (a == 0).sum() / n * (b == 0).sum() / n)
-    kappa = (po - pe) / (1 - pe) if pe < 1 else 0.0
-    return {
+    result: Dict = {
         "status": "ok",
-        "labelers": [str(l1), str(l2)],
-        "overlap_items": n,
-        "observed_agreement": round(po, 4),
-        "cohens_kappa": round(kappa, 4),
+        "labelers": [str(l) for l in valid_labelers],
+        "overlap_items": len(pivot),
     }
+
+    if len(valid_labelers) == 2:
+        l1, l2 = valid_labelers[0], valid_labelers[1]
+        a, b = pivot[l1].values, pivot[l2].values
+        agree = (a == b).sum()
+        n = len(a)
+        po = agree / n
+        pe = ((a == 1).sum() / n * (b == 1).sum() / n +
+              (a == 0).sum() / n * (b == 0).sum() / n)
+        kappa = (po - pe) / (1 - pe) if pe < 1 else 0.0
+        result["observed_agreement"] = round(po, 4)
+        result["cohens_kappa"] = round(kappa, 4)
+    else:
+        import numpy as np
+        mat_values = pivot[valid_labelers].values
+        n_items = mat_values.shape[0]
+        count_matrix = np.zeros((n_items, 2))
+        for i in range(n_items):
+            row = mat_values[i]
+            count_matrix[i, 1] = row.sum()
+            count_matrix[i, 0] = len(valid_labelers) - row.sum()
+        fk = _fleiss_kappa(count_matrix)
+        result["fleiss_kappa"] = round(fk, 4)
+        result["n_raters"] = len(valid_labelers)
+
+        l1, l2 = valid_labelers[0], valid_labelers[1]
+        a, b = pivot[l1].values, pivot[l2].values
+        agree = (a == b).sum()
+        n = len(a)
+        po = agree / n
+        pe = ((a == 1).sum() / n * (b == 1).sum() / n +
+              (a == 0).sum() / n * (b == 0).sum() / n)
+        kappa = (po - pe) / (1 - pe) if pe < 1 else 0.0
+        result["observed_agreement_pair"] = round(po, 4)
+        result["cohens_kappa_pair"] = round(kappa, 4)
+
+    return result
 
 
 def evaluate_irr(df: pd.DataFrame, id_col: str = "gold_id") -> Dict:
-    """Compute inter-rater reliability if multiple labelers present."""
+    """Compute inter-rater reliability if multiple labelers present.
+
+    Uses Cohen's Kappa for exactly 2 raters and Fleiss' Kappa when 3 or
+    more raters are present.
+    """
+    import numpy as np
+
     if "labeler_id" not in df.columns:
         return {"status": "no_labeler_id"}
     df_filled = df[df["labeler_id"].astype(str).str.strip() != ""].copy()
-    labelers = df_filled["labeler_id"].unique()
+    labelers = list(df_filled["labeler_id"].unique())
     if len(labelers) < 2:
         return {"status": "single_labeler", "labeler": str(labelers[0]) if len(labelers) == 1 else "none"}
 
@@ -296,26 +362,125 @@ def evaluate_irr(df: pd.DataFrame, id_col: str = "gold_id") -> Dict:
     if len(pivot) < 5:
         return {"status": "insufficient_overlap", "overlap_items": len(pivot)}
 
-    l1, l2 = labelers[0], labelers[1]
-    if l1 not in pivot.columns or l2 not in pivot.columns:
+    valid_labelers = [l for l in labelers if l in pivot.columns]
+    if len(valid_labelers) < 2:
         return {"status": "labelers_not_in_overlap"}
 
-    a = pivot[l1].values
-    b = pivot[l2].values
-    agree = (a == b).sum()
-    n = len(a)
-    po = agree / n
+    result: Dict = {
+        "status": "ok",
+        "labelers": [str(l) for l in valid_labelers],
+        "overlap_items": len(pivot),
+    }
 
-    pe = ((a == 1).sum() / n * (b == 1).sum() / n +
-          (a == 0).sum() / n * (b == 0).sum() / n)
-    kappa = (po - pe) / (1 - pe) if pe < 1 else 0.0
+    if len(valid_labelers) == 2:
+        l1, l2 = valid_labelers[0], valid_labelers[1]
+        a = pivot[l1].values
+        b = pivot[l2].values
+        agree = (a == b).sum()
+        n = len(a)
+        po = agree / n
+        pe = ((a == 1).sum() / n * (b == 1).sum() / n +
+              (a == 0).sum() / n * (b == 0).sum() / n)
+        kappa = (po - pe) / (1 - pe) if pe < 1 else 0.0
+        result["observed_agreement"] = round(po, 4)
+        result["cohens_kappa"] = round(kappa, 4)
+    else:
+        mat_values = pivot[valid_labelers].values
+        n_items = mat_values.shape[0]
+        count_matrix = np.zeros((n_items, 2))
+        for i in range(n_items):
+            row = mat_values[i]
+            count_matrix[i, 1] = row.sum()
+            count_matrix[i, 0] = len(valid_labelers) - row.sum()
+        fk = _fleiss_kappa(count_matrix)
+        result["fleiss_kappa"] = round(fk, 4)
+        result["n_raters"] = len(valid_labelers)
+
+        l1, l2 = valid_labelers[0], valid_labelers[1]
+        a = pivot[l1].values
+        b = pivot[l2].values
+        agree = (a == b).sum()
+        n = len(a)
+        po = agree / n
+        pe = ((a == 1).sum() / n * (b == 1).sum() / n +
+              (a == 0).sum() / n * (b == 0).sum() / n)
+        kappa = (po - pe) / (1 - pe) if pe < 1 else 0.0
+        result["observed_agreement_pair"] = round(po, 4)
+        result["cohens_kappa_pair"] = round(kappa, 4)
+
+    return result
+
+
+def evaluate_bloom_classification(df: pd.DataFrame) -> Dict:
+    """Validate pipeline Bloom classification against gold-labeled Bloom levels.
+
+    Requires both ``bloom`` (pipeline prediction) and ``bloom_label`` (gold
+    label) columns to be present and non-empty.  Returns overall accuracy
+    and per-level precision.
+    """
+    if "bloom" not in df.columns or "bloom_label" not in df.columns:
+        return {"status": "missing_columns"}
+
+    sub = df.copy()
+    sub["bloom"] = sub["bloom"].astype(str).str.strip()
+    sub["bloom_label"] = sub["bloom_label"].astype(str).str.strip()
+    sub = sub[(sub["bloom_label"] != "") & (sub["bloom_label"].str.lower() != "nan")].copy()
+
+    if len(sub) < 5:
+        return {"status": "insufficient_data", "n": len(sub)}
+
+    sub["match"] = sub["bloom"].str.lower() == sub["bloom_label"].str.lower()
+    n = len(sub)
+    n_correct = int(sub["match"].sum())
+    accuracy = round(n_correct / n, 4)
+    ci = wilson_ci(accuracy, n)
+
+    per_level: List[Dict] = []
+    for level, grp in sub.groupby(sub["bloom_label"].str.lower()):
+        lvl_n = len(grp)
+        lvl_correct = int(grp["match"].sum())
+        per_level.append({
+            "bloom_level": str(level),
+            "n": lvl_n,
+            "correct": lvl_correct,
+            "accuracy": round(lvl_correct / lvl_n, 4) if lvl_n > 0 else 0.0,
+        })
 
     return {
         "status": "ok",
-        "labelers": [str(l1), str(l2)],
-        "overlap_items": n,
-        "observed_agreement": round(po, 4),
-        "cohens_kappa": round(kappa, 4),
+        "n": n,
+        "n_correct": n_correct,
+        "accuracy": accuracy,
+        "accuracy_ci_95": list(ci),
+        "per_level": sorted(per_level, key=lambda x: x["bloom_level"]),
+    }
+
+
+def evaluate_type_classification(df: pd.DataFrame) -> Dict:
+    """Validate pipeline type (hard/soft) classification against gold labels."""
+    if "type" not in df.columns or "type_label" not in df.columns:
+        return {"status": "missing_columns"}
+
+    sub = df.copy()
+    sub["type"] = sub["type"].astype(str).str.strip().str.lower()
+    sub["type_label"] = sub["type_label"].astype(str).str.strip().str.lower()
+    sub = sub[(sub["type_label"] != "") & (sub["type_label"].str.lower() != "nan")].copy()
+
+    if len(sub) < 5:
+        return {"status": "insufficient_data", "n": len(sub)}
+
+    sub["match"] = sub["type"] == sub["type_label"]
+    n = len(sub)
+    n_correct = int(sub["match"].sum())
+    accuracy = round(n_correct / n, 4)
+    ci = wilson_ci(accuracy, n)
+
+    return {
+        "status": "ok",
+        "n": n,
+        "n_correct": n_correct,
+        "accuracy": accuracy,
+        "accuracy_ci_95": list(ci),
     }
 
 
@@ -346,16 +511,28 @@ def main():
         print(f"[INFO] Loaded {len(skills_df)} labeled skills")
         irr = _load_irr_from_gold_labels(labels, "skill") if (labels / "gold_labels" / "skill_labels.csv").exists() else evaluate_irr(skills_df)
         by_src = evaluate_by_source(skills_df)
+        bloom_eval = evaluate_bloom_classification(skills_df)
+        type_eval = evaluate_type_classification(skills_df)
         report["skills"] = {
             "by_source": by_src,
             "pairwise_comparisons": _pairwise_comparisons(by_src),
             "irr": irr,
+            "bloom_validation": bloom_eval,
+            "type_validation": type_eval,
         }
         overall = [r for r in report["skills"]["by_source"] if r["source"] == "all"]
         if overall:
             o = overall[0]
             print(f"  Skills overall: P={o['precision']:.3f} "
                   f"(95% CI {o['precision_ci_95']}), n={o['n']}")
+        if bloom_eval.get("status") == "ok":
+            print(f"  Bloom classification accuracy: {bloom_eval['accuracy']:.3f} "
+                  f"(n={bloom_eval['n']})")
+        elif bloom_eval.get("status") == "insufficient_data":
+            print(f"  Bloom validation: insufficient data (n={bloom_eval.get('n', 0)})")
+        if type_eval.get("status") == "ok":
+            print(f"  Type classification accuracy: {type_eval['accuracy']:.3f} "
+                  f"(n={type_eval['n']})")
 
     knowledge_path = labels / "gold_knowledge_merged.csv"
     if not knowledge_path.exists():

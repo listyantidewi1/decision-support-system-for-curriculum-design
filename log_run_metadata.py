@@ -92,6 +92,9 @@ def main():
             "jobbert": str(config.JOBBERT_MODEL_NAME),
             "jobbert_checkpoint": str(config.MULTITASK_MODEL_DIR),
             "sbert": "all-MiniLM-L6-v2",
+            "llm": "",
+            "llm_base_url": "",
+            "llm_temperature": None,
         },
         "config_parameters": {
             "output_dir": str(config.OUTPUT_DIR),
@@ -106,6 +109,9 @@ def main():
             "similarity_threshold": AdvancedPipelineConfig.SEMANTIC_AGREEMENT_THRESHOLD,
         })
         metadata["models"]["sbert"] = AdvancedPipelineConfig.EMBEDDING_MODEL
+        metadata["models"]["llm"] = getattr(AdvancedPipelineConfig, "LLM_MODEL", "")
+        metadata["models"]["llm_base_url"] = getattr(AdvancedPipelineConfig, "OPENAI_BASE_URL", "")
+        metadata["models"]["llm_temperature"] = 0
     except Exception:
         pass
 

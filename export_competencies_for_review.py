@@ -176,11 +176,11 @@ def build_competency_review_table(
         per_batch = max(1, max_competencies // n_batches)
         sampled = (
             df.groupby("batch_id", group_keys=False)
-            .apply(lambda g: g.sample(n=min(len(g), per_batch), random_state=42))
+            .apply(lambda g: g.sample(n=min(len(g), per_batch), random_state=config.RANDOM_SEED))
             .reset_index(drop=True)
         )
         if len(sampled) > max_competencies:
-            sampled = sampled.sample(n=max_competencies, random_state=42)
+            sampled = sampled.sample(n=max_competencies, random_state=config.RANDOM_SEED)
         df = sampled
 
     return df

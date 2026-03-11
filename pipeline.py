@@ -184,7 +184,7 @@ class AdvancedPipelineConfig:
     EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
     
     # LLM model (OpenRouter: deepseek, gpt-5, gemini, claude, etc.)
-    LLM_MODEL = "google/gemini-2.5-flash"
+    LLM_MODEL = "deepseek/deepseek-v3.2"
     
     # OpenAI API (replace with your actual key)
     OPENAI_API_KEY = None
@@ -273,7 +273,7 @@ class AdvancedPipelineConfig:
 
     # File paths
     INPUT_CSV = 'DATA\\preprocessing\\data_prepared\\jobs_sentences.csv'
-    SAMPLE_SIZE = 1000
+    SAMPLE_SIZE = 2000
     
     # Output files
     OUTPUT_FILES = {
@@ -1052,38 +1052,127 @@ class ContextAwareExtractor:
             model_name=AdvancedPipelineConfig.LLM_MODEL,
         )
         
-    def extract_with_context_awareness(self, text: str) -> Dict[str, List[SkillItem]]:
-        """Extract skills with context awareness and model agreement analysis."""
-        
-        # Extract knowledge with BERT first
-        bert_skills_raw, bert_knowledge = self.model_manager.extract_with_bert(text)
-        
-        # Extract from LLM
-        gpt_output = self.gpt_extractor.extract_skills_and_knowledge(text, bert_knowledge)
-        
-        # Convert to structured format
-        bert_skills = self._process_bert_skills(bert_skills_raw, text)
-        gpt_skills = self._process_gpt_skills(gpt_output.get('skills', []), text)
-        
+    def extract_with_context_awareness(
+        self,
+        text: str = "",
+        *,
+        sentences: List[str] = None,
+        full_text: str = None,
+    ) -> Dict[str, List[SkillItem]]:
+        """Extract skills with context awareness and model agreement analysis.
+
+        Hybrid approach:
+        - **BERT** runs on each *sentence* (short segments suit the 128-token NER window).
+        - **LLM** runs on the *full_text* (full posting context avoids fragment issues).
+        - Fusion / agreement analysis operates on the aggregated results.
+
+        For backward compatibility, if *sentences* is not provided the method
+        falls back to single-text mode (``text``).
+        """
+        # Resolve inputs: prefer explicit sentences/full_text; fall back to legacy text arg.
+        if sentences is None:
+            sentences = [text] if text else []
+        if full_text is None:
+            full_text = text or "\n".join(sentences)
+
+        # --- BERT: run per-sentence, aggregate & deduplicate ---
+        all_bert_skills_raw: List[Dict] = []
+        all_bert_knowledge: List[Dict] = []
+        for sent in sentences:
+            sent = sent.strip()
+            if not sent:
+                continue
+            raw_skills, raw_knowledge = self.model_manager.extract_with_bert(sent)
+            all_bert_skills_raw.extend(raw_skills)
+            all_bert_knowledge.extend(raw_knowledge)
+
+        # Deduplicate BERT outputs (boost confidence for repeated items)
+        all_bert_skills_raw = self._deduplicate_raw(all_bert_skills_raw, key='text')
+        all_bert_knowledge = self._deduplicate_raw(all_bert_knowledge, key='text')
+
+        # Remove parsing fragments (e.g., items starting with -, #, + or < 3 chars)
+        all_bert_skills_raw = self._filter_fragments(all_bert_skills_raw, key='text')
+        all_bert_knowledge = self._filter_fragments(all_bert_knowledge, key='text')
+
+        # --- LLM: run once on full posting ---
+        gpt_output = self.gpt_extractor.extract_skills_and_knowledge(full_text, all_bert_knowledge)
+
+        # Convert to structured format (use full_text as context for classification)
+        bert_skills = self._process_bert_skills(all_bert_skills_raw, full_text)
+        gpt_skills = self._process_gpt_skills(gpt_output.get('skills', []), full_text)
+
         # Analyze model agreement
         agreement_scores = self._analyze_model_agreement(bert_skills, gpt_skills)
-        
+
         # Adjust confidences based on agreement
         bert_skills = self._adjust_confidence_with_agreement(bert_skills, agreement_scores, 'bert')
         gpt_skills = self._adjust_confidence_with_agreement(gpt_skills, agreement_scores, 'gpt')
-        
+
         # Check Bloom consistency
-        bert_skills = self._check_bloom_consistency(bert_skills, text)
-        gpt_skills = self._check_bloom_consistency(gpt_skills, text)
-        
+        bert_skills = self._check_bloom_consistency(bert_skills, full_text)
+        gpt_skills = self._check_bloom_consistency(gpt_skills, full_text)
+
+        gpt_knowledge = self._filter_fragments(
+            gpt_output.get('knowledge', []), key='text'
+        )
+
         return {
             'bert': bert_skills,
             'gpt': gpt_skills,
-            'bert_knowledge': bert_knowledge,
-            'gpt_knowledge': gpt_output.get('knowledge', []),
-            'agreement_scores': agreement_scores
+            'bert_knowledge': all_bert_knowledge,
+            'gpt_knowledge': gpt_knowledge,
+            'agreement_scores': agreement_scores,
         }
-    
+
+    @staticmethod
+    def _deduplicate_raw(items: List[Dict], key: str = 'text') -> List[Dict]:
+        """Merge duplicate extractions across sentences.
+
+        When the same skill/knowledge text appears in multiple sentences,
+        that repetition signals importance.  We keep one instance per
+        unique text but *boost* its confidence based on how many sentences
+        mentioned it:  ``boosted = max_conf + (1 - max_conf) * log2(count) / 10``
+        (capped at 1.0).  This gives a meaningful lift for items seen 2-4
+        times without over-inflating items that just happen to repeat a lot.
+        """
+        import math
+        groups: Dict[str, List[Dict]] = {}
+        for item in items:
+            norm = item.get(key, '').strip().lower()
+            if not norm:
+                continue
+            groups.setdefault(norm, []).append(item)
+
+        merged: List[Dict] = []
+        for _norm, group in groups.items():
+            best = max(group, key=lambda x: x.get('confidence', 0))
+            count = len(group)
+            if count > 1:
+                max_conf = best.get('confidence', 0)
+                boost = (1.0 - max_conf) * math.log2(count) / 10.0
+                best = {**best, 'confidence': min(1.0, max_conf + boost)}
+            merged.append(best)
+        return merged
+
+    @staticmethod
+    def _filter_fragments(items: List[Dict], key: str = 'text') -> List[Dict]:
+        """Remove parsing fragments: items that start with punctuation or
+        are shorter than 3 characters after stripping.  These are typically
+        artifacts from hyphenated compound-term splitting (e.g. '-computing',
+        '#miller', '+') and add noise to downstream analysis.
+        """
+        import re
+        _FRAGMENT_RE = re.compile(r'^[\-\#\+\&\*\(\)\[\]\{\}/\\|@!,;:.\d]')
+        filtered = []
+        for item in items:
+            text = item.get(key, '').strip()
+            if len(text) < 3:
+                continue
+            if _FRAGMENT_RE.match(text):
+                continue
+            filtered.append(item)
+        return filtered
+
     def _process_bert_skills(self, raw_skills: List[Dict], context: str) -> List[SkillItem]:
         """Process BERT skills with advanced features."""
         processed = []
@@ -1861,8 +1950,15 @@ class AdvancedDataManager:
     #             "Communicate effectively with cross-functional teams"
     #         ]
     
-    def load_job_data(self, sample_size: int = None) -> pd.DataFrame:
-        """Load job descriptions + metadata from CSV."""
+    def load_job_data(self, sample_size: int = None) -> List[Dict]:
+        """Load job descriptions, group sentences by job_id, return per-job dicts.
+
+        Each element contains:
+            job_id, date_posted, sentences (list[str]), full_text (str)
+
+        Sampling is performed at the *job* level so every sentence
+        belonging to a selected job is included.
+        """
         if sample_size is None:
             sample_size = AdvancedPipelineConfig.SAMPLE_SIZE
 
@@ -1871,21 +1967,43 @@ class AdvancedDataManager:
         try:
             df = pd.read_csv(AdvancedPipelineConfig.INPUT_CSV)
 
-            # Expect columns: job_id, sentence, date_posted
             required = {'job_id', 'sentence_text'}
             missing = required - set(df.columns)
             if missing:
                 raise ValueError(f"INPUT_CSV must contain columns {missing}")
 
-            if len(df) > sample_size:
-                seed = AdvancedPipelineConfig.RANDOM_SEED if AdvancedPipelineConfig.RANDOM_SEED is not None else config.RANDOM_SEED
-                df_sample = df.sample(n=sample_size, random_state=seed)
-            else:
-                df_sample = df
+            unique_jobs = df['job_id'].unique()
+            seed = (AdvancedPipelineConfig.RANDOM_SEED
+                    if AdvancedPipelineConfig.RANDOM_SEED is not None
+                    else config.RANDOM_SEED)
 
-            logger.info(f"Loaded {len(df_sample)} job sentences")
-            # Return the whole sampled frame so we keep id + date
-            return df_sample
+            if len(unique_jobs) > sample_size:
+                rng = np.random.RandomState(seed)
+                sampled_ids = rng.choice(unique_jobs, size=sample_size, replace=False)
+                df = df[df['job_id'].isin(sampled_ids)]
+            else:
+                sampled_ids = unique_jobs
+
+            # Sort by sentence_id if available so full_text is ordered
+            sort_col = 'sentence_id' if 'sentence_id' in df.columns else 'job_id'
+            df = df.sort_values([sort_col])
+
+            jobs: List[Dict] = []
+            for job_id, grp in df.groupby('job_id', sort=False):
+                sentences = grp['sentence_text'].astype(str).tolist()
+                full_text = "\n".join(sentences)
+                date_posted = grp['job_date'].iloc[0] if 'job_date' in grp.columns else (
+                    grp['date_posted'].iloc[0] if 'date_posted' in grp.columns else None
+                )
+                jobs.append({
+                    'job_id': job_id,
+                    'date_posted': date_posted,
+                    'sentences': sentences,
+                    'full_text': full_text,
+                })
+
+            logger.info(f"Loaded {len(jobs)} jobs ({len(df)} sentences)")
+            return jobs
 
         except Exception as e:
             logger.error(f"Failed to load CSV: {e}")
@@ -2335,61 +2453,82 @@ class AdvancedSkillExtractionPipeline:
     
     from typing import Optional  # already imported at top
 
-    def process_job(self, job_id: int, text: str,
-                    date_posted: Optional[str] = None) -> Tuple[Dict, float]:
+    def process_job(
+        self,
+        job_id: int,
+        text: str = "",
+        date_posted: Optional[str] = None,
+        *,
+        sentences: List[str] = None,
+        full_text: str = None,
+    ) -> Tuple[Dict, float]:
+        """Process a single job posting.
+
+        Parameters
+        ----------
+        sentences : list[str], optional
+            Individual sentences / chunks for BERT NER.
+        full_text : str, optional
+            Concatenated posting text sent to the LLM.
+        text : str
+            Legacy single-string fallback (used when sentences/full_text absent).
+        """
+        if full_text is None:
+            full_text = text
+        if sentences is None:
+            sentences = [text] if text else []
+
         start_time = time.time()
         try:
             logger.debug(f"Processing job {job_id}")
-            
-            # 1. Extract with context awareness
-            extraction_results = self.context_extractor.extract_with_context_awareness(text)
-            
+
+            extraction_results = self.context_extractor.extract_with_context_awareness(
+                sentences=sentences,
+                full_text=full_text,
+            )
+
             bert_skills = extraction_results['bert']
             gpt_skills = extraction_results['gpt']
             bert_knowledge = extraction_results['bert_knowledge']
             gpt_knowledge = extraction_results['gpt_knowledge']
             agreement_scores = extraction_results['agreement_scores']
-            
-            # 2. Advanced fusion
+
             fused_skills = self.fusion_engine.fuse_skills_advanced(bert_skills, gpt_skills)
             fused_knowledge = self.fusion_engine.fuse_knowledge_advanced(bert_knowledge, gpt_knowledge)
-            
-            # 3. Calculate advanced coverage
+
             coverage_results = self.coverage_calculator.calculate_advanced_coverage(
                 fused_skills, fused_knowledge
             )
-            
-            # Calculate extraction time
+
             extraction_time = time.time() - start_time
-            
-            # 4. Prepare results
+
             results = {
                 'job_id': job_id,
-                'text': text,
+                'text': full_text,
                 'date_posted': date_posted,
                 'skills': fused_skills,
                 'knowledge': fused_knowledge,
-                'extraction_results': extraction_results,  # Added for comprehensive analysis
+                'extraction_results': extraction_results,
                 'extraction_metrics': {
                     'bert_skill_count': len(bert_skills),
                     'gpt_skill_count': len(gpt_skills),
                     'fused_skill_count': len(fused_skills),
                     'model_agreement': agreement_scores['overall'],
                     'match_count': agreement_scores.get('match_count', 0),
-                    'extraction_time': extraction_time
+                    'extraction_time': extraction_time,
+                    'sentence_count': len(sentences),
                 },
-                'coverage_analysis': coverage_results
+                'coverage_analysis': coverage_results,
             }
-            
+
             return results, extraction_time
-            
+
         except Exception as e:
             logger.error(f"Error processing job {job_id}: {e}")
             extraction_time = time.time() - start_time
-            # Return empty results on error
             return {
                 'job_id': job_id,
-                'text': text,
+                'text': full_text,
                 'date_posted': date_posted,
                 'skills': [],
                 'knowledge': [],
@@ -2400,7 +2539,8 @@ class AdvancedSkillExtractionPipeline:
                     'fused_skill_count': 0,
                     'model_agreement': 0.0,
                     'match_count': 0,
-                    'extraction_time': extraction_time
+                    'extraction_time': extraction_time,
+                    'sentence_count': len(sentences) if sentences else 0,
                 },
                 'coverage_analysis': {
                     'metrics': {
@@ -2413,82 +2553,97 @@ class AdvancedSkillExtractionPipeline:
                         'avg_knowledge_confidence': 0.0,
                         'hard_skill_count': 0,
                         'soft_skill_count': 0,
-                        'knowledge_count': 0
+                        'knowledge_count': 0,
                     },
                     'missing_components': [],
-                    'coverage_gaps': []
-                }
+                    'coverage_gaps': [],
+                },
             }, extraction_time
     
     def run(self, sample_size: int = None) -> None:
-        """Run the complete advanced pipeline."""
-        logger.info("🚀 Starting Advanced Skill Extraction Pipeline...")
-        
-        # Load job data (DataFrame)
-        jobs_df = self.data_manager.load_job_data(sample_size)
+        """Run the complete advanced pipeline.
 
-        if jobs_df.empty:
+        Jobs are loaded and grouped by ``job_id``.  BERT NER runs on each
+        sentence (short context), while the LLM receives the full concatenated
+        posting for richer extraction.  Fusion and downstream analysis operate
+        at the job level.
+        """
+        logger.info("Starting Advanced Skill Extraction Pipeline...")
+
+        jobs = self.data_manager.load_job_data(sample_size)
+
+        if not jobs:
             logger.warning("No jobs to process. Exiting.")
             return
 
-        logger.info(f"Processing {len(jobs_df)} job descriptions...")
+        total_jobs = len(jobs)
+        logger.info(f"Processing {total_jobs} unique jobs...")
 
         pipeline_stats = {
-            'total_jobs': len(jobs_df),
+            'total_jobs': total_jobs,
             'total_skills': 0,
             'total_knowledge': 0,
             'total_coverage': 0.0,
             'total_agreement': 0.0,
-            'total_extraction_time': 0.0
+            'total_extraction_time': 0.0,
         }
 
-        count = 0
-        
-        for idx, row in jobs_df.iterrows():
+        for count, job in enumerate(jobs):
             try:
-                if idx > 0:
+                if count > 0:
                     time.sleep(0.5)
-                count = count + 1
-                job_id = row['job_id']
-                text = str(row['sentence_text'])
-                date_posted = row.get('date_posted', None)
 
-                results, extraction_time = self.process_job(job_id, text, date_posted)
+                job_id = job['job_id']
+                date_posted = job.get('date_posted')
+                sentences = job['sentences']
+                full_text = job['full_text']
+
+                results, extraction_time = self.process_job(
+                    job_id,
+                    date_posted=date_posted,
+                    sentences=sentences,
+                    full_text=full_text,
+                )
 
                 self.data_manager.save_results(job_id, results, extraction_time)
-                ...
+
+                pipeline_stats['total_extraction_time'] += extraction_time
+                pipeline_stats['total_skills'] += len(results.get('skills', []))
+                pipeline_stats['total_knowledge'] += len(results.get('knowledge', []))
+                cov = results.get('coverage_analysis', {}).get('metrics', {}).get('coverage_percentage', 0)
+                pipeline_stats['total_coverage'] += cov
+                pipeline_stats['total_agreement'] += results.get('extraction_metrics', {}).get('model_agreement', 0)
+
                 if (count + 1) % 10 == 0:
-                    logger.info(f"Processed {count + 1}/{len(jobs_df)} jobs")
+                    logger.info(f"Processed {count + 1}/{total_jobs} jobs")
 
             except Exception as e:
-                logger.error(f"Failed to process job {row.get('job_id', idx)}: {e}")
+                logger.error(f"Failed to process job {job.get('job_id', count)}: {e}")
                 continue
 
-        
-        # Calculate averages
-        pipeline_stats['avg_skills_per_job'] = pipeline_stats['total_skills'] / pipeline_stats['total_jobs'] if pipeline_stats['total_jobs'] > 0 else 0
-        pipeline_stats['avg_knowledge_per_job'] = pipeline_stats['total_knowledge'] / pipeline_stats['total_jobs'] if pipeline_stats['total_jobs'] > 0 else 0
-        pipeline_stats['avg_coverage'] = pipeline_stats['total_coverage'] / pipeline_stats['total_jobs'] if pipeline_stats['total_jobs'] > 0 else 0
-        pipeline_stats['avg_agreement'] = pipeline_stats['total_agreement'] / pipeline_stats['total_jobs'] if pipeline_stats['total_jobs'] > 0 else 0
-        pipeline_stats['avg_extraction_time'] = pipeline_stats['total_extraction_time'] / pipeline_stats['total_jobs'] if pipeline_stats['total_jobs'] > 0 else 0
-        
-        # Save summary
+        n = pipeline_stats['total_jobs'] or 1
+        pipeline_stats['avg_skills_per_job'] = pipeline_stats['total_skills'] / n
+        pipeline_stats['avg_knowledge_per_job'] = pipeline_stats['total_knowledge'] / n
+        pipeline_stats['avg_coverage'] = pipeline_stats['total_coverage'] / n
+        pipeline_stats['avg_agreement'] = pipeline_stats['total_agreement'] / n
+        pipeline_stats['avg_extraction_time'] = pipeline_stats['total_extraction_time'] / n
+
         self.data_manager.save_summary(pipeline_stats)
-        
-        logger.info("\n" + "="*60)
-        logger.info("[✓] PIPELINE COMPLETE!")
-        logger.info("="*60)
-        logger.info(f"Total jobs processed: {pipeline_stats['total_jobs']}")
+
+        logger.info("\n" + "=" * 60)
+        logger.info("[OK] PIPELINE COMPLETE!")
+        logger.info("=" * 60)
+        logger.info(f"Total jobs processed: {total_jobs}")
         logger.info(f"Average skills per job: {pipeline_stats['avg_skills_per_job']:.2f}")
         logger.info(f"Average knowledge per job: {pipeline_stats['avg_knowledge_per_job']:.2f}")
         logger.info(f"Average coverage: {pipeline_stats['avg_coverage']:.2%}")
         logger.info(f"Average model agreement: {pipeline_stats['avg_agreement']:.2%}")
         logger.info(f"Average extraction time: {pipeline_stats['avg_extraction_time']:.2f}s")
         logger.info(f"\nOutput directory: {OUTPUT_DIR}")
-        logger.info("\nNew Comprehensive Analysis Files:")
+        logger.info("\nComprehensive Analysis Files:")
         logger.info("1. comprehensive_analysis.csv - Complete data for visualization")
         logger.info("2. model_comparison.csv - Side-by-side model comparison")
-        logger.info("="*60)
+        logger.info("=" * 60)
 
 # ============================================================
 # 11. MAIN EXECUTION
@@ -2514,7 +2669,7 @@ def main():
             "--sample_size",
             type=int,
             default=AdvancedPipelineConfig.SAMPLE_SIZE,
-            help="Max number of rows to process (default: AdvancedPipelineConfig.SAMPLE_SIZE)",
+            help="Max number of unique jobs to process (default: AdvancedPipelineConfig.SAMPLE_SIZE)",
         )
         parser.add_argument(
             "--seed",

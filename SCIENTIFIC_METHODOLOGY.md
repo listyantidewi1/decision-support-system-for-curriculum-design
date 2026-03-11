@@ -404,7 +404,7 @@ future_weight = similarity(item, best_domain) × trend_score
 ```
 
 - **similarity:** cosine similarity between SBERT embedding of item and domain (name + example terms)
-- **trend_score:** from domain metadata (e.g., Strong_Growth ≈ 1.0, Decline ≈ -0.5)
+- **trend_score:** expert-assigned score from domain metadata (see below)
 
 **Mapping margin (uncertainty):**
 ```
@@ -419,6 +419,58 @@ mapping_margin = top1_similarity - top2_similarity
 - best_domain = AI & Machine Learning, trend_score = 1.0
 - future_weight = 0.85 × 1.0 = **0.85**
 - mapping_margin = 0.85 - 0.72 = **0.13**
+
+### Trend Score Derivation (future_domains.csv)
+
+The `trend_score` assigned to each future domain is **not derived from the
+job-posting data**.  It is an expert-assigned value based on external labour
+market reports.  The table below documents each value and its source:
+
+| Domain ID | Domain | trend_score | Source Report / Section |
+|-----------|--------|-------------|------------------------|
+| WEF01 | AI & Machine Learning | 1.0 | WEF Future of Jobs 2025 — top growing skill cluster |
+| WEF02 | Big Data & Analytics | 0.9 | WEF Future of Jobs 2025 — 2nd growing cluster |
+| WEF03 | Cybersecurity | 0.9 | WEF Future of Jobs 2025 — critical infrastructure need |
+| WEF04 | Cloud Computing | 0.85 | WEF Future of Jobs 2025 — infrastructure demand |
+| WEF05 | Digital Platforms | 0.7 | WEF Future of Jobs 2025 — moderate growth |
+| WEF06 | Sustainability Tech | 0.6 | WEF Future of Jobs 2025 — emerging but niche |
+| WEF07 | Human-AI Collaboration | 0.95 | WEF Future of Jobs 2025 — co-pilot paradigm |
+| WEF08 | Digital Fluency | 0.85 | WEF Future of Jobs 2025 — foundational literacy |
+| MCK04 | Critical Thinking | 0.8 | McKinsey Future of Work 2025 — human-centric skills |
+| MCK05 | Resilience | 0.75 | WEF Future of Jobs 2025 — adaptability premium |
+| ONET01 | Software Engineering | 0.65 | O*NET Bright Outlook 2024 — stable growth |
+| ONET04 | Game Dev / XR | 0.6 | O*NET Bright Outlook 2024 — XR expansion |
+| MCK03 | Leadership | 0.55 | McKinsey Future of Work 2025 |
+| ONET03 | UX/UI Design | 0.55 | O*NET Bright Outlook 2024 |
+| ONET05 | QA & Testing | 0.55 | O*NET Bright Outlook 2024 |
+| ESCO01 | Project Management | 0.55 | ESCO v1.2 2024 |
+| ONET02 | Database Admin | 0.5 | O*NET Bright Outlook 2024 |
+| ONET06 | Blockchain | 0.5 | O*NET Bright Outlook 2024 — uncertain trajectory |
+| MCK01 | Process Automation | 0.5 | McKinsey Future of Work 2025 |
+| ESCO02 | Business Analysis | 0.5 | ESCO v1.2 2024 |
+| MCK02 | Communication | 0.4 | McKinsey Future of Work 2025 — stable |
+| DEC03 | Routine Maintenance | -0.3 | McKinsey Future of Work 2023 — automation risk |
+| DEC02 | Legacy Web Dev | -0.4 | Expert consensus — declining relevance |
+| DEC01 | Routine Data Entry | -0.6 | WEF Future of Jobs 2023 — high automation risk |
+
+**Limitations:**
+- Scores are ordinal judgements, not interval-scale measurements.
+- Scores may not generalize to all geographies or industries.
+- The specific values (e.g., 0.85 vs 0.90) are not precisely calibrated;
+  the ranking order is more meaningful than the exact magnitude.
+
+### Trend Score Sensitivity Analysis
+
+To validate robustness, the pipeline supports a sensitivity analysis that
+perturbs all trend_scores by ±0.2 and measures the impact on the top-20
+recommendation ranking via Jaccard overlap (see `scripts/trend_score_sensitivity.py`).
+
+```bash
+python scripts/trend_score_sensitivity.py
+```
+
+A Jaccard overlap > 0.7 across perturbations indicates that the
+recommendation ranking is robust to the exact trend_score values.
 
 ---
 
@@ -511,23 +563,36 @@ Output: `weight_sensitivity_report.json`
 
 ---
 
-## 10. Recall in the Gold-Set Paradigm
+## 10. Recall Limitation (Gold-Set Design)
 
-### Limitation
+### Why Recall Is Not Estimable
 
-In gold-set evaluation:
-- **Precision** = tp / n (correct among labeled)
-- **Recall** requires knowing the total number of true positives in the **full population**
-- Gold set = stratified **sample** of extractions, not an enumeration of all true items
+True **recall** = tp / (tp + fn) requires knowing the *complete* set of
+correct items in the population.  Our gold set is a **stratified sample of
+pipeline outputs**, not an exhaustive annotation of all skills present in
+each job posting.  Consequently:
 
-### Consequence
+| Metric | Computable? | Reason |
+|--------|-------------|--------|
+| **Precision** | Yes | = (correct items) / (total labeled items) |
+| **Recall** | **No** | We do not enumerate *all* true skills per posting; fn is unknown |
+| **F1** | **No** | Requires both precision and recall |
 
-We cannot compute true recall. We report **recall_estimate** = precision when the gold set is a sample of extractions (not a sample of all job postings). Interpret as "recall on the labeled sample" rather than population recall.
+### Design Consequence
 
-### When Recall Is Meaningful
+Earlier versions of `evaluate_extraction.py` reported a `recall_estimate`
+field numerically identical to precision, and an F1 derived from it.  These
+have been **removed** because they are misleading: when recall = precision
+by construction, F1 = precision, adding no new information.
 
-- If gold set were a random sample of **all jobs** with exhaustive enumeration of true skills per job, then recall = tp / (tp + fn) would be estimable.
-- Our design: gold set = sample of **extractions** to label. So we measure extraction correctness (precision-like) per item, not coverage of a known universe.
+The report now contains **precision only**.
+
+### When Recall Would Be Meaningful
+
+To estimate recall one would need a **corpus-annotation gold set**: a random
+sample of job postings where *every* true skill is exhaustively enumerated
+by domain experts.  This is substantially more expensive than the current
+output-sampling design and is left for future work.
 
 ---
 
@@ -644,6 +709,86 @@ NDCG ≈ 2.20/2.89 ≈ **0.76**
 
 ---
 
+## 15. Extraction Weight Justification and Sensitivity
+
+### Overview
+
+The pipeline uses several heuristic weights for confidence scoring, fusion,
+and recommendation ranking.  These weights are **not learned from data** but
+are chosen based on domain reasoning and validated via sensitivity analysis.
+This section documents the rationale for each weight group and reports
+robustness results.
+
+### A. BERT Confidence Weights
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| `BERT_RAW_CONFIDENCE_WEIGHT` | 0.7 | CRF emission probability is the primary signal; dominant weight reflects that NER models are trained end-to-end. |
+| `BERT_TYPE_CONFIDENCE_WEIGHT` | 0.3 | Hard/soft type classification provides secondary signal; lower weight because type errors should not dominate. |
+| `BERT_BLOOM_FACTOR_BASE` | 0.5 | Floor factor: even uncertain Bloom classification should not halve confidence. 0.5 prevents excessive penalty while allowing meaningful modulation. |
+| `BERT_DENSITY_FACTOR_BASE` | 0.8 | Semantic density is a secondary quality signal. High floor (0.8) ensures simple-but-valid skills are not penalised excessively. |
+| `BERT_STANDALONE_PENALTY` | 0.8 | BERT-only extractions (no LLM confirmation) receive a 20% discount; the penalty is moderate because BERT is a strong baseline. |
+
+**Design principle:** BERT confidence = `(0.7 × raw_conf + 0.3 × type_conf) × bloom_factor × density_factor`, where factors have high floors so secondary signals modulate but do not dominate.
+
+### B. LLM Confidence Weights
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| `LLM_BASE_CONFIDENCE` | 0.8 | LLM outputs are generally reliable but not calibrated; 0.8 is a conservative starting point. |
+| `LLM_TYPE_FACTOR_BASE` | 0.6 | LLM type classification is less reliable than BERT's; lower floor than BERT. |
+| `LLM_BLOOM_FACTOR_BASE` | 0.7 | LLM Bloom assignment is moderately reliable; floor higher than BERT because LLM reasons about complexity. |
+| `LLM_DENSITY_FACTOR_BASE` | 0.8 | Same rationale as BERT: density should not dominate. |
+
+### C. Fusion Weights
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| `FUSION_MATCH_BONUS_WEIGHT` | 0.2 | When BERT and LLM agree, confidence receives a 20% boost relative to cosine similarity. Conservative to avoid over-inflating. |
+| `FUSION_TYPE_DISAGREEMENT` | 0.8 | When BERT and LLM disagree on type (hard vs soft), apply a 20% penalty. Not severe because type disagreement is common for dual-nature skills. |
+| `FUSION_BLOOM_CONFIDENCE_SCALE` | 0.7 | Scale factor for Bloom confidence in fusion. Reflects that Bloom classification contributes to but should not dominate overall confidence. |
+| `AGREEMENT_EXACT_THRESHOLD` | 0.85 | Cosine similarity above 0.85 is treated as exact semantic match. Based on SBERT literature where 0.8+ indicates paraphrase-level similarity. |
+| `AGREEMENT_PARTIAL_THRESHOLD` | 0.5 | Below 0.5, skills are considered unrelated. This is the standard SBERT "unrelated" boundary. |
+
+### D. Recommendation Weights
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| `w_demand` | 0.40 | Current employer demand is the strongest signal for curriculum relevance. |
+| `w_trend` | 0.30 | Growth/decline trend indicates future relevance. Equal weight with future alignment reflects uncertainty in trend extrapolation. |
+| `w_future` | 0.30 | Future-domain alignment from WEF/ONET/McKinsey taxonomy. Equal with trend to balance data-driven and expert-driven signals. |
+
+### E. Deduplication Boost
+
+| Formula | Rationale |
+|---------|-----------|
+| `boosted = max_conf + (1 - max_conf) × log₂(count) / 10` | Logarithmic dampening ensures diminishing returns: 2 mentions → +10% of remaining headroom; 4 mentions → +20%; 8 → +30%. The `/10` divisor was chosen to keep boosts conservative (max ~50% of headroom at count=1024). |
+
+### F. Sensitivity Analysis
+
+The script `scripts/weight_sensitivity_extraction.py` varies each extraction
+weight group by ±20% and measures the change in precision on the gold set.
+This validates that results are robust to reasonable weight perturbations.
+
+**Interpretation:** If precision changes by <2 percentage points across all
+perturbations, the weights are considered robust.  If any single weight
+change causes >5pp precision swing, that weight requires empirical
+calibration.
+
+Run:
+
+```bash
+python scripts/weight_sensitivity_extraction.py
+```
+
+For recommendation weight sensitivity, see §9 and:
+
+```bash
+python recommendations.py --sensitivity
+```
+
+---
+
 ## Summary
 
 | Component | Key Formula / Method |
@@ -659,11 +804,12 @@ NDCG ≈ 2.20/2.89 ≈ **0.76**
 | Future weight | similarity × trend_score |
 | FDR trends | Benjamini-Hochberg, q<0.05 |
 | Weight sensitivity | Jaccard vs baseline top-20 |
-| Recall | Not computable; report recall_estimate |
+| Recall | Not estimable (gold set samples outputs, not exhaustive annotations) |
 | P@N | (yes + 0.5×partial)/N |
 | NDCG | DCG/IDCG with rel ∈ {0, 0.5, 1} |
 | Top-1 domain | count(agree)/n_evaluable |
 | Domain batching | similarity≥0.45, margin≥0.05 for high conf; merge when cos_sim≥0.7 |
+| Extraction weights | Heuristic; documented rationale + ±20% sensitivity (§15) |
 
 ---
 

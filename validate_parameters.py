@@ -236,6 +236,69 @@ def cross_validated_auc(y_true: np.ndarray, y_score: np.ndarray,
     }
 
 
+def cross_validated_threshold(y_true: np.ndarray, y_score: np.ndarray,
+                              k: int = 5, seed: int = 42) -> dict:
+    """Select Youden-optimal threshold via k-fold CV to avoid circularity.
+
+    Each fold: fit threshold on (k-1) training folds, evaluate on held-out
+    fold.  The exported threshold is the *mean* of per-fold optimal
+    thresholds, not the full-data optimum.
+    """
+    n = len(y_true)
+    if n < k * 5:
+        return {"status": "insufficient_data", "n": n}
+
+    rng = np.random.RandomState(seed)
+    indices = rng.permutation(n)
+    fold_size = n // k
+
+    fold_thresholds = []
+    fold_test_metrics = []
+
+    for i in range(k):
+        test_start = i * fold_size
+        test_end = (i + 1) * fold_size if i < k - 1 else n
+        test_idx = indices[test_start:test_end]
+        train_idx = np.concatenate([indices[:test_start], indices[test_end:]])
+
+        y_train, s_train = y_true[train_idx], y_score[train_idx]
+        y_test, s_test = y_true[test_idx], y_score[test_idx]
+
+        if y_train.sum() == 0 or y_train.sum() == len(y_train):
+            continue
+        if y_test.sum() == 0 or y_test.sum() == len(y_test):
+            continue
+
+        _, fpr_tr, tpr_tr, thr_tr = compute_auc_roc(y_train, s_train)
+        opt_train = youden_j_optimal(fpr_tr, tpr_tr, thr_tr)
+        if opt_train is None:
+            continue
+
+        thr = opt_train["threshold"]
+        fold_thresholds.append(thr)
+
+        cm = compute_confusion_matrix(y_test, s_test, thr)
+        fold_test_metrics.append(cm)
+
+    if not fold_thresholds:
+        return {"status": "degenerate_folds"}
+
+    mean_thr = float(np.mean(fold_thresholds))
+    std_thr = float(np.std(fold_thresholds))
+    mean_prec = float(np.mean([m["precision"] for m in fold_test_metrics]))
+    mean_recall = float(np.mean([m["recall"] for m in fold_test_metrics]))
+
+    return {
+        "status": "ok",
+        "k": k,
+        "fold_thresholds": [round(t, 4) for t in fold_thresholds],
+        "cv_threshold": round(mean_thr, 4),
+        "cv_threshold_std": round(std_thr, 4),
+        "mean_test_precision": round(mean_prec, 4),
+        "mean_test_recall": round(mean_recall, 4),
+    }
+
+
 def validate_column(df: pd.DataFrame, col: str) -> dict:
     """Full validation for a single score column: AUC, Brier, calibration, CV."""
     if col not in df.columns:
@@ -253,10 +316,15 @@ def validate_column(df: pd.DataFrame, col: str) -> dict:
     brier = compute_brier_score(y_true, y_score)
     cal = compute_calibration_curve(y_true, y_score)
     cv = cross_validated_auc(y_true, y_score)
+    cv_thr = cross_validated_threshold(y_true, y_score)
 
     confusion = {}
     if optimal:
         confusion = compute_confusion_matrix(y_true, y_score, optimal["threshold"])
+
+    cv_confusion = {}
+    if cv_thr.get("status") == "ok":
+        cv_confusion = compute_confusion_matrix(y_true, y_score, cv_thr["cv_threshold"])
 
     return {
         "column": col,
@@ -268,8 +336,10 @@ def validate_column(df: pd.DataFrame, col: str) -> dict:
         "brier_score": round(brier, 4),
         "calibration": cal,
         "cross_validated_auc": cv,
-        "optimal_threshold": optimal,
+        "optimal_threshold_full_data": optimal,
+        "cv_threshold": cv_thr,
         "confusion_at_optimal": confusion,
+        "confusion_at_cv_threshold": cv_confusion,
     }
 
 
@@ -325,29 +395,48 @@ def main():
                 if r.get("cross_validated_auc", {}).get("status") == "ok":
                     cv = r["cross_validated_auc"]
                     print(f"    CV AUC={cv['mean_auc']:.4f} +/- {cv['std_auc']:.4f}")
-                if r.get("optimal_threshold"):
-                    opt = r["optimal_threshold"]
-                    print(f"    Optimal threshold={opt['threshold']:.3f} "
+                if r.get("optimal_threshold_full_data"):
+                    opt = r["optimal_threshold_full_data"]
+                    print(f"    Full-data threshold={opt['threshold']:.3f} "
                           f"(TPR={opt['tpr']:.3f}, FPR={opt['fpr']:.3f})")
-                if r.get("confusion_at_optimal"):
-                    cm = r["confusion_at_optimal"]
-                    print(f"    At threshold: P={cm['precision']:.3f}, "
+                cv_thr = r.get("cv_threshold", {})
+                if cv_thr.get("status") == "ok":
+                    print(f"    CV threshold={cv_thr['cv_threshold']:.3f} "
+                          f"+/- {cv_thr['cv_threshold_std']:.3f} "
+                          f"(test P={cv_thr['mean_test_precision']:.3f}, "
+                          f"R={cv_thr['mean_test_recall']:.3f})")
+                if r.get("confusion_at_cv_threshold"):
+                    cm = r["confusion_at_cv_threshold"]
+                    print(f"    At CV threshold: P={cm['precision']:.3f}, "
                           f"R={cm['recall']:.3f}, F1={cm['f1']:.3f}")
 
-        # Export calibrated threshold for verify_skills.py
-        conf_result = next((r for r in results if r["column"] == "confidence_score"
-                           and "optimal_threshold" in r and r["optimal_threshold"]), None)
+        # Export calibrated threshold for verify_skills.py (CV-based to avoid circularity)
+        conf_result = next((r for r in results if r["column"] == "confidence_score"), None)
         if conf_result:
-            cal_threshold = {
-                "source": "validate_parameters.py",
-                "confidence_threshold": conf_result["optimal_threshold"]["threshold"],
-                "auc_roc": conf_result["auc_roc"],
-                "brier_score": conf_result["brier_score"],
-                "confusion_at_threshold": conf_result.get("confusion_at_optimal", {}),
-            }
-            cal_path = feedback_dir / "calibrated_threshold.json"
-            cal_path.write_text(json.dumps(cal_threshold, indent=2), encoding="utf-8")
-            print(f"[INFO] Exported calibrated threshold to {cal_path}")
+            cv_thr = conf_result.get("cv_threshold", {})
+            if cv_thr.get("status") == "ok":
+                threshold_val = cv_thr["cv_threshold"]
+                threshold_source = "cv_threshold"
+            elif conf_result.get("optimal_threshold_full_data"):
+                threshold_val = conf_result["optimal_threshold_full_data"]["threshold"]
+                threshold_source = "full_data_fallback"
+            else:
+                threshold_val = None
+                threshold_source = None
+
+            if threshold_val is not None:
+                cal_threshold = {
+                    "source": "validate_parameters.py",
+                    "threshold_selection": threshold_source,
+                    "confidence_threshold": threshold_val,
+                    "auc_roc": conf_result["auc_roc"],
+                    "brier_score": conf_result["brier_score"],
+                    "cv_details": cv_thr if cv_thr.get("status") == "ok" else {},
+                    "confusion_at_threshold": conf_result.get("confusion_at_cv_threshold", {}),
+                }
+                cal_path = feedback_dir / "calibrated_threshold.json"
+                cal_path.write_text(json.dumps(cal_threshold, indent=2), encoding="utf-8")
+                print(f"[INFO] Exported calibrated threshold ({threshold_source}) to {cal_path}")
 
     report_path = out_dir / args.output
     report_path.write_text(json.dumps(report, indent=2), encoding="utf-8")

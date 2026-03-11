@@ -85,20 +85,21 @@ def build_job_review_table(comp: pd.DataFrame) -> pd.DataFrame:
 def _stratified_sample_skills(df: pd.DataFrame, n: int) -> pd.DataFrame:
     """Proportional stratified sampling by verification_level, type, bloom."""
     strata_cols = [c for c in ["verification_level", "type", "bloom"] if c in df.columns]
+    seed = config.RANDOM_SEED
     if not strata_cols or len(df) <= n:
-        return df.sample(n=min(n, len(df)), random_state=42)
+        return df.sample(n=min(n, len(df)), random_state=seed)
     try:
         total = len(df)
         parts = []
         for _, grp in df.groupby(strata_cols, dropna=False):
             alloc = max(1, round(n * len(grp) / total))
-            parts.append(grp.sample(n=min(alloc, len(grp)), random_state=42))
+            parts.append(grp.sample(n=min(alloc, len(grp)), random_state=seed))
         result = pd.concat(parts).reset_index(drop=True)
         if len(result) > n:
-            result = result.sample(n=n, random_state=42)
+            result = result.sample(n=n, random_state=seed)
         return result
     except Exception:
-        return df.sample(n=min(n, len(df)), random_state=42)
+        return df.sample(n=min(n, len(df)), random_state=seed)
 
 
 def _make_review_id(job_id: str, skill: str) -> str:
@@ -308,12 +309,12 @@ def build_knowledge_review_table(
             parts = []
             for _, grp in merged.groupby("trend_label", dropna=False):
                 alloc = max(1, round(max_knowledge * len(grp) / total))
-                parts.append(grp.sample(n=min(alloc, len(grp)), random_state=42))
+                parts.append(grp.sample(n=min(alloc, len(grp)), random_state=config.RANDOM_SEED))
             merged = pd.concat(parts).reset_index(drop=True)
             if len(merged) > max_knowledge:
-                merged = merged.sample(n=max_knowledge, random_state=42)
+                merged = merged.sample(n=max_knowledge, random_state=config.RANDOM_SEED)
         else:
-            merged = merged.sample(n=max_knowledge, random_state=42)
+            merged = merged.sample(n=max_knowledge, random_state=config.RANDOM_SEED)
 
     return merged
 

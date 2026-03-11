@@ -11,6 +11,10 @@ Produces:
 Stratification ensures representation across confidence tiers, extraction
 sources, and skill types so evaluation results generalise across the
 pipeline's output distribution.
+
+Overlap items for IRR are selected via stratified random sampling (not
+first-N) to avoid order bias.  The overlap set is tagged in a separate
+column so the labeling UI can highlight them.
 """
 
 import argparse
@@ -46,7 +50,18 @@ def _make_id(prefix: str, *parts) -> str:
     return f"{prefix}_{h}"
 
 
-def export_gold_skills(output_dir: Path, n: int, seed: int) -> pd.DataFrame:
+def _tag_overlap(df: pd.DataFrame, overlap_n: int, seed: int) -> pd.DataFrame:
+    """Tag overlap items for IRR via stratified random sampling (not first-N)."""
+    if len(df) <= overlap_n:
+        df["is_overlap"] = True
+        return df
+    overlap_idx = df.sample(n=overlap_n, random_state=seed).index
+    df["is_overlap"] = df.index.isin(overlap_idx)
+    return df
+
+
+def export_gold_skills(output_dir: Path, n: int, seed: int,
+                       overlap_n: int = 30) -> pd.DataFrame:
     for name in ["verified_skills.csv", "advanced_skills.csv"]:
         path = output_dir / name
         if path.exists():
@@ -70,6 +85,8 @@ def export_gold_skills(output_dir: Path, n: int, seed: int) -> pd.DataFrame:
         axis=1,
     ))
 
+    out = _tag_overlap(out, overlap_n, seed)
+
     out["is_correct"] = ""
     out["type_label"] = ""
     out["bloom_label"] = ""
@@ -79,7 +96,8 @@ def export_gold_skills(output_dir: Path, n: int, seed: int) -> pd.DataFrame:
     return out
 
 
-def export_gold_knowledge(output_dir: Path, n: int, seed: int) -> pd.DataFrame:
+def export_gold_knowledge(output_dir: Path, n: int, seed: int,
+                          overlap_n: int = 30) -> pd.DataFrame:
     for name in ["advanced_knowledge.csv"]:
         path = output_dir / name
         if path.exists():
@@ -101,6 +119,8 @@ def export_gold_knowledge(output_dir: Path, n: int, seed: int) -> pd.DataFrame:
         lambda r: _make_id("gk", r.get("job_id", ""), r.get("knowledge", "")),
         axis=1,
     ))
+
+    out = _tag_overlap(out, overlap_n, seed)
 
     out["is_correct"] = ""
     out["labeler_id"] = ""
@@ -171,6 +191,8 @@ def main():
     parser.add_argument("--n_knowledge", type=int, default=100)
     parser.add_argument("--n_domain", type=int, default=100)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--overlap_n", type=int, default=30,
+                        help="Number of randomly-sampled overlap items for IRR (default: 30)")
     args = parser.parse_args()
 
     out_dir = Path(args.output_dir)
@@ -180,12 +202,14 @@ def main():
     print(f"[INFO] Output dir: {out_dir}")
     print(f"[INFO] Labels dir: {labels}")
 
-    skills = export_gold_skills(out_dir, args.n_skills, args.seed)
+    skills = export_gold_skills(out_dir, args.n_skills, args.seed,
+                                overlap_n=args.overlap_n)
     p = labels / "gold_skills.csv"
     skills.to_csv(p, index=False, encoding="utf-8-sig")
     print(f"[INFO] Exported {len(skills)} skills to {p}")
 
-    knowledge = export_gold_knowledge(out_dir, args.n_knowledge, args.seed)
+    knowledge = export_gold_knowledge(out_dir, args.n_knowledge, args.seed,
+                                      overlap_n=args.overlap_n)
     p = labels / "gold_knowledge.csv"
     knowledge.to_csv(p, index=False, encoding="utf-8-sig")
     print(f"[INFO] Exported {len(knowledge)} knowledge to {p}")

@@ -76,17 +76,45 @@ pipeline.
 - **notes**: Optional
 
 ## Overlap Items (IRR)
-The **first 20 items** in each tab must be labeled by **all** reviewers to compute
-inter-rater reliability (Cohen's Kappa). The Gold Labeling UI marks these with
-an "Overlap (IRR)" badge. The export script uses the same random seed so overlap
-is deterministic.
+Items marked with `is_overlap = True` in the gold set CSV must be labeled by
+**all** reviewers to compute inter-rater reliability (Cohen's Kappa for 2
+raters; Fleiss' Kappa for 3+). The Gold Labeling UI marks these with an
+"Overlap (IRR)" badge.
+
+Overlap items are selected via **stratified random sampling** (not first-N)
+at export time to avoid order bias. The default overlap size is 30 items
+per gold set (configurable via `--overlap_n`). The export script uses
+`config.RANDOM_SEED` so the overlap set is reproducible.
 
 ## Majority Vote
 When multiple reviewers label the same item:
 - **is_correct**: yes if count(yes) > count(no); else no (conservative tie-break)
 - **type_label**, **bloom_label**, **true_domain_id**: mode (most frequent)
 
+## Pre-Labeling Calibration
+
+Before starting, all reviewers should:
+
+1. **Read this protocol** in full.
+2. **Review 5 practice items** together (not counted in the gold set) to
+   align on edge cases and ambiguous extractions.
+3. **Discuss disagreements** on the practice items and agree on decision
+   rules for common edge cases (see below).
+
+## Edge-Case Decision Rules
+
+| Situation | Decision |
+|-----------|----------|
+| Extracted text is a valid skill but truncated (e.g., "machine learn") | Mark `no` — fragments are invalid extractions |
+| Text combines two skills (e.g., "Python and Java") | Mark `yes` if both are real skills mentioned in the posting |
+| Skill is too generic to be actionable (e.g., "work") | Mark `no` |
+| Skill is valid but the type/Bloom label is wrong | Mark `yes` for is_correct; correct type_label or bloom_label |
+| Multi-domain skills (e.g., "data visualization" fits both Analytics and UX) | Choose the **primary** domain based on the item's typical use context; add the secondary domain in notes |
+| Domain mapping: skill fits no listed domain well | Use `none` |
+| Domain mapping: cannot decide between two close domains | Use `unclear` and explain in notes |
+
 ## Quality Checks
 - Label all items (do not skip)
 - If in doubt, mark `no` for is_correct (conservative)
 - For manual CSV: save as UTF-8 (do not change column order)
+- Aim for at least 90% completion rate before submitting

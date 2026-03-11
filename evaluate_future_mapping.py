@@ -117,6 +117,7 @@ def evaluate(
         results.append({
             "item": key, "true_domain": true_id,
             "predicted_domain": pred_id, "correct": is_correct,
+            "top2_domain": top2_id, "top3_domain": top3_id,
             "top3_correct": is_top3_correct,
             "is_none_or_unclear": is_none, "margin": round(margin, 4),
         })
@@ -160,6 +161,24 @@ def evaluate(
     top1_pvalue = _binom_pvalue(int(n_correct), n_eval, p0)
     top3_pvalue = _binom_pvalue(int(n_top3_correct), n_eval, p0)
 
+    # Mean Reciprocal Rank (MRR): gives rank-weighted credit to top-3 predictions
+    reciprocal_ranks = []
+    for _, r in evaluable.iterrows():
+        true_d = r["true_domain"]
+        pred_d = r["predicted_domain"]
+        ranked = [pred_d]
+        if "top2_domain" in r:
+            ranked.append(r.get("top2_domain", ""))
+        if "top3_domain" in r:
+            ranked.append(r.get("top3_domain", ""))
+        rr = 0.0
+        for rank_pos, cand in enumerate(ranked, start=1):
+            if cand == true_d:
+                rr = 1.0 / rank_pos
+                break
+        reciprocal_ranks.append(rr)
+    mrr = float(sum(reciprocal_ranks) / len(reciprocal_ranks)) if reciprocal_ranks else 0.0
+
     confusion = Counter()
     incorrect_mask = (evaluable["correct"] != True)
     for _, r in evaluable[incorrect_mask].iterrows():
@@ -176,6 +195,7 @@ def evaluate(
         "top3_accuracy": round(top3_acc, 4),
         "top3_accuracy_ci": [round(top3_ci[0], 4), round(top3_ci[1], 4)],
         "top3_pvalue_vs_chance": round(top3_pvalue, 6),
+        "mrr": round(mrr, 4),
         "n_domains_baseline": n_domains,
         "margin_threshold": margin_threshold,
         "high_margin_items": n_hm,
@@ -224,6 +244,7 @@ def main():
                 print(f"  Top-3 accuracy: {report.get('top3_accuracy', 0):.3f} "
                       f"(95% CI: [{report.get('top3_accuracy_ci', [0,0])[0]:.3f}, {report.get('top3_accuracy_ci', [0,0])[1]:.3f}], "
                       f"p vs chance: {report.get('top3_pvalue_vs_chance', 1):.4f})")
+                print(f"  MRR: {report.get('mrr', 0):.3f}")
                 print(f"  Top-1 (high-margin): {report.get('top1_accuracy_high_margin', 0):.3f}")
                 print(f"  None/unclear rate: {report['none_unclear_rate']:.3f}")
                 print(f"  Mean margin: {report['mean_margin']:.3f}")
