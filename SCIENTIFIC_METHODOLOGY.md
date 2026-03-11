@@ -709,7 +709,57 @@ NDCG ≈ 2.20/2.89 ≈ **0.76**
 
 ---
 
-## 15. Extraction Weight Justification and Sensitivity
+## 15. Future-Domain Trend Score Derivation
+
+### Source and Assignment Process
+
+The `trend_score` values in `future_domains.csv` are **expert-assigned ordinal
+scores** derived from published labour-market reports.  They are NOT
+data-derived; this is a known limitation.
+
+| Source Tag | Report | Trend Score Range |
+|------------|--------|-------------------|
+| WEF_FutureOfJobs_2025 | World Economic Forum, *Future of Jobs Report 2025* | 0.60–1.00 (growth) |
+| WEF_FutureOfJobs_2023 | WEF, *Future of Jobs Report 2023* (for decline domains) | -0.60 (decline) |
+| ONET_BrightOutlook_2024 | O*NET Bright Outlook Occupations, 2024 update | 0.50–0.65 |
+| ESCO_v1.2_2024 | ESCO Classification v1.2, skills pillar | 0.50–0.55 |
+| McKinsey_FutureOfWork_2025 | McKinsey Global Institute, *The Future of Work* | 0.40–0.80 |
+| Expert_consensus | Pipeline authors' consensus (legacy web dev decline) | -0.40 |
+
+### Mapping from Qualitative to Quantitative
+
+| Qualitative Label | Score Range | Rationale |
+|-------------------|-------------|-----------|
+| Strong_Growth | 0.75–1.00 | Domains explicitly listed as "fastest growing" or "most in demand" in WEF 2025 top-10 |
+| Moderate_Growth | 0.40–0.70 | Domains present in Bright Outlook or mentioned as growing but not top priority |
+| Stable | 0.00–0.30 | Not explicitly mentioned as growing or declining |
+| Decline | -0.60 to -0.30 | Domains flagged as "declining" or "at risk of automation" in WEF/McKinsey |
+
+### Limitation
+
+These scores encode **ordinal expert judgment**, not calibrated probabilities.
+The exact numeric values (e.g., 0.85 vs 0.90) carry less meaning than their
+ranking.  The sensitivity analysis below validates that recommendation
+rankings are robust to ±0.2 perturbations of these scores.
+
+### Sensitivity Analysis
+
+The script `scripts/trend_score_sensitivity.py` perturbs each domain's
+`trend_score` by ±0.2 (capped at [-1, 1]) and recomputes the top-20
+recommendation rankings.  Jaccard overlap vs the unperturbed baseline
+measures robustness.
+
+Run:
+
+```bash
+python scripts/trend_score_sensitivity.py
+```
+
+Output: `results/trend_score_sensitivity_report.json`
+
+---
+
+## 16. Extraction Weight Justification and Sensitivity
 
 ### Overview
 

@@ -69,6 +69,14 @@ This produces:
 
 ## 3. Phase 1 — Full Pipeline (`run.bat`)
 
+### Flow
+
+| Stage | Steps | Description |
+|-------|-------|-------------|
+| **A** | 1–13 | Automated extraction and analysis |
+| **B** | 14–17 | Gold labeling (interactive — UI launches automatically) |
+| **C** | — | Expert review (interactive — UI launches automatically) |
+
 ### Step-by-Step
 
 | Step | Script | Input | Output |
@@ -83,13 +91,15 @@ This produces:
 | 8 | `skill_time_trend_analysis.py --only_hard --stability` | advanced_skills_with_dates.csv | skill_time_trends.csv (FDR q-values), trend_stability_report.json |
 | 9 | `generate_competencies.py` | verified_skills.csv, future_skill_weights.csv, skill_time_trends.csv, future_domains.csv | competency_proposals.json (domain-based batching by default) |
 | 10 | `recommendations.py --ablation --sensitivity` | all outputs above | recommendations.csv, recommendations_report.json, weight_sensitivity_report.json |
-| 11 | `export_gold_set.py` | verified_skills, advanced_knowledge, future_weights | DATA/labels/gold_*.csv |
+| 11 | `export_gold_set.py` | verified_skills, advanced_knowledge, future_weights | DATA/labels/gold_*.csv (with is_overlap for IRR) |
 | 12 | `export_for_review.py` | comprehensive_analysis, verified_skills, advanced_knowledge | expert_review_*.csv |
 | 13 | `export_competencies_for_review.py` | competency_proposals.json | expert_review_competencies.csv |
+| — | **Gold Labeling UI** | `gold_labeling_ui.app` (port 8001) | DATA/labels/gold_labels/*.csv |
 | 14 | `merge_gold_labels.py` | DATA/labels/gold_labels/*.csv | DATA/labels/gold_*_merged.csv |
 | 15 | `evaluate_extraction.py` | DATA/labels/gold_*.csv | extraction_evaluation_report.json |
 | 16 | `evaluate_future_mapping.py` | gold_future_domain.csv, future_skill_weights.csv | future_mapping_evaluation_report.json |
 | 17 | `plot_scientific_analysis.py` | evaluation reports, trends, calibration | Scientific plots in results/figures/ |
+| — | **Expert Review UI** | `review_ui.app` (port 8000) | feedback_store/*.csv |
 
 **Note:** Competency generation and recommendations run *after* future-weight mapping and FDR-controlled trend analysis so outputs incorporate both domain forecasts and empirical emerging/declining signals.
 
@@ -212,7 +222,17 @@ Both write the same CSV schema; `import_feedback.py` and dashboard ranking use m
 
 ## 5. Phase 2 — Post-Review (`run_phase_2.bat`)
 
-Phase 2 has **13 steps**. Run after expert review is complete.
+Phase 2 has **17 steps** across 5 stages. Run after expert review is complete.
+
+### Flow
+
+| Stage | Steps | Description |
+|-------|-------|-------------|
+| **A** | 1–6 | Import feedback, apply corrections |
+| **B** | 7–11 | Re-generate outputs with human input |
+| **C** | 12–16 | Evaluation and scientific analysis |
+| **D** | 17 | Weight sensitivity analysis |
+| **E** | — | Optional second-round competency review |
 
 ### Step-by-Step
 
@@ -220,17 +240,21 @@ Phase 2 has **13 steps**. Run after expert review is complete.
 |------|--------|-------|--------|
 | 1 | `import_feedback.py` | feedback_store/*.csv | human_verified_skills.csv, bloom_corrections.json, type_corrections.json, competency_assessments.json, inter_rater_report.json |
 | 2 | `apply_feedback.py` | advanced_skills.csv, bloom/type corrections | advanced_skills_human_filtered.csv |
-| 3 | `validate_parameters.py` | expert_review_skills.csv or gold_skills.csv | parameter_validation_report.json, calibrated_threshold.json |
+| 3 | `validate_parameters.py` | expert_review_skills.csv or gold_skills.csv | parameter_validation_report.json, calibrated_threshold.json (CV-based) |
 | 4 | `verify_skills.py` | advanced_skills.csv, calibrated_threshold.json | verified_skills.csv (re-verified with calibrated threshold) |
-| 5 | `generate_competencies.py --comprehensive` | advanced_skills_human_filtered.csv | competency_proposals.json |
-| 6 | `export_competencies_for_review.py` | competency_proposals.json | expert_review_competencies.csv |
-| 7 | `evaluate_competency_generation.py` | competency_proposals, competency_assessments | competency_evaluation_report.json |
-| 8 | `skill_time_trend_analysis.py --only_hard --stability` | advanced_skills_with_dates.csv | skill_time_trends.csv, trend_stability_report.json |
-| 9 | `recommendations.py --ablation --evaluate` | all outputs | recommendations.csv, recommendations_report.json |
-| 10 | `plot_generator.py` | model_comparison, coverage_report, future_weights, etc. | Plots in results/figures/ (updated) |
-| 11 | `evaluate_extraction.py` | DATA/labels/gold_*.csv | extraction_evaluation_report.json |
-| 12 | `evaluate_future_mapping.py` | gold_future_domain.csv, future_skill_weights.csv | future_mapping_evaluation_report.json |
-| 13 | `log_run_metadata.py` | config, dataset | run_metadata.json (updated) |
+| 5 | `merge_gold_labels.py` | DATA/labels/gold_labels/*.csv | DATA/labels/gold_*_merged.csv |
+| 6 | `future_weight_mapping.py --input_type skills` | verified_skills.csv | future_skill_weights.csv (re-mapped post-correction) |
+| 7 | `generate_competencies.py --comprehensive` | advanced_skills_human_filtered.csv | competency_proposals.json |
+| 8 | `export_competencies_for_review.py` | competency_proposals.json | expert_review_competencies.csv |
+| 9 | `skill_time_trend_analysis.py --only_hard --stability` | advanced_skills_with_dates.csv | skill_time_trends.csv, trend_stability_report.json |
+| 10 | `recommendations.py --ablation --sensitivity --evaluate` | all outputs | recommendations.csv, recommendations_report.json, weight_sensitivity_report.json |
+| 11 | `plot_generator.py` | model_comparison, coverage_report, future_weights, etc. | Plots in results/figures/ (updated) |
+| 12 | `evaluate_extraction.py` | DATA/labels/gold_*.csv | extraction_evaluation_report.json (Bloom + type validation) |
+| 13 | `evaluate_future_mapping.py` | gold_future_domain.csv, future_skill_weights.csv | future_mapping_evaluation_report.json (with MRR) |
+| 14 | `evaluate_competency_generation.py` | competency_proposals, competency_assessments | competency_evaluation_report.json |
+| 15 | `plot_scientific_analysis.py` | evaluation reports, trends, calibration | Scientific plots in results/figures/ |
+| 16 | `log_run_metadata.py` | config, dataset | run_metadata.json (updated) |
+| 17 | `scripts/weight_sensitivity_extraction.py` | gold_skills.csv, pipeline config | weight_sensitivity_extraction_report.json |
 
 ### Merge Rules (Multi-Reviewer)
 
