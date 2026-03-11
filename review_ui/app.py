@@ -59,6 +59,7 @@ class CompetencyFeedback(BaseModel):
     competency_id: str
     human_quality: str = ""
     human_relevant: str = ""
+    human_skill_focus: str = ""
     human_notes: str = ""
     reviewer_id: str = ""
 
@@ -202,7 +203,7 @@ def get_competencies(reviewer_id: str = Query("", alias="reviewer_id")):
     rid = reviewer_id.strip() or "default"
     df = _merge_template_with_feedback(
         template, feedback, "competency_id", rid,
-        ["human_quality", "human_relevant", "human_notes"]
+        ["human_quality", "human_relevant", "human_skill_focus", "human_notes"]
     )
     df = df.fillna("")
     items = df.to_dict(orient="records")
@@ -261,6 +262,7 @@ def save_competency_feedback(fb: CompetencyFeedback):
     _upsert_feedback(path, "competency_id", fb.competency_id, rid, {
         "human_quality": fb.human_quality,
         "human_relevant": fb.human_relevant,
+        "human_skill_focus": fb.human_skill_focus,
         "human_notes": fb.human_notes,
     })
     return {"ok": True}
@@ -319,6 +321,7 @@ def save_all_competencies(items: list[dict]):
         _upsert_feedback(path, "competency_id", cid, rid, {
             "human_quality": item.get("human_quality", ""),
             "human_relevant": item.get("human_relevant", ""),
+            "human_skill_focus": item.get("human_skill_focus", ""),
             "human_notes": item.get("human_notes", ""),
         })
     return {"ok": True, "updated": len(items)}

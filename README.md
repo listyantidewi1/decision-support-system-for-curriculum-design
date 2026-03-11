@@ -38,7 +38,8 @@ skill-extraction/
 ├── config.py                        # Global configuration
 ├── plot_generator.py                # Visual analytics
 ├── verify_skills.py                 # Skill verification (calibrated or percentile)
-├── generate_competencies.py         # Future-aware competency generator (LLM)
+├── generate_competencies.py         # Future-aware competency generator (LLM, domain-based batching)
+├── domain_batching.py               # Domain-based batching: grouping, fallbacks, merge logic
 ├── recommendations.py               # Ranked curriculum recommendations + ablation
 ├── enrich_with_dates.py             # Attach job_date → extraction outputs
 ├── skill_time_trend_analysis.py     # FDR-controlled time-series trends + stability
@@ -253,6 +254,8 @@ This project introduces a **multi-layer curriculum intelligence pipeline** combi
 ### **7. Competency Generator (LLM)**
 
 * Uses verified skills + future context + empirical trend signals
+* **Domain-based batching:** Groups skills by future domain before LLM calls, so each batch contains thematically related skills (reduces forced groupings)
+* Fallbacks: normalized-key lookup for coverage gaps; on-the-fly embedding lookup for unmapped skills; "Uncertain" batch for low-confidence domain assignments
 * Produces competency IDs, titles, descriptions, related skills, future relevance notes
 
 ### **8. Curriculum Recommendations**
@@ -386,13 +389,15 @@ The system generates:
 
 * JSON competency framework
 * 10–25 competencies per batch
-* Each includes:
+* **Domain-based batching (default):** Skills are grouped by `best_future_domain` before chunking. Low-confidence mappings (similarity below 0.45 or mapping_margin below 0.05) go to "Uncertain"; unmapped skills get on-the-fly domain assignment or "Unmapped". Small domain batches can be merged when domains are strongly similar (cosine ≥ 0.7). Use `--no-batch-by-domain` for legacy sequential chunking.
+* Each competency includes:
 
   * id
   * title
   * description
   * **related skills**
   * **future relevance statement**
+  * **batch_domain** (when domain batching is enabled)
 
 This output can be directly used in a **curriculum redesign document** or **expert workshop**.
 

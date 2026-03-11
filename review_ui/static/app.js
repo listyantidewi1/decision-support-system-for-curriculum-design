@@ -55,7 +55,7 @@ function isKnowledgeReviewed(item) {
   return !!(item.human_valid || item.human_notes);
 }
 function isCompetencyReviewed(item) {
-  return !!(item.human_quality || item.human_relevant || item.human_notes);
+  return !!(item.human_quality || item.human_relevant || item.human_skill_focus || item.human_notes);
 }
 
 // --- Debounced auto-save ---
@@ -164,8 +164,11 @@ function renderSkills() {
       </div>
       <div class="label">Notes</div>
       <textarea data-field="human_notes" placeholder="Optional notes">${escapeHtml(item.human_notes || "")}</textarea>
+      <button type="button" class="save-now">Save Skill Review</button>
+      <span class="hint-inline">Changes auto-save. Click to save immediately.</span>
     `;
     const rid = item.review_id;
+    card.querySelector(".save-now")?.addEventListener("click", () => autoSaveSkill(rid, card));
     card.querySelectorAll("select").forEach((sel) => {
       sel.addEventListener("change", () => debouncedSave(`skill-${rid}`, () => autoSaveSkill(rid, card), 300));
     });
@@ -240,8 +243,11 @@ function renderKnowledge() {
       </div>
       <div class="label">Notes</div>
       <textarea data-field="human_notes" placeholder="Optional notes">${escapeHtml(item.human_notes || "")}</textarea>
+      <button type="button" class="save-now">Save Knowledge Review</button>
+      <span class="hint-inline">Changes auto-save. Click to save immediately.</span>
     `;
     const rid = item.review_id;
+    card.querySelector(".save-now")?.addEventListener("click", () => autoSaveKnowledge(rid, card));
     card.querySelectorAll("select").forEach((sel) => {
       sel.addEventListener("change", () => debouncedSave(`know-${rid}`, () => autoSaveKnowledge(rid, card), 300));
     });
@@ -259,16 +265,17 @@ let competenciesData = [];
 async function autoSaveCompetency(compId, card) {
   const hq = card.querySelector(`select[data-field="human_quality"]`)?.value || "";
   const hr = card.querySelector(`select[data-field="human_relevant"]`)?.value || "";
+  const hsf = card.querySelector(`select[data-field="human_skill_focus"]`)?.value || "";
   const hn = card.querySelector(`textarea[data-field="human_notes"]`)?.value || "";
   try {
     await postJson(`${API}/save_competency_feedback`, {
-      competency_id: compId, human_quality: hq, human_relevant: hr, human_notes: hn,
+      competency_id: compId, human_quality: hq, human_relevant: hr, human_skill_focus: hsf, human_notes: hn,
       reviewer_id: getReviewerId(),
     });
     const item = competenciesData.find((x) => x.competency_id === compId);
-    if (item) { item.human_quality = hq; item.human_relevant = hr; item.human_notes = hn; }
+    if (item) { item.human_quality = hq; item.human_relevant = hr; item.human_skill_focus = hsf; item.human_notes = hn; }
     updateCompetencyProgress();
-    card.classList.toggle("reviewed", !!(hq || hr || hn));
+    card.classList.toggle("reviewed", !!(hq || hr || hsf || hn));
     showSaveIndicator(card, true);
     // Don't re-render on save when unreviewed-only: keep card visible for notes.
   } catch (e) {
@@ -308,20 +315,39 @@ function renderCompetencies() {
       </div>
       <div class="label">Description</div>
       <div class="value">${escapeHtml(item.description || "")}</div>
-      <div class="label">Related Skills</div>
-      <div class="value small">${escapeHtml(item.related_skills || "")}</div>
+      <div class="card-meta">
+        <span class="meta-tag">Competency ID: ${escapeHtml(item.competency_id || "—")}</span>
+        <span class="meta-tag">Batch: ${escapeHtml(item.batch_id != null ? String(item.batch_id) : "—")}</span>
+        <span class="meta-tag">Future relevance: ${escapeHtml((item.future_relevance || "").slice(0, 80))}${(item.future_relevance || "").length > 80 ? "…" : ""}</span>
+      </div>
+      <div class="label">Related skills (Bloom level per skill)</div>
+      <div class="value small mono">${escapeHtml(item.related_skills_with_bloom || item.related_skills || "")}</div>
+      <div class="card-meta">
+        ${(item.skill_focus || "") ? `<span class="meta-tag">Skill focus (derived): ${escapeHtml(item.skill_focus)}</span>` : ""}
+      </div>
       <div class="row">
         <div class="col">
-          <div class="label">Quality (1-5)</div>
-          <select data-field="human_quality">
+          <div class="label">Skill focus</div>
+          <select data-field="human_skill_focus">
             <option value="">--</option>
-            <option value="1" ${item.human_quality === "1" ? "selected" : ""}>1 - Poor</option>
-            <option value="2" ${item.human_quality === "2" ? "selected" : ""}>2</option>
-            <option value="3" ${item.human_quality === "3" ? "selected" : ""}>3 - Fair</option>
-            <option value="4" ${item.human_quality === "4" ? "selected" : ""}>4 - Good</option>
-            <option value="5" ${item.human_quality === "5" ? "selected" : ""}>5 - Excellent</option>
+            <option value="Hard" ${item.human_skill_focus === "Hard" ? "selected" : ""}>Hard</option>
+            <option value="Soft" ${item.human_skill_focus === "Soft" ? "selected" : ""}>Soft</option>
+            <option value="Both" ${item.human_skill_focus === "Both" ? "selected" : ""}>Both</option>
           </select>
         </div>
+        <div class="col">
+          <div class="label">Quality (1–5)</div>
+          <select data-field="human_quality">
+            <option value="">--</option>
+            <option value="1" ${item.human_quality === "1" || item.human_quality === "poor" ? "selected" : ""}>1 – Poor</option>
+            <option value="2" ${item.human_quality === "2" || item.human_quality === "fair" ? "selected" : ""}>2 – Fair</option>
+            <option value="3" ${item.human_quality === "3" || item.human_quality === "good" ? "selected" : ""}>3 – Good</option>
+            <option value="4" ${item.human_quality === "4" ? "selected" : ""}>4 – Strong</option>
+            <option value="5" ${item.human_quality === "5" || item.human_quality === "excellent" ? "selected" : ""}>5 – Excellent</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
         <div class="col">
           <div class="label">Relevant?</div>
           <select data-field="human_relevant">
@@ -334,8 +360,11 @@ function renderCompetencies() {
       </div>
       <div class="label">Notes</div>
       <textarea data-field="human_notes" placeholder="Optional notes">${escapeHtml(item.human_notes || "")}</textarea>
+      <button type="button" class="save-now">Save Competency Review</button>
+      <span class="hint-inline">Changes auto-save. Click to save immediately.</span>
     `;
     const cid = item.competency_id;
+    card.querySelector(".save-now")?.addEventListener("click", () => autoSaveCompetency(cid, card));
     card.querySelectorAll("select").forEach((sel) => {
       sel.addEventListener("change", () => debouncedSave(`comp-${cid}`, () => autoSaveCompetency(cid, card), 300));
     });

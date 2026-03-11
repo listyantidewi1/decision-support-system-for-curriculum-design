@@ -34,6 +34,17 @@ W_DENSITY = 0.15
 FREQ_CAP = 20          # frequency above this is treated as 1.0
 HIGH_PERCENTILE = 80   # top 20 %
 MEDIUM_PERCENTILE = 50 # top 50 %
+VAGUE_SKILL_PENALTY = 0.6  # multiplier for single-word hard skills (downrank vague skills)
+
+
+def _is_vague_hard_skill(skill: str, skill_type: str) -> bool:
+    """True if Hard skill with fewer than 2 words (e.g. 'design', 'propose')."""
+    if not skill or not isinstance(skill, str):
+        return False
+    if str(skill_type).strip().lower() != "hard":
+        return False
+    words = str(skill).strip().split()
+    return len(words) < 2
 
 
 def load_calibrated_threshold(feedback_dir: Path) -> dict:
@@ -210,6 +221,16 @@ def main():
     else:
         print("[INFO] Using fixed weights (parameter_validation_report.json not found or invalid)")
     df["composite_score"] = compute_composite(df, weights=cal_weights)
+
+    # Apply vague-skill penalty for single-word hard skills
+    if "skill" in df.columns and "type" in df.columns:
+        vague_mask = df.apply(
+            lambda r: _is_vague_hard_skill(str(r.get("skill", "")), str(r.get("type", ""))),
+            axis=1,
+        )
+        if vague_mask.any():
+            df.loc[vague_mask, "composite_score"] *= VAGUE_SKILL_PENALTY
+            print(f"[INFO] Applied vague-skill penalty to {vague_mask.sum()} single-word hard skills")
 
     cal = load_calibrated_threshold(feedback_dir)
     if cal and "confidence_threshold" in cal and not args.force_percentile:

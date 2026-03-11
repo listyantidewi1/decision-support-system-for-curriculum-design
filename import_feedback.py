@@ -201,7 +201,10 @@ def _load_competency_feedback(output_dir: Path, feedback_dir: Path) -> pd.DataFr
             or ("human_relevant" in df.columns and df["human_relevant"].astype(str).str.strip().ne("").any())
         )
         if ("human_quality" in df.columns or "human_relevant" in df.columns) and has_feedback:
-            mig = df[["competency_id", "human_quality", "human_relevant", "human_notes"]].copy()
+            cols = ["competency_id", "human_quality", "human_relevant", "human_notes"]
+            if "human_skill_focus" in df.columns:
+                cols.insert(3, "human_skill_focus")
+            mig = df[[c for c in cols if c in df.columns]].copy()
             mig["reviewer_id"] = "default"
             mig.to_csv(fb_path, index=False, encoding="utf-8-sig")
             print(f"[INFO] Migrated legacy competency feedback to {fb_path}")
@@ -229,8 +232,12 @@ def import_competency_feedback(output_dir: Path, feedback_dir: Path) -> None:
         hq = _majority([v for v in hq_list if v])
         hr = _majority([v for v in hr_list if v])
         hn = _majority([v for v in hn_list if v])
-        if hq or hr or hn:
-            assessments[cid] = {"quality": hq, "relevant": hr, "notes": hn}
+        hsf = ""
+        if "human_skill_focus" in grp.columns:
+            hsf_list = grp["human_skill_focus"].astype(str).str.strip().tolist()
+            hsf = _majority([v for v in hsf_list if v])
+        if hq or hr or hsf or hn:
+            assessments[cid] = {"quality": hq, "relevant": hr, "skill_focus": hsf, "notes": hn}
 
     if assessments:
         (feedback_dir / "competency_assessments.json").write_text(

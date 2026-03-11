@@ -952,6 +952,8 @@ class LLMExtractor:
         ========================
         3. **Skills extraction**:
         - Must be action-oriented (verbs + context).
+        - REJECT single-word skills (e.g. "design", "propose", "manage") — they are too vague.
+          Skills MUST include verb + object/context (e.g. "design software", "propose solutions").
         - Structure:  
             { "skill": "verb + object/context",  
             "type": "Hard" | "Soft",  
