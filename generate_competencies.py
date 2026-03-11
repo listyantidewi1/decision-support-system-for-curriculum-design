@@ -4,6 +4,13 @@ generate_competencies.py
 Takes high/medium-verified skills from verified_skills.csv and asks an LLM
 (through OpenRouter) to propose competency statements / curriculum components.
 
+Domain-based batching (default): Groups skills by best_future_domain before LLM
+calls so each batch contains thematically related skills. Uses normalized-key
+lookup for future_skill_weights; confidence thresholds (similarity, mapping_margin)
+for high vs low confidence; on-the-fly embedding lookup for unmapped skills;
+merge of small batches when domains are strongly similar. Use --no-batch-by-domain
+for legacy sequential chunking.
+
 Output:
     competency_proposals.json  (list of JSON objects with competencies)
 """
@@ -21,6 +28,7 @@ import pandas as pd
 from openai import OpenAI
 
 import config  # uses config.OUTPUT_DIR
+from pipeline import AdvancedPipelineConfig
 
 COMPETENCY_REQUIRED_FIELDS = {"id", "title", "description", "related_skills", "future_relevance"}
 MAX_RETRIES = 2
@@ -58,8 +66,11 @@ def load_skill_future_weights(
     weights_file: str = "future_skill_weights.csv",
 ) -> Dict[str, Dict]:
     """
-    Load skill -> {best_future_domain, trend_label, future_weight} from
-    future_skill_weights.csv. Returns empty dict if file missing.
+    Load skill -> {best_future_domain, trend_label, future_weight, similarity, mapping_margin}
+    from future_skill_weights.csv. Returns empty dict if file missing.
+
+    Uses normalized-key lookup: exact skill first, then _normalize_for_grouping(skill)
+    to reduce coverage gap from case/punctuation variants.
     """
     path = output_dir / weights_file
     if not path.exists():
@@ -70,14 +81,39 @@ def load_skill_future_weights(
         return {}
     # Keep first occurrence per skill (file is sorted by future_weight desc)
     df = df.drop_duplicates(subset=["skill"], keep="first")
-    return {
-        str(row["skill"]).strip(): {
+    from domain_batching import normalize_for_grouping
+
+    result: Dict[str, Dict] = {}
+    for _, row in df.iterrows():
+        exact_key = str(row["skill"]).strip()
+        data = {
             "best_future_domain": str(row["best_future_domain"]),
             "trend_label": str(row["trend_label"]),
             "future_weight": float(row["future_weight"]),
+            "similarity": float(row.get("similarity", row.get("top1_similarity", 0)) or 0),
+            "mapping_margin": float(row.get("mapping_margin", 0) or 0),
         }
-        for _, row in df.iterrows()
-    }
+        result[exact_key] = data
+        norm_key = normalize_for_grouping(exact_key)
+        if norm_key and norm_key not in result:
+            result[norm_key] = data
+    return result
+
+
+def get_skill_future_data(skill: str, skill_future_weights: Dict[str, Dict]) -> Optional[Dict]:
+    """
+    Lookup skill in future weights: exact match first, then normalized key.
+    """
+    if not skill_future_weights:
+        return None
+    s = str(skill).strip()
+    if s in skill_future_weights:
+        return skill_future_weights[s]
+    from domain_batching import normalize_for_grouping
+    norm_key = normalize_for_grouping(s)
+    if norm_key and norm_key in skill_future_weights:
+        return skill_future_weights[norm_key]
+    return None
 
 
 def build_future_context(output_dir: Path,
@@ -183,10 +219,66 @@ def _normalize_competency_key(text: str) -> str:
     return t
 
 
-def _deduplicate_competencies(comps: List[Dict]) -> List[Dict]:
+def _jaccard_skills(a_skills: List[str], b_skills: List[str]) -> float:
+    """Jaccard similarity between two related_skills lists (normalized by lowercasing)."""
+    sa = {str(s).strip().lower() for s in (a_skills or []) if str(s).strip()}
+    sb = {str(s).strip().lower() for s in (b_skills or []) if str(s).strip()}
+    if not sa and not sb:
+        return 1.0
+    if not sa or not sb:
+        return 0.0
+    inter = len(sa & sb)
+    union = len(sa | sb)
+    return inter / union if union else 0.0
+
+
+def _merge_by_skills_overlap(
+    comps: List[Dict], threshold: float = 0.5
+) -> List[Dict]:
+    """
+    Merge competencies with high Jaccard overlap in related_skills.
+    Greedy: process by occurrence_count desc; merge into first match.
+    Preserves importance: occurrence_count is summed when merging.
+    """
+    if not comps or threshold <= 0:
+        return comps
+    comps = sorted(
+        comps,
+        key=lambda c: (-int(c.get("occurrence_count", 1)), c.get("title", "")),
+    )
+    result: List[Dict] = []
+    for c in comps:
+        skills = set(
+            str(s).strip().lower()
+            for s in (c.get("related_skills") or [])
+            if str(s).strip()
+        )
+        occ = int(c.get("occurrence_count", 1))
+        merged = False
+        for r in result:
+            r_skills = set(
+                str(s).strip().lower()
+                for s in (r.get("related_skills") or [])
+                if str(s).strip()
+            )
+            j = _jaccard_skills(list(skills), list(r_skills))
+            if j >= threshold:
+                r["occurrence_count"] = int(r.get("occurrence_count", 1)) + occ
+                combined = r_skills | skills
+                r["related_skills"] = sorted(combined)
+                merged = True
+                break
+        if not merged:
+            result.append(c.copy())
+    return result
+
+
+def _deduplicate_competencies(
+    comps: List[Dict], merge_overlap_threshold: float = 0.0
+) -> List[Dict]:
     """
     Group competencies by normalized title. For each group: keep canonical (first),
-    set occurrence_count = group size. Higher occurrence implies higher demand.
+    set occurrence_count = group size. Then optionally merge by related_skills overlap.
     """
     if not comps:
         return comps
@@ -210,6 +302,9 @@ def _deduplicate_competencies(comps: List[Dict]) -> List[Dict]:
                     related.add(str(s).strip())
             canonical["related_skills"] = sorted(related)
         out.append(canonical)
+
+    if merge_overlap_threshold > 0:
+        out = _merge_by_skills_overlap(out, threshold=merge_overlap_threshold)
     return out
 
 
@@ -272,8 +367,8 @@ def build_prompt(
         parts = []
         if skill_bloom_map and s_stripped in skill_bloom_map:
             parts.append(f"bloom={skill_bloom_map[s_stripped]}")
-        if skill_future_weights and s_stripped in skill_future_weights:
-            w = skill_future_weights[s_stripped]
+        w = get_skill_future_data(s_stripped, skill_future_weights or {})
+        if w:
             fw = w.get("future_weight", 0)
             domain = w.get("best_future_domain", "")
             trend = w.get("trend_label", "")
@@ -353,9 +448,11 @@ Please follow these rules:
 4. BLOOM ALIGNMENT: For each competency, use the HIGHEST Bloom taxonomy level among its
    related skills (e.g. if skills have Apply, Understand, Analyze, write at Analyze level).
    Bloom order: Remember < Understand < Apply < Analyze < Evaluate < Create.
-5. Try to produce between 10 and 25 competencies for this batch.
-6. Prefer higher-level, integrative competencies, not trivial one-skill items.
-7. Give slightly higher priority and more detail to skills and themes that appear
+5. Aim for 8–20 competencies per batch. Produce more only if skills clearly fall into many
+   distinct themes; fewer is fine when they cluster strongly.
+6. Avoid creating competencies that strongly overlap with others in this batch; prefer distinct themes.
+7. Prefer higher-level, integrative competencies, not trivial one-skill items.
+8. Give slightly higher priority and more detail to skills and themes that appear
    in future-critical domains (AI, data, cloud, security, human–AI collaboration),
    if such context is provided.
 {future_weighting_block}
@@ -542,9 +639,58 @@ def main():
         action="store_true",
         help="Disable competency deduplication (group similar titles, aggregate occurrence)",
     )
+    parser.add_argument(
+        "--merge-overlap-threshold",
+        type=float,
+        default=0.5,
+        help="Jaccard threshold for merging competencies by related_skills overlap (0=off, default: 0.5)",
+    )
+    parser.add_argument(
+        "--no-batch-by-domain",
+        action="store_true",
+        help="Disable domain-based batching; use sequential chunking (legacy).",
+    )
+    parser.add_argument(
+        "--domain-similarity-threshold",
+        type=float,
+        default=0.45,
+        help="Below this similarity, treat domain assignment as low-confidence -> Uncertain batch (default: 0.45)",
+    )
+    parser.add_argument(
+        "--domain-margin-threshold",
+        type=float,
+        default=0.05,
+        help="Below this mapping_margin, treat as low-confidence -> Uncertain batch (default: 0.05)",
+    )
+    parser.add_argument(
+        "--domain-order",
+        type=str,
+        default="mean_future_weight",
+        choices=["mean_future_weight", "trend_first"],
+        help="Order domain batches: mean_future_weight (default) or trend_first",
+    )
+    parser.add_argument(
+        "--no-merge-small-domain-batches",
+        action="store_true",
+        help="Disable merging of small domain batches when domains are strongly similar.",
+    )
+    parser.add_argument(
+        "--merge-domain-similarity-threshold",
+        type=float,
+        default=0.7,
+        help="Cosine similarity threshold for merging domain batches (default: 0.7)",
+    )
+    parser.add_argument(
+        "--future-domains-file",
+        type=str,
+        default=None,
+        help="Path to future_domains.csv (default: PROJECT_ROOT/future_domains.csv)",
+    )
 
     args = parser.parse_args()
     args.deduplicate = not args.no_deduplicate
+    args.batch_by_domain = not args.no_batch_by_domain
+    args.merge_small_domain_batches = not args.no_merge_small_domain_batches
     if args.human_verified_only and args.comprehensive:
         raise ValueError("Cannot use both --human_verified_only and --comprehensive. Choose one.")
 
@@ -635,6 +781,14 @@ def main():
     else:
         print("[INFO] Bloom column not available; Bloom alignment optional in prompt")
 
+    # Build skill->type map (for downranking vague single-word hard skills)
+    skill_type_map: Dict[str, str] = {}
+    if "skill" in df.columns and "type" in df.columns:
+        for _, row in df.drop_duplicates(subset=["skill"]).iterrows():
+            sk = str(row.get("skill", "")).strip().lower()
+            if sk:
+                skill_type_map[sk] = str(row.get("type", "")).strip()
+
     # Load skill future weights (for annotation and reordering)
     skill_future_weights = load_skill_future_weights(out_dir)
     if skill_future_weights:
@@ -645,17 +799,24 @@ def main():
     if skill_time_trends:
         print(f"[INFO] Loaded empirical trends for {len(skill_time_trends)} skills")
 
-    # Reorder skills: future_weight first, then empirical Emerging > Stable > Declining
+    # Reorder skills: future_weight first, then empirical Emerging > Stable > Declining.
+    # Downrank single-word hard skills (vague) so they appear later.
     def sort_key(s: str) -> tuple:
         s_stripped = s.strip()
         fw = -999.0
-        if skill_future_weights and s_stripped in skill_future_weights:
-            fw = skill_future_weights[s_stripped].get("future_weight", -999.0)
+        w = get_skill_future_data(s_stripped, skill_future_weights or {})
+        if w:
+            fw = w.get("future_weight", -999.0)
         emp_rank = 0  # 2=Emerging, 1=Stable, 0=Declining or unknown
         if skill_time_trends and s_stripped in skill_time_trends:
             lbl = skill_time_trends[s_stripped].get("trend_label", "")
             emp_rank = {"Emerging": 2, "Stable": 1, "Declining": 0}.get(lbl, 0)
-        return (fw, emp_rank)
+        is_vague = (
+            skill_type_map.get(s_stripped.lower(), "").lower() == "hard"
+            and len(s_stripped.split()) < 2
+        )
+        vague_rank = 0 if is_vague else 1  # vague sorts later
+        return (fw, emp_rank, vague_rank)
 
     skills_sorted = sorted(skills_sorted, key=sort_key, reverse=True)
     if skill_future_weights or skill_time_trends:
@@ -671,32 +832,132 @@ def main():
     all_competencies = []
     batch_id = 1
 
-    # Chunk skills for multiple LLM calls
-    for i in range(0, len(skills_sorted), args.max_skills_per_call):
-        chunk = skills_sorted[i : i + args.max_skills_per_call]
-        print(f"[INFO] Calling LLM for batch {batch_id} "
-              f"({len(chunk)} skills)...")
+    # Build batches: domain-based or sequential (legacy)
+    if args.batch_by_domain:
+        from domain_batching import (
+            assign_domain_for_skill,
+            build_domain_batches,
+            compute_domain_embeddings,
+            load_future_domains,
+            merge_similar_domain_batches,
+        )
+        from sentence_transformers import SentenceTransformer
 
-        data = call_llm_for_competencies(
-            client,
-            chunk,
-            args.model,
-            future_context=future_context,
-            few_shot_examples=few_shot or [],
-            skill_future_weights=skill_future_weights or None,
-            skill_time_trends=skill_time_trends or None,
-            skill_bloom_map=skill_bloom_map or None,
-            temperature=args.temperature,
+        skill_to_domain: Dict[str, str] = {}
+        skill_to_domain_data: Dict[str, Dict] = {}
+
+        domains_path = Path(
+            args.future_domains_file
+            if args.future_domains_file
+            else config.PROJECT_ROOT / "future_domains.csv"
+        )
+        domains_df = load_future_domains(domains_path)
+        embedder = None
+        if not domains_df.empty:
+            embedder = SentenceTransformer(AdvancedPipelineConfig.EMBEDDING_MODEL)
+
+        for s in skills_sorted:
+            s_stripped = s.strip()
+            w = get_skill_future_data(s_stripped, skill_future_weights or {})
+            if w:
+                sim = w.get("similarity", 0) or 0
+                margin = w.get("mapping_margin", 0) or 0
+                high_conf = (
+                    sim >= args.domain_similarity_threshold
+                    and margin >= args.domain_margin_threshold
+                )
+                if high_conf:
+                    domain = w.get("best_future_domain", "Unmapped")
+                    skill_to_domain[s_stripped] = domain
+                    skill_to_domain_data[s_stripped] = w
+                else:
+                    skill_to_domain[s_stripped] = "Uncertain"
+                    skill_to_domain_data[s_stripped] = w
+            else:
+                # On-the-fly embedding lookup
+                if embedder is not None and not domains_df.empty:
+                    domain, fw, trend = assign_domain_for_skill(s, domains_df, embedder)
+                    skill_to_domain[s_stripped] = domain
+                    skill_to_domain_data[s_stripped] = {
+                        "best_future_domain": domain,
+                        "trend_label": trend,
+                        "future_weight": fw,
+                        "similarity": 0,
+                        "mapping_margin": 0,
+                    }
+                else:
+                    skill_to_domain[s_stripped] = "Unmapped"
+                    skill_to_domain_data[s_stripped] = {
+                        "best_future_domain": "Unmapped",
+                        "trend_label": "",
+                        "future_weight": -999,
+                        "similarity": 0,
+                        "mapping_margin": 0,
+                    }
+
+        batches = build_domain_batches(
+            skills_sorted,
+            skill_to_domain,
+            skill_to_domain_data,
+            args.max_skills_per_call,
+            domain_order=args.domain_order,
         )
 
-        # Expecting {"competencies": [ ... ]}
-        comps = data.get("competencies", [])
-        # Annotate with batch id
-        for c in comps:
-            c.setdefault("batch_id", batch_id)
-        all_competencies.extend(comps)
+        if args.merge_small_domain_batches and embedder is not None and not domains_df.empty:
+            domain_embeddings = compute_domain_embeddings(domains_df, embedder)
+            if domain_embeddings:
+                batches = merge_similar_domain_batches(
+                    batches,
+                    domain_embeddings,
+                    args.merge_domain_similarity_threshold,
+                )
 
-        batch_id += 1
+        domain_counts = {}
+        for domain, chunk in batches:
+            domain_counts[domain] = domain_counts.get(domain, 0) + len(chunk)
+        print(f"[INFO] Domain-based batching: {len(batches)} batches, "
+              f"domains: {list(domain_counts.keys())[:10]}...")
+
+        for domain, chunk in batches:
+            print(f"[INFO] Calling LLM for batch {batch_id} (domain={domain}, {len(chunk)} skills)...")
+            data = call_llm_for_competencies(
+                client,
+                chunk,
+                args.model,
+                future_context=future_context,
+                few_shot_examples=few_shot or [],
+                skill_future_weights=skill_future_weights or None,
+                skill_time_trends=skill_time_trends or None,
+                skill_bloom_map=skill_bloom_map or None,
+                temperature=args.temperature,
+            )
+            comps = data.get("competencies", [])
+            for c in comps:
+                c.setdefault("batch_id", batch_id)
+                c.setdefault("batch_domain", domain)
+            all_competencies.extend(comps)
+            batch_id += 1
+    else:
+        # Legacy sequential chunking
+        for i in range(0, len(skills_sorted), args.max_skills_per_call):
+            chunk = skills_sorted[i : i + args.max_skills_per_call]
+            print(f"[INFO] Calling LLM for batch {batch_id} ({len(chunk)} skills)...")
+            data = call_llm_for_competencies(
+                client,
+                chunk,
+                args.model,
+                future_context=future_context,
+                few_shot_examples=few_shot or [],
+                skill_future_weights=skill_future_weights or None,
+                skill_time_trends=skill_time_trends or None,
+                skill_bloom_map=skill_bloom_map or None,
+                temperature=args.temperature,
+            )
+            comps = data.get("competencies", [])
+            for c in comps:
+                c.setdefault("batch_id", batch_id)
+            all_competencies.extend(comps)
+            batch_id += 1
 
     # Tag competencies with human verification status (comprehensive mode)
     if args.comprehensive and human_verified_skills:
@@ -717,7 +978,10 @@ def main():
 
     # Deduplicate similar competencies; aggregate occurrence_count
     if args.deduplicate and all_competencies:
-        all_competencies = _deduplicate_competencies(all_competencies)
+        thresh = args.merge_overlap_threshold
+        all_competencies = _deduplicate_competencies(
+            all_competencies, merge_overlap_threshold=thresh
+        )
         print(f"[INFO] Competencies after grouping: {len(all_competencies)}")
     else:
         for c in all_competencies:

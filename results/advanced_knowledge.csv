@@ -1,0 +1,2185 @@
+job_id,date_posted,knowledge,confidence_score,confidence_tier,source
+in-8b20bbf16019e5c1,,Group Operations,0.75,Medium High,LLM
+in-8b20bbf16019e5c1,,bank infrastructure,0.75,Medium High,LLM
+in-08bda50c77b08f46,,human resources policies,0.75,Medium High,LLM
+in-08bda50c77b08f46,,competitive wages,0.75,Medium High,LLM
+in-08bda50c77b08f46,,benefits,0.75,Medium High,LLM
+in-e60f7f8e30553e08,,Infrastructure as Code,0.75,Medium High,LLM
+in-e60f7f8e30553e08,,Configuration scripts,0.75,Medium High,LLM
+in-f8982109357c56e0,,data engineering,0.843,High,BERT+LLM
+in-f8982109357c56e0,,machine learning,0.838,High,BERT+LLM
+in-f8982109357c56e0,,creative experimentation,0.753,Medium High,BERT+LLM
+in-ea2cd0b0c6f52f4f,,foundation models,0.75,Medium High,LLM
+in-ea2cd0b0c6f52f4f,,atoms,0.75,Medium High,LLM
+in-ea2cd0b0c6f52f4f,,liquids,0.75,Medium High,LLM
+in-ea2cd0b0c6f52f4f,,data centers,0.75,Medium High,LLM
+in-6e0bef22111034dc,,Water,0.75,Medium High,LLM
+in-083ac975933f3cb9,,API Gateway,0.75,Medium High,LLM
+in-879b2fe47e1fbc66,,EHR,0.75,Medium High,LLM
+in-879b2fe47e1fbc66,,clinical workflows,0.75,Medium High,LLM
+in-879b2fe47e1fbc66,,business analytics,0.75,Medium High,LLM
+in-879b2fe47e1fbc66,,data analytics,0.75,Medium High,LLM
+in-b743930ff16064e7,,Science,0.75,Medium High,LLM
+in-b743930ff16064e7,,Engineering,0.75,Medium High,LLM
+in-b743930ff16064e7,,Data analytics,0.75,Medium High,LLM
+in-b743930ff16064e7,,Technology,0.75,Medium High,LLM
+in-66b97dc6ae697ac9,,access management,0.75,Medium High,LLM
+in-3787ada24baceced,,AI,0.844,High,BERT+LLM
+in-3787ada24baceced,,Machine Learning,0.838,High,BERT+LLM
+in-3787ada24baceced,,LLM,0.845,High,BERT+LLM
+in-35bde22582c02ec9,,Electronic Arts,0.75,Medium High,LLM
+in-dcd8dd1044f2926f,,stormwater systems,0.75,Medium High,LLM
+in-dcd8dd1044f2926f,,public health,0.75,Medium High,LLM
+in-dcd8dd1044f2926f,,infrastructure assets,0.75,Medium High,LLM
+in-dcd8dd1044f2926f,,environment,0.75,Medium High,LLM
+in-dcd8dd1044f2926f,,stormwater management,0.701,Medium High,BERT+LLM
+in-dcd8dd1044f2926f,,watershed planning,0.75,Medium High,LLM
+in-04d821a61bf4f3f8,,AWS Global Services,0.75,Medium High,LLM
+in-04d821a61bf4f3f8,,Cloud environments,0.75,Medium High,LLM
+in-6434f75ccfa896cd,,Enterprise Systems,0.75,Medium High,LLM
+in-6434f75ccfa896cd,,ERP,0.75,Medium High,LLM
+in-6434f75ccfa896cd,,integrated applications,0.75,Medium High,LLM
+in-6434f75ccfa896cd,,business operations,0.75,Medium High,LLM
+in-59f89f855608fde0,,Databricks,0.75,Medium High,LLM
+in-59f89f855608fde0,,Spark,0.75,Medium High,LLM
+in-59f89f855608fde0,,Kafka,0.75,Medium High,LLM
+in-59f89f855608fde0,,Airflow,0.75,Medium High,LLM
+in-59f89f855608fde0,,Temporal,0.75,Medium High,LLM
+in-59f89f855608fde0,,dbt,0.75,Medium High,LLM
+in-59f89f855608fde0,,Terraform,0.75,Medium High,LLM
+in-59f89f855608fde0,,AWS S3,0.75,Medium High,LLM
+in-59f89f855608fde0,,AWS EKS,0.75,Medium High,LLM
+in-59f89f855608fde0,,AWS MSK,0.75,Medium High,LLM
+in-59f89f855608fde0,,AWS DMS,0.75,Medium High,LLM
+in-59f89f855608fde0,,AWS Glue,0.75,Medium High,LLM
+in-59f89f855608fde0,,data engineering concepts,0.75,Medium High,LLM
+in-59f89f855608fde0,,machine learning lifecycle,0.75,Medium High,LLM
+in-59f89f855608fde0,,MLOps,0.75,Medium High,LLM
+in-59f89f855608fde0,,GenAI,0.75,Medium High,LLM
+in-7f1b7715acb11a2e,,Nerdio,0.75,Medium High,LLM
+in-7f1b7715acb11a2e,,multi-tenant technology,0.75,Medium High,LLM
+in-7f1b7715acb11a2e,,workflow-powered technology,0.75,Medium High,LLM
+in-7f1b7715acb11a2e,,cloud environments,0.75,Medium High,LLM
+in-4253237d507304c7,,Trainium,0.75,Medium High,LLM
+in-4253237d507304c7,,ML training performance,0.75,Medium High,LLM
+in-4253237d507304c7,,teraflops,0.75,Medium High,LLM
+in-4253237d507304c7,,TFLOPS,0.75,Medium High,LLM
+in-4253237d507304c7,,compute power,0.75,Medium High,LLM
+in-4253237d507304c7,,ML in the cloud,0.75,Medium High,LLM
+in-2ea46d88545e7e84,,client files,0.75,Medium High,LLM
+in-2ea46d88545e7e84,,VML management system,0.75,Medium High,LLM
+in-2ea46d88545e7e84,,Pegasus,0.75,Medium High,LLM
+in-81cfe369e4ad49b5,,Global Medical Assistance,0.75,Medium High,LLM
+in-81cfe369e4ad49b5,,Security Assistance,0.75,Medium High,LLM
+in-81cfe369e4ad49b5,,Travel Assistance,0.75,Medium High,LLM
+in-81cfe369e4ad49b5,,Workplace Ergonomics Program,0.75,Medium High,LLM
+in-3f1f20262049095a,,AI solutions,0.75,Medium High,LLM
+in-bf0e9f6211607d23,,Design systems,0.75,Medium High,LLM
+in-bf0e9f6211607d23,,Emerging technologies,0.75,Medium High,LLM
+in-bf0e9f6211607d23,,User experiences,0.75,Medium High,LLM
+in-f0b8e867898d9fc7,,change management,0.847,High,BERT+LLM
+in-f0b8e867898d9fc7,,business process optimization,0.845,High,BERT+LLM
+in-819016745fbf8e52,,Product Owner,0.75,Medium High,LLM
+in-819016745fbf8e52,,engineering teams,0.75,Medium High,LLM
+in-819016745fbf8e52,,new features,0.75,Medium High,LLM
+in-819016745fbf8e52,,system components,0.75,Medium High,LLM
+in-b0e3d6930bef9118,,Creative,0.75,Medium High,LLM
+in-b0e3d6930bef9118,,Project Management,0.75,Medium High,LLM
+in-b0e3d6930bef9118,,Print Production,0.75,Medium High,LLM
+in-b0e3d6930bef9118,,Editorial,0.75,Medium High,LLM
+in-b0e3d6930bef9118,,Account Services,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,.NET,0.847,High,BERT+LLM
+in-68c8bc8b4022b6bd,,C#,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,React.js,0.838,High,BERT+LLM
+in-68c8bc8b4022b6bd,,Next.js,0.85,High,BERT+LLM
+in-68c8bc8b4022b6bd,,Angular.js,0.851,High,BERT+LLM
+in-68c8bc8b4022b6bd,,Microservices,0.85,High,BERT+LLM
+in-68c8bc8b4022b6bd,,GraphQL (Apollo),0.797,Medium High,BERT+LLM
+in-68c8bc8b4022b6bd,,RESTful APIs,0.85,High,BERT+LLM
+in-68c8bc8b4022b6bd,,Domain-driven design,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,CI/CD,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,GitHub Actions,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,Jenkins,0.849,High,BERT+LLM
+in-68c8bc8b4022b6bd,,Bitbucket Pipelines,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,Gitlab Runners,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,Cloud,0.782,Medium High,BERT+LLM
+in-68c8bc8b4022b6bd,,AWS,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,Docker,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,Kubernetes,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,GenAI Studio,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,Copilot,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,RooCode,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,Cline,0.75,Medium High,LLM
+in-68c8bc8b4022b6bd,,C,0.559,Medium Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,"#,",0.55,Medium Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,Architecture:,0.39,Very Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,domain,0.56,Medium Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,-driven design.,0.556,Medium Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,CI,0.558,Medium Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,/,0.558,Medium Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,CD:,0.553,Medium Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,GitHub,0.552,Medium Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,"Actions,",0.508,Medium Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,Bitbucket,0.56,Medium Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,"Pipelines,",0.545,Medium Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,Gitlab,0.56,Medium Low,BERT (standalone)
+in-68c8bc8b4022b6bd,,Runners.,0.292,Very Low,BERT (standalone)
+in-b59719e8c96312ce,,Wilmar Careers,0.75,Medium High,LLM
+in-9068e588b7dc4f2d,,AI Infrastructure,0.75,Medium High,LLM
+in-9068e588b7dc4f2d,,portfolio management,0.75,Medium High,LLM
+in-9068e588b7dc4f2d,,analytics platform,0.75,Medium High,LLM
+in-9068e588b7dc4f2d,,institutional investors,0.75,Medium High,LLM
+in-9068e588b7dc4f2d,,global markets,0.75,Medium High,LLM
+in-6d6cab98b74e874f,,Consumer Banking,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,Java,0.847,High,BERT+LLM
+in-ea5fe0c67dbb09a7,,Spring Boot,0.847,High,BERT+LLM
+in-ea5fe0c67dbb09a7,,JavaScript,0.844,High,BERT+LLM
+in-ea5fe0c67dbb09a7,,ReactJS,0.852,High,BERT+LLM
+in-ea5fe0c67dbb09a7,,Node.js,0.845,High,BERT+LLM
+in-ea5fe0c67dbb09a7,,REST,0.687,Medium,BERT+LLM
+in-ea5fe0c67dbb09a7,,HTML5,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,CSS3,0.848,High,BERT+LLM
+in-ea5fe0c67dbb09a7,,JSON,0.847,High,BERT+LLM
+in-ea5fe0c67dbb09a7,,jQuery,0.844,High,BERT+LLM
+in-ea5fe0c67dbb09a7,,Kafka,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,Oracle,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,MySQL,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,MongoDB,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,SQL Server,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,Nginx,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,Apache,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,UI/UX design,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,Docker,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,Kubernetes,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,JIRA,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,CI/CD,0.75,Medium High,LLM
+in-ea5fe0c67dbb09a7,,Bachelor’s degree,0.554,Medium Low,BERT (standalone)
+in-ea5fe0c67dbb09a7,,computer science,0.455,Low,BERT (standalone)
+in-ea5fe0c67dbb09a7,,back,0.56,Medium Low,BERT (standalone)
+in-ea5fe0c67dbb09a7,,-end,0.559,Medium Low,BERT (standalone)
+in-ea5fe0c67dbb09a7,,JavaScript frameworks,0.496,Low,BERT (standalone)
+in-ea5fe0c67dbb09a7,,front,0.558,Medium Low,BERT (standalone)
+in-ea5fe0c67dbb09a7,,-end languages,0.454,Low,BERT (standalone)
+in-ea5fe0c67dbb09a7,,/,0.312,Very Low,BERT (standalone)
+in-5bd95884fcfdbfe2,,Azure,0.644,Medium,BERT+LLM
+in-5bd95884fcfdbfe2,,networking,0.842,High,BERT+LLM
+in-5bd95884fcfdbfe2,,distributed systems,0.848,High,BERT+LLM
+in-5bd95884fcfdbfe2,,database platforms,0.75,Medium High,LLM
+in-202d174576a6328b,,autonomous systems,0.75,Medium High,LLM
+in-070ac45a5adefcb1,,OTT video,0.75,Medium High,LLM
+in-8cb2b3de05fe17bb,,Cloud platforms,0.75,Medium High,LLM
+in-8cb2b3de05fe17bb,,Container platforms,0.75,Medium High,LLM
+in-8cb2b3de05fe17bb,,Cloud middleware,0.75,Medium High,LLM
+in-8cb2b3de05fe17bb,,PaaS,0.75,Medium High,LLM
+in-8cb2b3de05fe17bb,,Azure Service Bus,0.75,Medium High,LLM
+in-8cb2b3de05fe17bb,,Amazon EventBridge,0.75,Medium High,LLM
+in-8cb2b3de05fe17bb,,"full lifecycle,",0.522,Medium Low,BERT (standalone)
+in-3d91d1f91a2e35ff,,radical innovation,0.75,Medium High,LLM
+in-3d91d1f91a2e35ff,,automation advances,0.75,Medium High,LLM
+in-2f43fa6cbbb72894,,Visual Arts,0.75,Medium High,LLM
+in-2f43fa6cbbb72894,,Sketch School,0.75,Medium High,LLM
+in-2f43fa6cbbb72894,,Peanuts Celebration,0.75,Medium High,LLM
+in-5b8b8b6b495946f5,,EPR project,0.75,Medium High,LLM
+in-1e8d401875ab7ace,,Java,0.852,High,BERT+LLM
+in-1e8d401875ab7ace,,Spring Boot,0.845,High,BERT+LLM
+in-1e8d401875ab7ace,,React.js,0.849,High,BERT+LLM
+in-1e8d401875ab7ace,,Vue.js,0.851,High,BERT+LLM
+in-1e8d401875ab7ace,,Next.js,0.85,High,BERT+LLM
+in-1e8d401875ab7ace,,Angular,0.842,High,BERT+LLM
+in-1e8d401875ab7ace,,modern frontend engineering,0.519,Medium Low,BERT (standalone)
+in-1298c0a075adfe4e,,insights,0.75,Medium High,LLM
+in-1298c0a075adfe4e,,innovation,0.75,Medium High,LLM
+in-8335c5296046dc27,,machine learning,0.838,High,BERT+LLM
+in-8335c5296046dc27,,NLP,0.75,Medium High,LLM
+in-8335c5296046dc27,,data annotation,0.558,Medium Low,BERT (standalone)
+in-8335c5296046dc27,,content moderation.,0.558,Medium Low,BERT (standalone)
+in-8335c5296046dc27,,NLP -related,0.464,Low,BERT (standalone)
+in-8335c5296046dc27,,/,0.507,Medium Low,BERT (standalone)
+in-8335c5296046dc27,,SQL,0.558,Medium Low,BERT (standalone)
+in-59102c073373b270,,Rail Systems,0.75,Medium High,LLM
+in-59102c073373b270,,Rail Civils,0.75,Medium High,LLM
+in-59102c073373b270,,Rail Transport Authority,0.75,Medium High,LLM
+in-792c7c65733a1995,,GDPR,0.75,Medium High,LLM
+in-792c7c65733a1995,,Data Protection Act 2018,0.75,Medium High,LLM
+in-792c7c65733a1995,,PECR,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Cybersecurity,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Cyber solutions,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Business resilience,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Cybersecurity programs,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Cybersecurity risk,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Security program maturity,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Cyber controls,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Cyber policies,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Regulations,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Cyber control processes,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Cyber risk management,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Operational Technology,0.75,Medium High,LLM
+in-2650e0f960a33a06,,Critical information infrastructures,0.75,Medium High,LLM
+in-12365ed7bd9554c7,,digital models,0.75,Medium High,LLM
+in-12365ed7bd9554c7,,workflows,0.75,Medium High,LLM
+in-12365ed7bd9554c7,,architectural aluminum systems,0.75,Medium High,LLM
+in-12365ed7bd9554c7,,glass systems,0.75,Medium High,LLM
+in-1d1c0634c3f84857,,www.cplg.com,0.75,Medium High,LLM
+in-9816de77297ab668,,apparel,0.75,Medium High,LLM
+in-9816de77297ab668,,accessories,0.75,Medium High,LLM
+in-9816de77297ab668,,brand identity,0.75,Medium High,LLM
+in-9816de77297ab668,,product pillars,0.75,Medium High,LLM
+in-9816de77297ab668,,seasonal stories,0.75,Medium High,LLM
+in-97ca47c5f555e42a,,Insurance domain concepts,0.835,High,BERT+LLM
+in-97ca47c5f555e42a,,Specialized Insurance,0.847,High,BERT+LLM
+in-97ca47c5f555e42a,,London Market,0.846,High,BERT+LLM
+in-97ca47c5f555e42a,,Regulatory Data,0.845,High,BERT+LLM
+in-97ca47c5f555e42a,,enterprise data models,0.75,Medium High,LLM
+in-97ca47c5f555e42a,,scalable analytics solutions,0.75,Medium High,LLM
+in-97ca47c5f555e42a,,high-performance analytics solutions,0.75,Medium High,LLM
+in-97ca47c5f555e42a,,reporting solutions,0.75,Medium High,LLM
+in-b708da2b33f5c59c,,Python,0.75,Medium High,LLM
+in-b708da2b33f5c59c,,AWS,0.75,Medium High,LLM
+in-b708da2b33f5c59c,,Flask,0.75,Medium High,LLM
+in-b708da2b33f5c59c,,Pytest,0.75,Medium High,LLM
+in-b708da2b33f5c59c,,Mypy,0.75,Medium High,LLM
+in-b708da2b33f5c59c,,Docker,0.75,Medium High,LLM
+in-b708da2b33f5c59c,,PostgreSQL,0.75,Medium High,LLM
+in-b708da2b33f5c59c,,SQS,0.75,Medium High,LLM
+in-b708da2b33f5c59c,,S3,0.793,Medium High,BERT+LLM
+in-b708da2b33f5c59c,,Terraform,0.75,Medium High,LLM
+in-57793e22513bd508,,SAP Process Integration (PI),0.803,High,BERT+LLM
+in-57793e22513bd508,,Process Orchestration (PO),0.838,High,BERT+LLM
+in-57793e22513bd508,,APIs,0.824,High,BERT+LLM
+in-57793e22513bd508,,middleware technologies,0.825,High,BERT+LLM
+in-57793e22513bd508,,SAP Integration Suite,0.832,High,BERT+LLM
+in-57793e22513bd508,,SAP ISA-M methodology,0.75,Medium High,LLM
+in-57793e22513bd508,,Data Architecture and Management,0.806,High,BERT+LLM
+in-57793e22513bd508,,Reporting and analytics,0.824,High,BERT+LLM
+in-57793e22513bd508,,data modeling,0.845,High,BERT+LLM
+in-57793e22513bd508,,master data management and governance,0.849,High,BERT+LLM
+in-57793e22513bd508,,data quality,0.844,High,BERT+LLM
+in-57793e22513bd508,,SAP’s,0.543,Medium Low,BERT (standalone)
+in-57793e22513bd508,,ISA,0.549,Medium Low,BERT (standalone)
+in-57793e22513bd508,,-M methodology.,0.462,Low,BERT (standalone)
+in-1c5a5a5c1628040b,,SQL database administration,0.85,High,BERT+LLM
+in-b99d92a34ea0a07c,,Employee assistance program,0.75,Medium High,LLM
+in-8e8358720b2049a4,,IBP,0.846,High,BERT+LLM
+in-8e8358720b2049a4,,Demand,0.848,High,BERT+LLM
+in-8e8358720b2049a4,,Supply,0.674,Medium,BERT+LLM
+in-8e8358720b2049a4,,Inventory,0.634,Medium,BERT+LLM
+in-8e8358720b2049a4,,Sales and Operations Planning,0.847,High,BERT+LLM
+in-8e8358720b2049a4,,SAP ECC,0.75,Medium High,LLM
+in-8e8358720b2049a4,,SAP S4 HANA,0.75,Medium High,LLM
+in-8e8358720b2049a4,,SAP,0.559,Medium Low,BERT (standalone)
+in-8e8358720b2049a4,,ECC,0.524,Medium Low,BERT (standalone)
+in-8e8358720b2049a4,,/,0.502,Medium Low,BERT (standalone)
+in-8e8358720b2049a4,,S4,0.485,Low,BERT (standalone)
+in-8e8358720b2049a4,,HANA.,0.417,Low,BERT (standalone)
+in-8e8358720b2049a4,,"customer support,",0.324,Very Low,BERT (standalone)
+in-731fc34f48c31ddd,,AI,0.75,Medium High,LLM
+in-731fc34f48c31ddd,,digital learning platform,0.75,Medium High,LLM
+in-ed7c0956d23b6e08,,cloud-computing,0.75,Medium High,LLM
+in-ed7c0956d23b6e08,,Machine Learning,0.828,High,BERT+LLM
+in-ed7c0956d23b6e08,,SAAS solution,0.75,Medium High,LLM
+in-ed7c0956d23b6e08,,cloud,0.559,Medium Low,BERT (standalone)
+in-ed7c0956d23b6e08,,-computing,0.521,Medium Low,BERT (standalone)
+in-b608315da704076b,,API-first architecture,0.75,Medium High,LLM
+in-b608315da704076b,,scientific software development,0.848,High,BERT+LLM
+in-b608315da704076b,,Python,0.845,High,BERT+LLM
+in-b608315da704076b,,C++,0.75,Medium High,LLM
+in-b608315da704076b,,CUDA,0.851,High,BERT+LLM
+in-b608315da704076b,,cheminformatics toolkits,0.802,High,BERT+LLM
+in-b608315da704076b,,API,0.506,Medium Low,BERT (standalone)
+in-b608315da704076b,,-first,0.544,Medium Low,BERT (standalone)
+in-b608315da704076b,,C,0.559,Medium Low,BERT (standalone)
+in-b608315da704076b,,+,0.546,Medium Low,BERT (standalone)
+in-b608315da704076b,,"+,",0.556,Medium Low,BERT (standalone)
+in-82c62095c56a09f5,,Elastic Stack,0.849,High,BERT+LLM
+in-82c62095c56a09f5,,GCP,0.844,High,BERT+LLM
+in-82c62095c56a09f5,,modern automation tooling,0.843,High,BERT+LLM
+in-54f7e34be407fc22,,web experiences,0.75,Medium High,LLM
+in-d5c2072747d98126,,AI image generation technologies,0.75,Medium High,LLM
+in-d5c2072747d98126,,video generation technologies,0.75,Medium High,LLM
+in-d5c2072747d98126,,production expertise,0.75,Medium High,LLM
+in-4e2c7333fb3867a6,,SQL server,0.828,High,BERT+LLM
+in-4e2c7333fb3867a6,,cloud database services,0.817,High,BERT+LLM
+in-b5334b461893d9f6,,Defense Acquisition Workforce Improvement Act (DAWIA),0.75,Medium High,LLM
+in-4dd4be4468b8f8b5,,HR,0.81,High,BERT+LLM
+in-4dd4be4468b8f8b5,,Sustainability,0.674,Medium,BERT+LLM
+in-4dd4be4468b8f8b5,,contract,0.715,Medium High,BERT+LLM
+in-4dd4be4468b8f8b5,,supplier performance data,0.75,Medium High,LLM
+in-4dd4be4468b8f8b5,,dashboard reports,0.75,Medium High,LLM
+in-4dd4be4468b8f8b5,,contract delivery data,0.75,Medium High,LLM
+in-4dd4be4468b8f8b5,,contract compliance,0.75,Medium High,LLM
+in-4dd4be4468b8f8b5,,budget reviews,0.75,Medium High,LLM
+in-4dd4be4468b8f8b5,,strategic reviews,0.75,Medium High,LLM
+in-4dd4be4468b8f8b5,,trends,0.75,Medium High,LLM
+in-4dd4be4468b8f8b5,,Power BI,0.775,Medium High,BERT+LLM
+in-4dd4be4468b8f8b5,,monthly performance reports,0.75,Medium High,LLM
+in-4dd4be4468b8f8b5,,quarterly performance reports,0.75,Medium High,LLM
+in-4dd4be4468b8f8b5,,HR KPIs,0.795,Medium High,BERT+LLM
+in-4dd4be4468b8f8b5,,engagement,0.819,High,BERT+LLM
+in-4dd4be4468b8f8b5,,turnover,0.817,High,BERT+LLM
+in-4dd4be4468b8f8b5,,absence,0.707,Medium High,BERT+LLM
+in-4dd4be4468b8f8b5,,ESG metrics,0.788,Medium High,BERT+LLM
+in-036c776371efd2b7,,AI techniques,0.75,Medium High,LLM
+in-fc00c70672996923,,API testing,0.851,High,BERT+LLM
+in-fc00c70672996923,,data services,0.841,High,BERT+LLM
+in-3974672cef9dd264,,product requirements,0.75,Medium High,LLM
+in-beb1a85439fc3710,,401K,0.75,Medium High,LLM
+in-beb1a85439fc3710,,Paid Time Off,0.75,Medium High,LLM
+in-beb1a85439fc3710,,Paid Parental Leave,0.75,Medium High,LLM
+in-beb1a85439fc3710,,MLB.TV,0.75,Medium High,LLM
+in-beb1a85439fc3710,,Employee Assistance Programs (EAP),0.75,Medium High,LLM
+in-beb1a85439fc3710,,Tuition Reimbursement,0.75,Medium High,LLM
+in-beb1a85439fc3710,,Disability Benefits,0.75,Medium High,LLM
+in-beb1a85439fc3710,,Life Insurance,0.75,Medium High,LLM
+in-beb1a85439fc3710,,Accidental Death Insurance,0.75,Medium High,LLM
+in-beb1a85439fc3710,,Pet Insurance,0.75,Medium High,LLM
+in-15fc9d5bf30a4f52,,criminal proceedings,0.75,Medium High,LLM
+in-78cf01cb605e5896,,Delinea,0.812,High,BERT+LLM
+in-78cf01cb605e5896,,Thycotic,0.74,Medium High,BERT+LLM
+in-78cf01cb605e5896,,PAM solutions,0.75,Medium High,LLM
+in-78cf01cb605e5896,,enterprise identity systems,0.75,Medium High,LLM
+in-78cf01cb605e5896,,AD,0.846,High,BERT+LLM
+in-78cf01cb605e5896,,Azure AD,0.771,Medium High,BERT+LLM
+in-78cf01cb605e5896,,Shielded Cloud Solutions,0.75,Medium High,LLM
+in-78cf01cb605e5896,,PAM,0.263,Very Low,BERT (standalone)
+in-78cf01cb605e5896,,identity systems,0.254,Very Low,BERT (standalone)
+in-1f4ca5ad774310ff,,project governance,0.75,Medium High,LLM
+in-1f4ca5ad774310ff,,financial control,0.75,Medium High,LLM
+in-1f4ca5ad774310ff,,reporting,0.75,Medium High,LLM
+in-1f4ca5ad774310ff,,technology projects,0.75,Medium High,LLM
+in-b9d4aea91e3f2d0c,,Epic Ambulatory,0.75,Medium High,LLM
+in-b418b4139ba55785,,Agile team,0.75,Medium High,LLM
+in-e2edd8471b03019f,,QA Test,0.75,Medium High,LLM
+in-e2edd8471b03019f,,Candidate Privacy Notice,0.75,Medium High,LLM
+in-e2edd8471b03019f,,data protection rights,0.75,Medium High,LLM
+in-fa78458f9443eaa7,,database applications,0.851,High,BERT+LLM
+in-fa78458f9443eaa7,,web-based systems,0.762,Medium High,BERT+LLM
+in-752b949d027be167,,online booking,0.75,Medium High,LLM
+in-752b949d027be167,,scheduling,0.75,Medium High,LLM
+in-752b949d027be167,,client marketing,0.75,Medium High,LLM
+in-752b949d027be167,,staff management,0.75,Medium High,LLM
+in-752b949d027be167,,point of sale,0.75,Medium High,LLM
+in-752b949d027be167,,payments,0.75,Medium High,LLM
+in-752b949d027be167,,inventory,0.75,Medium High,LLM
+in-752b949d027be167,,analytics,0.75,Medium High,LLM
+in-4256252b53fa4d02,,data analysis best practices,0.75,Medium High,LLM
+in-4256252b53fa4d02,,data visualization best practices,0.819,High,BERT+LLM
+in-d7de06cb3625cd66,,Service Management,0.75,Medium High,LLM
+in-0c8b9a27ece5aea6,,Software Engineering,0.75,Medium High,LLM
+in-33451d1313ab6342,,cybersecurity solutions,0.75,Medium High,LLM
+in-05083d32f3b2c12f,,aviation industry,0.75,Medium High,LLM
+in-554dc0d2bef78a4c,,high-frequency trading (HFT) systems,0.823,High,BERT+LLM
+in-554dc0d2bef78a4c,,algorithmic trading strategies,0.849,High,BERT+LLM
+in-554dc0d2bef78a4c,,traditional finance,0.75,Medium High,LLM
+in-554dc0d2bef78a4c,,market structures,0.849,High,BERT+LLM
+in-554dc0d2bef78a4c,,derivatives,0.679,Medium,BERT+LLM
+in-554dc0d2bef78a4c,,risk management,0.827,High,BERT+LLM
+in-554dc0d2bef78a4c,,high,0.559,Medium Low,BERT (standalone)
+in-554dc0d2bef78a4c,,traditional,0.533,Medium Low,BERT (standalone)
+in-554dc0d2bef78a4c,,finance,0.453,Low,BERT (standalone)
+in-f9819a980c1976e8,,PHP,0.75,Medium High,LLM
+in-f9819a980c1976e8,,Python,0.75,Medium High,LLM
+in-f9819a980c1976e8,,payment solutions,0.75,Medium High,LLM
+in-f9819a980c1976e8,,Enterprise Workflows,0.75,Medium High,LLM
+in-46527b145958f44b,,Financial transactions,0.75,Medium High,LLM
+in-46527b145958f44b,,Month-end closings,0.75,Medium High,LLM
+in-46527b145958f44b,,Year-end closings,0.75,Medium High,LLM
+in-46527b145958f44b,,Accounting operations,0.75,Medium High,LLM
+in-46527b145958f44b,,Internal controls,0.75,Medium High,LLM
+in-46527b145958f44b,,Policies,0.75,Medium High,LLM
+in-d7f955d1258c78ff,,Transport,0.812,High,BERT+LLM
+in-d7f955d1258c78ff,,Ring Road,0.719,Medium High,BERT+LLM
+in-d7f955d1258c78ff,,State Government,0.755,Medium High,BERT+LLM
+in-d7f955d1258c78ff,,Civil Infrastructure projects,0.75,Medium High,LLM
+in-d7f955d1258c78ff,,Cairns Ring Road,0.75,Medium High,LLM
+in-d7f955d1258c78ff,,Transport Planning,0.847,High,BERT+LLM
+in-d7f955d1258c78ff,,Civil Engineering,0.55,Medium Low,BERT (standalone)
+in-21d24d42a7df10cd,,LEGO games franchise,0.75,Medium High,LLM
+in-208b2e5025df647a,,Machine learning,0.761,Medium High,BERT+LLM
+in-208b2e5025df647a,,Real-time large-scale systems,0.75,Medium High,LLM
+in-04b0497aa91e1731,,AI,0.813,High,BERT+LLM
+in-04b0497aa91e1731,,quantum information science,0.75,Medium High,LLM
+in-04b0497aa91e1731,,theoretical physics,0.75,Medium High,LLM
+in-04b0497aa91e1731,,mathematical foundations,0.75,Medium High,LLM
+in-04b0497aa91e1731,,physical foundations,0.75,Medium High,LLM
+in-04b0497aa91e1731,,AI and theoretical physics;,0.535,Medium Low,BERT (standalone)
+in-c8b5d048476a93d0,,wellbeing insights platform,0.75,Medium High,LLM
+in-90b42c07ae279875,,engineering analysis,0.843,High,BERT+LLM
+in-90b42c07ae279875,,construction inspection,0.847,High,BERT+LLM
+in-90b42c07ae279875,,material testing,0.843,High,BERT+LLM
+in-90b42c07ae279875,,contract administration,0.847,High,BERT+LLM
+in-90b42c07ae279875,,construction engineering,0.846,High,BERT+LLM
+in-c5e271e8acbb4617,,Remedial industry,0.75,Medium High,LLM
+in-c5e271e8acbb4617,,Hospitality industry,0.75,Medium High,LLM
+in-49c600e867b28fcc,,financial instruments,0.699,Medium,BERT+LLM
+in-49c600e867b28fcc,,private equity investments,0.834,High,BERT+LLM
+in-49c600e867b28fcc,,credit modelling,0.829,High,BERT+LLM
+in-49c600e867b28fcc,,treasury services,0.75,Medium High,LLM
+in-b7a2468228c54cc1,,Paid Search campaigns,0.75,Medium High,LLM
+in-b7a2468228c54cc1,,agency values,0.75,Medium High,LLM
+in-195c25519bd7260c,,SQL,0.846,High,BERT+LLM
+in-195c25519bd7260c,,PowerBI,0.849,High,BERT+LLM
+in-195c25519bd7260c,,Python,0.845,High,BERT+LLM
+in-195c25519bd7260c,,AWS tools,0.843,High,BERT+LLM
+in-195c25519bd7260c,,Enterprise Data Platform,0.847,High,BERT+LLM
+in-acb2a7db662d2b2b,,software engineering practices,0.75,Medium High,LLM
+in-acb2a7db662d2b2b,,version control,0.75,Medium High,LLM
+in-acb2a7db662d2b2b,,testing,0.75,Medium High,LLM
+in-acb2a7db662d2b2b,,CI/CD,0.75,Medium High,LLM
+in-acb2a7db662d2b2b,,software engineering,0.538,Medium Low,BERT (standalone)
+in-acb2a7db662d2b2b,,"testing,",0.558,Medium Low,BERT (standalone)
+in-acb2a7db662d2b2b,,CI,0.556,Medium Low,BERT (standalone)
+in-acb2a7db662d2b2b,,/,0.525,Medium Low,BERT (standalone)
+in-acb2a7db662d2b2b,,CD).,0.533,Medium Low,BERT (standalone)
+in-b623fdf7e964fd6d,,applications commerciales,0.75,Medium High,LLM
+in-b623fdf7e964fd6d,,Développement d’applications d’entreprise,0.75,Medium High,LLM
+in-3902e97b79f7d2cf,,Financial Planning & Analysis,0.75,Medium High,LLM
+in-fa78458f9443eaa7,,DTS Helpdesk system,0.75,Medium High,LLM
+in-b512302fe3907f2d,,office,0.75,Medium High,LLM
+in-b512302fe3907f2d,,industrial,0.75,Medium High,LLM
+in-b512302fe3907f2d,,retail,0.75,Medium High,LLM
+in-b512302fe3907f2d,,hotel,0.75,Medium High,LLM
+in-4e852e4285a16380,,software development,0.817,High,BERT+LLM
+in-4e852e4285a16380,,quality assurance process,0.75,Medium High,LLM
+in-6482dbbaf700f094,,Operations Management,0.75,Medium High,LLM
+in-f0b48fead02e6e98,,architectural drawings,0.75,Medium High,LLM
+in-f0b48fead02e6e98,,acoustic products,0.75,Medium High,LLM
+in-f0b48fead02e6e98,,panels,0.75,Medium High,LLM
+in-f0b48fead02e6e98,,baffles,0.828,High,BERT+LLM
+in-f0b48fead02e6e98,,clouds,0.695,Medium,BERT+LLM
+in-f0b48fead02e6e98,,estimating software,0.75,Medium High,LLM
+in-f0b48fead02e6e98,,Excel,0.848,High,BERT+LLM
+in-42b55a983bf16945,,Ignition,0.75,Medium High,LLM
+in-42b55a983bf16945,,FactoryTalkView,0.846,High,BERT+LLM
+in-42b55a983bf16945,,IT,0.852,High,BERT+LLM
+in-42b55a983bf16945,,Networking,0.85,High,BERT+LLM
+in-42b55a983bf16945,,database application,0.847,High,BERT+LLM
+in-42b55a983bf16945,,BHS system operations,0.844,High,BERT+LLM
+in-42b55a983bf16945,,/,0.553,Medium Low,BERT (standalone)
+in-5d555c25fc522941,,EY’s standard of performance,0.75,Medium High,LLM
+in-57b11b81933f1ce0,,risks,0.75,Medium High,LLM
+in-57b11b81933f1ce0,,controls,0.75,Medium High,LLM
+in-57b11b81933f1ce0,,new processes,0.75,Medium High,LLM
+in-57b11b81933f1ce0,,products,0.75,Medium High,LLM
+in-57b11b81933f1ce0,,systems,0.75,Medium High,LLM
+in-b6d25c92fe133ceb,,MuleSoft,0.807,High,BERT+LLM
+in-b6d25c92fe133ceb,,Boomi,0.84,High,BERT+LLM
+in-b6d25c92fe133ceb,,Workato,0.85,High,BERT+LLM
+in-b6d25c92fe133ceb,,IBM Sterling,0.772,Medium High,BERT+LLM
+in-b6d25c92fe133ceb,,messaging systems,0.835,High,BERT+LLM
+in-b6d25c92fe133ceb,,AI-assisted engineering tools,0.75,Medium High,LLM
+in-b6d25c92fe133ceb,,AI,0.554,Medium Low,BERT (standalone)
+in-b6d25c92fe133ceb,,-assisted engineering,0.535,Medium Low,BERT (standalone)
+in-042b565c84045356,,ticketing system,0.72,Medium High,BERT+LLM
+in-042b565c84045356,,product knowledge,0.75,Medium High,LLM
+in-042b565c84045356,,industry trends,0.75,Medium High,LLM
+in-042b565c84045356,,NZ,0.521,Medium Low,BERT (standalone)
+in-042b565c84045356,,Driver's License,0.466,Low,BERT (standalone)
+in-290c255a99e5d600,,management reporting,0.75,Medium High,LLM
+in-290c255a99e5d600,,commercial policy,0.75,Medium High,LLM
+in-290c255a99e5d600,,CAPEX investments,0.75,Medium High,LLM
+in-36736ae33c38a4df,,Drivers Licence,0.75,Medium High,LLM
+in-36736ae33c38a4df,,Video,0.75,Medium High,LLM
+in-fac0a95b0783fd9d,,STEM careers,0.75,Medium High,LLM
+in-fac0a95b0783fd9d,,uncertainty and risk,0.75,Medium High,LLM
+in-fac0a95b0783fd9d,,ethical AI,0.75,Medium High,LLM
+in-fac0a95b0783fd9d,,sustainable AI,0.75,Medium High,LLM
+in-a17d7e782cb5033c,,mobile platforms,0.75,Medium High,LLM
+in-a17d7e782cb5033c,,web platforms,0.75,Medium High,LLM
+in-07a9c2a299829676,,Microsoft Copilot Studio,0.75,Medium High,LLM
+in-07a9c2a299829676,,Power Automate,0.664,Medium,BERT+LLM
+in-07a9c2a299829676,,Flows,0.75,Medium High,LLM
+in-07a9c2a299829676,,APIs,0.75,Medium High,LLM
+in-07a9c2a299829676,,Generative AI,0.75,Medium High,LLM
+in-07a9c2a299829676,,SharePoint,0.75,Medium High,LLM
+in-07a9c2a299829676,,Microsoft,0.557,Medium Low,BERT (standalone)
+in-07a9c2a299829676,,Copilot,0.556,Medium Low,BERT (standalone)
+in-07a9c2a299829676,,Studio,0.295,Very Low,BERT (standalone)
+in-e07c53dcbcbf3274,,data science,0.75,Medium High,LLM
+in-e07c53dcbcbf3274,,optimisation,0.75,Medium High,LLM
+in-e07c53dcbcbf3274,,artificial intelligence,0.75,Medium High,LLM
+in-b4356c6ed1117311,,Machine learning,0.75,Medium High,LLM
+in-b4356c6ed1117311,,Data,0.75,Medium High,LLM
+in-5a81c5ecd1c8765b,,digital marketing,0.75,Medium High,LLM
+in-5a81c5ecd1c8765b,,consumer behaviour,0.75,Medium High,LLM
+in-601c49b2a52c9d10,,IT,0.75,Medium High,LLM
+in-601c49b2a52c9d10,,Business analysis,0.75,Medium High,LLM
+in-601c49b2a52c9d10,,Product ownership,0.75,Medium High,LLM
+in-601c49b2a52c9d10,,System requirements,0.75,Medium High,LLM
+in-601c49b2a52c9d10,,Software requirements,0.75,Medium High,LLM
+in-601c49b2a52c9d10,,Operations,0.75,Medium High,LLM
+in-3c9053efee28bcf7,,Data Science,0.75,Medium High,LLM
+in-3c9053efee28bcf7,,AI,0.75,Medium High,LLM
+in-3c9053efee28bcf7,,Data Analytics,0.75,Medium High,LLM
+in-3c9053efee28bcf7,,Data Engineering,0.75,Medium High,LLM
+in-3c9053efee28bcf7,,Data Visualization,0.75,Medium High,LLM
+in-8543415ad2ef374e,,touch sensing technologies,0.844,High,BERT+LLM
+in-8543415ad2ef374e,,hardware validation processes,0.851,High,BERT+LLM
+in-9952e2c2c0e072ea,,SAP technologies,0.81,High,BERT+LLM
+in-9952e2c2c0e072ea,,SAP,0.841,High,BERT+LLM
+in-9952e2c2c0e072ea,,Technology Consulting,0.825,High,BERT+LLM
+in-9952e2c2c0e072ea,,Presales,0.818,High,BERT+LLM
+in-acc05f25dcb874c4,,Product Launches,0.75,Medium High,LLM
+in-acc05f25dcb874c4,,GTM Strategy,0.75,Medium High,LLM
+in-acc05f25dcb874c4,,Product positioning,0.75,Medium High,LLM
+in-acc05f25dcb874c4,,Pricing strategies,0.75,Medium High,LLM
+in-acc05f25dcb874c4,,Campaign enablement,0.75,Medium High,LLM
+in-75c9b1e808efbcc2,,KDP,0.75,Medium High,LLM
+in-065469823b71882f,,SAP SuccessFactors,0.75,Medium High,LLM
+in-9bf4d6d9ee1e4a14,,administrative processes,0.729,Medium High,BERT+LLM
+in-9bf4d6d9ee1e4a14,,activity reporting,0.746,Medium High,BERT+LLM
+in-9bf4d6d9ee1e4a14,,sourcing processes,0.75,Medium High,LLM
+in-c20d12035abeb595,,National High Secure Deaf Service,0.75,Medium High,LLM
+in-c20d12035abeb595,,Nottingham Centre for Transgender Health,0.75,Medium High,LLM
+in-98d38d97f5392aef,,Data Engineering,0.75,Medium High,LLM
+in-e5a40a553d833e46,,AI Business Process,0.7,Medium High,BERT+LLM
+in-e5a40a553d833e46,,Dynamics 365,0.846,High,BERT+LLM
+in-e5a40a553d833e46,,Power Platform,0.85,High,BERT+LLM
+in-94c8e798911e3470,,MuleSoft Anypoint Platform,0.75,Medium High,LLM
+in-94c8e798911e3470,,Anypoint Studio,0.836,High,BERT+LLM
+in-94c8e798911e3470,,API Manager,0.846,High,BERT+LLM
+in-94c8e798911e3470,,Runtime Manager,0.843,High,BERT+LLM
+in-94c8e798911e3470,,RAML,0.852,High,BERT+LLM
+in-94c8e798911e3470,,OpenAPI,0.85,High,BERT+LLM
+in-94c8e798911e3470,,DataWeave,0.852,High,BERT+LLM
+in-94c8e798911e3470,,Mule Expression Language,0.75,Medium High,LLM
+in-94c8e798911e3470,,MUnit testing framework,0.807,High,BERT+LLM
+in-94c8e798911e3470,,RESTful APIs,0.85,High,BERT+LLM
+in-94c8e798911e3470,,JSON,0.847,High,BERT+LLM
+in-94c8e798911e3470,,XML,0.846,High,BERT+LLM
+in-94c8e798911e3470,,JMS,0.849,High,BERT+LLM
+in-94c8e798911e3470,,message queues,0.841,High,BERT+LLM
+in-94c8e798911e3470,,CI/CD tools,0.75,Medium High,LLM
+in-94c8e798911e3470,,Jenkins,0.75,Medium High,LLM
+in-94c8e798911e3470,,GitLab CI,0.75,Medium High,LLM
+in-94c8e798911e3470,,Git,0.75,Medium High,LLM
+in-94c8e798911e3470,,deployment automation,0.75,Medium High,LLM
+in-94c8e798911e3470,,security protocols,0.75,Medium High,LLM
+in-94c8e798911e3470,,OAuth 2.0,0.75,Medium High,LLM
+in-94c8e798911e3470,,JWT,0.75,Medium High,LLM
+in-94c8e798911e3470,,TLS,0.75,Medium High,LLM
+in-94c8e798911e3470,,API gateway policies,0.75,Medium High,LLM
+in-94c8e798911e3470,,Bachelor’s degree,0.552,Medium Low,BERT (standalone)
+in-94c8e798911e3470,,"computer science,",0.495,Low,BERT (standalone)
+in-94c8e798911e3470,,"Engineering,",0.418,Low,BERT (standalone)
+in-94c8e798911e3470,,software development,0.555,Medium Low,BERT (standalone)
+in-94c8e798911e3470,,MuleSoft development.,0.494,Low,BERT (standalone)
+in-94c8e798911e3470,,MuleSoft,0.55,Medium Low,BERT (standalone)
+in-94c8e798911e3470,,"Anypoint Platform,",0.478,Low,BERT (standalone)
+in-94c8e798911e3470,,/,0.547,Medium Low,BERT (standalone)
+in-312ae5116abe958d,,OPR3,0.75,Medium High,LLM
+in-312ae5116abe958d,,Acute Medical Ward,0.75,Medium High,LLM
+in-312ae5116abe958d,,Medicine,0.75,Medium High,LLM
+in-312ae5116abe958d,,ED,0.75,Medium High,LLM
+in-312ae5116abe958d,,OPR Directorate,0.75,Medium High,LLM
+in-312ae5116abe958d,,Health NZ Waikato,0.75,Medium High,LLM
+in-cd884a98466c5d51,,NSW Child Safe Standards,0.75,Medium High,LLM
+in-cd884a98466c5d51,,National Catholic Safeguarding Standards,0.75,Medium High,LLM
+in-b7f6c244f45d842b,,CalWORKs eligibility status,0.75,Medium High,LLM
+in-b7f6c244f45d842b,,TANF eligibility,0.75,Medium High,LLM
+in-b7f6c244f45d842b,,Notice of Action,0.75,Medium High,LLM
+in-4d39d1108694485c,,message brokers,0.851,High,BERT+LLM
+in-4d39d1108694485c,,Kafka,0.85,High,BERT+LLM
+in-4d39d1108694485c,,RabbitMQ,0.845,High,BERT+LLM
+in-75321c71d3b48fdc,,Java technologies,0.846,High,BERT+LLM
+in-75321c71d3b48fdc,,backend development,0.849,High,BERT+LLM
+in-fe47a8774f6fee8b,,Android,0.75,Medium High,LLM
+in-fe47a8774f6fee8b,,mobile applications,0.75,Medium High,LLM
+in-fe47a8774f6fee8b,,drone inspection tools,0.75,Medium High,LLM
+in-fe47a8774f6fee8b,,solar energy industry,0.75,Medium High,LLM
+in-4f4c7c65d5d697a1,,Distribution Centre,0.75,Medium High,LLM
+in-4f4c7c65d5d697a1,,merchandise plan,0.75,Medium High,LLM
+in-688c9596567360d1,,AI integration,0.847,High,BERT+LLM
+in-688c9596567360d1,,intelligent dashboards,0.75,Medium High,LLM
+in-688c9596567360d1,,predictive risk models,0.8,High,BERT+LLM
+in-688c9596567360d1,,smart automation,0.845,High,BERT+LLM
+in-688c9596567360d1,,user yield strategies,0.75,Medium High,LLM
+in-688c9596567360d1,,React,0.75,Medium High,LLM
+in-688c9596567360d1,,TypeScript,0.842,High,BERT+LLM
+in-688c9596567360d1,,Node.js,0.75,Medium High,LLM
+in-688c9596567360d1,,Python,0.846,High,BERT+LLM
+in-688c9596567360d1,,Go,0.75,Medium High,LLM
+in-688c9596567360d1,,vault logic,0.843,High,BERT+LLM
+in-688c9596567360d1,,API endpoints,0.842,High,BERT+LLM
+in-688c9596567360d1,,lending protocols,0.75,Medium High,LLM
+in-688c9596567360d1,,AMM protocols,0.771,Medium High,BERT+LLM
+in-688c9596567360d1,,predictive analytics,0.848,High,BERT+LLM
+in-688c9596567360d1,,risk signal models,0.849,High,BERT+LLM
+in-688c9596567360d1,,recommender systems,0.809,High,BERT+LLM
+in-688c9596567360d1,,vault strategies,0.75,Medium High,LLM
+in-688c9596567360d1,,UI/UX design,0.75,Medium High,LLM
+in-688c9596567360d1,,DeFi,0.75,Medium High,LLM
+in-688c9596567360d1,,smart contract interactions,0.75,Medium High,LLM
+in-688c9596567360d1,,vault mechanics,0.75,Medium High,LLM
+in-688c9596567360d1,,chain interoperability,0.75,Medium High,LLM
+in-688c9596567360d1,,CI/CD pipelines,0.75,Medium High,LLM
+in-688c9596567360d1,,automated tests,0.75,Medium High,LLM
+in-688c9596567360d1,,DevOps workflows,0.75,Medium High,LLM
+in-688c9596567360d1,,back,0.309,Very Low,BERT (standalone)
+in-688c9596567360d1,,-end,0.377,Very Low,BERT (standalone)
+in-688c9596567360d1,,"Go),",0.559,Medium Low,BERT (standalone)
+in-688c9596567360d1,,lending,0.555,Medium Low,BERT (standalone)
+in-df4c58ba7dee56c3,,Python,0.793,Medium High,BERT+LLM
+in-df4c58ba7dee56c3,,Django,0.848,High,BERT+LLM
+in-df4c58ba7dee56c3,,Flask,0.852,High,BERT+LLM
+in-df4c58ba7dee56c3,,FastAPI,0.841,High,BERT+LLM
+in-80759602520c230d,,Team Leadership,0.75,Medium High,LLM
+in-80759602520c230d,,Development,0.75,Medium High,LLM
+in-80759602520c230d,,technical competency,0.75,Medium High,LLM
+in-80759602520c230d,,quality,0.75,Medium High,LLM
+in-80759602520c230d,,company processes,0.75,Medium High,LLM
+in-80759602520c230d,,engineering practices,0.75,Medium High,LLM
+in-80759602520c230d,,design practices,0.75,Medium High,LLM
+in-80759602520c230d,,regulatory requirements,0.75,Medium High,LLM
+in-80759602520c230d,,customer specifications,0.75,Medium High,LLM
+in-80759602520c230d,,drawing and document templates,0.706,Medium High,BERT+LLM
+in-80759602520c230d,,technical knowledge,0.75,Medium High,LLM
+in-80759602520c230d,,legal requirements,0.75,Medium High,LLM
+in-80759602520c230d,,global standards,0.75,Medium High,LLM
+in-994763d7530e88b1,,port projects,0.75,Medium High,LLM
+in-58476ea449693e80,,educational technology,0.75,Medium High,LLM
+in-5dc0137fea6a865d,,innovation,0.75,Medium High,LLM
+in-5dc0137fea6a865d,,aerospace,0.75,Medium High,LLM
+in-5dc0137fea6a865d,,smart city,0.75,Medium High,LLM
+in-5dc0137fea6a865d,,defence,0.75,Medium High,LLM
+in-5dc0137fea6a865d,,public security,0.75,Medium High,LLM
+in-9a4ed3eee44b552b,,update,0.831,High,BERT+LLM
+in-9a4ed3eee44b552b,,change assistant,0.798,Medium High,BERT+LLM
+in-9a4ed3eee44b552b,,PeopleSoft maintenance,0.819,High,BERT+LLM
+in-9a4ed3eee44b552b,,application/Tools upgrades,0.847,High,BERT+LLM
+in-9a4ed3eee44b552b,,PUM,0.819,High,BERT+LLM
+in-1bb577efa30c9a9d,,Networking,0.75,Medium High,LLM
+in-1bb577efa30c9a9d,,WiFi,0.849,High,BERT+LLM
+in-1bb577efa30c9a9d,,Hardware,0.75,Medium High,LLM
+in-68071ee351033ae8,,flip-chip BGA packages,0.75,Medium High,LLM
+in-68071ee351033ae8,,ASICs,0.75,Medium High,LLM
+in-68071ee351033ae8,,SerDes,0.75,Medium High,LLM
+in-68071ee351033ae8,,flip,0.523,Medium Low,BERT (standalone)
+in-68071ee351033ae8,,-chip,0.528,Medium Low,BERT (standalone)
+in-68071ee351033ae8,,-BGA,0.376,Very Low,BERT (standalone)
+in-cc29618e4e7fdc66,,Xsolla Privacy Notice,0.75,Medium High,LLM
+in-731fc34f48c31ddd,,Zoom,0.75,Medium High,LLM
+in-fccebe9f39e20a5c,,training solutions,0.75,Medium High,LLM
+in-e20b167f7df3337c,,Sizewell C,0.75,Medium High,LLM
+in-e20b167f7df3337c,,EDF Group,0.75,Medium High,LLM
+in-e20b167f7df3337c,,HM Government,0.75,Medium High,LLM
+in-c3d2f61b501acb8c,,ICT transformation programme,0.75,Medium High,LLM
+in-c3d2f61b501acb8c,,Orbis Order Comms solution,0.75,Medium High,LLM
+in-c3d2f61b501acb8c,,IPM,0.75,Medium High,LLM
+in-c3d2f61b501acb8c,,Orbis ED systems,0.75,Medium High,LLM
+in-fafd0a966425224e,,Neurosurgery,0.787,Medium High,BERT+LLM
+in-fafd0a966425224e,,Orthopaedics,0.836,High,BERT+LLM
+in-fafd0a966425224e,,Plastics,0.844,High,BERT+LLM
+in-fafd0a966425224e,,Vascular,0.842,High,BERT+LLM
+in-fafd0a966425224e,,Thoracics,0.846,High,BERT+LLM
+in-fafd0a966425224e,,Orology,0.806,High,BERT+LLM
+in-fafd0a966425224e,,ENT,0.795,Medium High,BERT+LLM
+in-fafd0a966425224e,,Paediatrics,0.803,High,BERT+LLM
+in-fafd0a966425224e,,General Surgery,0.735,Medium High,BERT+LLM
+in-fafd0a966425224e,,HPB,0.73,Medium High,BERT+LLM
+in-fafd0a966425224e,,UGI,0.75,Medium High,LLM
+in-fafd0a966425224e,,Endoscopy,0.674,Medium,BERT+LLM
+in-fafd0a966425224e,,Radiology Services,0.75,Medium High,LLM
+in-fafd0a966425224e,,Elective Surgery Reform Unit,0.75,Medium High,LLM
+in-fafd0a966425224e,,Patient Support Unit,0.75,Medium High,LLM
+in-761b1a8b3aa91eb0,,data protection strategies,0.75,Medium High,LLM
+in-761b1a8b3aa91eb0,,data protection standards,0.75,Medium High,LLM
+in-73204c7e4e84e27c,,UX/UI design,0.75,Medium High,LLM
+in-73204c7e4e84e27c,,digital product,0.75,Medium High,LLM
+in-46d754a162037993,,business workflow,0.75,Medium High,LLM
+in-46d754a162037993,,project plans,0.75,Medium High,LLM
+in-520d9e37336f7ecd,,Employee Stock Options Plan (ESOP),0.75,Medium High,LLM
+in-520d9e37336f7ecd,,Fuel50 software,0.75,Medium High,LLM
+in-520d9e37336f7ecd,,Fuellie University,0.75,Medium High,LLM
+in-520d9e37336f7ecd,,parental leave policy,0.75,Medium High,LLM
+in-520d9e37336f7ecd,,Health Insurance,0.75,Medium High,LLM
+in-520d9e37336f7ecd,,Southern Cross,0.75,Medium High,LLM
+in-456c0a8c0e5eb68b,,monthly town halls,0.75,Medium High,LLM
+in-456c0a8c0e5eb68b,,1:1 check-ins,0.75,Medium High,LLM
+in-456c0a8c0e5eb68b,,company-wide ideas form,0.75,Medium High,LLM
+in-a2bc175d8827c181,,machine economy,0.75,Medium High,LLM
+in-cf284d58281847c3,,Machine learning,0.75,Medium High,LLM
+in-cf284d58281847c3,,AI software solutions,0.75,Medium High,LLM
+in-cf284d58281847c3,,software development,0.845,High,BERT+LLM
+in-086000ce40db58ea,,Microsoft-centric data platform,0.75,Medium High,LLM
+in-086000ce40db58ea,,ELT,0.75,Medium High,LLM
+in-086000ce40db58ea,,ETL,0.786,Medium High,BERT+LLM
+in-086000ce40db58ea,,Power BI,0.759,Medium High,BERT+LLM
+in-086000ce40db58ea,,/,0.502,Medium Low,BERT (standalone)
+in-14d73f227fd45146,,ETL,0.731,Medium High,BERT+LLM
+in-14d73f227fd45146,,database processes,0.75,Medium High,LLM
+in-28a75def2ed995eb,,RMN technology ecosystem,0.75,Medium High,LLM
+in-28a75def2ed995eb,,commerce systems,0.75,Medium High,LLM
+in-28a75def2ed995eb,,media systems,0.75,Medium High,LLM
+in-28a75def2ed995eb,,marketing systems,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Design,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Technical skills,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Commercial skills,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Project constraints,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Leadership,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Stakeholder management,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Communication,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Project coordination,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Digital acumen,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Commercial acumen,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,MS Office,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,MS Project,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Asta,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Financial awareness,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Contract management,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,Risk management,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,CIOB,0.75,Medium High,LLM
+in-0b1202bf3556f0ec,,RIBA,0.75,Medium High,LLM
+in-12dd56b9ad69fd1c,,steel fabrications,0.75,Medium High,LLM
+in-12dd56b9ad69fd1c,,ancillary equipment,0.75,Medium High,LLM
+in-12dd56b9ad69fd1c,,hydraulic equipment,0.834,High,BERT+LLM
+in-12dd56b9ad69fd1c,,cylinders,0.85,High,BERT+LLM
+in-12dd56b9ad69fd1c,,operation systems,0.833,High,BERT+LLM
+in-12dd56b9ad69fd1c,,HNC qualification,0.534,Medium Low,BERT (standalone)
+in-965f58ca3e59d3f2,,vehicle configurator,0.75,Medium High,LLM
+in-965f58ca3e59d3f2,,payment gateway,0.75,Medium High,LLM
+in-965f58ca3e59d3f2,,web,0.75,Medium High,LLM
+in-965f58ca3e59d3f2,,mobile app,0.75,Medium High,LLM
+in-965f58ca3e59d3f2,,in-store,0.75,Medium High,LLM
+in-965f58ca3e59d3f2,,"vehicle delivery management,",0.435,Low,BERT (standalone)
+in-7461bc5cf0db64c7,,acquisition management,0.75,Medium High,LLM
+in-7461bc5cf0db64c7,,systems engineering,0.75,Medium High,LLM
+in-7461bc5cf0db64c7,,Agile software development,0.75,Medium High,LLM
+in-7461bc5cf0db64c7,,cloud management,0.75,Medium High,LLM
+in-7461bc5cf0db64c7,,IT modernization,0.75,Medium High,LLM
+in-7461bc5cf0db64c7,,data analytics,0.75,Medium High,LLM
+in-7461bc5cf0db64c7,,cybersecurity,0.75,Medium High,LLM
+in-7461bc5cf0db64c7,,DevSecOps,0.75,Medium High,LLM
+in-7461bc5cf0db64c7,,automated testing,0.75,Medium High,LLM
+in-7461bc5cf0db64c7,,mobile application development,0.75,Medium High,LLM
+in-4250b91d85b051d1,,airworthiness authorities,0.775,Medium High,BERT+LLM
+in-6db24020e2a08372,,Infrastructure as Code (IaC) tools,0.838,High,BERT+LLM
+in-70a2eb5261b8c030,,architectural principles,0.75,Medium High,LLM
+in-70a2eb5261b8c030,,architectural guidelines,0.75,Medium High,LLM
+in-70a2eb5261b8c030,,production defects,0.75,Medium High,LLM
+in-70a2eb5261b8c030,,data integrations,0.75,Medium High,LLM
+in-70a2eb5261b8c030,,code review,0.75,Medium High,LLM
+in-70a2eb5261b8c030,,Quality Assurance,0.75,Medium High,LLM
+in-70a2eb5261b8c030,,defect root cause analysis,0.75,Medium High,LLM
+in-2cdf2399ee76c432,,DDAI,0.75,Medium High,LLM
+in-2cdf2399ee76c432,,WIB team,0.75,Medium High,LLM
+in-159c6d093e97476a,,English,0.75,Medium High,LLM
+in-00312d85ec873f86,,professional lighting,0.75,Medium High,LLM
+in-00312d85ec873f86,,audio systems,0.75,Medium High,LLM
+in-00312d85ec873f86,,camera systems,0.839,High,BERT+LLM
+in-00312d85ec873f86,,live-streaming setups,0.75,Medium High,LLM
+in-00312d85ec873f86,,post-production workflows,0.75,Medium High,LLM
+in-00312d85ec873f86,,professional,0.559,Medium Low,BERT (standalone)
+in-00312d85ec873f86,,"lighting,",0.36,Very Low,BERT (standalone)
+in-00312d85ec873f86,,"audio,",0.541,Medium Low,BERT (standalone)
+in-00312d85ec873f86,,live,0.559,Medium Low,BERT (standalone)
+in-00312d85ec873f86,,"-streaming setups,",0.556,Medium Low,BERT (standalone)
+in-00312d85ec873f86,,post,0.559,Medium Low,BERT (standalone)
+in-00312d85ec873f86,,-production workflows.,0.557,Medium Low,BERT (standalone)
+in-101e930210888ced,,mobile apps,0.75,Medium High,LLM
+in-77696a202803c29b,,analytics platforms,0.75,Medium High,LLM
+in-77696a202803c29b,,PLM,0.852,High,BERT+LLM
+in-77696a202803c29b,,ERP systems,0.751,Medium High,BERT+LLM
+in-77696a202803c29b,,material database system,0.75,Medium High,LLM
+in-77696a202803c29b,,fabric types,0.844,High,BERT+LLM
+in-77696a202803c29b,,construction,0.812,High,BERT+LLM
+in-77696a202803c29b,,finishing,0.75,Medium High,LLM
+in-77696a202803c29b,,performance characteristics,0.75,Medium High,LLM
+in-77696a202803c29b,,sustainability standards,0.75,Medium High,LLM
+in-77696a202803c29b,,textile materials,0.75,Medium High,LLM
+in-77696a202803c29b,,/,0.526,Medium Low,BERT (standalone)
+in-77696a202803c29b,,"finishing, and performance characteristics.",0.461,Low,BERT (standalone)
+in-77696a202803c29b,,"material development,",0.557,Medium Low,BERT (standalone)
+in-77696a202803c29b,,"sourcing,",0.504,Medium Low,BERT (standalone)
+in-77696a202803c29b,,lifecycle management.,0.542,Medium Low,BERT (standalone)
+in-e03357f052aa5454,,Tuition assistance,0.75,Medium High,LLM
+in-b9d4aea91e3f2d0c,,Epic Ambulatory,0.75,Medium High,LLM
+in-27d3e2e8b7c41d36,,APIs,0.75,Medium High,LLM
+in-27d3e2e8b7c41d36,,NDC standards,0.75,Medium High,LLM
+in-5368a337ff9c506e,,Product Design,0.75,Medium High,LLM
+in-82265fcf199f7655,,design culture,0.75,Medium High,LLM
+in-82265fcf199f7655,,design process,0.75,Medium High,LLM
+in-8ad8e7c8de4037c3,,AWS,0.844,High,BERT+LLM
+in-8ad8e7c8de4037c3,,cloud security,0.614,Medium,BERT+LLM
+in-8ad8e7c8de4037c3,,enterprise security solutions,0.842,High,BERT+LLM
+in-8ad8e7c8de4037c3,,WAF,0.846,High,BERT+LLM
+in-8ad8e7c8de4037c3,,IPS,0.848,High,BERT+LLM
+in-8ad8e7c8de4037c3,,Anti-DDOS,0.839,High,BERT+LLM
+in-8ad8e7c8de4037c3,,SIEM,0.852,High,BERT+LLM
+in-8ad8e7c8de4037c3,,Anti,0.559,Medium Low,BERT (standalone)
+in-cd349d1d935d2e5e,,database infrastructure,0.75,Medium High,LLM
+in-cd349d1d935d2e5e,,data storage,0.75,Medium High,LLM
+in-cd349d1d935d2e5e,,data security,0.75,Medium High,LLM
+in-1275cf05b8a8e15e,,online payments,0.75,Medium High,LLM
+in-db50373d77abc3a2,,AI,0.75,Medium High,LLM
+in-db50373d77abc3a2,,Data solutions,0.75,Medium High,LLM
+in-db50373d77abc3a2,,Data,0.379,Very Low,BERT (standalone)
+in-b623fdf7e964fd6d,,Code de conduite,0.75,Medium High,LLM
+in-bc3b380ce792d5ca,,real-time dashboards,0.75,Medium High,LLM
+in-bc3b380ce792d5ca,,analytics tools,0.846,High,BERT+LLM
+in-bc3b380ce792d5ca,,voice products,0.75,Medium High,LLM
+in-bc3b380ce792d5ca,,AI-related products,0.75,Medium High,LLM
+in-bc3b380ce792d5ca,,Figma,0.75,Medium High,LLM
+in-bc3b380ce792d5ca,,Behance,0.75,Medium High,LLM
+in-bc3b380ce792d5ca,,Dribbble,0.75,Medium High,LLM
+in-bc3b380ce792d5ca,,PDF,0.75,Medium High,LLM
+in-bc3b380ce792d5ca,,real,0.559,Medium Low,BERT (standalone)
+in-bc3b380ce792d5ca,,"-time dashboards,",0.537,Medium Low,BERT (standalone)
+in-bc3b380ce792d5ca,,voice or,0.502,Medium Low,BERT (standalone)
+in-bc3b380ce792d5ca,,AI -related,0.458,Low,BERT (standalone)
+in-69b68bde3423c7fc,,Salesforce,0.655,Medium,BERT+LLM
+in-69b68bde3423c7fc,,Salesforce Admin Certification,0.75,Medium High,LLM
+in-69b68bde3423c7fc,,Salesforce Platform App Builder Certification,0.75,Medium High,LLM
+in-69b68bde3423c7fc,,Salesforce Platform Developer Certification,0.75,Medium High,LLM
+in-1aa0a368df24410e,,Angular,0.75,Medium High,LLM
+in-1aa0a368df24410e,,React,0.799,Medium High,BERT+LLM
+in-1aa0a368df24410e,,Node.js,0.846,High,BERT+LLM
+in-1aa0a368df24410e,,databases,0.849,High,BERT+LLM
+in-33f7ac68b9c721cf,,research design,0.75,Medium High,LLM
+in-33f7ac68b9c721cf,,technical areas,0.75,Medium High,LLM
+in-33f7ac68b9c721cf,,stakeholder engagement,0.75,Medium High,LLM
+in-9af59d2bfaa79ff6,,industry standards,0.75,Medium High,LLM
+in-bfafddc5c4fcdca4,,Sales CRM,0.754,Medium High,BERT+LLM
+in-bfafddc5c4fcdca4,,Salesforce,0.847,High,BERT+LLM
+in-b43f970b349508c3,,Dayforce HCM platform,0.75,Medium High,LLM
+in-a8c9ec23b2864f1d,,electrical distribution system design,0.849,High,BERT+LLM
+in-a8c9ec23b2864f1d,,overhead electrical distribution systems,0.75,Medium High,LLM
+in-a8c9ec23b2864f1d,,underground electrical distribution systems,0.832,High,BERT+LLM
+in-a8c9ec23b2864f1d,,industry standards,0.75,Medium High,LLM
+in-a8c9ec23b2864f1d,,G Class Ontario,0.379,Very Low,BERT (standalone)
+in-a8c9ec23b2864f1d,,overhead and,0.542,Medium Low,BERT (standalone)
+in-ad79e85e7bf42da7,,Enterprise CRM Solutions (eCRMs),0.75,Medium High,LLM
+in-0e1bdbb226a3d5af,,Kubernetes,0.852,High,BERT+LLM
+in-0e1bdbb226a3d5af,,DevOps,0.846,High,BERT+LLM
+in-8a05d38449430198,,accessibility best practices,0.85,High,BERT+LLM
+in-8a05d38449430198,,Walmart’s accessibility standards,0.75,Medium High,LLM
+in-8a05d38449430198,,Walmart’s accessibility guidelines,0.75,Medium High,LLM
+in-5234a3e36083c4a4,,data science,0.792,Medium High,BERT+LLM
+in-5234a3e36083c4a4,,machine learning,0.794,Medium High,BERT+LLM
+in-5234a3e36083c4a4,,derivatives book,0.75,Medium High,LLM
+in-4664ea614c51f527,,Photoshop,0.847,High,BERT+LLM
+in-8309226b8eb92e80,,politiques de confidentialité,0.75,Medium High,LLM
+in-5a18a668ba2fbe0b,,Event technology,0.75,Medium High,LLM
+in-8714fb67e5eb3bbb,,International Civil Rights Center & Museum,0.75,Medium High,LLM
+in-8714fb67e5eb3bbb,,Rosa Parks Museum,0.75,Medium High,LLM
+in-8714fb67e5eb3bbb,,Jurassic Park Discovery Center,0.75,Medium High,LLM
+in-8714fb67e5eb3bbb,,Universal's Islands of Adventure,0.75,Medium High,LLM
+in-8714fb67e5eb3bbb,,National Museum of the US Army,0.75,Medium High,LLM
+in-8714fb67e5eb3bbb,,National Museum of the Marines,0.75,Medium High,LLM
+in-cd4536bf094c8252,,hardware products,0.75,Medium High,LLM
+in-342b32d766851b29,,Arena Video Routing,0.75,Medium High,LLM
+in-342b32d766851b29,,Production Control Room systems,0.842,High,BERT+LLM
+in-342b32d766851b29,,AV equipment,0.75,Medium High,LLM
+in-342b32d766851b29,,Arena,0.517,Medium Low,BERT (standalone)
+in-342b32d766851b29,,Video Routing,0.553,Medium Low,BERT (standalone)
+in-f6f38be2ac0d3b85,,Aotearoa,0.75,Medium High,LLM
+in-a4adb73384054d6f,,database,0.75,Medium High,LLM
+in-c8b3a591976a74f1,,modern software design principles,0.819,High,BERT+LLM
+in-c8b3a591976a74f1,,CI/CD best practices,0.75,Medium High,LLM
+in-c8b3a591976a74f1,,Cloud Infrastructure & Orchestration,0.806,High,BERT+LLM
+in-c8b3a591976a74f1,,Cloud Run,0.793,Medium High,BERT+LLM
+in-c8b3a591976a74f1,,Pub/Sub,0.75,Medium High,LLM
+in-c8b3a591976a74f1,,BigQuery,0.849,High,BERT+LLM
+in-c8b3a591976a74f1,,modern,0.519,Medium Low,BERT (standalone)
+in-c8b3a591976a74f1,,CI,0.557,Medium Low,BERT (standalone)
+in-c8b3a591976a74f1,,/,0.553,Medium Low,BERT (standalone)
+in-c8b3a591976a74f1,,CD best practices.,0.527,Medium Low,BERT (standalone)
+in-c8b3a591976a74f1,,Pub,0.559,Medium Low,BERT (standalone)
+in-c8b3a591976a74f1,,/,0.541,Medium Low,BERT (standalone)
+in-c8b3a591976a74f1,,"Sub,",0.496,Low,BERT (standalone)
+in-66f4c39e32e33eee,,Technical Consulting,0.75,Medium High,LLM
+in-3f4b9ac6571c8e8a,,product discovery,0.75,Medium High,LLM
+in-3f4b9ac6571c8e8a,,monetization,0.75,Medium High,LLM
+in-3f4b9ac6571c8e8a,,advertising solutions,0.75,Medium High,LLM
+in-3f4b9ac6571c8e8a,,sponsored content,0.75,Medium High,LLM
+in-3f4b9ac6571c8e8a,,ad-organic formats,0.75,Medium High,LLM
+in-deb73d430b786346,,Microsoft Visio,0.75,Medium High,LLM
+in-deb73d430b786346,,middleware infrastructure,0.75,Medium High,LLM
+in-deb73d430b786346,,Microsoft,0.553,Medium Low,BERT (standalone)
+in-deb73d430b786346,,Visio,0.398,Very Low,BERT (standalone)
+in-7d12206e33578a17,,investigations,0.75,Medium High,LLM
+in-7d12206e33578a17,,prosecutions,0.75,Medium High,LLM
+in-7d12206e33578a17,,legal documents,0.75,Medium High,LLM
+in-7d12206e33578a17,,motions,0.837,High,BERT+LLM
+in-7d12206e33578a17,,search warrants,0.843,High,BERT+LLM
+in-7d12206e33578a17,,arrest warrants,0.842,High,BERT+LLM
+in-7d12206e33578a17,,criminal investigations,0.75,Medium High,LLM
+in-7d12206e33578a17,,grand jury subpoenas,0.75,Medium High,LLM
+in-7d12206e33578a17,,trial subpoenas,0.75,Medium High,LLM
+in-7d12206e33578a17,,legal databases,0.75,Medium High,LLM
+in-7d12206e33578a17,,software systems,0.75,Medium High,LLM
+in-32dc997e3646c5ee,,Commerce,0.778,Medium High,BERT+LLM
+in-32dc997e3646c5ee,,case studies,0.773,Medium High,BERT+LLM
+in-3bceae6430a2579d,,Salesforce,0.75,Medium High,LLM
+in-22edc9e9cdcf8599,,system design,0.821,High,BERT+LLM
+in-22edc9e9cdcf8599,,capacity planning,0.803,High,BERT+LLM
+in-22edc9e9cdcf8599,,launch reviews,0.821,High,BERT+LLM
+in-22edc9e9cdcf8599,,automation,0.75,Medium High,LLM
+in-22edc9e9cdcf8599,,incident response,0.75,Medium High,LLM
+in-22edc9e9cdcf8599,,postmortems,0.75,Medium High,LLM
+in-bb3d645c684c2cf3,,Associate Governmental Program Analyst exam,0.75,Medium High,LLM
+in-5eec5c1654434b7f,,Data,0.688,Medium,BERT+LLM
+in-5eec5c1654434b7f,,AI,0.75,Medium High,LLM
+in-5eec5c1654434b7f,,ML,0.738,Medium High,BERT+LLM
+in-5eec5c1654434b7f,,Digital Transformation,0.712,Medium High,BERT+LLM
+in-5eec5c1654434b7f,,AI /,0.408,Low,BERT (standalone)
+in-a04548ed1d35faae,,Chemical solutions,0.75,Medium High,LLM
+in-a04548ed1d35faae,,Sustainability,0.75,Medium High,LLM
+in-a61c1082390cb772,,Legal,0.75,Medium High,LLM
+in-a61c1082390cb772,,Compliance,0.75,Medium High,LLM
+in-a61c1082390cb772,,Finance,0.75,Medium High,LLM
+in-a61c1082390cb772,,Tech,0.75,Medium High,LLM
+in-a61c1082390cb772,,deal execution,0.75,Medium High,LLM
+in-a61c1082390cb772,,documentation review,0.75,Medium High,LLM
+in-a61c1082390cb772,,internal approvals,0.75,Medium High,LLM
+in-a61c1082390cb772,,SAFTs,0.847,High,BERT+LLM
+in-a61c1082390cb772,,review cycles,0.75,Medium High,LLM
+in-a61c1082390cb772,,audit readiness,0.75,Medium High,LLM
+in-a61c1082390cb772,,BD ops,0.75,Medium High,LLM
+in-a61c1082390cb772,,process gaps,0.75,Medium High,LLM
+in-d2c6a2161837d30b,,Software Engineering,0.851,High,BERT+LLM
+in-d2c6a2161837d30b,,Systems Design,0.75,Medium High,LLM
+in-d2c6a2161837d30b,,Golang,0.75,Medium High,LLM
+in-d2c6a2161837d30b,,Python,0.845,High,BERT+LLM
+in-bb0e1f0ee516b03f,,Textile market,0.75,Medium High,LLM
+in-150910c964a7e78b,,drug discovery,0.75,Medium High,LLM
+in-150910c964a7e78b,,therapeutic options,0.75,Medium High,LLM
+in-002382e99b8a2bc3,,Financial Intelligence Unit,0.75,Medium High,LLM
+in-002382e99b8a2bc3,,criminal offences,0.75,Medium High,LLM
+in-002382e99b8a2bc3,,financing of terrorism,0.75,Medium High,LLM
+in-002382e99b8a2bc3,,international law,0.75,Medium High,LLM
+in-11c4afe5bb429f5d,,casino games,0.85,High,BERT+LLM
+in-11c4afe5bb429f5d,,sports betting apps,0.838,High,BERT+LLM
+in-11c4afe5bb429f5d,,iGaming,0.845,High,BERT+LLM
+in-11c4afe5bb429f5d,,regulated industries,0.827,High,BERT+LLM
+in-d107997caf95d4e7,,Compositing,0.75,Medium High,LLM
+in-9544b23f97dca456,,actionable intelligence,0.75,Medium High,LLM
+in-9544b23f97dca456,,terrorism,0.75,Medium High,LLM
+in-9544b23f97dca456,,fraud,0.75,Medium High,LLM
+in-9544b23f97dca456,,criminal activity,0.75,Medium High,LLM
+in-3d7141f697c3fe70,,Great Lakes research,0.75,Medium High,LLM
+in-3d7141f697c3fe70,,medical innovation,0.75,Medium High,LLM
+in-3d7141f697c3fe70,,engineering technology,0.75,Medium High,LLM
+in-7d7d7059fbb87261,,Digital Analytics,0.75,Medium High,LLM
+in-7d7d7059fbb87261,,Data strategy,0.75,Medium High,LLM
+in-7d7d7059fbb87261,,Sector data resources,0.75,Medium High,LLM
+in-0638af7971a65d74,,motion design,0.844,High,BERT+LLM
+in-0638af7971a65d74,,animation,0.838,High,BERT+LLM
+in-0638af7971a65d74,,3D visual design,0.848,High,BERT+LLM
+in-f23bac06477c1d22,,data management practice,0.769,Medium High,BERT+LLM
+in-ab58924bac1bc121,,AI Ethics,0.75,Medium High,LLM
+in-b69a406bb9448b58,,marketplace,0.75,Medium High,LLM
+in-8abdea0db280093c,,Data engineering,0.75,Medium High,LLM
+in-4fd0db2432a8f15f,,Mobile QA,0.75,Medium High,LLM
+in-658b6d0065cfab20,,information security domain,0.81,High,BERT+LLM
+in-a50050792796d401,,Business Intelligence,0.75,Medium High,LLM
+in-a50050792796d401,,MS365,0.85,High,BERT+LLM
+in-a50050792796d401,,Power BI,0.845,High,BERT+LLM
+in-e0ae2731dd70688b,,AI-driven automation,0.75,Medium High,LLM
+in-e0ae2731dd70688b,,SAP S/4HANA,0.75,Medium High,LLM
+in-d4883d25e10d10fc,,Financial Services industry,0.814,High,BERT+LLM
+in-d4883d25e10d10fc,,APAC,0.849,High,BERT+LLM
+in-d4883d25e10d10fc,,AI,0.852,High,BERT+LLM
+in-d4883d25e10d10fc,,ML,0.659,Medium,BERT+LLM
+in-d4883d25e10d10fc,,data management principles,0.849,High,BERT+LLM
+in-d4883d25e10d10fc,,data & AI technologies,0.75,Medium High,LLM
+in-d4883d25e10d10fc,,cross,0.544,Medium Low,BERT (standalone)
+in-d4883d25e10d10fc,,"-functional collaboration,",0.461,Low,BERT (standalone)
+in-d4883d25e10d10fc,,"data,",0.553,Medium Low,BERT (standalone)
+in-d4883d25e10d10fc,,"analytics,",0.538,Medium Low,BERT (standalone)
+in-d4883d25e10d10fc,,/,0.396,Very Low,BERT (standalone)
+in-d4883d25e10d10fc,,data & AI technologies and ecosystem.,0.544,Medium Low,BERT (standalone)
+in-70fd1b405f4402fc,,power supply sector,0.75,Medium High,LLM
+in-70fd1b405f4402fc,,electricity market structure,0.75,Medium High,LLM
+in-70fd1b405f4402fc,,renewables,0.75,Medium High,LLM
+in-70fd1b405f4402fc,,flexibility products,0.75,Medium High,LLM
+in-70fd1b405f4402fc,,batteries,0.75,Medium High,LLM
+in-70fd1b405f4402fc,,demand response market,0.756,Medium High,BERT+LLM
+in-70fd1b405f4402fc,,business models,0.75,Medium High,LLM
+in-63e78580b0bb0e76,,retirement plans,0.75,Medium High,LLM
+in-63e78580b0bb0e76,,investments,0.75,Medium High,LLM
+in-bdd27d5333d5f2c2,,PLCs,0.849,High,BERT+LLM
+in-bdd27d5333d5f2c2,,Allen Bradley,0.75,Medium High,LLM
+in-bdd27d5333d5f2c2,,Allen,0.558,Medium Low,BERT (standalone)
+in-bdd27d5333d5f2c2,,Bradley.,0.306,Very Low,BERT (standalone)
+in-832889a1223dd15f,,AI tools,0.75,Medium High,LLM
+in-832889a1223dd15f,,Agile,0.823,High,BERT+LLM
+in-832889a1223dd15f,,Clean code,0.663,Medium,BERT+LLM
+in-70d9729b33e91bda,,DevOps,0.78,Medium High,BERT+LLM
+in-54ab798f3fcbfa6e,,ETL,0.761,Medium High,BERT+LLM
+in-99d9ad937ee36b81,,cyber threats,0.75,Medium High,LLM
+in-5954110f7af52605,,Microsoft Fabric,0.74,Medium High,BERT+LLM
+in-5954110f7af52605,,C#,0.75,Medium High,LLM
+in-5954110f7af52605,,.Net,0.848,High,BERT+LLM
+in-5954110f7af52605,,.Net Core,0.844,High,BERT+LLM
+in-5954110f7af52605,,NodeJS,0.841,High,BERT+LLM
+in-5954110f7af52605,,Event Sourcing,0.85,High,BERT+LLM
+in-5954110f7af52605,,Domain Driven Design,0.849,High,BERT+LLM
+in-5954110f7af52605,,Service Oriented Architectures,0.849,High,BERT+LLM
+in-5954110f7af52605,,Hexagonal Architecture,0.841,High,BERT+LLM
+in-5954110f7af52605,,Onion Architecture,0.726,Medium High,BERT+LLM
+in-5954110f7af52605,,Clean Architecture,0.75,Medium High,LLM
+in-5954110f7af52605,,EventStore,0.75,Medium High,LLM
+in-5954110f7af52605,,Temporal,0.75,Medium High,LLM
+in-5954110f7af52605,,GraphQL,0.75,Medium High,LLM
+in-5954110f7af52605,,REST,0.75,Medium High,LLM
+in-5954110f7af52605,,web services,0.75,Medium High,LLM
+in-5954110f7af52605,,Auth0,0.75,Medium High,LLM
+in-5954110f7af52605,,AI workflows,0.75,Medium High,LLM
+in-5954110f7af52605,,DevOps Tools,0.75,Medium High,LLM
+in-5954110f7af52605,,Bachelor’s degree,0.555,Medium Low,BERT (standalone)
+in-5954110f7af52605,,"Computer Science,",0.529,Medium Low,BERT (standalone)
+in-5954110f7af52605,,"Engineering,",0.493,Low,BERT (standalone)
+in-5954110f7af52605,,Technology,0.415,Low,BERT (standalone)
+in-5954110f7af52605,,data platforms,0.557,Medium Low,BERT (standalone)
+in-5954110f7af52605,,"Programming,",0.555,Medium Low,BERT (standalone)
+in-5954110f7af52605,,C,0.557,Medium Low,BERT (standalone)
+in-5954110f7af52605,,#,0.548,Medium Low,BERT (standalone)
+in-5954110f7af52605,,/,0.504,Medium Low,BERT (standalone)
+in-5954110f7af52605,,C,0.559,Medium Low,BERT (standalone)
+in-5954110f7af52605,,#,0.555,Medium Low,BERT (standalone)
+in-5954110f7af52605,,/,0.534,Medium Low,BERT (standalone)
+in-5954110f7af52605,,/,0.415,Low,BERT (standalone)
+in-41a6dff1f5b57c84,,communications,0.75,Medium High,LLM
+in-41a6dff1f5b57c84,,commerce,0.75,Medium High,LLM
+in-41a6dff1f5b57c84,,consultancy,0.75,Medium High,LLM
+in-41a6dff1f5b57c84,,CRM,0.75,Medium High,LLM
+in-41a6dff1f5b57c84,,CX,0.75,Medium High,LLM
+in-41a6dff1f5b57c84,,data,0.75,Medium High,LLM
+in-41a6dff1f5b57c84,,production,0.75,Medium High,LLM
+in-41a6dff1f5b57c84,,technology,0.75,Medium High,LLM
+in-306171b39786b1a3,,ML lifecycle,0.77,Medium High,BERT+LLM
+in-306171b39786b1a3,,end,0.493,Low,BERT (standalone)
+in-306171b39786b1a3,,-to,0.516,Medium Low,BERT (standalone)
+in-306171b39786b1a3,,-end,0.544,Medium Low,BERT (standalone)
+in-fccee22c7614295f,,Pay Transparency Act,0.75,Medium High,LLM
+in-6b86cc05a799e7e1,,"food preparation,",0.553,Medium Low,BERT (standalone)
+in-1fb4d3b60efd6c9b,,master test plan,0.75,Medium High,LLM
+in-df6f85e26c061439,,FinTech products,0.75,Medium High,LLM
+in-df6f85e26c061439,,UX Design,0.75,Medium High,LLM
+in-3d899a7031d4495e,,data architecture,0.782,Medium High,BERT+LLM
+in-3d899a7031d4495e,,data modeling,0.75,Medium High,LLM
+in-3d899a7031d4495e,,big data technologies,0.838,High,BERT+LLM
+in-e68269eebf1cd2f3,,Plumbing accessories,0.75,Medium High,LLM
+in-e68269eebf1cd2f3,,Gas equipment,0.75,Medium High,LLM
+in-e68269eebf1cd2f3,,Current regulations,0.75,Medium High,LLM
+in-e68269eebf1cd2f3,,Standards,0.75,Medium High,LLM
+in-e68269eebf1cd2f3,,Manufacturer's instructions,0.75,Medium High,LLM
+in-02b87c4d7065c603,,Special Projects Management,0.75,Medium High,LLM
+in-02b87c4d7065c603,,vendor management,0.75,Medium High,LLM
+in-02b87c4d7065c603,,vendor evaluation,0.75,Medium High,LLM
+in-3507d5458ccd4401,,endometriosis,0.75,Medium High,LLM
+in-3507d5458ccd4401,,holistic approach to care,0.75,Medium High,LLM
+in-e448b26aaa4bd60d,,computer,0.666,Medium,BERT+LLM
+in-12a1df82aa09e135,,jewelry design,0.832,High,BERT+LLM
+in-f40216f9c715c298,,production studios,0.834,High,BERT+LLM
+in-f40216f9c715c298,,triple bidding process,0.829,High,BERT+LLM
+in-f394adc0c6946005,,Object-oriented programming,0.807,High,BERT+LLM
+in-f394adc0c6946005,,Data structures,0.808,High,BERT+LLM
+in-f394adc0c6946005,,Algorithms,0.75,Medium High,LLM
+in-19838d8cc6709af7,,online development,0.75,Medium High,LLM
+in-19838d8cc6709af7,,mobile development,0.75,Medium High,LLM
+in-99e491f32ff77da0,,OSHA,0.75,Medium High,LLM
+in-99e491f32ff77da0,,ADA,0.75,Medium High,LLM
+in-dd1ae4627c1642cf,,AI,0.75,Medium High,LLM
+in-dd1ae4627c1642cf,,cloud,0.75,Medium High,LLM
+in-dd1ae4627c1642cf,,data,0.75,Medium High,LLM
+in-dd1ae4627c1642cf,,industry expertise,0.75,Medium High,LLM
+in-dd1ae4627c1642cf,,partner ecosystem,0.75,Medium High,LLM
+in-54f629fd364714ed,,data warehouse solution,0.75,Medium High,LLM
+in-8082f00eb720b9ce,,Responsible AI Management Systems (RAIMS),0.75,Medium High,LLM
+in-8082f00eb720b9ce,,ISO/IEC 42001,0.75,Medium High,LLM
+in-8082f00eb720b9ce,,EU AI Act,0.75,Medium High,LLM
+in-8082f00eb720b9ce,,AI governance,0.75,Medium High,LLM
+in-2770b46aae105d98,,feature film,0.75,Medium High,LLM
+in-2770b46aae105d98,,television,0.75,Medium High,LLM
+in-2770b46aae105d98,,interactive/games,0.75,Medium High,LLM
+in-2770b46aae105d98,,animation,0.75,Medium High,LLM
+in-dae4015be55037f1,,latest technologies,0.75,Medium High,LLM
+in-20200c59359816e2,,OneStream,0.75,Medium High,LLM
+in-20200c59359816e2,,OneStream Planning Architect,0.75,Medium High,LLM
+in-3e332c91d6fcc338,,AI,0.66,Medium,BERT+LLM
+in-3e332c91d6fcc338,,GEN AI,0.75,Medium High,LLM
+in-3e332c91d6fcc338,,GEN,0.369,Very Low,BERT (standalone)
+in-c1ee2bf9c7641210,,Java,0.75,Medium High,LLM
+in-c021166aa01bad9c,,Dayforce,0.75,Medium High,LLM
+in-b5cb63a8060b952b,,Business in the Community Elevate Pledge,0.75,Medium High,LLM
+in-18f1331162449a3f,,Purview,0.75,Medium High,LLM
+in-18f1331162449a3f,,Alation,0.75,Medium High,LLM
+in-18f1331162449a3f,,Collibra,0.75,Medium High,LLM
+in-18f1331162449a3f,,SaaS,0.85,High,BERT+LLM
+in-18f1331162449a3f,,Monthly Recurring Revenue (MRR),0.75,Medium High,LLM
+in-18f1331162449a3f,,Churn Rate,0.75,Medium High,LLM
+in-18f1331162449a3f,,Customer Acquisition Cost (CAC),0.75,Medium High,LLM
+in-18f1331162449a3f,,Customer Lifetime Value (CLTV),0.75,Medium High,LLM
+in-18f1331162449a3f,,scale,0.384,Very Low,BERT (standalone)
+in-18f1331162449a3f,,-up,0.447,Low,BERT (standalone)
+in-6d7865a492e1980f,,gaming,0.75,Medium High,LLM
+in-6d7865a492e1980f,,developer partnerships,0.75,Medium High,LLM
+in-e5fcb146e8b9f431,,Computer Graphics,0.75,Medium High,LLM
+in-e5fcb146e8b9f431,,time-based media,0.75,Medium High,LLM
+in-e5fcb146e8b9f431,,artistic movements,0.75,Medium High,LLM
+in-e5fcb146e8b9f431,,design innovation,0.75,Medium High,LLM
+in-e5fcb146e8b9f431,,"narrative development,",0.531,Medium Low,BERT (standalone)
+in-00c0b91f9c9cb324,,AECOM University,0.75,Medium High,LLM
+in-00c0b91f9c9cb324,,Graduate Development Programme,0.75,Medium High,LLM
+in-00c0b91f9c9cb324,,ADVANCE programme,0.75,Medium High,LLM
+in-00c0b91f9c9cb324,,live,0.288,Very Low,BERT (standalone)
+in-1817e77fde92559f,,infrastructure,0.841,High,BERT+LLM
+in-1817e77fde92559f,,application engineering,0.75,Medium High,LLM
+in-1817e77fde92559f,,reliability engineering,0.793,Medium High,BERT+LLM
+in-1817e77fde92559f,,database environments,0.75,Medium High,LLM
+in-6195fbab8cf1bc1f,,MongoDB,0.75,Medium High,LLM
+in-6195fbab8cf1bc1f,,message queue technology,0.848,High,BERT+LLM
+in-6195fbab8cf1bc1f,,design patterns,0.823,High,BERT+LLM
+in-6195fbab8cf1bc1f,,NodeJS,0.852,High,BERT+LLM
+in-6195fbab8cf1bc1f,,object-oriented languages,0.75,Medium High,LLM
+in-6195fbab8cf1bc1f,,JavaScript,0.844,High,BERT+LLM
+in-6195fbab8cf1bc1f,,TypeScript,0.852,High,BERT+LLM
+in-6195fbab8cf1bc1f,,Amazon Web Services,0.822,High,BERT+LLM
+in-6195fbab8cf1bc1f,,object,0.56,Medium Low,BERT (standalone)
+in-6195fbab8cf1bc1f,,-oriented languages,0.511,Medium Low,BERT (standalone)
+in-d1c3064ca0a52a90,,database,0.75,Medium High,LLM
+in-d1c3064ca0a52a90,,data pipeline,0.75,Medium High,LLM
+in-d1c3064ca0a52a90,,dashboards,0.75,Medium High,LLM
+in-372aed7d86c90958,,Home energy retrofit process,0.75,Medium High,LLM
+in-372aed7d86c90958,,Ireland’s climate action targets,0.75,Medium High,LLM
+in-2852318d9eae20d7,,Quality Assurance,0.75,Medium High,LLM
+in-2852318d9eae20d7,,Continuous Improvement,0.75,Medium High,LLM
+in-2852318d9eae20d7,,Clinical KPIs,0.75,Medium High,LLM
+in-2852318d9eae20d7,,Audits,0.75,Medium High,LLM
+in-2852318d9eae20d7,,Safeguarding,0.75,Medium High,LLM
+in-2852318d9eae20d7,,Positive behaviour support,0.75,Medium High,LLM
+in-d3049bbf5736b160,,AI productivity communities,0.75,Medium High,LLM
+in-d3049bbf5736b160,,external platform,0.75,Medium High,LLM
+in-ea2a9e0627ec4b56,,algorithmic trading,0.75,Medium High,LLM
+in-ea2a9e0627ec4b56,,proprietary dataspaces,0.75,Medium High,LLM
+in-ea2a9e0627ec4b56,,modelling approaches,0.75,Medium High,LLM
+in-ea2a9e0627ec4b56,,strategy implementation,0.75,Medium High,LLM
+in-ea2a9e0627ec4b56,,algorithmic,0.289,Very Low,BERT (standalone)
+in-f212c6ad771f68f6,,business practices,0.75,Medium High,LLM
+in-f212c6ad771f68f6,,management practices,0.75,Medium High,LLM
+in-f212c6ad771f68f6,,joint protocols,0.75,Medium High,LLM
+in-f212c6ad771f68f6,,SSCC,0.811,High,BERT+LLM
+in-f212c6ad771f68f6,,CPS,0.653,Medium,BERT+LLM
+in-f212c6ad771f68f6,,Standard Operating Procedures,0.75,Medium High,LLM
+in-f212c6ad771f68f6,,Community-Based Care,0.75,Medium High,LLM
+in-5906aa7cd05b4ccd,,Agricultural Policy,0.772,Medium High,BERT+LLM
+in-5906aa7cd05b4ccd,,Automatic Identification,0.75,Medium High,LLM
+in-5906aa7cd05b4ccd,,Consumer Complaint,0.75,Medium High,LLM
+in-5906aa7cd05b4ccd,,Direct Marketing,0.75,Medium High,LLM
+in-5906aa7cd05b4ccd,,Marketing Communications (MarCom),0.75,Medium High,LLM
+in-5906aa7cd05b4ccd,,Pricing Strategies,0.75,Medium High,LLM
+in-5906aa7cd05b4ccd,,Segmentation Strategy,0.819,High,BERT+LLM
+in-5906aa7cd05b4ccd,,Technology Platforms,0.83,High,BERT+LLM
+in-5906aa7cd05b4ccd,,Veterinary Technology,0.839,High,BERT+LLM
+in-5906aa7cd05b4ccd,,"Automatic Identification, Communication,",0.468,Low,BERT (standalone)
+in-5906aa7cd05b4ccd,,"Product Management,",0.492,Low,BERT (standalone)
+in-f5623e04e238736a,,financial datasets,0.75,Medium High,LLM
+in-f5623e04e238736a,,ERP datasets,0.75,Medium High,LLM
+in-fc11b6dbc96f4b5e,,precision engagement aerospace systems,0.75,Medium High,LLM
+in-fc11b6dbc96f4b5e,,precision engagement defense systems,0.75,Medium High,LLM
+in-e8e6926b64d2b259,,SLA targets,0.75,Medium High,LLM
+in-e8e6926b64d2b259,,server architecture,0.75,Medium High,LLM
+in-7df8014e102f91c2,,Corporate clients,0.75,Medium High,LLM
+in-7df8014e102f91c2,,Financial advisors,0.75,Medium High,LLM
+in-6560959a622b99a6,,Sales processes,0.75,Medium High,LLM
+in-6560959a622b99a6,,Community events,0.75,Medium High,LLM
+in-6560959a622b99a6,,Open days,0.75,Medium High,LLM
+in-6560959a622b99a6,,Sales activities,0.75,Medium High,LLM
+in-08c6f5f4544b868d,,ERP,0.75,Medium High,LLM
+in-08c6f5f4544b868d,,cloud platforms,0.75,Medium High,LLM
+in-fa7f3a0e7e2b882a,,Quantitative equity funds,0.75,Medium High,LLM
+in-fa7f3a0e7e2b882a,,Investment strategies,0.75,Medium High,LLM
+in-2b2bf00f37de72ce,,next-gen payments,0.75,Medium High,LLM
+in-2b2bf00f37de72ce,,payout options,0.75,Medium High,LLM
+in-2b2bf00f37de72ce,,card issuing,0.75,Medium High,LLM
+in-2b2bf00f37de72ce,,banking services,0.75,Medium High,LLM
+in-2b2bf00f37de72ce,,risk management,0.75,Medium High,LLM
+in-2b2bf00f37de72ce,,fraud management,0.75,Medium High,LLM
+in-4118eeb4a097c9b6,,commercial strategy,0.75,Medium High,LLM
+in-4118eeb4a097c9b6,,operational strategy,0.75,Medium High,LLM
+in-4118eeb4a097c9b6,,business outcomes,0.75,Medium High,LLM
+in-4118eeb4a097c9b6,,technology,0.75,Medium High,LLM
+in-4118eeb4a097c9b6,,product delivery,0.75,Medium High,LLM
+in-d2f675fc5b4bfbf8,,Data Analytics,0.75,Medium High,LLM
+in-5212768d253d606f,,AI,0.75,Medium High,LLM
+in-5212768d253d606f,,Innovation,0.75,Medium High,LLM
+in-5212768d253d606f,,Commercial & Investment Bank (CIB) Market Operations,0.75,Medium High,LLM
+in-6235657510a0ff3f,,data pipelines,0.75,Medium High,LLM
+in-6235657510a0ff3f,,data storage,0.75,Medium High,LLM
+in-6235657510a0ff3f,,analytics solution,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Medical Insurance,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Prescription Drug Insurance,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Dental Insurance,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Vision Insurance,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Health Savings Account,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Flexible Spending Accounts,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Life Insurance,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Disability Insurance,0.75,Medium High,LLM
+in-277cf9b06c74153d,,401(k),0.75,Medium High,LLM
+in-277cf9b06c74153d,,Critical Illness Insurance,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Hospital Indemnity Insurance,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Accident Insurance,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Identity Theft Insurance,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Legal Services,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Paid Time Off,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Paid Maternity Leave,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Tuition Reimbursement,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Training and Development,0.75,Medium High,LLM
+in-277cf9b06c74153d,,Employee Assistance Program (EAP),0.75,Medium High,LLM
+in-51094d1568950e3c,,Inventaire,0.75,Medium High,LLM
+in-51094d1568950e3c,,Surface de vente,0.75,Medium High,LLM
+in-0a5a395a96ddcbe9,,.NET Core,0.832,High,BERT+LLM
+in-0a5a395a96ddcbe9,,C#,0.75,Medium High,LLM
+in-0a5a395a96ddcbe9,,Jest,0.847,High,BERT+LLM
+in-0a5a395a96ddcbe9,,Enzyme,0.848,High,BERT+LLM
+in-0a5a395a96ddcbe9,,testing-library,0.75,Medium High,LLM
+in-0a5a395a96ddcbe9,,Apple App Store,0.697,Medium,BERT+LLM
+in-0a5a395a96ddcbe9,,Google Play Store,0.75,Medium High,LLM
+in-0a5a395a96ddcbe9,,back,0.559,Medium Low,BERT (standalone)
+in-0a5a395a96ddcbe9,,-end,0.54,Medium Low,BERT (standalone)
+in-0a5a395a96ddcbe9,,/,0.367,Very Low,BERT (standalone)
+in-0a5a395a96ddcbe9,,C,0.547,Medium Low,BERT (standalone)
+in-0a5a395a96ddcbe9,,"#,",0.482,Low,BERT (standalone)
+in-0a5a395a96ddcbe9,,Testing,0.338,Very Low,BERT (standalone)
+in-0a5a395a96ddcbe9,,testing,0.559,Medium Low,BERT (standalone)
+in-0a5a395a96ddcbe9,,-library),0.514,Medium Low,BERT (standalone)
+in-0a5a395a96ddcbe9,,mobile,0.535,Medium Low,BERT (standalone)
+in-0a5a395a96ddcbe9,,application release,0.328,Very Low,BERT (standalone)
+in-0a5a395a96ddcbe9,,store submissions,0.537,Medium Low,BERT (standalone)
+in-0a5a395a96ddcbe9,,Google,0.46,Low,BERT (standalone)
+in-0a5a395a96ddcbe9,,Play Store).,0.422,Low,BERT (standalone)
+in-be694c81d73fe006,,relationship management,0.823,High,BERT+LLM
+in-be694c81d73fe006,,Risk Management,0.694,Medium,BERT+LLM
+in-801e8b4ef37502b1,,market research,0.739,Medium High,BERT+LLM
+in-801e8b4ef37502b1,,competitive intelligence,0.8,High,BERT+LLM
+in-801e8b4ef37502b1,,deal sourcing,0.778,Medium High,BERT+LLM
+in-801e8b4ef37502b1,,M&A pipeline,0.75,Medium High,LLM
+in-801e8b4ef37502b1,,early,0.52,Medium Low,BERT (standalone)
+in-801e8b4ef37502b1,,-stage,0.442,Low,BERT (standalone)
+in-9a53c7e761eaec15,,EHS solutions,0.75,Medium High,LLM
+in-9a53c7e761eaec15,,AI,0.75,Medium High,LLM
+in-9a53c7e761eaec15,,workplace safety,0.75,Medium High,LLM
+in-2884ab8cc272fed2,,Block products,0.75,Medium High,LLM
+in-2884ab8cc272fed2,,BTC liquidity,0.75,Medium High,LLM
+in-e8b042329279ef85,,Employment Eligibility Verification (Form I-9),0.75,Medium High,LLM
+in-58bfabff667346c3,,AI solutions,0.75,Medium High,LLM
+in-5dc0137fea6a865d,,cryptography,0.75,Medium High,LLM
+in-5dc0137fea6a865d,,cybersecurity engineering,0.75,Medium High,LLM
+in-5dc0137fea6a865d,,digital authentication,0.75,Medium High,LLM
+in-5dc0137fea6a865d,,SCADA protection,0.75,Medium High,LLM
+in-5dc0137fea6a865d,,audit,0.75,Medium High,LLM
+in-5dc0137fea6a865d,,compliance,0.75,Medium High,LLM
+in-70c05c5ac582dbba,,machine learning workflows,0.834,High,BERT+LLM
+in-70c05c5ac582dbba,,data engineering,0.85,High,BERT+LLM
+in-70c05c5ac582dbba,,GCP,0.849,High,BERT+LLM
+in-80aa4c8b345e347c,,firmware,0.75,Medium High,LLM
+in-80aa4c8b345e347c,,lab equipment,0.75,Medium High,LLM
+in-80aa4c8b345e347c,,oscilloscopes,0.85,High,BERT+LLM
+in-80aa4c8b345e347c,,logic analyzers,0.848,High,BERT+LLM
+in-80aa4c8b345e347c,,multimeters,0.843,High,BERT+LLM
+in-80aa4c8b345e347c,,in-circuit emulators,0.838,High,BERT+LLM
+in-80aa4c8b345e347c,,protocol sniffers,0.832,High,BERT+LLM
+in-80aa4c8b345e347c,,Aarcomm’s coding standards,0.75,Medium High,LLM
+in-80aa4c8b345e347c,,Aarcomm’s quality standards,0.75,Medium High,LLM
+in-80aa4c8b345e347c,,in,0.549,Medium Low,BERT (standalone)
+in-e622db2eb160aabb,,Salesforce,0.837,High,BERT+LLM
+in-e622db2eb160aabb,,Junifer,0.848,High,BERT+LLM
+in-e622db2eb160aabb,,Databricks,0.851,High,BERT+LLM
+in-e9c98c1d997359b4,,RPG,0.75,Medium High,LLM
+in-5130a2f5bb7857ba,,Full stack development,0.75,Medium High,LLM
+in-ad184e8d688d6d1b,,PWFA,0.75,Medium High,LLM
+in-7d34855edd4c608f,,Top Secret Security Clearance,0.781,Medium High,BERT+LLM
+in-7d34855edd4c608f,,CI Poly,0.78,Medium High,BERT+LLM
+in-7d34855edd4c608f,,SCI eligible,0.844,High,BERT+LLM
+in-7d34855edd4c608f,,software development lifecycle,0.838,High,BERT+LLM
+in-7d34855edd4c608f,,Docker,0.845,High,BERT+LLM
+in-7d34855edd4c608f,,Kubernetes,0.849,High,BERT+LLM
+in-7d34855edd4c608f,,CI/CD pipeline,0.75,Medium High,LLM
+in-7d34855edd4c608f,,Bachelor's degree,0.544,Medium Low,BERT (standalone)
+in-7d34855edd4c608f,,"Computer Science,",0.441,Low,BERT (standalone)
+in-7d34855edd4c608f,,"Computer Engineering,",0.476,Low,BERT (standalone)
+in-7d34855edd4c608f,,Electrical Engineering,0.539,Medium Low,BERT (standalone)
+in-7d34855edd4c608f,,CI,0.558,Medium Low,BERT (standalone)
+in-7d34855edd4c608f,,/,0.555,Medium Low,BERT (standalone)
+in-7d34855edd4c608f,,CD pipeline.,0.545,Medium Low,BERT (standalone)
+in-eea82d0c75953540,,electrical engineering,0.812,High,BERT+LLM
+in-9ca4310cb8e13248,,milk processing,0.75,Medium High,LLM
+in-9ca4310cb8e13248,,dairy technology,0.75,Medium High,LLM
+in-9ca4310cb8e13248,,nutritional technology,0.75,Medium High,LLM
+in-9ca4310cb8e13248,,product innovation,0.75,Medium High,LLM
+in-d531b391c880d7ca,,Azure DevOps pipelines,0.652,Medium,BERT+LLM
+in-d531b391c880d7ca,,CI/CD,0.75,Medium High,LLM
+in-d531b391c880d7ca,,Agile,0.712,Medium High,BERT+LLM
+in-d531b391c880d7ca,,Azure,0.523,Medium Low,BERT (standalone)
+in-d531b391c880d7ca,,CI,0.558,Medium Low,BERT (standalone)
+in-d531b391c880d7ca,,/,0.549,Medium Low,BERT (standalone)
+in-d531b391c880d7ca,,CD,0.541,Medium Low,BERT (standalone)
+in-91079ab3deea59fe,,Business Systems Analyst,0.75,Medium High,LLM
+in-4340aab634b97a0f,,accounting,0.75,Medium High,LLM
+in-4340aab634b97a0f,,leases,0.75,Medium High,LLM
+in-4340aab634b97a0f,,prepaids,0.75,Medium High,LLM
+in-4340aab634b97a0f,,accruals,0.75,Medium High,LLM
+in-8aa6706047ab901c,,Gilda's Club,0.75,Medium High,LLM
+in-dbfc856e6f34e008,,AI,0.75,Medium High,LLM
+in-9c8a76d26db744ab,,MasterClass,0.75,Medium High,LLM
+in-9c8a76d26db744ab,,Apple,0.75,Medium High,LLM
+in-e03357f052aa5454,,Clinical trials,0.845,High,BERT+LLM
+in-9fc9c5f45b5702c5,,Oracle,0.75,Medium High,LLM
+in-9fc9c5f45b5702c5,,BI processes,0.75,Medium High,LLM
+in-9fc9c5f45b5702c5,,data ingestion,0.829,High,BERT+LLM
+in-9fc9c5f45b5702c5,,data visualization,0.75,Medium High,LLM
+in-9fc9c5f45b5702c5,,BI,0.247,Very Low,BERT (standalone)
+in-9fc9c5f45b5702c5,,visualization.,0.395,Very Low,BERT (standalone)
+in-3c2433bacd2dab1d,,Instrumentation & Control (I&C) engineering,0.75,Medium High,LLM
+in-d1b12304b268735d,,ASW strategy,0.75,Medium High,LLM
+in-d1b12304b268735d,,professional standards,0.75,Medium High,LLM
+in-22fdbe0537848b26,,water treatment projects,0.75,Medium High,LLM
+in-22fdbe0537848b26,,wastewater treatment projects,0.75,Medium High,LLM
+in-ba278d0695de316c,,Space Systems,0.75,Medium High,LLM
+in-ba278d0695de316c,,satellites,0.75,Medium High,LLM
+in-ba278d0695de316c,,payloads,0.75,Medium High,LLM
+in-ba278d0695de316c,,spacecraft components,0.75,Medium High,LLM
+in-ba278d0695de316c,,NASA missions,0.75,Medium High,LLM
+in-ba278d0695de316c,,James Webb Space Telescope,0.75,Medium High,LLM
+in-7c03bbd4f2e27c3a,,Real World Data Science,0.75,Medium High,LLM
+in-7c03bbd4f2e27c3a,,Real World Insights,0.75,Medium High,LLM
+in-7c03bbd4f2e27c3a,,Clinical Development,0.822,High,BERT+LLM
+in-7c03bbd4f2e27c3a,,Regulatory,0.834,High,BERT+LLM
+in-7c03bbd4f2e27c3a,,Patient Safety,0.838,High,BERT+LLM
+in-cf7f60dee735734d,,style guidelines,0.814,High,BERT+LLM
+in-cf7f60dee735734d,,product development,0.75,Medium High,LLM
+in-cf7f60dee735734d,,system development,0.75,Medium High,LLM
+in-cf7f60dee735734d,,best practices,0.75,Medium High,LLM
+in-cf7f60dee735734d,,documentation,0.75,Medium High,LLM
+in-cf7f60dee735734d,,educational content,0.75,Medium High,LLM
+in-cf7f60dee735734d,,product updates,0.75,Medium High,LLM
+in-cf7f60dee735734d,,program updates,0.75,Medium High,LLM
+in-cf7f60dee735734d,,user feedback,0.75,Medium High,LLM
+in-cf7f60dee735734d,,hardware,0.75,Medium High,LLM
+in-cf7f60dee735734d,,network,0.75,Medium High,LLM
+in-cf7f60dee735734d,,service operations,0.75,Medium High,LLM
+in-cf7f60dee735734d,,service quality,0.75,Medium High,LLM
+in-82a03631efa7b871,,AI solutions,0.75,Medium High,LLM
+in-51f52aa9e15e8653,,data visualization tools,0.832,High,BERT+LLM
+in-51f52aa9e15e8653,,reporting tools,0.75,Medium High,LLM
+in-51f52aa9e15e8653,,Looker,0.815,High,BERT+LLM
+in-51f52aa9e15e8653,,Tableau,0.84,High,BERT+LLM
+in-51f52aa9e15e8653,,IP,0.846,High,BERT+LLM
+in-51f52aa9e15e8653,,royalty-based businesses,0.75,Medium High,LLM
+in-51f52aa9e15e8653,,content-driven businesses,0.75,Medium High,LLM
+in-51f52aa9e15e8653,,royalty,0.551,Medium Low,BERT (standalone)
+in-51f52aa9e15e8653,,"-based,",0.536,Medium Low,BERT (standalone)
+in-51f52aa9e15e8653,,content,0.547,Medium Low,BERT (standalone)
+in-51f52aa9e15e8653,,-driven businesses,0.475,Low,BERT (standalone)
+in-f3758c500e035cd6,,Generative AI,0.75,Medium High,LLM
+in-74b665ceeac92b03,,Information Operations (IO),0.75,Medium High,LLM
+in-74b665ceeac92b03,,MARCENT,0.75,Medium High,LLM
+in-74b665ceeac92b03,,USCENTCOM AOR,0.75,Medium High,LLM
+in-08d8ebb8b3e31904,,IAEA (Institute of Automotive Engineers Assessors),0.75,Medium High,LLM
+in-6747b1fc129599b4,,visual effects,0.75,Medium High,LLM
+in-6da118f81ed64a47,,multi-disciplinary engineering,0.75,Medium High,LLM
+in-6da118f81ed64a47,,advisory services,0.75,Medium High,LLM
+in-6da118f81ed64a47,,professional consulting,0.75,Medium High,LLM
+in-0685ca5ef97fdbe6,,GenAI solutions,0.75,Medium High,LLM
+in-d9a402ccd0ffb327,,"1:1s,",0.511,Medium Low,BERT (standalone)
+in-d9a402ccd0ffb327,,"performance reviews,",0.31,Very Low,BERT (standalone)
+in-c11b3ab51f8bbe86,,API design,0.75,Medium High,LLM
+in-c11b3ab51f8bbe86,,API Gold Standard guidelines,0.75,Medium High,LLM
+in-a470584839bffca3,,Cloud services,0.75,Medium High,LLM
+in-a470584839bffca3,,Continuous deployment,0.75,Medium High,LLM
+in-a470584839bffca3,,continuous deployment of cloud services.,0.511,Medium Low,BERT (standalone)
+in-63e344bbe4a1832c,,App,0.836,High,BERT+LLM
+in-c355a98853a09c30,,digitalisation,0.75,Medium High,LLM
+in-c355a98853a09c30,,process improvement,0.75,Medium High,LLM
+in-c355a98853a09c30,,human-centred leadership,0.75,Medium High,LLM
+in-9a902981f6734f2c,,Area Structure Plans,0.838,High,BERT+LLM
+in-9a902981f6734f2c,,Local Area Plans,0.84,High,BERT+LLM
+in-9a902981f6734f2c,,Planning and Development Services Department,0.75,Medium High,LLM
+in-9a902981f6734f2c,,Infrastructure Services Department,0.75,Medium High,LLM
+in-a8d0fb78eb211ff4,,Python,0.85,High,BERT+LLM
+in-a8d0fb78eb211ff4,,Bash,0.852,High,BERT+LLM
+in-a8d0fb78eb211ff4,,Kubernetes,0.849,High,BERT+LLM
+in-a8d0fb78eb211ff4,,Streamlit,0.849,High,BERT+LLM
+in-a8d0fb78eb211ff4,,infrastructure,0.296,Very Low,BERT (standalone)
+in-b71a98ce2c6eb508,,geospatial AI,0.75,Medium High,LLM
+in-b71a98ce2c6eb508,,digital twins,0.75,Medium High,LLM
+in-2284d87b510f9e95,,"props,",0.405,Low,BERT (standalone)
+in-2284d87b510f9e95,,watercraft.,0.478,Low,BERT (standalone)
+in-2e00425a4374e584,,digital car marketplace,0.75,Medium High,LLM
+in-6e727a67bc4e1453,,SAP,0.75,Medium High,LLM
+in-99cb903d8c989976,,UN Sustainable Development Goals,0.75,Medium High,LLM
+in-b857565fb86cc56b,,Financial Data,0.851,High,BERT+LLM
+in-b857565fb86cc56b,,Bachelor's degree,0.555,Medium Low,BERT (standalone)
+in-b857565fb86cc56b,,Computer Science,0.52,Medium Low,BERT (standalone)
+in-47d18ebfd4172c79,,Network infrastructure,0.75,Medium High,LLM
+in-47d18ebfd4172c79,,design,0.471,Low,BERT (standalone)
+in-47d18ebfd4172c79,,system maintenance.,0.504,Medium Low,BERT (standalone)
+in-f540737bddbf25e1,,coding principles,0.845,High,BERT+LLM
+in-f540737bddbf25e1,,driver's licence,0.75,Medium High,LLM
+in-f540737bddbf25e1,,driver's,0.457,Low,BERT (standalone)
+in-132d07933c8a86bb,,Microsoft Office suite,0.811,High,BERT+LLM
+in-132d07933c8a86bb,,Excel,0.75,Medium High,LLM
+in-132d07933c8a86bb,,Word,0.833,High,BERT+LLM
+in-132d07933c8a86bb,,Outlook,0.75,Medium High,LLM
+in-132d07933c8a86bb,,MIS,0.75,Medium High,LLM
+in-132d07933c8a86bb,,ADP,0.851,High,BERT+LLM
+in-132d07933c8a86bb,,payroll software,0.847,High,BERT+LLM
+in-132d07933c8a86bb,,Outlook),0.543,Medium Low,BERT (standalone)
+in-132d07933c8a86bb,,/,0.544,Medium Low,BERT (standalone)
+in-e83f241d7e1a6827,,open platform,0.75,Medium High,LLM
+in-e89ae8a3cb5563f7,,large datasets,0.75,Medium High,LLM
+in-4f2007f15561a233,,Civil service,0.75,Medium High,LLM
+in-e8b799e2ebe68209,,DLP,0.664,Medium,BERT+LLM
+in-e8b799e2ebe68209,,DLP incident response process,0.75,Medium High,LLM
+in-e8b799e2ebe68209,,DLP incident playbooks,0.75,Medium High,LLM
+in-e8b799e2ebe68209,,data loss incidents,0.75,Medium High,LLM
+in-e8b799e2ebe68209,,root causes,0.75,Medium High,LLM
+in-e8b799e2ebe68209,,corrective measures,0.75,Medium High,LLM
+in-ea31eccb146e511e,,multimedia,0.694,Medium,BERT+LLM
+in-ea31eccb146e511e,,technology,0.75,Medium High,LLM
+in-ea31eccb146e511e,,education,0.608,Medium,BERT+LLM
+in-df7fe8a7d8787cb4,,ethical principles,0.75,Medium High,LLM
+in-df7fe8a7d8787cb4,,ethical,0.321,Very Low,BERT (standalone)
+in-60d94e2385569923,,Kotahitanga,0.75,Medium High,LLM
+in-ea31eccb146e511e,,data wrangling,0.75,Medium High,LLM
+in-ea31eccb146e511e,,backups,0.75,Medium High,LLM
+in-ea31eccb146e511e,,storage resources,0.75,Medium High,LLM
+in-ea31eccb146e511e,,archival resources,0.75,Medium High,LLM
+in-ea31eccb146e511e,,operational storage,0.75,Medium High,LLM
+in-ea31eccb146e511e,,server,0.75,Medium High,LLM
+in-515db338b72b30f7,,Artificial Intelligence,0.75,Medium High,LLM
+in-515db338b72b30f7,,Data Science,0.75,Medium High,LLM
+in-abc7136a4666afd5,,STEM,0.75,Medium High,LLM
+in-ea2a9e0627ec4b56,,quantitative discipline,0.75,Medium High,LLM
+in-ea2a9e0627ec4b56,,master’s,0.299,Very Low,BERT (standalone)
+in-ea2a9e0627ec4b56,,PhD,0.512,Medium Low,BERT (standalone)
+in-765dbbb271494469,,requirements analysis,0.744,Medium High,BERT+LLM
+in-765dbbb271494469,,demonstrations,0.577,Medium Low,BERT+LLM
+in-d6e9acaa1b4e40e7,,AWS,0.791,Medium High,BERT+LLM
+in-35f99ddcbd1d8dcc,,"online assessments,",0.393,Very Low,BERT (standalone)
+in-35f99ddcbd1d8dcc,,sign,0.287,Very Low,BERT (standalone)
+in-35f99ddcbd1d8dcc,,"mobility access,",0.396,Very Low,BERT (standalone)
+in-58c9ce9d30cd562c,,Power BI,0.75,Medium High,LLM
+in-a075c85e21b9e230,,Marine engine design,0.75,Medium High,LLM
+in-21e95e113c84f947,,user experience (UX) principles,0.84,High,BERT+LLM
+in-271eae6910a41bf9,,automation systems,0.75,Medium High,LLM
+in-7670810cc6b6860f,,web applications,0.75,Medium High,LLM
+in-7670810cc6b6860f,,investment research,0.75,Medium High,LLM
+in-7670810cc6b6860f,,knowledge management,0.75,Medium High,LLM
+in-7670810cc6b6860f,,digital communications,0.75,Medium High,LLM
+in-678a2e293eb50faa,,business,0.833,High,BERT+LLM
+in-678a2e293eb50faa,,computer science,0.836,High,BERT+LLM
+in-678a2e293eb50faa,,IT management,0.827,High,BERT+LLM
+in-678a2e293eb50faa,,IT administration,0.75,Medium High,LLM
+in-678a2e293eb50faa,,instructional technology,0.814,High,BERT+LLM
+in-678a2e293eb50faa,,educational technology,0.75,Medium High,LLM
+in-678a2e293eb50faa,,Bachelor's degree,0.552,Medium Low,BERT (standalone)
+in-a5314a07c4a9b99d,,LLM,0.75,Medium High,LLM
+in-a5314a07c4a9b99d,,Power BI Desktop,0.75,Medium High,LLM
+in-a5314a07c4a9b99d,,powerbi.com,0.75,Medium High,LLM
+in-d51f0a3ede744b5c,,global travel technology,0.75,Medium High,LLM
+in-d1e6da29868ba854,,Developer Platform,0.75,Medium High,LLM
+in-06610fdf15025a75,,structured finance,0.75,Medium High,LLM
+in-06610fdf15025a75,,securitisation,0.75,Medium High,LLM
+in-06610fdf15025a75,,funding mechanics,0.75,Medium High,LLM
+in-06610fdf15025a75,,"structured finance and securitisation,",0.54,Medium Low,BERT (standalone)
+in-9c553ab14b3cb726,,payments industry,0.75,Medium High,LLM
+in-9c553ab14b3cb726,,payments,0.363,Very Low,BERT (standalone)
+in-b5916116bf53125e,,client videos,0.75,Medium High,LLM
+in-b5916116bf53125e,,live action shots,0.75,Medium High,LLM
+in-bdd27d5333d5f2c2,,Major Systems Overhauls,0.75,Medium High,LLM
+in-bdd27d5333d5f2c2,,Improvements,0.75,Medium High,LLM
+in-cc6711e7cc9eb56c,,airside infrastructure,0.75,Medium High,LLM
+in-08b13571c4196e80,,ETL,0.633,Medium,BERT+LLM
+in-08b13571c4196e80,,Talend,0.75,Medium High,LLM
+in-08b13571c4196e80,,modern technologies,0.75,Medium High,LLM
+in-08b13571c4196e80,,best practices,0.75,Medium High,LLM
+in-08b13571c4196e80,,defect tracking tool,0.75,Medium High,LLM
+in-08b13571c4196e80,,QA processes,0.75,Medium High,LLM
+in-08b13571c4196e80,,test plans,0.75,Medium High,LLM
+in-08b13571c4196e80,,test coverage,0.75,Medium High,LLM
+in-08b13571c4196e80,,test automation,0.75,Medium High,LLM
+in-ef09f7b27fc747bd,,marketplace,0.75,Medium High,LLM
+in-ef09f7b27fc747bd,,benefits,0.75,Medium High,LLM
+in-d2ba6553843cf177,,social media marketing,0.75,Medium High,LLM
+in-d2ba6553843cf177,,social,0.551,Medium Low,BERT (standalone)
+in-d2ba6553843cf177,,media marketing,0.413,Low,BERT (standalone)
+in-cf169da28836631c,,MOM eligibility criteria,0.75,Medium High,LLM
+in-dcfe1997ded20aef,,CSA,0.852,High,BERT+LLM
+in-dcfe1997ded20aef,,construction management,0.8,Medium High,BERT+LLM
+in-dcfe1997ded20aef,,design coordination,0.847,High,BERT+LLM
+in-dcfe1997ded20aef,,site execution,0.84,High,BERT+LLM
+in-dcfe1997ded20aef,,construction drawings,0.789,Medium High,BERT+LLM
+in-dcfe1997ded20aef,,specifications,0.75,Medium High,LLM
+in-dcfe1997ded20aef,,quality assurance,0.75,Medium High,LLM
+in-dcfe1997ded20aef,,civil works,0.75,Medium High,LLM
+in-dcfe1997ded20aef,,structural works,0.75,Medium High,LLM
+in-dcfe1997ded20aef,,architectural works,0.82,High,BERT+LLM
+in-dcfe1997ded20aef,,MEP,0.75,Medium High,LLM
+in-dcfe1997ded20aef,,process engineering,0.75,Medium High,LLM
+in-dcfe1997ded20aef,,Microsoft Office suite,0.75,Medium High,LLM
+in-dcfe1997ded20aef,,AutoCAD,0.85,High,BERT+LLM
+in-dcfe1997ded20aef,,Revit,0.851,High,BERT+LLM
+in-dcfe1997ded20aef,,"civil,",0.559,Medium Low,BERT (standalone)
+in-dcfe1997ded20aef,,"process,",0.556,Medium Low,BERT (standalone)
+in-dcfe1997ded20aef,,Microsoft,0.53,Medium Low,BERT (standalone)
+in-dcfe1997ded20aef,,Office,0.37,Very Low,BERT (standalone)
+in-1dba5ab3075438af,,Rust,0.79,Medium High,BERT+LLM
+in-1dba5ab3075438af,,LiveKit,0.75,Medium High,LLM
+in-1dba5ab3075438af,,SDK,0.75,Medium High,LLM
+in-8232b6c5b6ee01eb,,beverage brands,0.75,Medium High,LLM
+in-99ee71eb91735049,,Health insurance,0.75,Medium High,LLM
+in-5c064784cb4d2d46,,road design,0.849,High,BERT+LLM
+in-5c064784cb4d2d46,,urban precinct planning,0.824,High,BERT+LLM
+in-5c064784cb4d2d46,,client engagement,0.838,High,BERT+LLM
+in-5c064784cb4d2d46,,proposals,0.769,Medium High,BERT+LLM
+in-5c064784cb4d2d46,,design management,0.831,High,BERT+LLM
+in-5c064784cb4d2d46,,delivery,0.724,Medium High,BERT+LLM
+in-5c064784cb4d2d46,,civil infrastructure,0.821,High,BERT+LLM
+in-5c064784cb4d2d46,,Highways Team,0.75,Medium High,LLM
+in-5c064784cb4d2d46,,government projects,0.75,Medium High,LLM
+in-5c064784cb4d2d46,,business strategy,0.75,Medium High,LLM
+in-645745afe0f57825,,Quality Assurance,0.847,High,BERT+LLM
+in-ec5e0638c86de1ac,,IT Security,0.75,Medium High,LLM
+in-ec5e0638c86de1ac,,Security monitoring,0.75,Medium High,LLM
+in-ec5e0638c86de1ac,,Incident response,0.75,Medium High,LLM
+in-ec5e0638c86de1ac,,Vulnerability management,0.75,Medium High,LLM
+in-ec5e0638c86de1ac,,Identity governance,0.75,Medium High,LLM
+in-2758b79a725eb50b,,AWS,0.75,Medium High,LLM
+in-2758b79a725eb50b,,Azure,0.752,Medium High,BERT+LLM
+in-b18cae90f5515188,,innovation,0.75,Medium High,LLM
+in-de5cb81baa037707,,OCPP,0.852,High,BERT+LLM
+in-de5cb81baa037707,,OCPI,0.849,High,BERT+LLM
+in-de5cb81baa037707,,CitrineOS,0.75,Medium High,LLM
+in-de5cb81baa037707,,TopazEV,0.75,Medium High,LLM
+in-7a0de4fde0bd8eed,,Construction,0.75,Medium High,LLM
+in-7a0de4fde0bd8eed,,Accounting,0.75,Medium High,LLM
+in-7a0de4fde0bd8eed,,budgets,0.75,Medium High,LLM
+in-7a0de4fde0bd8eed,,costs,0.75,Medium High,LLM
+in-7a0de4fde0bd8eed,,financial decisions,0.75,Medium High,LLM
+in-7a0de4fde0bd8eed,,data,0.75,Medium High,LLM
+in-f512014cadab9793,,tech & innovation grant funding,0.75,Medium High,LLM
+in-f512014cadab9793,,Singapore,0.75,Medium High,LLM
+in-f512014cadab9793,,Hong Kong,0.75,Medium High,LLM
+in-f512014cadab9793,,Indonesia,0.75,Medium High,LLM
+in-f512014cadab9793,,Philippines,0.75,Medium High,LLM
+in-bce3df2f383c3f80,,pharmaceutical care,0.75,Medium High,LLM
+in-6ee798b130cf3caa,,legacy system migration,0.851,High,BERT+LLM
+in-6ee798b130cf3caa,,CRs,0.82,High,BERT+LLM
+in-6ee798b130cf3caa,,PIC,0.434,Low,BERT (standalone)
+in-acb2a7db662d2b2b,,ML models,0.75,Medium High,LLM
+in-19e9ead015fac709,,advanced tracing,0.75,Medium High,LLM
+in-19e9ead015fac709,,alerting,0.829,High,BERT+LLM
+in-19e9ead015fac709,,log analysis,0.826,High,BERT+LLM
+in-19e9ead015fac709,,front-end applications,0.75,Medium High,LLM
+in-19e9ead015fac709,,cross-browser compatibility,0.75,Medium High,LLM
+in-19e9ead015fac709,,performance optimization,0.75,Medium High,LLM
+in-19e9ead015fac709,,emerging technologies,0.75,Medium High,LLM
+in-19e9ead015fac709,,advanced,0.494,Low,BERT (standalone)
+in-19e9ead015fac709,,"tracing,",0.421,Low,BERT (standalone)
+in-eb74998f492a982e,,Downer,0.75,Medium High,LLM
+in-0e90bf021391ad2a,,Mendix,0.848,High,BERT+LLM
+in-5593dda24a007762,,Joinery,0.694,Medium,BERT+LLM
+in-d0c8c3f7f96f1ea8,,procurement contracts,0.75,Medium High,LLM
+in-1e75206c2a0eb98c,,Secure by Design,0.811,High,BERT+LLM
+in-1e75206c2a0eb98c,,project milestones,0.785,Medium High,BERT+LLM
+in-1e75206c2a0eb98c,,customer KPIs,0.75,Medium High,LLM
+in-1e75206c2a0eb98c,,SLAs,0.75,Medium High,LLM
+in-1e75206c2a0eb98c,,customer KPIs and SLAs.,0.47,Low,BERT (standalone)
+in-ca9cb73a9119aa2c,,EXCAL,0.849,High,BERT+LLM
+in-ca9cb73a9119aa2c,,ECL,0.848,High,BERT+LLM
+in-ca9cb73a9119aa2c,,Public Service Loan Forgiveness,0.75,Medium High,LLM
+in-ca9cb73a9119aa2c,,federal loan forgiveness programs,0.75,Medium High,LLM
+in-ca9cb73a9119aa2c,,state repayment assistance programs,0.75,Medium High,LLM
+in-ca9cb73a9119aa2c,,scheduling,0.259,Very Low,BERT (standalone)
+in-0d674169c0f6c952,,Glassdoor,0.75,Medium High,LLM
+in-591531d5445e36c2,,ASCE,0.75,Medium High,LLM
+in-591531d5445e36c2,,ACI,0.779,Medium High,BERT+LLM
+in-591531d5445e36c2,,AISC,0.763,Medium High,BERT+LLM
+in-591531d5445e36c2,,SEAONC,0.75,Medium High,LLM
+in-591531d5445e36c2,,GPLA Portal,0.75,Medium High,LLM
+in-9f20bda14e76bb36,,rule of law,0.75,Medium High,LLM
+in-9f20bda14e76bb36,,representative democracy,0.802,High,BERT+LLM
+in-9f20bda14e76bb36,,open government,0.755,Medium High,BERT+LLM
+in-9f20bda14e76bb36,,Te Tiriti o Waitangi,0.75,Medium High,LLM
+in-9f20bda14e76bb36,,separation of powers,0.75,Medium High,LLM
+in-9f20bda14e76bb36,,human rights,0.75,Medium High,LLM
+in-9f20bda14e76bb36,,criminal law,0.814,High,BERT+LLM
+in-97054c099090612e,,Software engineering,0.75,Medium High,LLM
+in-97054c099090612e,,Data science,0.75,Medium High,LLM
+in-97054c099090612e,,Cybersecurity,0.75,Medium High,LLM
+in-97054c099090612e,,Retail,0.75,Medium High,LLM
+in-1750ee1a3e08b5fa,,standards,0.75,Medium High,LLM
+in-1750ee1a3e08b5fa,,methodologies,0.75,Medium High,LLM
+in-1750ee1a3e08b5fa,,data production,0.75,Medium High,LLM
+in-1750ee1a3e08b5fa,,brokerage,0.75,Medium High,LLM
+in-1750ee1a3e08b5fa,,outreach,0.75,Medium High,LLM
+in-0dbc707bc15e5398,,diagnostic imaging,0.75,Medium High,LLM
+in-0dbc707bc15e5398,,therapeutic imaging,0.75,Medium High,LLM
+in-0dbc707bc15e5398,,laboratory diagnostics,0.75,Medium High,LLM
+in-0dbc707bc15e5398,,molecular medicine,0.75,Medium High,LLM
+in-0dbc707bc15e5398,,digital health,0.75,Medium High,LLM
+in-0dbc707bc15e5398,,enterprise services,0.75,Medium High,LLM
+in-9aa4559203e0dc96,,health insurance,0.75,Medium High,LLM
+in-9aa4559203e0dc96,,flexible spending accounts,0.75,Medium High,LLM
+in-9aa4559203e0dc96,,health savings accounts,0.75,Medium High,LLM
+in-9aa4559203e0dc96,,retirement savings plans,0.75,Medium High,LLM
+in-9aa4559203e0dc96,,life insurance programs,0.75,Medium High,LLM
+in-9aa4559203e0dc96,,disability insurance programs,0.75,Medium High,LLM
+in-7e6b7c9513e8765c,,Machine Learning,0.75,Medium High,LLM
+in-7e6b7c9513e8765c,,algorithmic foundation,0.75,Medium High,LLM
+in-7e6b7c9513e8765c,,model training,0.838,High,BERT+LLM
+in-7e6b7c9513e8765c,,algorithmic,0.512,Medium Low,BERT (standalone)
+in-acaec4bdd3e165c3,,airline industry,0.75,Medium High,LLM
+in-acaec4bdd3e165c3,,hospitality industry,0.75,Medium High,LLM
+in-acaec4bdd3e165c3,,cruise industry,0.75,Medium High,LLM
+in-acaec4bdd3e165c3,,passenger rail industry,0.75,Medium High,LLM
+in-acaec4bdd3e165c3,,financial services,0.75,Medium High,LLM
+in-fc83ea8b351ddf1f,,Health benefits,0.75,Medium High,LLM
+in-fc83ea8b351ddf1f,,Dental benefits,0.75,Medium High,LLM
+in-fc83ea8b351ddf1f,,Vision benefits,0.75,Medium High,LLM
+in-637ce4ff0662e5c9,,SQL,0.68,Medium,BERT+LLM
+in-637ce4ff0662e5c9,,APIs,0.75,Medium High,LLM
+in-637ce4ff0662e5c9,,web applications,0.75,Medium High,LLM
+in-eb52e661342291e6,,Data Privacy Policy,0.75,Medium High,LLM
+in-f9b044cec549cb2e,,secure data transmission,0.841,High,BERT+LLM
+in-f9b044cec549cb2e,,interoperability,0.732,Medium High,BERT+LLM
+in-f9b044cec549cb2e,,military systems,0.848,High,BERT+LLM
+in-f9b044cec549cb2e,,cloud,0.851,High,BERT+LLM
+in-f9b044cec549cb2e,,on-prem database solutions,0.834,High,BERT+LLM
+in-f9b044cec549cb2e,,/,0.434,Low,BERT (standalone)
+in-f9b044cec549cb2e,,on,0.493,Low,BERT (standalone)
+in-43673d3abd58af2e,,healthcare applications,0.75,Medium High,LLM
+in-43673d3abd58af2e,,data services,0.621,Medium,BERT+LLM
+in-276ee08934e98ebb,,SQL,0.847,High,BERT+LLM
+in-276ee08934e98ebb,,dbt,0.845,High,BERT+LLM
+in-276ee08934e98ebb,,Coalesce,0.842,High,BERT+LLM
+in-276ee08934e98ebb,,Snowflake,0.847,High,BERT+LLM
+in-276ee08934e98ebb,,BigQuery,0.85,High,BERT+LLM
+in-276ee08934e98ebb,,Fabric,0.848,High,BERT+LLM
+in-276ee08934e98ebb,,Databricks,0.85,High,BERT+LLM
+in-276ee08934e98ebb,,ETL/ELT processes,0.75,Medium High,LLM
+in-276ee08934e98ebb,,Tableau,0.848,High,BERT+LLM
+in-276ee08934e98ebb,,Power BI,0.835,High,BERT+LLM
+in-276ee08934e98ebb,,Looker,0.848,High,BERT+LLM
+in-276ee08934e98ebb,,data transformation tools,0.525,Medium Low,BERT (standalone)
+in-276ee08934e98ebb,,cloud platforms,0.499,Low,BERT (standalone)
+in-276ee08934e98ebb,,"complex queries,",0.432,Low,BERT (standalone)
+in-276ee08934e98ebb,,"stored procedures,",0.558,Medium Low,BERT (standalone)
+in-276ee08934e98ebb,,ETL,0.559,Medium Low,BERT (standalone)
+in-276ee08934e98ebb,,/,0.523,Medium Low,BERT (standalone)
+in-276ee08934e98ebb,,ELT processes.,0.537,Medium Low,BERT (standalone)
+in-284aea3683ea74a5,,Construction oversight,0.75,Medium High,LLM
+in-2abe03725eaefe11,,Pharmacist,0.75,Medium High,LLM
+in-2dc2b8077261f0f5,,PCP Certification,0.75,Medium High,LLM
+in-2dc2b8077261f0f5,,progressive finance,0.842,High,BERT+LLM
+in-2dc2b8077261f0f5,,Bachelor's Degree,0.553,Medium Low,BERT (standalone)
+in-2dc2b8077261f0f5,,PCP,0.513,Medium Low,BERT (standalone)
+in-e626008e0e146e62,,FirstMark,0.75,Medium High,LLM
+in-e626008e0e146e62,,Stage 2 Capital,0.75,Medium High,LLM
+in-e626008e0e146e62,,Inovia,0.75,Medium High,LLM
+in-e626008e0e146e62,,Basis Set Ventures,0.75,Medium High,LLM
+in-a5a2f0a9ae95c4fc,,client-focused use cases,0.75,Medium High,LLM
+in-57d70c0fd3accddf,,Redistribution & Co-sell partnerships,0.75,Medium High,LLM
+in-57d70c0fd3accddf,,Account Management,0.75,Medium High,LLM
+in-57d70c0fd3accddf,,Product Leadership,0.75,Medium High,LLM
+in-57d70c0fd3accddf,,Partnership solutions,0.75,Medium High,LLM
+in-57d70c0fd3accddf,,Account Plans,0.75,Medium High,LLM
+in-57d70c0fd3accddf,,Tiered Partner Accounts,0.75,Medium High,LLM
+in-57d70c0fd3accddf,,Partner agreements,0.75,Medium High,LLM
+in-57d70c0fd3accddf,,Governance channel,0.75,Medium High,LLM
+in-cc581bbc4af0a4d6,,Vulnerability Management,0.75,Medium High,LLM
+in-cc581bbc4af0a4d6,,offensive security,0.75,Medium High,LLM
+in-cc581bbc4af0a4d6,,penetration testing,0.75,Medium High,LLM
+in-f4cb82c95e7214be,,Employee engagement,0.75,Medium High,LLM
+in-a93e82d899a04305,,ICT solutions,0.75,Medium High,LLM
+in-a93e82d899a04305,,operational efficiency,0.75,Medium High,LLM
+in-a93e82d899a04305,,governance,0.75,Medium High,LLM
+in-a93e82d899a04305,,service delivery,0.75,Medium High,LLM
+in-a93e82d899a04305,,procurement transformation,0.75,Medium High,LLM
+in-31e539412c2fd83a,,air conditioning,0.722,Medium High,BERT+LLM
+in-edfabd3fa40a808b,,Cisco environment,0.75,Medium High,LLM
+in-edfabd3fa40a808b,,Cisco,0.513,Medium Low,BERT (standalone)
+in-2960eddc94b20bb2,,materials acquisition,0.75,Medium High,LLM
+in-2960eddc94b20bb2,,services acquisition,0.75,Medium High,LLM
+in-2960eddc94b20bb2,,subcontracting,0.75,Medium High,LLM
+in-1449a508ca52e0cd,,real-time workflows,0.75,Medium High,LLM
+in-1449a508ca52e0cd,,standardised naming conventions,0.75,Medium High,LLM
+in-1449a508ca52e0cd,,project coordinate systems,0.75,Medium High,LLM
+in-7fd767baaf0bccff,,commercial sector,0.75,Medium High,LLM
+in-7fd767baaf0bccff,,public sector,0.746,Medium High,BERT+LLM
+in-8548b0597f7e73f4,,L3 support,0.75,Medium High,LLM
+in-8548b0597f7e73f4,,production incidents,0.75,Medium High,LLM
+in-8548b0597f7e73f4,,L3,0.4,Very Low,BERT (standalone)
+in-ad97db3183f887b0,,CRM nurturing,0.75,Medium High,LLM
+in-ad97db3183f887b0,,Meta,0.75,Medium High,LLM
+in-ad97db3183f887b0,,TikTok,0.834,High,BERT+LLM
+in-ad97db3183f887b0,,Google,0.838,High,BERT+LLM
+in-ad97db3183f887b0,,LinkedIn,0.805,High,BERT+LLM
+in-ad97db3183f887b0,,scripts,0.789,Medium High,BERT+LLM
+in-ad97db3183f887b0,,short-form ads,0.75,Medium High,LLM
+in-ad97db3183f887b0,,performance-first messaging,0.75,Medium High,LLM
+in-ad97db3183f887b0,,short,0.513,Medium Low,BERT (standalone)
+in-ad97db3183f887b0,,"-form ads,",0.5,Medium Low,BERT (standalone)
+in-ad97db3183f887b0,,performance,0.549,Medium Low,BERT (standalone)
+in-ad97db3183f887b0,,-first messaging.,0.522,Medium Low,BERT (standalone)
+in-d109c96d3204f363,,Cabinet making,0.75,Medium High,LLM
+in-deb73d430b786346,,Technical Architecture Document,0.75,Medium High,LLM
+in-deb73d430b786346,,TAD,0.75,Medium High,LLM
+in-deb73d430b786346,,application infrastructure,0.75,Medium High,LLM
+in-deb73d430b786346,,platform infrastructure,0.75,Medium High,LLM
+in-deb73d430b786346,,system infrastructure,0.75,Medium High,LLM
+in-8747d5d411c7605b,,Healthcare,0.75,Medium High,LLM
+in-771baa9b246cf0b6,,Finance,0.75,Medium High,LLM
+in-771baa9b246cf0b6,,Supply Chain Finance,0.75,Medium High,LLM
+in-c8a1f09cffff054e,,software development lifecycle,0.75,Medium High,LLM
+in-4fb4f5da3ec2886b,,solutions,0.75,Medium High,LLM
+in-421268cfcc9c960a,,Magentus products,0.75,Medium High,LLM
+in-421268cfcc9c960a,,live environments,0.75,Medium High,LLM
+in-b4b1e4c5481eb021,,defence,0.75,Medium High,LLM
+in-b4b1e4c5481eb021,,air,0.75,Medium High,LLM
+in-b4b1e4c5481eb021,,land,0.75,Medium High,LLM
+in-b4b1e4c5481eb021,,sea,0.75,Medium High,LLM
+in-b4b1e4c5481eb021,,space,0.75,Medium High,LLM
+in-b4b1e4c5481eb021,,cyberspace,0.75,Medium High,LLM
+in-38d70f8f1a00eb3d,,propensity models,0.75,Medium High,LLM
+in-38d70f8f1a00eb3d,,user attributes,0.75,Medium High,LLM
+in-b74dce49c51bc55c,,Web Application security,0.845,High,BERT+LLM
+in-f3dbed03bcc0bfe6,,coding standards,0.75,Medium High,LLM
+in-f3dbed03bcc0bfe6,,automation,0.75,Medium High,LLM
+in-f3dbed03bcc0bfe6,,scalability,0.75,Medium High,LLM
+in-4549356d318c0337,,AWS,0.851,High,BERT+LLM
+in-4549356d318c0337,,Agile methodology,0.75,Medium High,LLM
+in-4549356d318c0337,,agile,0.334,Very Low,BERT (standalone)
+in-1e31fbb8ac627972,,UK security clearance (SC),0.75,Medium High,LLM
+in-af9b2a183f4de88a,,system integrations,0.85,High,BERT+LLM
+in-af9b2a183f4de88a,,data analytics,0.844,High,BERT+LLM
+in-af9b2a183f4de88a,,process improvement methodologies,0.829,High,BERT+LLM
+in-d2ad44a21f6d9b86,,IT Team,0.75,Medium High,LLM
+in-d2ad44a21f6d9b86,,Information Technology,0.75,Medium High,LLM
+in-ad7d0fa387739d7f,,GL,0.75,Medium High,LLM
+in-ad7d0fa387739d7f,,reports,0.75,Medium High,LLM
+in-ad7d0fa387739d7f,,analyses,0.75,Medium High,LLM
+in-ad7d0fa387739d7f,,budgets,0.75,Medium High,LLM
+in-ad7d0fa387739d7f,,forecasts,0.661,Medium,BERT+LLM
+in-ad7d0fa387739d7f,,product costings,0.818,High,BERT+LLM
+in-ad7d0fa387739d7f,,cost accounting,0.75,Medium High,LLM
+in-ad7d0fa387739d7f,,management accounting,0.75,Medium High,LLM
+in-750a4c30ec32b2a0,,AWS,0.75,Medium High,LLM
+in-1c577ea1b70b8c97,,aerospace,0.75,Medium High,LLM
+in-1c577ea1b70b8c97,,defense,0.75,Medium High,LLM
+in-1c577ea1b70b8c97,,technology solutions,0.75,Medium High,LLM
+in-2d20a7c4a9c6d879,,TON,0.75,Medium High,LLM
+in-2d20a7c4a9c6d879,,Avail,0.75,Medium High,LLM
+in-2d20a7c4a9c6d879,,Monad,0.75,Medium High,LLM
+in-2d20a7c4a9c6d879,,Babylon,0.75,Medium High,LLM
+in-2d20a7c4a9c6d879,,Story,0.75,Medium High,LLM
+in-2d20a7c4a9c6d879,,Berachain,0.75,Medium High,LLM
+in-2d20a7c4a9c6d879,,yield products,0.75,Medium High,LLM
+in-3a39cfdef1dc8c0a,,JS,0.839,High,BERT+LLM
+in-3a39cfdef1dc8c0a,,JavaScript,0.75,Medium High,LLM
+in-3a39cfdef1dc8c0a,,Salesforce DX,0.763,Medium High,BERT+LLM
+in-3a39cfdef1dc8c0a,,SFDX CLI,0.75,Medium High,LLM
+in-3a39cfdef1dc8c0a,,CI/CD tooling,0.75,Medium High,LLM
+in-3a39cfdef1dc8c0a,,GitHub,0.75,Medium High,LLM
+in-3a39cfdef1dc8c0a,,Bitbucket,0.85,High,BERT+LLM
+in-3a39cfdef1dc8c0a,,Splunk,0.852,High,BERT+LLM
+in-3a39cfdef1dc8c0a,,Sumologic,0.844,High,BERT+LLM
+in-3a39cfdef1dc8c0a,,test automation frameworks,0.833,High,BERT+LLM
+in-3a39cfdef1dc8c0a,,APEX code,0.759,Medium High,BERT+LLM
+in-3a39cfdef1dc8c0a,,Visualforce,0.755,Medium High,BERT+LLM
+in-3a39cfdef1dc8c0a,,Lightning UI components,0.82,High,BERT+LLM
+in-3a39cfdef1dc8c0a,,REST APIs,0.75,Medium High,LLM
+in-3a39cfdef1dc8c0a,,Bulk APIs,0.839,High,BERT+LLM
+in-3a39cfdef1dc8c0a,,Agile development environments,0.847,High,BERT+LLM
+in-3a39cfdef1dc8c0a,,secure coding practices,0.851,High,BERT+LLM
+in-3a39cfdef1dc8c0a,,security implementations,0.842,High,BERT+LLM
+in-3a39cfdef1dc8c0a,,Salesforce,0.721,Medium High,BERT+LLM
+in-3a39cfdef1dc8c0a,,Data Cloud,0.75,Medium High,LLM
+in-3a39cfdef1dc8c0a,,Revenue Cloud,0.75,Medium High,LLM
+in-3a39cfdef1dc8c0a,,AI,0.75,Medium High,LLM
+in-3a39cfdef1dc8c0a,,JavaScript.,0.537,Medium Low,BERT (standalone)
+in-3a39cfdef1dc8c0a,,SFDX,0.559,Medium Low,BERT (standalone)
+in-3a39cfdef1dc8c0a,,"CLI,",0.483,Low,BERT (standalone)
+in-3a39cfdef1dc8c0a,,CI,0.557,Medium Low,BERT (standalone)
+in-3a39cfdef1dc8c0a,,/,0.549,Medium Low,BERT (standalone)
+in-3a39cfdef1dc8c0a,,CD tooling,0.463,Low,BERT (standalone)
+in-3a39cfdef1dc8c0a,,/,0.532,Medium Low,BERT (standalone)
+in-3a39cfdef1dc8c0a,,/,0.548,Medium Low,BERT (standalone)
+in-3a39cfdef1dc8c0a,,REST,0.56,Medium Low,BERT (standalone)
+in-3a39cfdef1dc8c0a,,/,0.558,Medium Low,BERT (standalone)
+in-6d5d119c4ccd456a,,Southern Cross,0.75,Medium High,LLM
+in-f9846dd491fecf91,,AI,0.75,Medium High,LLM
+in-3bd668dc22efe1ef,,Target Corporation,0.75,Medium High,LLM
+in-3bd668dc22efe1ef,,Shipt,0.75,Medium High,LLM
+in-8309226b8eb92e80,,environnement inclusif,0.75,Medium High,LLM
+in-8309226b8eb92e80,,environnement innovateur,0.75,Medium High,LLM
+in-8309226b8eb92e80,,âge,0.75,Medium High,LLM
+in-8309226b8eb92e80,,éthinicité,0.75,Medium High,LLM
+in-8309226b8eb92e80,,couleur,0.75,Medium High,LLM
+in-8309226b8eb92e80,,ascendance,0.75,Medium High,LLM
+in-8309226b8eb92e80,,origine nationale,0.75,Medium High,LLM
+in-8309226b8eb92e80,,religion,0.75,Medium High,LLM
+in-8309226b8eb92e80,,handicap,0.75,Medium High,LLM
+in-8309226b8eb92e80,,sexe,0.75,Medium High,LLM
+in-8309226b8eb92e80,,identité de genre,0.75,Medium High,LLM
+in-8309226b8eb92e80,,expression de genre,0.75,Medium High,LLM
+in-8309226b8eb92e80,,orientation sexuelle,0.75,Medium High,LLM
+in-8309226b8eb92e80,,statut protégé,0.75,Medium High,LLM
+in-8309226b8eb92e80,,loi applicable,0.75,Medium High,LLM
+in-3aa8c945bc3697b7,,Power Apps,0.75,Medium High,LLM
+in-3aa8c945bc3697b7,,SharePoint Online,0.75,Medium High,LLM
+in-3aa8c945bc3697b7,,Dataverse,0.849,High,BERT+LLM
+in-3aa8c945bc3697b7,,data sources,0.75,Medium High,LLM
+in-3aa8c945bc3697b7,,SharePoint,0.558,Medium Low,BERT (standalone)
+in-3aa8c945bc3697b7,,"Online,",0.305,Very Low,BERT (standalone)
+in-731a0a03800ca771,,Brigalow Power Project,0.75,Medium High,LLM
+in-731a0a03800ca771,,natural gas power station,0.75,Medium High,LLM
+in-731a0a03800ca771,,electricity demand,0.75,Medium High,LLM
+in-731a0a03800ca771,,wind energy,0.75,Medium High,LLM
+in-731a0a03800ca771,,solar energy,0.75,Medium High,LLM
+in-f7d4087daa3ce046,,AI-powered solutions,0.75,Medium High,LLM
+in-d531b391c880d7ca,,Enterprise software,0.75,Medium High,LLM
+in-cea0a94d9b8e1189,,RAG,0.75,Medium High,LLM
+in-cea0a94d9b8e1189,,AWS,0.833,High,BERT+LLM
+in-cea0a94d9b8e1189,,Lambda,0.75,Medium High,LLM
+in-cea0a94d9b8e1189,,ECS,0.821,High,BERT+LLM
+in-cea0a94d9b8e1189,,S3,0.771,Medium High,BERT+LLM
+in-cea0a94d9b8e1189,,CloudFront,0.827,High,BERT+LLM
+in-cea0a94d9b8e1189,,Docker,0.804,High,BERT+LLM
+in-cea0a94d9b8e1189,,GitHub Actions,0.808,High,BERT+LLM
+in-cea0a94d9b8e1189,,Terraform,0.846,High,BERT+LLM
+in-cea0a94d9b8e1189,,/,0.302,Very Low,BERT (standalone)
+in-cea0a94d9b8e1189,,/,0.397,Very Low,BERT (standalone)
+in-2f04308c5edecf9b,,Data centres,0.75,Medium High,LLM
+in-2f04308c5edecf9b,,Mines,0.75,Medium High,LLM
+in-2f04308c5edecf9b,,Manufacturing sites,0.75,Medium High,LLM
+in-2f04308c5edecf9b,,Sporting events,0.75,Medium High,LLM
+in-fc6231d646f9e9a1,,Total Rewards package,0.75,Medium High,LLM
+in-fc6231d646f9e9a1,,flexible working,0.75,Medium High,LLM
+in-fc6231d646f9e9a1,,career development,0.75,Medium High,LLM
+in-fc6231d646f9e9a1,,FlexEY,0.75,Medium High,LLM
+in-fc6231d646f9e9a1,,holidays,0.75,Medium High,LLM
+in-fc6231d646f9e9a1,,health and well-being,0.75,Medium High,LLM
+in-fc6231d646f9e9a1,,insurance,0.75,Medium High,LLM
+in-fc6231d646f9e9a1,,savings,0.75,Medium High,LLM
+in-fc6231d646f9e9a1,,discounts,0.75,Medium High,LLM
+in-fc6231d646f9e9a1,,offers,0.75,Medium High,LLM
+in-fc6231d646f9e9a1,,promotions,0.75,Medium High,LLM
+in-e5eb1d4c0919a899,,AI tools,0.75,Medium High,LLM
+in-e5eb1d4c0919a899,,full-stack technical background,0.75,Medium High,LLM
+in-e5eb1d4c0919a899,,design,0.523,Medium Low,BERT (standalone)
+in-e5eb1d4c0919a899,,architectural,0.48,Low,BERT (standalone)
+in-f5f2c13d2ff2fcbd,,organizational financial programs,0.75,Medium High,LLM
+in-f5f2c13d2ff2fcbd,,strategic initiatives,0.75,Medium High,LLM
+in-d0357ccf3b02df8f,,data technologies,0.75,Medium High,LLM
+in-d0357ccf3b02df8f,,automation technologies,0.75,Medium High,LLM
+in-d0357ccf3b02df8f,,"data and automation technologies,",0.471,Low,BERT (standalone)
+in-1dcb0afba693556f,,Apprentissage Automatique,0.75,Medium High,LLM
+in-1dcb0afba693556f,,ML Engineer,0.75,Medium High,LLM
+in-624d916e7467abfd,,revolutionary technologies,0.75,Medium High,LLM
+in-624d916e7467abfd,,glucose monitoring systems,0.75,Medium High,LLM
+in-ac3772f1ae25c2fd,,healthcare,0.829,High,BERT+LLM
+in-ac3772f1ae25c2fd,,data mining,0.776,Medium High,BERT+LLM
+in-ac3772f1ae25c2fd,,data modeling,0.75,Medium High,LLM
+in-cd90ab257a61bacf,,OutSystems,0.75,Medium High,LLM
+in-cd90ab257a61bacf,,Mendix,0.85,High,BERT+LLM
+in-cd90ab257a61bacf,,Appian,0.843,High,BERT+LLM
+in-cd90ab257a61bacf,,micro-frontends,0.75,Medium High,LLM
+in-cd90ab257a61bacf,,modular frontend architectures,0.848,High,BERT+LLM
+in-cd90ab257a61bacf,,Cloudflare Workers,0.75,Medium High,LLM
+in-cd90ab257a61bacf,,Lambda@Edge,0.846,High,BERT+LLM
+in-cd90ab257a61bacf,,low,0.558,Medium Low,BERT (standalone)
+in-cd90ab257a61bacf,,-code platforms,0.535,Medium Low,BERT (standalone)
+in-cd90ab257a61bacf,,micro,0.56,Medium Low,BERT (standalone)
+in-cd90ab257a61bacf,,-frontends,0.55,Medium Low,BERT (standalone)
+in-cd90ab257a61bacf,,edge computing,0.558,Medium Low,BERT (standalone)
+in-cd90ab257a61bacf,,"Workers,",0.427,Low,BERT (standalone)
+in-ac61bae22baddace,,cyber reporting,0.75,Medium High,LLM
+in-ac61bae22baddace,,cyber metrics,0.75,Medium High,LLM
+in-ac61bae22baddace,,risk management processes,0.666,Medium,BERT+LLM
+in-ac61bae22baddace,,cyber security strategy,0.75,Medium High,LLM
+in-ac61bae22baddace,,cyber,0.31,Very Low,BERT (standalone)
+in-20735de0e8414f99,,power and ground distribution,0.842,High,BERT+LLM
+in-20735de0e8414f99,,strategies for power and ground distribution,0.75,Medium High,LLM
+in-20735de0e8414f99,,package engineers,0.75,Medium High,LLM
+in-df6f85e26c061439,,UX design,0.75,Medium High,LLM
+in-df6f85e26c061439,,interaction design,0.75,Medium High,LLM
+in-df6f85e26c061439,,HTML,0.75,Medium High,LLM
+in-df6f85e26c061439,,XHTML,0.75,Medium High,LLM
+in-df6f85e26c061439,,JavaScript,0.75,Medium High,LLM
+in-df6f85e26c061439,,CSS,0.75,Medium High,LLM
+in-df6f85e26c061439,,Flash,0.75,Medium High,LLM
+in-df6f85e26c061439,,Flash Catalyst,0.75,Medium High,LLM
+in-df6f85e26c061439,,Axure,0.75,Medium High,LLM
+in-df6f85e26c061439,,visual design,0.75,Medium High,LLM
+in-df6f85e26c061439,,mockups,0.75,Medium High,LLM
+in-df6f85e26c061439,,style guides,0.75,Medium High,LLM
+in-2c1399927153fb24,,project management,0.851,High,BERT+LLM
+in-e7c1ca00175aa277,,Blockchain,0.75,Medium High,LLM
+in-e7c1ca00175aa277,,Decentralized Applications (DApps),0.75,Medium High,LLM
+in-e7c1ca00175aa277,,Smart Contracts,0.75,Medium High,LLM
+in-327a9e4dfda23fd8,,Customer Service,0.75,Medium High,LLM
+in-59b7db48add5e769,,USB,0.658,Medium,BERT+LLM
+in-59b7db48add5e769,,PMIC,0.847,High,BERT+LLM
+in-59b7db48add5e769,,PCIe,0.848,High,BERT+LLM
+in-59b7db48add5e769,,Hypervisor,0.848,High,BERT+LLM
+in-59b7db48add5e769,,Boot,0.834,High,BERT+LLM
+in-59b7db48add5e769,,Clocks,0.829,High,BERT+LLM
+in-59b7db48add5e769,,Storage,0.839,High,BERT+LLM
+in-936e42ea3a08c2d1,,React Native,0.75,Medium High,LLM
+in-89916db4bd7461c0,,Nike's design ethos,0.75,Medium High,LLM
+in-51af8283fd6b4c67,,management background,0.75,Medium High,LLM
+in-51af8283fd6b4c67,,maritime industry,0.75,Medium High,LLM
+in-f0dc0849f6ec3488,,Top Secret,0.768,Medium High,BERT+LLM
+in-f0dc0849f6ec3488,,SCI Eligible,0.735,Medium High,BERT+LLM
+in-eb1ef332dc16dd51,,AI,0.848,High,BERT+LLM
+in-eb1ef332dc16dd51,,marketing,0.628,Medium,BERT+LLM
+in-eb1ef332dc16dd51,,strategy,0.75,Medium High,LLM
+in-eb1ef332dc16dd51,,automation,0.75,Medium High,LLM
+in-eb1ef332dc16dd51,,computer science,0.846,High,BERT+LLM
+in-eb1ef332dc16dd51,,logistics,0.75,Medium High,LLM
+in-eb1ef332dc16dd51,,copywriting,0.43,Low,BERT (standalone)
+in-eb1ef332dc16dd51,,sourcing /,0.485,Low,BERT (standalone)
+in-eb1ef332dc16dd51,,"procurement,",0.483,Low,BERT (standalone)
+in-43fb9c76a08a9a7a,,digital marketing ecosystem,0.809,High,BERT+LLM
+in-43fb9c76a08a9a7a,,advertisers,0.751,Medium High,BERT+LLM
+in-9219c006480bb1ef,,Information Security Events,0.769,Medium High,BERT+LLM
+in-9219c006480bb1ef,,Information Security,0.849,High,BERT+LLM
+in-9219c006480bb1ef,,Threat Alerting,0.807,High,BERT+LLM
+in-9219c006480bb1ef,,Reporting,0.789,Medium High,BERT+LLM
+in-9219c006480bb1ef,,Audit,0.825,High,BERT+LLM
+in-9219c006480bb1ef,,Compliance,0.684,Medium,BERT+LLM
+in-9219c006480bb1ef,,Information Technology,0.842,High,BERT+LLM
+in-9219c006480bb1ef,,trouble ticketing systems,0.821,High,BERT+LLM
+in-9219c006480bb1ef,,Certificate or,0.429,Low,BERT (standalone)
+in-9219c006480bb1ef,,degree,0.411,Low,BERT (standalone)
+in-c0a534d1052ec06c,,fixed-price long-term contracts,0.75,Medium High,LLM
+in-6e8e82d0e28d7000,,Investment,0.75,Medium High,LLM
+in-6e8e82d0e28d7000,,Funding,0.75,Medium High,LLM
+in-6e8e82d0e28d7000,,Policy Analysis,0.75,Medium High,LLM
+in-56a209de52d121d7,,data-sharing strategies,0.75,Medium High,LLM
+in-56a209de52d121d7,,integration semantics,0.737,Medium High,BERT+LLM
+in-56a209de52d121d7,,mobile applications,0.75,Medium High,LLM
+in-56a209de52d121d7,,data,0.325,Very Low,BERT (standalone)
+in-c45465e4d18c15b3,,Enterprise WAN,0.75,Medium High,LLM
+in-c45465e4d18c15b3,,Wide Area Network environment,0.654,Medium,BERT+LLM
+in-c45465e4d18c15b3,,Cisco routers,0.75,Medium High,LLM
+in-c45465e4d18c15b3,,switches,0.75,Medium High,LLM
+in-c45465e4d18c15b3,,network devices,0.75,Medium High,LLM
+in-c45465e4d18c15b3,,Wide,0.424,Low,BERT (standalone)
+in-c45465e4d18c15b3,,"Cisco routers, switches,",0.479,Low,BERT (standalone)
+in-0cb1ebadc05ba17e,,HVAC,0.75,Medium High,LLM
+in-0cb1ebadc05ba17e,,steam heating,0.75,Medium High,LLM
+in-0cb1ebadc05ba17e,,hydronic heating,0.75,Medium High,LLM
+in-0cb1ebadc05ba17e,,computerized automation systems,0.829,High,BERT+LLM
+in-0cb1ebadc05ba17e,,critical infrastructure,0.75,Medium High,LLM
+in-0cb1ebadc05ba17e,,"heating,",0.542,Medium Low,BERT (standalone)
+in-0cb1ebadc05ba17e,,ventilation and,0.462,Low,BERT (standalone)
+in-0cb1ebadc05ba17e,,air conditioning,0.326,Very Low,BERT (standalone)
+in-0cb1ebadc05ba17e,,"steam and hydronic heating,",0.487,Low,BERT (standalone)
+in-b0640080f80acf9d,,Telecommunications,0.75,Medium High,LLM
+in-bcd4fd4dc45ddce4,,Payroll Software,0.746,Medium High,BERT+LLM
+in-ac04fe2a75ae8453,,Analytics,0.742,Medium High,BERT+LLM
+in-ac04fe2a75ae8453,,Dashboards & Reporting,0.753,Medium High,BERT+LLM
+in-ac04fe2a75ae8453,,Tableau,0.852,High,BERT+LLM
+in-ac04fe2a75ae8453,,BI tools,0.75,Medium High,LLM
+in-ac04fe2a75ae8453,,procurement KPIs,0.782,Medium High,BERT+LLM
+in-ac04fe2a75ae8453,,supplier performance,0.838,High,BERT+LLM
+in-ac04fe2a75ae8453,,spend analysis,0.818,High,BERT+LLM
+in-ac04fe2a75ae8453,,risk indicators,0.807,High,BERT+LLM
+in-ac04fe2a75ae8453,,BI,0.557,Medium Low,BERT (standalone)
+in-2c47f10e705b6ad8,,Ontario Human Rights Code,0.75,Medium High,LLM
+in-2c47f10e705b6ad8,,Accessibility for Ontarians with Disabilities Act,0.75,Medium High,LLM
+in-46672571d6d34e6b,,3D first-person adventure game,0.75,Medium High,LLM
+in-46672571d6d34e6b,,AI companion,0.75,Medium High,LLM
+in-14d099e8539db923,,security solutions,0.75,Medium High,LLM
+in-14d099e8539db923,,operational configurations,0.75,Medium High,LLM
+in-14d099e8539db923,,established baselines,0.75,Medium High,LLM
+in-2d20a7c4a9c6d879,,finance,0.75,Medium High,LLM
+in-4c389f9a726a4278,,Information Governance,0.851,High,BERT+LLM
+in-4c389f9a726a4278,,Data Protection Act,0.815,High,BERT+LLM
+in-4c389f9a726a4278,,Subject Access Requests,0.733,Medium High,BERT+LLM
+in-4c389f9a726a4278,,"IG,",0.559,Medium Low,BERT (standalone)
+in-eb099eb21be72a2b,,audio/visual systems,0.75,Medium High,LLM
+in-eb099eb21be72a2b,,AV equipment,0.75,Medium High,LLM
+in-eb099eb21be72a2b,,manual lighting systems,0.75,Medium High,LLM
+in-eb099eb21be72a2b,,computer-controlled lighting systems,0.75,Medium High,LLM
+in-eb099eb21be72a2b,,lighting consoles,0.75,Medium High,LLM
+in-eb099eb21be72a2b,,ETC GIO @5,0.75,Medium High,LLM
+in-eb099eb21be72a2b,,switching technology,0.75,Medium High,LLM
+in-eb099eb21be72a2b,,routing technology,0.75,Medium High,LLM
+in-eb099eb21be72a2b,,interfacing technology,0.75,Medium High,LLM
+in-eb099eb21be72a2b,,lighting plots,0.75,Medium High,LLM
+in-eb099eb21be72a2b,,technical drawings,0.75,Medium High,LLM
+in-eb099eb21be72a2b,,gobos,0.75,Medium High,LLM
+in-eb099eb21be72a2b,,ETC,0.423,Low,BERT (standalone)
+in-eb099eb21be72a2b,,GIO,0.445,Low,BERT (standalone)
+in-0e739b8d27bc7a84,,Real Estate Law,0.75,Medium High,LLM
+in-0e739b8d27bc7a84,,Development Law,0.75,Medium High,LLM
+in-befb83140552a9f3,,curated data,0.75,Medium High,LLM
+in-5f22cc9f13b5d3b9,,manpower development,0.75,Medium High,LLM
+in-5f22cc9f13b5d3b9,,recruitment,0.75,Medium High,LLM
+in-5f22cc9f13b5d3b9,,manpower growth,0.75,Medium High,LLM
+in-5f22cc9f13b5d3b9,,Financial Consultants (FC),0.75,Medium High,LLM
+in-5f22cc9f13b5d3b9,,Wealth Manager (WM),0.75,Medium High,LLM
+in-2c13c2be76b85ef4,,CORE (conférences sur la race et l'ethnicité),0.75,Medium High,LLM
+in-2c13c2be76b85ef4,,AmazeCon (diversité des genres),0.75,Medium High,LLM
+in-772237960589a143,,Corporate Security Responsibility,0.75,Medium High,LLM
+in-772237960589a143,,Mastercard assets,0.75,Medium High,LLM
+in-772237960589a143,,Mastercard information,0.75,Medium High,LLM
+in-772237960589a143,,Mastercard networks,0.75,Medium High,LLM
+in-772237960589a143,,Mastercard’s security policies,0.75,Medium High,LLM
+in-772237960589a143,,Mastercard’s guidelines,0.75,Medium High,LLM
+in-ba065750a5c5f0dd,,IT infrastructure,0.75,Medium High,LLM
+in-3b22d29313e48ebe,,Pandora,0.75,Medium High,LLM
+in-3b22d29313e48ebe,,SiriusXM Media,0.75,Medium High,LLM
+in-3b22d29313e48ebe,,AdsWizz,0.75,Medium High,LLM
+in-3b22d29313e48ebe,,Simplecast,0.75,Medium High,LLM
+in-3b22d29313e48ebe,,SiriusXM Connect,0.75,Medium High,LLM
+in-ae4bd158a40ff371,,Xbox,0.848,High,BERT+LLM
+in-ae4bd158a40ff371,,PlayStation controllers,0.762,Medium High,BERT+LLM
+in-e8f81b527e6ab4c4,,401(k) program,0.75,Medium High,LLM
+in-443491a6e2231576,,Eaton products,0.75,Medium High,LLM
+in-443491a6e2231576,,Eaton services,0.75,Medium High,LLM
+in-d7cf0de1e28b13bf,,graphic application,0.838,High,BERT+LLM
+in-d7cf0de1e28b13bf,,trims,0.752,Medium High,BERT+LLM
+in-d7cf0de1e28b13bf,,prints,0.748,Medium High,BERT+LLM
+in-d7cf0de1e28b13bf,,garment details,0.703,Medium High,BERT+LLM
+in-ccb6aa7a33cd6114,,Revit,0.75,Medium High,LLM
+in-9ea3874df4d182b6,,Data Engineering,0.848,High,BERT+LLM
+in-9ea3874df4d182b6,,AI,0.852,High,BERT+LLM
+in-9ea3874df4d182b6,,ML,0.757,Medium High,BERT+LLM
+in-9ea3874df4d182b6,,on-premise platforms,0.75,Medium High,LLM
+in-9ea3874df4d182b6,,cloud platforms,0.75,Medium High,LLM
+in-9ea3874df4d182b6,,hybrid platforms,0.75,Medium High,LLM
+in-9ea3874df4d182b6,,implementation,0.523,Medium Low,BERT (standalone)
+in-9ea3874df4d182b6,,of,0.535,Medium Low,BERT (standalone)
+in-9ea3874df4d182b6,,/,0.493,Low,BERT (standalone)
+in-9ea3874df4d182b6,,"premise,",0.464,Low,BERT (standalone)
+in-9ea3874df4d182b6,,on,0.503,Medium Low,BERT (standalone)
+in-9ea3874df4d182b6,,"cloud,",0.421,Low,BERT (standalone)
+in-9ea3874df4d182b6,,hybrid).,0.419,Low,BERT (standalone)
+in-a3fccd73c46d1dc9,,financial insights,0.75,Medium High,LLM
+in-a3fccd73c46d1dc9,,financial controls,0.75,Medium High,LLM
+in-a3fccd73c46d1dc9,,accounting duties,0.75,Medium High,LLM
+in-a3fccd73c46d1dc9,,month-end close process,0.75,Medium High,LLM
+in-a3fccd73c46d1dc9,,month,0.552,Medium Low,BERT (standalone)
+in-a3fccd73c46d1dc9,,-end close,0.508,Medium Low,BERT (standalone)
+in-2fc86bd737050fdc,,somatic genomics,0.75,Medium High,LLM
+in-2fc86bd737050fdc,,biopharma research,0.75,Medium High,LLM
+in-2fc86bd737050fdc,,biopharma development,0.75,Medium High,LLM
+in-46189ff3a5cfd6d0,,Wastewater services,0.75,Medium High,LLM
+in-46189ff3a5cfd6d0,,Drinking water,0.75,Medium High,LLM
+in-e35cdfbe5a9aab37,,AI models,0.75,Medium High,LLM
+in-e35cdfbe5a9aab37,,efficiency,0.75,Medium High,LLM
+in-e35cdfbe5a9aab37,,reliability,0.75,Medium High,LLM
+in-e35cdfbe5a9aab37,,model optimization,0.75,Medium High,LLM
+in-e35cdfbe5a9aab37,,Growth Marketing,0.75,Medium High,LLM
+in-e35cdfbe5a9aab37,,organic traffic,0.75,Medium High,LLM
+in-e35cdfbe5a9aab37,,content,0.75,Medium High,LLM
+in-e35cdfbe5a9aab37,,analytics,0.75,Medium High,LLM
+in-6f2541ed7a92797d,,Figma,0.85,High,BERT+LLM
+in-6f2541ed7a92797d,,GitHub,0.847,High,BERT+LLM
+in-6f2541ed7a92797d,,CMS-driven design environments,0.75,Medium High,LLM
+in-6f2541ed7a92797d,,multi-brand complexity,0.833,High,BERT+LLM
+in-6f2541ed7a92797d,,hierarchy,0.844,High,BERT+LLM
+in-6f2541ed7a92797d,,typography,0.836,High,BERT+LLM
+in-6f2541ed7a92797d,,composition,0.826,High,BERT+LLM
+in-6f2541ed7a92797d,,CMS,0.56,Medium Low,BERT (standalone)
+in-6f2541ed7a92797d,,-driven design environments,0.556,Medium Low,BERT (standalone)
+in-6f2541ed7a92797d,,multi,0.559,Medium Low,BERT (standalone)
+in-6f2541ed7a92797d,,and,0.283,Very Low,BERT (standalone)
+in-7c15b0ac5a9e6e4d,,Unemployment Trust Fund,0.75,Medium High,LLM
+in-7c15b0ac5a9e6e4d,,economic security infrastructure,0.75,Medium High,LLM
+in-834e331bca33f6d2,,Board support package,0.85,High,BERT+LLM
+in-834e331bca33f6d2,,Linux,0.842,High,BERT+LLM
+in-834e331bca33f6d2,,Android,0.845,High,BERT+LLM
+in-834e331bca33f6d2,,Greenhills Integrity,0.827,High,BERT+LLM
+in-834e331bca33f6d2,,QNX embedded systems,0.802,High,BERT+LLM
+in-834e331bca33f6d2,,Design,0.559,Medium Low,BERT (standalone)
+in-834e331bca33f6d2,,/,0.338,Very Low,BERT (standalone)
+in-834e331bca33f6d2,,Development /,0.35,Very Low,BERT (standalone)
+in-834e331bca33f6d2,,Debugging,0.541,Medium Low,BERT (standalone)
+in-8922fb1fa43b8894,,Go,0.844,High,BERT+LLM
+in-8922fb1fa43b8894,,Python,0.846,High,BERT+LLM
+in-8922fb1fa43b8894,,TypeScript,0.852,High,BERT+LLM
+in-8922fb1fa43b8894,,observability,0.773,Medium High,BERT+LLM
+in-8922fb1fa43b8894,,testing,0.75,Medium High,LLM
+in-8922fb1fa43b8894,,performance tuning,0.69,Medium,BERT+LLM
+in-8922fb1fa43b8894,,agent infrastructures,0.75,Medium High,LLM
+in-8922fb1fa43b8894,,real-time workloads,0.75,Medium High,LLM
+in-8922fb1fa43b8894,,agent pipelines,0.75,Medium High,LLM
+in-8922fb1fa43b8894,,integrations,0.75,Medium High,LLM
+in-8922fb1fa43b8894,,orchestration layers,0.75,Medium High,LLM
+in-8922fb1fa43b8894,,AI systems,0.75,Medium High,LLM
+in-8922fb1fa43b8894,,"testing,",0.514,Medium Low,BERT (standalone)
+in-aa51cde8729e53b6,,Research and development laboratories,0.75,Medium High,LLM
+in-aa51cde8729e53b6,,Manufacturing facilities,0.75,Medium High,LLM
+in-8e8d883b7079e78a,,Healthcare,0.75,Medium High,LLM
+in-095ad2e96e511297,,Autodesk Revit,0.75,Medium High,LLM
+in-095ad2e96e511297,,design,0.345,Very Low,BERT (standalone)
+in-095ad2e96e511297,,Autodesk,0.557,Medium Low,BERT (standalone)
+in-095ad2e96e511297,,Revit.,0.37,Very Low,BERT (standalone)
+in-a6f8576a187e1494,,legislation covering Trafalgar Square,0.75,Medium High,LLM
+in-a6f8576a187e1494,,legislation covering Parliament Square Gardens,0.75,Medium High,LLM
+in-de49a66c154cc2bf,,product strategy,0.75,Medium High,LLM
+in-f98024b1e3806571,,Canadian music,0.75,Medium High,LLM
+in-a5d891fd80d4b0f8,,cloud journey,0.75,Medium High,LLM
+in-e956c1924be463b1,,Aseptic Services,0.75,Medium High,LLM
+in-e956c1924be463b1,,chemotherapy drugs,0.75,Medium High,LLM
+in-42ca6024244fc3e2,,Workday,0.747,Medium High,BERT+LLM
+in-42ca6024244fc3e2,,Data Governance,0.75,Medium High,LLM
+in-42ca6024244fc3e2,,Security,0.75,Medium High,LLM
+in-42ca6024244fc3e2,,Privacy standards,0.75,Medium High,LLM
+in-42ca6024244fc3e2,,Role-based access,0.75,Medium High,LLM
+in-42ca6024244fc3e2,,Data quality standards,0.75,Medium High,LLM
+in-42ca6024244fc3e2,,Enterprise-wide reporting,0.75,Medium High,LLM
+in-42ca6024244fc3e2,,Large scale system implementation,0.75,Medium High,LLM
+in-42ca6024244fc3e2,,Computer Science,0.814,High,BERT+LLM
+in-42ca6024244fc3e2,,Information Systems,0.846,High,BERT+LLM
+in-42ca6024244fc3e2,,BC,0.532,Medium Low,BERT (standalone)
+in-42ca6024244fc3e2,,Health Workday,0.459,Low,BERT (standalone)
+in-42ca6024244fc3e2,,Bachelor’s degree,0.541,Medium Low,BERT (standalone)
+in-5b2e7125d4a2d3a8,,proprietary trading,0.843,High,BERT+LLM
+in-5b2e7125d4a2d3a8,,financial services,0.819,High,BERT+LLM
+in-2f43fa6cbbb72894,,felt-tip permanent marker,0.75,Medium High,LLM
+in-2f43fa6cbbb72894,,Peanuts characters,0.75,Medium High,LLM
+in-10df1934dbe8190a,,data pipelines,0.75,Medium High,LLM
+in-10df1934dbe8190a,,reporting,0.75,Medium High,LLM
+in-10df1934dbe8190a,,analytics,0.75,Medium High,LLM
+in-58b7ff6d483958d2,,telecommunications technologies,0.75,Medium High,LLM
+in-58b7ff6d483958d2,,vendor circuits,0.75,Medium High,LLM
+in-833275ea7e5e5049,,recreation programs,0.75,Medium High,LLM
+in-833275ea7e5e5049,,sports programs,0.75,Medium High,LLM
+in-833275ea7e5e5049,,fitness programs,0.75,Medium High,LLM
+in-833275ea7e5e5049,,financial services,0.75,Medium High,LLM
+in-833275ea7e5e5049,,retail services,0.75,Medium High,LLM
+in-833275ea7e5e5049,,retail savings,0.75,Medium High,LLM
+in-833275ea7e5e5049,,family support,0.75,Medium High,LLM
+in-4163d1155ec51936,,verification techniques,0.75,Medium High,LLM
+in-4163d1155ec51936,,industrial context,0.75,Medium High,LLM
+in-a29147e44d7396ef,,data integrity,0.75,Medium High,LLM
+in-a29147e44d7396ef,,data security,0.75,Medium High,LLM
+in-a29147e44d7396ef,,database performance optimization,0.75,Medium High,LLM
+in-a29147e44d7396ef,,best practices,0.75,Medium High,LLM
+in-93e34df0254844e2,,Christian environment,0.75,Medium High,LLM
+in-296e27b7ecc20c9a,,.NET,0.75,Medium High,LLM
+in-296e27b7ecc20c9a,,React,0.75,Medium High,LLM
+in-17a2ac78c1d98425,,IoT connectivity chain,0.75,Medium High,LLM
+in-17a2ac78c1d98425,,IoT subscriptions,0.75,Medium High,LLM
+in-a50b5222ebb42f3b,,software development lifecycle,0.75,Medium High,LLM
+in-a50b5222ebb42f3b,,requirements analysis,0.848,High,BERT+LLM
+in-a50b5222ebb42f3b,,system design,0.844,High,BERT+LLM
+in-a50b5222ebb42f3b,,testing,0.75,Medium High,LLM
+in-a50b5222ebb42f3b,,deployment,0.831,High,BERT+LLM
+in-a50b5222ebb42f3b,,operational monitoring,0.832,High,BERT+LLM
+in-a50b5222ebb42f3b,,software development,0.517,Medium Low,BERT (standalone)
+in-a50b5222ebb42f3b,,"testing,",0.557,Medium Low,BERT (standalone)
+in-7c0d0bfd518b483b,,underground mining equipment solutions,0.75,Medium High,LLM
+in-63f514f2585f0cdf,,Program Finance,0.75,Medium High,LLM
+in-63f514f2585f0cdf,,Surveillance and Automation Solutions,0.75,Medium High,LLM
+in-22c288e15e0f4fc2,,Tokenisation,0.75,Medium High,LLM
+in-22c288e15e0f4fc2,,crypto-related products,0.75,Medium High,LLM
+in-22c288e15e0f4fc2,,crypto-related services,0.75,Medium High,LLM

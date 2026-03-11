@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-03-04T22:18:41.529525+00:00",
+  "python_version": "3.13.2",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "project_root": "D:\\Projects\\skill-extraction",
+  "output_dir": "D:\\Projects\\skill-extraction\\results",
+  "random_seed": 42,
+  "pipeline_sample_seed": 42,
+  "git_hash": "2a6417cac15ff308c1adbed67cf84169d38a5a24",
+  "input_dataset": {
+    "path": "D:\\Projects\\skill-extraction\\DATA\\preprocessing\\data_prepared\\jobs_sentences.csv",
+    "exists": true,
+    "rows": 254198,
+    "sha256": "e2ccb04fb6ad7eb1ba6a0eddf8fb6a5001a8b64dbf1ff4f535a96e447dc89521"
+  },
+  "models": {
+    "jobbert": "jjzha/jobbert-base-cased",
+    "jobbert_checkpoint": "D:\\Projects\\skill-extraction\\baseline_versions\\jobbert_crf\\outputs\\multitask_model",
+    "sbert": "all-MiniLM-L6-v2"
+  },
+  "config_parameters": {
+    "output_dir": "D:\\Projects\\skill-extraction\\results"
+  }
+}

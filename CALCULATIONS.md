@@ -101,7 +101,7 @@ normalize(text) = lowercase(strip(text))
                 ; collapse repeated spaces
 ```
 
-Applied in: `future_weight_mapping.py`, `recommendations.py`, `generate_competencies.py`, dashboard `_normalize_knowledge_key`.
+Applied in: `future_weight_mapping.py`, `recommendations.py`, `generate_competencies.py` (via `domain_batching.normalize_for_grouping` for skill lookup in future_skill_weights), dashboard `_normalize_knowledge_key`.
 
 ### Grouping Logic
 

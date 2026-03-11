@@ -1,0 +1,151 @@
+﻿gold_id,job_id,skill,type,bloom,confidence_score,confidence_tier,source,semantic_density,context_agreement,notes,is_correct,type_label,bloom_label,labeler_id
+gs_98bdd606bd93,in-7461bc5cf0db64c7,implement DevSecOps,Hard,Apply,0.712,Medium High,LLM,0.87,0.9,,yes,nan,nan,"alice,default,dewi"
+gs_426c6a7ef399,in-f3758c500e035cd6,drive unparalleled efficiency,Soft,,0.645,Medium,LLM,0.87,0.9,,yes,nan,nan,"alice,default,dewi"
+gs_febda757b205,in-fafd0a966425224e,build reform initiatives,Soft,,0.639,Medium,LLM,0.82,0.9,,yes,nan,nan,"alice,default,dewi"
+gs_2bc77e655479,in-59f89f855608fde0,foster open and productive design discussions,Soft,,0.675,Medium,LLM,0.8,1.0,,yes,nan,nan,"alice,default,dewi"
+gs_a464f2951edd,in-2ea46d88545e7e84,checking of costs,Hard,Evaluate,0.552,Medium Low,BERT (standalone),0.75,0.88,,yes,nan,nan,"alice,default,dewi"
+gs_ded20d82e867,in-14d73f227fd45146,Tune,Hard,Evaluate,0.67,Medium,BERT (standalone),0.72,0.88,,no,nan,nan,"alice,dewi"
+gs_0700d2be28c6,in-042b565c84045356,diagnose technical issues,Hard,Analyze,0.757,Medium High,LLM,0.83,0.97,,yes,nan,nan,"alice,dewi"
+gs_f0132ca169dc,in-f540737bddbf25e1,link coding principles with devices,Hard,Apply,0.566,Medium Low,LLM,0.79,0.9,,yes,nan,nan,"alice,dewi"
+gs_3393355b44c5,in-5906aa7cd05b4ccd,manage marketing,Hard,Apply,0.705,Medium High,LLM,0.83,0.9,,yes,nan,nan,"alice,dewi"
+gs_b20f0389e138,in-2ea46d88545e7e84,prepare spotlists,Hard,Apply,1.0,Very High,BERT+LLM,0.84,1.27,,yes,nan,nan,"alice,dewi"
+gs_26025dd14f12,in-2284d87b510f9e95,props,Hard,Apply,0.468,Low,BERT (standalone),0.75,0.83,,no,nan,nan,"alice,dewi"
+gs_b1588dd0885d,in-1ff77799c8c16660,drive advisory initiatives,Soft,,0.702,Medium High,BERT+LLM,0.86,1.16,,yes,nan,nan,"alice,dewi"
+gs_590b29ea2fd8,in-290c255a99e5d600,tools,Hard,Apply,0.478,Low,BERT (standalone),0.75,0.82,,no,Hard,Apply,"alice,dewi"
+gs_3d257050a97c,in-083ac975933f3cb9,innovate consistently,Soft,,0.571,Medium Low,BERT+LLM,0.9,0.9,,yes,nan,nan,"alice,dewi"
+gs_d9cd88f67ce9,in-342b32d766851b29,Set up,Hard,Apply,0.486,Low,BERT (standalone),0.68,0.87,,no,nan,nan,"alice,dewi"
+gs_0681bc9ca916,in-70fd1b405f4402fc,Design,Hard,Create,0.646,Medium,BERT (standalone),0.78,0.84,,no,Hard,Create,"alice,dewi"
+gs_6217213bdd7e,in-66e2f2f3d3633e25,productive,Hard,Apply,0.512,Medium Low,BERT (standalone),0.9,0.86,,yes,Soft,nan,"alice,dewi"
+gs_ebf1caaf91b8,in-5b2e7125d4a2d3a8,support hardware solutions,Hard,Evaluate,0.722,Medium High,LLM,0.84,0.92,,yes,nan,nan,"alice,dewi"
+gs_c8e0fc8868d5,in-00123850de967f24,enhance staff morale,Soft,,0.958,Very High,LLM,0.78,1.36,,yes,nan,nan,"alice,dewi"
+gs_31ef49d91b28,in-5dc0137fea6a865d,improve lives,Soft,,0.606,Medium,LLM,0.78,0.9,,yes,nan,nan,"alice,dewi"
+gs_a01f76914f45,in-965f58ca3e59d3f2,implement digital experience,Hard,Apply,0.71,Medium High,LLM,0.86,0.9,,yes,nan,nan,alice
+gs_762c4cfa864b,in-f7203e2438283cb3,bring in,Hard,Apply,0.428,Low,BERT (standalone),0.71,0.81,,no,nan,nan,alice
+gs_ca9bff95ca1c,in-eb099eb21be72a2b,Set up,Hard,Apply,0.499,Low,BERT (standalone),0.68,0.87,,no,nan,nan,alice
+gs_87a99cb08897,in-4dd4be4468b8f8b5,build Power BI dashboards,Hard,Create,0.891,High,LLM,0.77,1.2,,yes,nan,nan,alice
+gs_ea51e678ada4,in-dcd8dd1044f2926f,proactive,Soft,,0.618,Medium,BERT (standalone),0.87,0.83,,yes,nan,nan,alice
+gs_7658a6d4730b,in-94c8e798911e3470,use RAML/OpenAPI,Hard,Apply,0.705,Medium High,LLM,0.83,0.9,,yes,nan,nan,alice
+gs_a9b02d167658,in-54f7e34be407fc22,ensure fast interactions,Soft,,0.639,Medium,LLM,0.82,0.9,,yes,nan,nan,alice
+gs_a2ef5ff75067,in-515db338b72b30f7,enhance customer experiences,Soft,,0.698,Medium,LLM,0.86,0.97,,yes,Both,Evaluate,alice
+gs_351d914e3ebf,in-9bf4d6d9ee1e4a14,apply sourcing processes,Soft,,0.658,Medium,LLM,0.82,0.93,,yes,Hard,Apply,alice
+gs_43c6dcfcbeb7,in-cf7f60dee735734d,analyze impact on network,Hard,Analyze,0.709,Medium High,LLM,0.77,0.92,,yes,nan,nan,alice
+gs_dcf4efced4f7,in-9a4ed3eee44b552b,apply application/Tools upgrades,Hard,Evaluate,0.606,Medium,LLM,0.9,0.9,,yes,Hard,Apply,alice
+gs_2ab9cf7501ef,in-e8b799e2ebe68209,ensure timely response to alerts,Soft,,0.922,Very High,BERT+LLM,0.77,1.34,,yes,nan,nan,alice
+gs_6d1ac152c246,in-5b2e7125d4a2d3a8,collaborate with analysts,Soft,,0.625,Medium,LLM,0.83,0.92,,yes,nan,nan,alice
+gs_0a91d12b08bb,in-7d12206e33578a17,prepare evidence,Hard,Apply,1.0,Very High,BERT+LLM,0.84,1.26,,yes,nan,nan,alice
+gs_017148e00737,in-f7203e2438283cb3,lead additional support,Hard,Evaluate,0.575,Medium Low,BERT (standalone),0.81,0.81,,yes,Soft,nan,alice
+gs_99054f3e7b49,in-5a81c5ecd1c8765b,slice video edits,Hard,Apply,0.587,Medium Low,LLM,0.75,0.9,,yes,nan,nan,alice
+gs_9abdb5ec7849,in-e07c53dcbcbf3274,push boundaries of artificial intelligence,Hard,Apply,0.571,Medium Low,LLM,0.83,0.9,,no,nan,nan,alice
+gs_dcb9c45e7744,in-a8714366ffff3172,solve problems,Soft,,0.635,Medium,LLM,0.8,0.9,,yes,nan,nan,alice
+gs_bb12ddec2b43,in-80aa4c8b345e347c,use logic analyzers,Hard,Analyze,0.633,Medium,LLM,0.77,0.93,,yes,nan,nan,alice
+gs_c23cbefe0f3c,in-2852318d9eae20d7,Use data,Hard,Apply,0.684,Medium,BERT (standalone),0.71,0.9,,yes,nan,nan,alice
+gs_32e77f8df013,in-46527b145958f44b,assist with year-end closings,Hard,Apply,0.961,Very High,BERT+LLM,0.78,1.28,,yes,nan,nan,alice
+gs_0fc6d5ba6e9e,in-1bb577efa30c9a9d,work with networking teams,Soft,,0.66,Medium,LLM,0.77,0.9,,yes,nan,nan,alice
+gs_a00931ad88d9,in-27d3e2e8b7c41d36,enable travelers to enjoy an immersive ticket shopping experience,Hard,Apply,0.566,Medium Low,LLM,0.79,0.9,,yes,nan,nan,alice
+gs_73c2d8a3fd91,in-5bd95884fcfdbfe2,understand distributed systems,Hard,Apply,0.618,Medium,LLM,0.88,0.96,,yes,Hard,Understand,alice
+gs_494f22055fe0,in-6a11f6623b90c10e,analyze information,Soft,,0.683,Medium,LLM,0.87,0.95,,yes,Hard,Analyze,alice
+gs_3a8735bd56b7,in-6a11f6623b90c10e,commitment to accuracy.,Hard,Apply,0.494,Low,BERT (standalone),0.81,0.86,,yes,Soft,nan,alice
+gs_a668e8e6a12c,in-a8d0fb78eb211ff4,navigate Bash,Hard,Apply,0.943,Very High,BERT+LLM,0.78,1.28,,,,,
+gs_4fe5f45d4002,in-d1c3064ca0a52a90,develop,Hard,Create,0.728,Medium High,BERT (standalone),0.81,0.94,,,,,
+gs_0f57db3d5935,in-54f7e34be407fc22,craft seamless,Hard,Apply,0.476,Low,BERT (standalone),0.8,0.81,,,,,
+gs_f5e04e5d1adb,in-df7fe8a7d8787cb4,guide design of research,Soft,,0.643,Medium,LLM,0.76,0.92,,,,,
+gs_0cf47df0c037,in-7c677818edebe75f,drive cutover,Soft,,0.647,Medium,LLM,0.78,0.92,,,,,
+gs_e9f7e388b87f,in-8e8358720b2049a4,proactive activities,Soft,,0.54,Medium Low,BERT (standalone),0.89,0.81,,,,,
+gs_574b5a83aec2,in-19e9ead015fac709,design,Hard,Create,0.605,Medium,BERT (standalone),0.78,0.87,,,,,
+gs_ce3a46705cb9,in-601c49b2a52c9d10,designs,Hard,Create,0.542,Medium Low,BERT (standalone),0.81,0.87,,,,,
+gs_942825e67d29,in-31312032e7feb5d2,other documents,Hard,Apply,0.537,Medium Low,BERT (standalone),0.81,0.85,,,,,
+gs_64553143c511,in-1449a508ca52e0cd,organising files,Hard,Apply,0.632,Medium,LLM,0.83,1.0,,,,,
+gs_0c199dc629f5,in-f40216f9c715c298,identify creative partners,Soft,,0.899,High,BERT+LLM,0.81,1.28,,,,,
+gs_a56fa039ea77,in-ec5e0638c86de1ac,protect global security posture,Hard,Apply,0.656,Medium,BERT+LLM,0.81,0.9,,,,,
+gs_77398787df55,in-a8c9ec23b2864f1d,value sustainability,Soft,,0.647,Medium,LLM,0.89,0.9,,,,,
+gs_a34d01242abf,in-6235657510a0ff3f,storage,Hard,Apply,0.52,Medium Low,BERT (standalone),0.81,0.88,,,,,
+gs_96f3b615c190,in-0b1202bf3556f0ec,influence stakeholders,Soft,,0.646,Medium,LLM,0.9,0.94,,,,,
+gs_a26242521109,in-eb1ef332dc16dd51,technical,Hard,Apply,0.433,Low,BERT (standalone),0.87,0.81,,,,,
+gs_41b96dfbd721,in-bf0e9f6211607d23,drive innovation,Soft,,0.913,Very High,BERT+LLM,0.83,1.39,,,,,
+gs_6d9bf5778194,in-4dd4be4468b8f8b5,identify efficiency improvement initiatives,Soft,,0.881,High,LLM,0.9,1.22,,,,,
+gs_6cc24bd98baf,in-df4c58ba7dee56c3,roadmap,Hard,Understand,0.516,Medium Low,BERT (standalone),0.81,0.81,,,,,
+gs_121e0e5f7778,in-832889a1223dd15f,develop relationships,Soft,,1.0,Very High,BERT+LLM,0.9,1.22,,,,,
+gs_7d43ebce09ca,in-dcd8dd1044f2926f,support integrated approach to managing stormwater systems,Hard,Create,0.863,High,BERT+LLM,0.84,1.16,,,,,
+gs_b3161aea4c5d,in-08b13571c4196e80,Analyse,Hard,Apply,0.525,Medium Low,BERT (standalone),0.81,0.89,,,,,
+gs_93e30a0494e5,in-833275ea7e5e5049,organize charity events,Soft,,0.637,Medium,LLM,0.81,0.9,,,,,
+gs_36a339b9dc3a,in-6da118f81ed64a47,provide engineering solutions,Hard,Create,0.602,Medium,LLM,0.87,0.9,,,,,
+gs_3f93864e720a,in-137e7da00647d5b9,deliver features end to end,Soft,,0.612,Medium,LLM,0.62,0.9,,,,,
+gs_ca362ba91b2e,in-f0b48fead02e6e98,identify acoustic products (panels,Hard,Analyze,0.672,Medium,BERT (standalone),0.83,0.87,,,,,
+gs_f7fdd3cd6890,in-1c5a5a5c1628040b,administer SQL databases,Hard,Apply,0.675,Medium,LLM,0.82,0.9,,,,,
+gs_25a54bc0564d,in-94c8e798911e3470,automate deployment,Hard,Create,0.731,Medium High,LLM,1.0,0.9,,,,,
+gs_a7e3242b7b68,in-c45465e4d18c15b3,deploy,Hard,Apply,0.646,Medium,BERT (standalone),0.78,0.87,,,,,
+gs_d7e286044e78,in-6f2541ed7a92797d,self,Hard,Apply,0.476,Low,BERT (standalone),0.72,0.85,,,,,
+gs_11a1e11fbfb8,in-66d09a7cc5a289f5,collaborate with team,Soft,,0.735,Medium High,LLM,0.79,1.0,,,,,
+gs_e065a2069f3b,in-eb099eb21be72a2b,manage interfacing technology,Hard,Analyze,0.675,Medium,LLM,0.87,0.97,,,,,
+gs_0afd096f4abf,in-00c0b91f9c9cb324,mentor junior staff,Soft,,0.604,Medium,LLM,0.77,0.9,,,,,
+gs_ca424adca016,in-e8e6926b64d2b259,manage user accounts,Hard,Apply,1.0,Very High,BERT+LLM,0.78,1.29,,,,,
+gs_dc0a9884afc4,in-70a2eb5261b8c030,design complex data integrations solutions,Hard,Create,1.0,Very High,LLM,0.83,1.31,,,,,
+gs_603ab7418bb9,in-f51d0db79ab4d976,design innovative solutions,Hard,Create,1.0,Very High,BERT+LLM,0.85,1.29,,,,,
+gs_4d260ca95bf8,in-002382e99b8a2bc3,investigate criminal offences,Hard,Analyze,0.682,Medium,LLM,0.87,0.9,,,,,
+gs_69254c7a9bd7,in-66e35ec4c60e8c65,solutions,Hard,Apply,0.547,Medium Low,BERT (standalone),0.87,0.91,,,,,
+gs_a2cdd2baa72a,in-8cb2b3de05fe17bb,ensure proposed solution is value-adding,Soft,,0.618,Medium,LLM,0.82,0.91,,,,,
+gs_67dd1f357c95,in-520d9e37336f7ecd,travel in off-peak hours,Soft,,0.603,Medium,LLM,0.76,0.9,,,,,
+gs_f23eb4b0ea44,in-a61c1082390cb772,Identify process gaps in BD ops,Soft,,0.676,Medium,BERT+LLM,0.76,0.97,,,,,
+gs_15c1dbd25c07,in-a8d0fb78eb211ff4,deploy software in production settings,Hard,Apply,1.0,Very High,BERT+LLM,0.84,1.27,,,,,
+gs_20ccdab6fe32,in-9af59d2bfaa79ff6,ensure compliance with industry standards,Hard,Analyze,1.0,Very High,BERT+LLM,0.83,1.4,,,,,
+gs_cae510efdf6f,in-3332b5799e303ec3,build inclusive hiring process,Soft,,0.636,Medium,LLM,0.8,0.9,,,,,
+gs_dbb27d895986,in-61b2431bbabae3a8,applying,Hard,Apply,0.343,Very Low,BERT (standalone),0.84,0.85,,,,,
+gs_d58e5a10afc7,in-8cb2b3de05fe17bb,develop on Cloud platforms,Hard,Create,0.706,Medium High,LLM,0.77,0.91,,,,,
+gs_abdca0196610,in-9219c006480bb1ef,provide customer support,Soft,,0.611,Medium,LLM,0.82,0.9,,,,,
+gs_62899f709cc9,in-13e3f942e2165e43,be considerate,Soft,,0.834,High,BERT+LLM,0.85,1.26,,,,,
+gs_f8020274394b,in-7fd767baaf0bccff,share knowledge within the team,Soft,,0.74,Medium High,LLM,0.76,1.01,,,,,
+gs_c99573a165c8,in-00c0b91f9c9cb324,work on live projects,Hard,Apply,0.584,Medium Low,LLM,0.74,0.9,,,,,
+gs_14852cde237b,in-2284d87b510f9e95,model watercraft,Hard,Create,0.689,Medium,LLM,0.83,0.92,,,,,
+gs_11888be6f3cc,in-792c7c65733a1995,ensure compliance with Data Protection Act 2018,Hard,Analyze,0.669,Medium,LLM,0.78,0.9,,,,,
+gs_e0ae24946fba,in-3d91d1f91a2e35ff,catalyst change,Soft,,0.637,Medium,LLM,0.81,0.9,,,,,
+gs_de5d8007ebdf,in-a5314a07c4a9b99d,provide seamless user experience,Soft,,0.638,Medium,LLM,0.82,0.9,,,,,
+gs_60d26eb10cba,in-dcd8dd1044f2926f,implement best practices in watershed planning,Hard,Create,0.61,Medium,LLM,0.81,0.92,,,,,
+gs_013a02dfbb30,in-3974672cef9dd264,design user experiences,Hard,Create,0.674,Medium,LLM,0.81,0.9,,,,,
+gs_769ff876129f,in-3902e97b79f7d2cf,drive organizational objectives,Soft,,0.825,High,BERT+LLM,0.9,1.26,,,,,
+gs_75b01e9724ac,in-07a9c2a299829676,refine chatbot logic,Hard,Analyze,0.633,Medium,LLM,0.78,0.96,,,,,
+gs_c9fa779a51b7,in-60d94e2385569923,respect unique perspectives,Soft,,0.643,Medium,LLM,0.85,0.9,,,,,
+gs_e6cd0b299707,in-ea2a9e0627ec4b56,conduct research in a quantitative discipline,Hard,Remember,0.514,Medium Low,BERT (standalone),0.8,0.81,,,,,
+gs_5af7089c2ed3,in-1fb4d3b60efd6c9b,foster a collaborative work culture,Soft,,0.789,Medium High,BERT+LLM,0.82,1.21,,,,,
+gs_1d81fb20b93d,in-372aed7d86c90958,deliver on Ireland’s climate action targets,Soft,,0.635,Medium,LLM,0.79,0.9,,,,,
+gs_b51180be8065,in-5130a2f5bb7857ba,deliver frontend experiences,Hard,Apply,0.959,Very High,BERT+LLM,0.85,1.25,,,,,
+gs_a3116172ebaf,in-637ce4ff0662e5c9,architect web applications,Hard,Create,1.0,Very High,BERT+LLM,0.84,1.33,,,,,
+gs_7614521634db,in-1fb4d3b60efd6c9b,provide guidance,Soft,,0.781,Medium High,BERT+LLM,0.83,1.2,,,,,
+gs_22af6b962564,in-11c4afe5bb429f5d,work with fast-paced digital products,Soft,,0.9,High,BERT+LLM,0.79,1.41,,,,,
+gs_28e59f87c79b,in-4d39d1108694485c,-solving skills,Hard,Apply,0.459,Low,BERT (standalone),0.81,0.86,,,,,
+gs_dcb7ebe7f45b,in-22edc9e9cdcf8599,practice postmortems,Soft,,0.648,Medium,LLM,0.89,0.94,,,,,
+gs_4daafbaea3ee,in-dbfc856e6f34e008,build career in AI space,Soft,,0.598,Medium Low,LLM,0.72,0.9,,,,,
+gs_00c4573a3936,in-23b58a1b63ff95f3,solve complex technical challenges,Soft,,0.818,High,BERT+LLM,0.84,1.26,,,,,
+gs_8204369e8fb3,in-d531b391c880d7ca,craftsmanship,Hard,Apply,0.412,Low,BERT (standalone),0.9,0.81,,,,,
+gs_a03a27dc3c0d,in-eb099eb21be72a2b,set up routing technology,Hard,Analyze,0.66,Medium,LLM,0.77,0.97,,,,,
+gs_0cde4363a964,in-8cb2b3de05fe17bb,identify why customers use technology to unlock value,Soft,,0.612,Medium,LLM,0.77,0.91,,,,,
+gs_15b798b80459,in-c3a7666d83cbd74e,interpret marketing performance data,Hard,Apply,1.0,Very High,BERT+LLM,0.86,1.26,,,,,
+gs_66ca43279e57,in-4dd4be4468b8f8b5,support production of quarterly performance reports,Soft,,0.809,High,BERT+LLM,0.85,1.2,,,,,
+gs_0d9d54217143,in-14d099e8539db923,maintain operational configurations of security solutions,Hard,Analyze,1.0,Very High,BERT+LLM,0.84,1.27,,,,,
+gs_2e8565e78f31,in-276ee08934e98ebb,use cloud platforms,Hard,Apply,0.737,Medium High,LLM,0.77,0.95,,,,,
+gs_a574687f5d98,in-0b1202bf3556f0ec,manage deadlines,Soft,,0.871,High,BERT+LLM,0.83,1.22,,,,,
+gs_0e8c50794ca9,in-4c389f9a726a4278,employees,Hard,Apply,0.544,Medium Low,BERT (standalone),0.87,0.84,,,,,
+gs_4514c760588b,in-2960eddc94b20bb2,work with subcontract professionals,Soft,,0.641,Medium,LLM,0.84,0.9,,,,,
+gs_0fe4a4b596af,in-cd4536bf094c8252,deliver best -in -class hardware products.,Hard,Apply,0.512,Medium Low,BERT (standalone),0.79,0.9,,,,,
+gs_651134bf6c70,in-3cb0315c9817c8d0,ensure safe living environments,Soft,,0.637,Medium,LLM,0.81,0.9,,,,,
+gs_8f0f10c85511,in-2ea46d88545e7e84,liaise with Digital teams,Soft,,0.715,Medium High,LLM,0.77,0.98,,,,,
+gs_8e83f505583f,in-d7f955d1258c78ff,apply engineering technical skills,Hard,Create,0.658,Medium,LLM,0.83,0.95,,,,,
+gs_6cd92dcbb0a0,in-8e8358720b2049a4,core,Hard,Apply,0.289,Very Low,BERT (standalone),0.72,0.81,,,,,
+gs_92b423776a52,in-66e2f2f3d3633e25,ensure productive processes,Soft,,0.654,Medium,LLM,0.85,0.96,,,,,
+gs_7da8b324d310,in-38d70f8f1a00eb3d,track progress of monetization trends,Hard,Apply,0.649,Medium,LLM,0.8,1.03,,,,,
+gs_e724bd4903ad,in-2ea46d88545e7e84,input confirmations,Hard,Apply,0.715,Medium High,BERT+LLM,0.89,0.98,,,,,
+gs_2f43b26080f2,in-761b1a8b3aa91eb0,standards for all classes of data.,Hard,Apply,0.451,Low,BERT (standalone),0.75,0.85,,,,,
+gs_65731a6244c3,in-8a9eb5ffe70927ec,appreciate different perspectives,Soft,,0.691,Medium,LLM,0.9,0.96,,,,,
+gs_d3af0eec237f,in-3d6ebd9dfa8f6bd6,translate ideas into visual narratives,Soft,,0.919,Very High,BERT+LLM,0.81,1.31,,,,,
+gs_452c420176e1,in-dcfe1997ded20aef,understand quality assurance related to civil works,Hard,Apply,0.592,Medium Low,LLM,0.79,0.9,,,,,
+gs_775f629af597,in-1750ee1a3e08b5fa,support Member States in data validation,Hard,Evaluate,0.669,Medium,LLM,0.78,0.9,,,,,
+gs_a7d17c08e5b1,in-a61c1082390cb772,support deal execution,Soft,,0.91,Very High,BERT+LLM,0.8,1.27,,,,,
+gs_0ea40323dc18,in-032bc9411bdc659a,facilitate change processes,Soft,,0.889,High,BERT+LLM,0.83,1.25,,,,,
+gs_4b727607e685,in-777325d37a9c6b57,design excellence,Soft,,0.641,Medium,LLM,0.84,0.9,,,,,
+gs_80edabc4ed33,in-f5f2c13d2ff2fcbd,align platform with organizational financial programs,Hard,Create,0.598,Medium Low,LLM,0.84,0.9,,,,,
+gs_a923e9652714,in-8922fb1fa43b8894,write maintainable code in TypeScript,Hard,Create,0.73,Medium High,LLM,0.8,0.94,,yes,nan,nan,alice
+gs_498a2c3f8e0e,in-290c255a99e5d600,support with post investment analysis,Hard,Evaluate,0.714,Medium High,LLM,0.8,0.92,,yes,Hard,Evaluate,alice
+gs_40e1ec2b2a07,in-d531b391c880d7ca,automated deployments.,Hard,Create,0.58,Medium Low,BERT (standalone),0.9,0.89,,yes,nan,nan,alice
+gs_3bdc099f8e1b,in-c180dba542c64365,communication skills,Soft,,0.712,Medium High,BERT (standalone),0.89,0.84,,yes,nan,nan,alice
+gs_2dfd2c826635,in-fecd02c6b7146c9a,retain colleagues,Soft,,0.641,Medium,LLM,0.84,0.9,,yes,nan,nan,alice
+gs_12bf9e2b303b,in-80759602520c230d,customer specifications whenever viable,Hard,Apply,0.53,Medium Low,BERT (standalone),0.87,0.89,,no,nan,nan,alice
+gs_5072f064972d,in-7699fde68b752b85,passionate,Hard,Apply,0.32,Very Low,BERT (standalone),0.9,0.89,,yes,Soft,nan,alice

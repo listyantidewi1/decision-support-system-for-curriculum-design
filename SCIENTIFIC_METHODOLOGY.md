@@ -23,7 +23,8 @@ This document provides a **detailed, scientifically rigorous** description of al
 10. [Recall in the Gold-Set Paradigm](#10-recall-in-the-gold-set-paradigm)
 11. [Calibrated Verification Metrics](#11-calibrated-verification-metrics)
 12. [Future-Domain Mapping Evaluation](#12-future-domain-mapping-evaluation)
-13. [Recommendation Evaluation (P@N, NDCG)](#13-recommendation-evaluation-pn-ndcg)
+13. [Domain-Based Batching for Competency Generation](#13-domain-based-batching-for-competency-generation)
+14. [Recommendation Evaluation (P@N, NDCG)](#14-recommendation-evaluation-pn-ndcg)
 
 ---
 
@@ -578,7 +579,41 @@ Items with `true_domain_id` in {none, unclear} are excluded from evaluation.
 
 ---
 
-## 13. Recommendation Evaluation (P@N, NDCG)
+## 13. Domain-Based Batching for Competency Generation
+
+### Purpose
+
+To group skills by thematic domain before sending them to the LLM, so each competency-generation batch contains related skills (e.g., AI/ML together, cloud together). This reduces forced groupings of unrelated skills and improves scientific validity.
+
+### Confidence Thresholds
+
+Skills with domain assignments from `future_skill_weights.csv` are classified by confidence:
+
+- **High confidence:** similarity ≥ 0.45 and mapping_margin ≥ 0.05 → use `best_future_domain`
+- **Low confidence:** below either threshold → assign to "Uncertain" batch
+
+Low-confidence skills are not forced into a specific domain to avoid false thematic grouping.
+
+### Normalized-Key Lookup
+
+To reduce coverage gap from case/punctuation variants (e.g., "AI/ML" vs "AI ML"), `load_skill_future_weights` builds a dual index:
+
+1. Exact key: `str(skill).strip()`
+2. Normalized key: `normalize_for_grouping(skill)` (lowercase, collapse punctuation)
+
+Lookup order: exact first, then normalized.
+
+### On-the-Fly Fallback
+
+Skills not in `future_skill_weights.csv` get domain assignment via embedding similarity to `future_domains.csv` (when available). If no future_domains or embedding fails, they go to "Unmapped".
+
+### Batch Merge (Strongly Similar Domains)
+
+When two domain batches have domains with cosine similarity ≥ 0.7 (of their embeddings: domain_text + example_terms), they are merged. This avoids tiny batches (e.g., 5 skills) while preserving thematic coherence.
+
+---
+
+## 14. Recommendation Evaluation (P@N, NDCG)
 
 Used when experts label top-N curriculum recommendations in `recommendations.csv` (expert_priority column).
 
@@ -628,6 +663,7 @@ NDCG ≈ 2.20/2.89 ≈ **0.76**
 | P@N | (yes + 0.5×partial)/N |
 | NDCG | DCG/IDCG with rel ∈ {0, 0.5, 1} |
 | Top-1 domain | count(agree)/n_evaluable |
+| Domain batching | similarity≥0.45, margin≥0.05 for high conf; merge when cos_sim≥0.7 |
 
 ---
 
@@ -655,4 +691,4 @@ Run: `python plot_scientific_analysis.py` (invoked by run.bat step 17).
 
 ---
 
-*Last updated: Full scientific methodology with worked examples.*
+*Last updated: Domain-based batching (2025), full scientific methodology with worked examples.*

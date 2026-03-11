@@ -52,6 +52,8 @@ The **[SCIENTIFIC_METHODOLOGY.md](../SCIENTIFIC_METHODOLOGY.md)** document cover
 | `evaluate_extraction.py` | Binomial test, effect sizes, Wilson CI, pairwise z-test, BH |
 | `import_feedback.py` | Majority vote, Cohen's Kappa, Fleiss' Kappa |
 | `future_weight_mapping.py` | Future weight formula, normalization, grouping |
+| `generate_competencies.py` | Domain-based batching, normalized-key lookup, confidence thresholds |
+| `domain_batching.py` | Domain grouping, on-the-fly domain assignment, batch merge by domain similarity |
 | `recommendations.py` | Priority score, weight sensitivity |
 | `skill_time_trend_analysis.py` | FDR (Benjamini-Hochberg), trend labels |
 | `validate_parameters.py` | AUC-ROC, Brier, calibration, Youden |

@@ -35,7 +35,9 @@
 </nav>
 
 <section id="skills-panel" class="card review-panel active">
+  {% include "partials/review_rubric.html" %}
   <h3>Skill Review (sampled) <span class="hint" id="skills-progress"></span></h3>
+  <p class="panel-desc">Verify if the extracted skill is valid and correct the Bloom taxonomy if needed.</p>
   {% if skills %}
     {% for row in skills %}
       <form method="post" action="/dashboard/school/review/save_skill" class="comp-card review-item skill-item" data-kind="skill">
@@ -66,11 +68,11 @@
         {% if row.get("job_text") %}
         <div class="job-context"><strong>Job context:</strong><br/><blockquote>{{ row.get("job_text", "")[:800] }}{% if row.get("job_text", "")|length > 800 %}…{% endif %}</blockquote></div>
         {% endif %}
-        <label>Validity {% if explanations and explanations.human_valid %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_valid.what }}</span></span>{% endif %}</label>
+        <label>Valid? {% if explanations and explanations.human_valid %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_valid.what }}</span></span>{% endif %}</label>
         <select name="human_valid">
           <option value="" {% if not row.get("human_valid") %}selected{% endif %}>-</option>
-          <option value="valid" {% if row.get("human_valid") == "valid" %}selected{% endif %}>valid</option>
-          <option value="invalid" {% if row.get("human_valid") == "invalid" %}selected{% endif %}>invalid</option>
+          <option value="valid" {% if row.get("human_valid") == "valid" %}selected{% endif %}>Valid</option>
+          <option value="invalid" {% if row.get("human_valid") == "invalid" %}selected{% endif %}>Invalid</option>
         </select>
         <label>Type {% if explanations and explanations.human_type %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_type.what }}</span></span>{% endif %}</label>
         <select name="human_type">
@@ -102,7 +104,9 @@
 </section>
 
 <section id="knowledge-panel" class="card review-panel">
+  {% include "partials/review_rubric.html" %}
   <h3>Knowledge Review (sampled) <span class="hint" id="knowledge-progress"></span></h3>
+  <p class="panel-desc">Verify if the extracted knowledge item is valid (i.e., correctly extracted from the job description). Judge extraction correctness only—ignore Domain, Trend, and Weight; those are for downstream analysis.</p>
   {% if knowledge %}
     {% for row in knowledge %}
       <form method="post" action="/dashboard/school/review/save_knowledge" class="comp-card review-item knowledge-item" data-kind="knowledge">
@@ -131,11 +135,11 @@
         {% if row.get("job_text") %}
         <div class="job-context"><strong>Job context:</strong><br/><blockquote>{{ row.get("job_text", "")[:800] }}{% if row.get("job_text", "")|length > 800 %}…{% endif %}</blockquote></div>
         {% endif %}
-        <label>Validity {% if explanations and explanations.human_valid %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_valid.what }}</span></span>{% endif %}</label>
+        <label>Valid? {% if explanations and explanations.human_valid %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_valid.what }}</span></span>{% endif %}</label>
         <select name="human_valid">
           <option value="" {% if not row.get("human_valid") %}selected{% endif %}>-</option>
-          <option value="valid" {% if row.get("human_valid") == "valid" %}selected{% endif %}>valid</option>
-          <option value="invalid" {% if row.get("human_valid") == "invalid" %}selected{% endif %}>invalid</option>
+          <option value="valid" {% if row.get("human_valid") == "valid" %}selected{% endif %}>Valid</option>
+          <option value="invalid" {% if row.get("human_valid") == "invalid" %}selected{% endif %}>Invalid</option>
         </select>
         <label>Notes</label>
         <textarea name="human_notes" rows="2">{{ row.get("human_notes", "") }}</textarea>
@@ -149,7 +153,9 @@
 </section>
 
 <section id="competencies-panel" class="card review-panel">
+  {% include "partials/review_rubric.html" %}
   <h3>Competency Review (sampled) <span class="hint" id="competencies-progress"></span></h3>
+  <p class="panel-desc">Assess the quality and relevance of generated competencies. Some competencies are from skills not yet human-verified; these are tagged "Skills not yet verified".</p>
   {% if competencies %}
     {% for row in competencies %}
       <form method="post" action="/dashboard/school/review/save_competency" class="comp-card review-item competency-item" data-kind="competency">
@@ -163,23 +169,31 @@
           All skills human verified: {{ row.get("all_skills_human_verified", "-") }}
         </p>
         <p class="hint">Future relevance: {{ row.get("future_relevance", "-") }}</p>
-        <p class="hint">Related skills:</p>
-        <p class="mono">{{ row.get("related_skills", "-") }}</p>
-        <label>Quality {% if explanations and explanations.human_quality %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_quality.what }}</span></span>{% endif %}</label>
+        <p class="hint"><strong>Related skills (Bloom level per skill):</strong></p>
+        <p class="mono related-skills-bloom">{{ row.get("related_skills_with_bloom", "") or row.get("related_skills", "-") }}</p>
+        <p class="hint">Skill focus (derived): <strong>{{ row.get("skill_focus", "—") }}</strong> — correct below if needed</p>
+        <label>Skill focus {% if explanations and explanations.human_skill_focus %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_skill_focus.what }}</span></span>{% endif %}</label>
+        <select name="human_skill_focus">
+          <option value="" {% if not row.get("human_skill_focus") %}selected{% endif %}>-</option>
+          <option value="Hard" {% if row.get("human_skill_focus") == "Hard" %}selected{% endif %}>Hard</option>
+          <option value="Soft" {% if row.get("human_skill_focus") == "Soft" %}selected{% endif %}>Soft</option>
+          <option value="Both" {% if row.get("human_skill_focus") == "Both" %}selected{% endif %}>Both</option>
+        </select>
+        <label>Quality (1–5) {% if explanations and explanations.human_quality %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_quality.what }}</span></span>{% endif %}</label>
         <select name="human_quality">
           <option value="" {% if not row.get("human_quality") %}selected{% endif %}>-</option>
-          <option value="1" {% if row.get("human_quality") in ("1", "poor") %}selected{% endif %}>1 – poor</option>
-          <option value="2" {% if row.get("human_quality") in ("2", "fair") %}selected{% endif %}>2 – fair</option>
-          <option value="3" {% if row.get("human_quality") in ("3", "good") %}selected{% endif %}>3 – good</option>
-          <option value="4" {% if row.get("human_quality") == "4" %}selected{% endif %}>4 – very good</option>
-          <option value="5" {% if row.get("human_quality") in ("5", "excellent") %}selected{% endif %}>5 – excellent</option>
+          <option value="1" {% if row.get("human_quality") in ("1", "poor") %}selected{% endif %}>1 – Poor</option>
+          <option value="2" {% if row.get("human_quality") in ("2", "fair") %}selected{% endif %}>2 – Fair</option>
+          <option value="3" {% if row.get("human_quality") in ("3", "good") %}selected{% endif %}>3 – Good</option>
+          <option value="4" {% if row.get("human_quality") == "4" %}selected{% endif %}>4 – Strong</option>
+          <option value="5" {% if row.get("human_quality") in ("5", "excellent") %}selected{% endif %}>5 – Excellent</option>
         </select>
-        <label>Relevance {% if explanations and explanations.human_relevant %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_relevant.what }}</span></span>{% endif %}</label>
+        <label>Relevant? {% if explanations and explanations.human_relevant %}<span class="explain-wrap"><span class="explain-icon">?</span><span class="explain-popover">{{ explanations.human_relevant.what }}</span></span>{% endif %}</label>
         <select name="human_relevant">
           <option value="" {% if not row.get("human_relevant") %}selected{% endif %}>-</option>
-          <option value="yes" {% if row.get("human_relevant") == "yes" %}selected{% endif %}>yes</option>
-          <option value="partial" {% if row.get("human_relevant") == "partial" %}selected{% endif %}>partial</option>
-          <option value="no" {% if row.get("human_relevant") == "no" %}selected{% endif %}>no</option>
+          <option value="yes" {% if row.get("human_relevant") == "yes" %}selected{% endif %}>Yes</option>
+          <option value="partial" {% if row.get("human_relevant") == "partial" %}selected{% endif %}>Partial</option>
+          <option value="no" {% if row.get("human_relevant") == "no" %}selected{% endif %}>No</option>
         </select>
         <label>Notes</label>
         <textarea name="human_notes" rows="2">{{ row.get("human_notes", "") }}</textarea>
@@ -238,6 +252,7 @@
     return !!(
       card.querySelector('[name="human_quality"]').value ||
       card.querySelector('[name="human_relevant"]').value ||
+      card.querySelector('[name="human_skill_focus"]').value ||
       card.querySelector('[name="human_notes"]').value.trim()
     );
   }
@@ -261,6 +276,7 @@
       data.competency_id = card.querySelector('[name="competency_id"]').value;
       data.human_quality = card.querySelector('[name="human_quality"]').value;
       data.human_relevant = card.querySelector('[name="human_relevant"]').value;
+      data.human_skill_focus = card.querySelector('[name="human_skill_focus"]').value;
       data.human_notes = card.querySelector('[name="human_notes"]').value;
       data.url = "/dashboard/school/review/api/save_competency";
     }

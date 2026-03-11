@@ -9,17 +9,21 @@ Scientific methods (see SCIENTIFIC_METHODOLOGY.md §6–7):
     - mapping_margin = top1_sim - top2_sim (uncertainty)
     - Normalization for grouping: lowercase, collapse punctuation
 
+Similarity and mapping_margin are used by generate_competencies.py for domain-based
+batching: high confidence (similarity >= 0.45, margin >= 0.05) keeps best_future_domain;
+low confidence goes to "Uncertain" batch.
+
 Modes:
   - knowledge (default): advanced_knowledge.csv -> future_skill_weights_dummy.csv
   - skills: advanced_skills.csv -> future_skill_weights.csv (for competency generation)
 
 Inputs:
     - config.OUTPUT_DIR / advanced_knowledge.csv or advanced_skills.csv
-    - future_domains_dummy.csv (dummy future job domains with trend_score)
+    - future_domains.csv or future_domains_dummy.csv
 
 Outputs:
     - future_skill_weights_dummy.csv (knowledge mode)
-    - future_skill_weights.csv (skills mode)
+    - future_skill_weights.csv (skills mode; includes similarity, mapping_margin)
 """
 
 import argparse

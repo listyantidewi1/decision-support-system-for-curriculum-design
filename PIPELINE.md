@@ -81,7 +81,7 @@ This produces:
 | 6 | `future_weight_mapping.py --input_type skills` | advanced_skills.csv | future_skill_weights.csv (with mapping margin) |
 | 7 | `enrich_with_dates.py` | advanced_skills.csv, jobs_metadata.csv | advanced_skills_with_dates.csv, etc. |
 | 8 | `skill_time_trend_analysis.py --only_hard --stability` | advanced_skills_with_dates.csv | skill_time_trends.csv (FDR q-values), trend_stability_report.json |
-| 9 | `generate_competencies.py` | verified_skills.csv, future_skill_weights.csv, skill_time_trends.csv | competency_proposals.json |
+| 9 | `generate_competencies.py` | verified_skills.csv, future_skill_weights.csv, skill_time_trends.csv, future_domains.csv | competency_proposals.json (domain-based batching by default) |
 | 10 | `recommendations.py --ablation` | all outputs above | recommendations.csv, recommendations_report.json |
 | 11 | `export_gold_set.py` | verified_skills, advanced_knowledge, future_weights | DATA/labels/gold_*.csv |
 | 12 | `export_for_review.py` | comprehensive_analysis, verified_skills, advanced_knowledge | expert_review_*.csv |
@@ -269,6 +269,20 @@ Phase 2 has **13 steps**. Run after expert review is complete.
 
 Comprehensive mode tags each competency with `all_skills_human_verified: true/false`.
 
+### Domain-Based Batching (generate_competencies.py)
+
+By default, skills are batched by **future domain** so each LLM call receives thematically related skills (e.g., AI/ML skills together, cloud skills together). This improves competency quality by avoiding forced groupings of unrelated skills.
+
+| Aspect | Description |
+|--------|-------------|
+| **Domain assignment** | Uses `best_future_domain` from future_skill_weights.csv; **normalized-key lookup** reduces coverage gap from case/punctuation variants |
+| **Confidence thresholds** | similarity ≥ 0.45 and mapping_margin ≥ 0.05 → high confidence; else → "Uncertain" batch |
+| **Unmapped skills** | On-the-fly embedding lookup via `domain_batching.assign_domain_for_skill`; requires future_domains.csv |
+| **Small batch merge** | When two domain batches are strongly similar (cosine similarity of domain embeddings ≥ 0.7), they are merged |
+| **Domain ordering** | `mean_future_weight` (default) or `trend_first` (Strong_Growth first) |
+
+**CLI options:** `--no-batch-by-domain`, `--domain-similarity-threshold`, `--domain-margin-threshold`, `--domain-order`, `--no-merge-small-domain-batches`, `--merge-domain-similarity-threshold`, `--future-domains-file`
+
 ---
 
 ## 7. File Dependencies
@@ -282,12 +296,12 @@ log_run_metadata.py → run_metadata.json
 pipeline.py → advanced_skills.csv, advanced_knowledge.csv, ...
     ↓
 verify_skills.py → verified_skills.csv
-future_weight_mapping.py → future_skill_weights.csv (with margin)
+future_weight_mapping.py → future_skill_weights.csv (with margin, similarity, mapping_margin)
     ↓
 enrich_with_dates.py → advanced_skills_with_dates.csv
 skill_time_trend_analysis.py --stability → skill_time_trends.csv (FDR q-values)
     ↓
-generate_competencies.py → competency_proposals.json
+generate_competencies.py (future_domains.csv for fallback) → competency_proposals.json
 recommendations.py --ablation → recommendations.csv
 export_gold_set.py → DATA/labels/gold_*.csv
 export_for_review.py → expert_review_*.csv
@@ -334,7 +348,8 @@ evaluate_future_mapping.py → future_mapping_evaluation_report.json
 | `plot_generator.py` | Visual analytics |
 | `verify_skills.py` | Assign verification tiers (calibrated or percentile-based) |
 | `future_weight_mapping.py` | Map skills/knowledge to future domains (with mapping margin) |
-| `generate_competencies.py` | LLM competency generation |
+| `generate_competencies.py` | LLM competency generation (domain-based batching by default) |
+| `domain_batching.py` | Domain grouping, normalized lookup, on-the-fly assignment, batch merge |
 | `enrich_with_dates.py` | Add job_date from jobs_metadata |
 | `skill_time_trend_analysis.py` | FDR-controlled emerging/declining trends + stability analysis |
 | `recommendations.py` | Ranked curriculum recommendations + ablation study |
@@ -487,6 +502,14 @@ For multiple experimental runs:
 - RQ4: Future-domain mapping accuracy
 - RQ5: Recommendation quality (P@20, NDCG@20, ablation)
 
+### Domain-Based Batching (2025)
+- **Competency batching:** `generate_competencies.py` groups skills by `best_future_domain` before LLM calls; reduces forced groupings of unrelated skills.
+- **Normalized-key lookup:** `load_skill_future_weights` indexes by both exact and normalized skill string to reduce coverage gap from case/punctuation variants.
+- **Confidence thresholds:** similarity and mapping_margin used to flag low-confidence domain assignments → "Uncertain" batch.
+- **On-the-fly fallback:** Skills not in future_skill_weights.csv get domain assignment via embedding similarity when future_domains.csv is available.
+- **Merge logic:** `domain_batching.merge_similar_domain_batches` merges small batches when domain cosine similarity ≥ 0.7.
+- **New module:** `domain_batching.py` — `normalize_for_grouping`, `load_future_domains`, `assign_domain_for_skill`, `build_domain_batches`, `merge_similar_domain_batches`.
+
 ### Improvement Plan (2025)
 - **Phase 2 dashboard fix**: `evaluate_future_mapping.py` — added `is_none_or_unclear` to `not_in_mapping` result (fixes KeyError).
 - **Future-domain mapping**: Expanded `example_terms` in `ingest_future_domains.py`; added `top2_domain_id`, `top3_domain_id` to `future_weight_mapping.py`; Top-3 accuracy and margin-stratified metrics in `evaluate_future_mapping.py`; updated future-mapping plot in `plot_scientific_analysis.py`.
@@ -496,4 +519,4 @@ For multiple experimental runs:
 
 ---
 
-*Last updated: Improvement plan (2025), calibration weights, competency Bloom alignment, Phase 2 dashboard fix.*
+*Last updated: Domain-based batching (2025), improvement plan, calibration weights, competency Bloom alignment, Phase 2 dashboard fix.*

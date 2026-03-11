@@ -716,6 +716,12 @@ def _explanations() -> Dict[str, Dict[str, str]]:
             "formula": "",
             "limitations": "",
         },
+        "human_skill_focus": {
+            "title": "Skill Focus (Your Review)",
+            "what": "Hard = technical competency; Soft = interpersonal/behavioral; Both = hybrid. Derived from related skills; correct if needed.",
+            "formula": "",
+            "limitations": "",
+        },
         "confidence_score": {
             "title": "Confidence Score",
             "what": "Model confidence (0–1) that this extraction is correct. Higher = more confident.",
@@ -1536,7 +1542,7 @@ def school_review(request: Request, department_id: Optional[int] = None):
         knowledge_df, knowledge_fb, "review_id", reviewer_id, ["human_valid", "human_notes"]
     )
     comp_df = _merge_template_with_reviewer_feedback(
-        comp_df, comp_fb, "competency_id", reviewer_id, ["human_quality", "human_relevant", "human_notes"]
+        comp_df, comp_fb, "competency_id", reviewer_id, ["human_quality", "human_relevant", "human_skill_focus", "human_notes"]
     )
 
     return templates.TemplateResponse(
@@ -1614,6 +1620,7 @@ def save_competency_review(
     competency_id: str = Form(...),
     human_quality: str = Form(""),
     human_relevant: str = Form(""),
+    human_skill_focus: str = Form(""),
     human_notes: str = Form(""),
 ):
     user = _require_role(request, "school")
@@ -1628,6 +1635,7 @@ def save_competency_review(
         {
             "human_quality": human_quality,
             "human_relevant": human_relevant,
+            "human_skill_focus": human_skill_focus,
             "human_notes": human_notes,
         },
     )
@@ -1703,6 +1711,7 @@ async def save_competency_review_api(request: Request):
         {
             "human_quality": str(payload.get("human_quality", "")),
             "human_relevant": str(payload.get("human_relevant", "")),
+            "human_skill_focus": str(payload.get("human_skill_focus", "")),
             "human_notes": str(payload.get("human_notes", "")),
         },
     )

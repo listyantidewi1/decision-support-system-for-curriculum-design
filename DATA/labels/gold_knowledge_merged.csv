@@ -1,0 +1,101 @@
+﻿gold_id,job_id,knowledge,confidence_score,confidence_tier,source,notes,is_correct,labeler_id
+gk_8a18d6891290,in-70fd1b405f4402fc,batteries,0.75,Medium High,LLM,,no,"alice,dewi"
+gk_5d5ca39adc30,in-b0e3d6930bef9118,Project Management,0.75,Medium High,LLM,,yes,"alice,dewi"
+gk_20283056603e,in-070ac45a5adefcb1,OTT video,0.75,Medium High,LLM,,yes,"alice,dewi"
+gk_3cb15864d94c,in-7f1b7715acb11a2e,multi-tenant technology,0.75,Medium High,LLM,,yes,"alice,dewi"
+gk_060b1c310810,in-82a03631efa7b871,AI solutions,0.75,Medium High,LLM,,yes,"alice,dewi"
+gk_a07273728fbf,in-14d099e8539db923,operational configurations,0.75,Medium High,LLM,,yes,"alice,dewi"
+gk_7783939f22e2,in-d4883d25e10d10fc,ML,0.659,Medium,BERT+LLM,,yes,"alice,dewi"
+gk_2909b880b98c,in-1dcb0afba693556f,ML Engineer,0.75,Medium High,LLM,,yes,"alice,dewi"
+gk_05f90f8feda2,in-68c8bc8b4022b6bd,Next.js,0.85,High,BERT+LLM,,yes,"alice,dewi"
+gk_6ead160e021f,in-90b42c07ae279875,contract administration,0.847,High,BERT+LLM,,no,"alice,dewi"
+gk_7822e8a27618,in-f540737bddbf25e1,driver's,0.457,Low,BERT (standalone),,no,"alice,dewi"
+gk_10cb1baae8ac,in-2b2bf00f37de72ce,banking services,0.75,Medium High,LLM,,yes,"alice,dewi"
+gk_8169b7f52251,in-d531b391c880d7ca,CI,0.558,Medium Low,BERT (standalone),,yes,"alice,dewi"
+gk_1b268d729396,in-1dba5ab3075438af,SDK,0.75,Medium High,LLM,,yes,"alice,dewi"
+gk_cb425170aaa5,in-e2edd8471b03019f,Candidate Privacy Notice,0.75,Medium High,LLM,,no,"alice,dewi"
+gk_a44a9b60c227,in-5b2e7125d4a2d3a8,financial services,0.819,High,BERT+LLM,,yes,"alice,dewi"
+gk_7bb89083a1bb,in-6b86cc05a799e7e1,"food preparation,",0.553,Medium Low,BERT (standalone),,yes,"alice,dewi"
+gk_95e527af1812,in-d7de06cb3625cd66,Service Management,0.75,Medium High,LLM,,yes,"alice,dewi"
+gk_a141f6b7c7b2,in-af9b2a183f4de88a,data analytics,0.844,High,BERT+LLM,,yes,"alice,dewi"
+gk_b0a12ad7dd0c,in-06610fdf15025a75,securitisation,0.75,Medium High,LLM,,yes,"alice,dewi"
+gk_d7ddb24e36d6,in-46d754a162037993,project plans,0.75,Medium High,LLM,,no,"alice,dewi"
+gk_413b69217960,in-7d34855edd4c608f,Bachelor's degree,0.544,Medium Low,BERT (standalone),,no,alice
+gk_b8a34904cb23,in-9bf4d6d9ee1e4a14,administrative processes,0.729,Medium High,BERT+LLM,,yes,alice
+gk_3f98ba2dafcd,in-a8c9ec23b2864f1d,industry standards,0.75,Medium High,LLM,,yes,alice
+gk_e7761dd38a08,in-7c15b0ac5a9e6e4d,Unemployment Trust Fund,0.75,Medium High,LLM,,no,alice
+gk_b473a59e1bc1,in-6f2541ed7a92797d,hierarchy,0.844,High,BERT+LLM,,no,alice
+gk_da31b82622b1,in-06610fdf15025a75,structured finance,0.75,Medium High,LLM,,yes,alice
+gk_6b5b4593f4b1,in-33451d1313ab6342,cybersecurity solutions,0.75,Medium High,LLM,,yes,alice
+gk_f529adac001f,in-94c8e798911e3470,XML,0.846,High,BERT+LLM,,yes,alice
+gk_e53f6ce6840c,in-554dc0d2bef78a4c,traditional,0.533,Medium Low,BERT (standalone),,no,alice
+gk_4280649e7f34,in-f40216f9c715c298,production studios,0.834,High,BERT+LLM,,yes,alice
+gk_4bab8e664e72,in-4c389f9a726a4278,"IG,",0.559,Medium Low,BERT (standalone),,no,alice
+gk_156b4fc0ca57,in-1e31fbb8ac627972,UK security clearance (SC),0.75,Medium High,LLM,,yes,alice
+gk_29725298848a,in-41a6dff1f5b57c84,technology,0.75,Medium High,LLM,,yes,alice
+gk_6c67b8b31d6b,in-3f1f20262049095a,AI solutions,0.75,Medium High,LLM,,yes,alice
+gk_9bf83c604693,in-5c064784cb4d2d46,urban precinct planning,0.824,High,BERT+LLM,,yes,alice
+gk_66bca69beb68,in-18f1331162449a3f,Purview,0.75,Medium High,LLM,,yes,alice
+gk_8bf05800d37e,in-a61c1082390cb772,process gaps,0.75,Medium High,LLM,,yes,alice
+gk_d221e57fd44f,in-5954110f7af52605,AI workflows,0.75,Medium High,LLM,,yes,alice
+gk_ae209572e7b3,in-688c9596567360d1,AI integration,0.847,High,BERT+LLM,,yes,alice
+gk_31d88b05c24f,in-94c8e798911e3470,JWT,0.75,Medium High,LLM,,yes,alice
+gk_5a6b5d223d60,in-0dbc707bc15e5398,therapeutic imaging,0.75,Medium High,LLM,,yes,alice
+gk_f3eef224bce4,in-cea0a94d9b8e1189,Terraform,0.846,High,BERT+LLM,,yes,alice
+gk_95179dcee6bc,in-8922fb1fa43b8894,integrations,0.75,Medium High,LLM,,no,alice
+gk_528dad18792e,in-6434f75ccfa896cd,integrated applications,0.75,Medium High,LLM,,yes,alice
+gk_5027ff25975e,in-59f89f855608fde0,GenAI,0.75,Medium High,LLM,,yes,alice
+gk_da4147d886c3,in-c8b3a591976a74f1,"Sub,",0.496,Low,BERT (standalone),,no,alice
+gk_f508d09996cb,in-ea5fe0c67dbb09a7,front,0.558,Medium Low,BERT (standalone),,no,alice
+gk_69ae0b0dfe50,in-d7cf0de1e28b13bf,garment details,0.703,Medium High,BERT+LLM,,no,alice
+gk_d0456b61c75e,in-5212768d253d606f,AI,0.75,Medium High,LLM,,yes,alice
+gk_22d09f29c81f,in-deb73d430b786346,Microsoft Visio,0.75,Medium High,LLM,,yes,alice
+gk_764cd2bcb570,in-a8c9ec23b2864f1d,underground electrical distribution systems,0.832,High,BERT+LLM,,no,alice
+gk_2e22479d67ff,in-32dc997e3646c5ee,case studies,0.773,Medium High,BERT+LLM,,yes,alice
+gk_a3e051cb0d7f,in-82c62095c56a09f5,GCP,0.844,High,BERT+LLM,,yes,alice
+gk_85c28d576a02,in-a50b5222ebb42f3b,deployment,0.831,High,BERT+LLM,,no,alice
+gk_a2c6f6f51a7a,in-965f58ca3e59d3f2,web,0.75,Medium High,LLM,,yes,alice
+gk_33fd45dc4805,in-6db24020e2a08372,Infrastructure as Code (IaC) tools,0.838,High,BERT+LLM,,yes,alice
+gk_79f607841687,in-97ca47c5f555e42a,reporting solutions,0.75,Medium High,LLM,,yes,alice
+gk_805d1ef1e54f,in-57793e22513bd508,data modeling,0.845,High,BERT+LLM,,yes,alice
+gk_84de72ddfe0b,in-a61c1082390cb772,review cycles,0.75,Medium High,LLM,,yes,alice
+gk_26b0b06781c5,in-d531b391c880d7ca,CI/CD,0.75,Medium High,LLM,,yes,alice
+gk_fdfd9fe12cb0,in-312ae5116abe958d,Acute Medical Ward,0.75,Medium High,LLM,,no,alice
+gk_e1ee40bb2371,in-4dd4be4468b8f8b5,quarterly performance reports,0.75,Medium High,LLM,,no,alice
+gk_8ed3aeb42a57,in-ac61bae22baddace,cyber,0.31,Very Low,BERT (standalone),,yes,alice
+gk_45daebd04e36,in-8309226b8eb92e80,origine nationale,0.75,Medium High,LLM,,no,alice
+gk_a9bb338c888b,in-042b565c84045356,product knowledge,0.75,Medium High,LLM,,,
+gk_2328525bb6e8,in-08b13571c4196e80,QA processes,0.75,Medium High,LLM,,,
+gk_ffe8d5d30d13,in-59f89f855608fde0,AWS MSK,0.75,Medium High,LLM,,,
+gk_8bb1b48e7db8,in-08b13571c4196e80,test automation,0.75,Medium High,LLM,,,
+gk_b7e966b2d457,in-cf7f60dee735734d,hardware,0.75,Medium High,LLM,,,
+gk_054bfa2cf145,in-765dbbb271494469,demonstrations,0.577,Medium Low,BERT+LLM,,,
+gk_996e5a6a5529,in-688c9596567360d1,CI/CD pipelines,0.75,Medium High,LLM,,,
+gk_802c91818d5a,in-51094d1568950e3c,Inventaire,0.75,Medium High,LLM,,,
+gk_35e2f9903ab8,in-150910c964a7e78b,drug discovery,0.75,Medium High,LLM,,,
+gk_a09a9645f3a2,in-5906aa7cd05b4ccd,Consumer Complaint,0.75,Medium High,LLM,,,
+gk_14a004491690,in-cd90ab257a61bacf,micro,0.56,Medium Low,BERT (standalone),,,
+gk_6348cf1fd57c,in-06610fdf15025a75,funding mechanics,0.75,Medium High,LLM,,,
+gk_6c20e21840c8,in-d51f0a3ede744b5c,global travel technology,0.75,Medium High,LLM,,,
+gk_1532cefa4a6d,in-e8f81b527e6ab4c4,401(k) program,0.75,Medium High,LLM,,,
+gk_76902a6acafa,in-6f2541ed7a92797d,multi,0.559,Medium Low,BERT (standalone),,,
+gk_8a347caa1cb3,in-acb2a7db662d2b2b,version control,0.75,Medium High,LLM,,,
+gk_a0e6bc07bbd5,in-fc6231d646f9e9a1,flexible working,0.75,Medium High,LLM,,,
+gk_8acb102907f8,in-97054c099090612e,Cybersecurity,0.75,Medium High,LLM,,,
+gk_974134aa3b3e,in-70fd1b405f4402fc,flexibility products,0.75,Medium High,LLM,,,
+gk_bab930b649f4,in-e626008e0e146e62,FirstMark,0.75,Medium High,LLM,,,
+gk_3bedb30c4e83,in-dcfe1997ded20aef,design coordination,0.847,High,BERT+LLM,,,
+gk_0b2bd35d4413,in-8714fb67e5eb3bbb,Rosa Parks Museum,0.75,Medium High,LLM,,,
+gk_4e34dece70f4,in-637ce4ff0662e5c9,SQL,0.68,Medium,BERT+LLM,,,
+gk_1511f8ab3525,in-7c03bbd4f2e27c3a,Clinical Development,0.822,High,BERT+LLM,,,
+gk_4dc9aab230b3,in-1dba5ab3075438af,Rust,0.79,Medium High,BERT+LLM,,,
+gk_b8c4d7ee06eb,in-a5d891fd80d4b0f8,cloud journey,0.75,Medium High,LLM,,,
+gk_b2b6b1efd9d1,in-df7fe8a7d8787cb4,ethical,0.321,Very Low,BERT (standalone),,,
+gk_be8bd4bcbd10,in-a93e82d899a04305,procurement transformation,0.75,Medium High,LLM,,,
+gk_f93aa9ee35bc,in-456c0a8c0e5eb68b,company-wide ideas form,0.75,Medium High,LLM,,,
+gk_599deed4fc6e,in-d2c6a2161837d30b,Golang,0.75,Medium High,LLM,,,
+gk_56b58e8069ca,in-57793e22513bd508,-M methodology.,0.462,Low,BERT (standalone),,,
+gk_624b46a8529a,in-8232b6c5b6ee01eb,beverage brands,0.75,Medium High,LLM,,,
+gk_2b1a0259b0f6,in-0dbc707bc15e5398,laboratory diagnostics,0.75,Medium High,LLM,,,
+gk_c2946f8570e2,in-3a39cfdef1dc8c0a,Bulk APIs,0.839,High,BERT+LLM,,,
+gk_6254880d3ecd,in-e5fcb146e8b9f431,"narrative development,",0.531,Medium Low,BERT (standalone),,,
