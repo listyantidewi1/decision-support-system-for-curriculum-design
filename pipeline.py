@@ -930,8 +930,10 @@ class LLMExtractor:
         if not self.client:
             return {"skills": [], "knowledge": []}
         
-        # Prepare knowledge context
-        knowledge_context = ", ".join([k['text'] for k in bert_knowledge])
+        # Prepare knowledge context (defensive: items may be dict or str)
+        def _text_from_item(k):
+            return k.get('text', k) if isinstance(k, dict) else str(k)
+        knowledge_context = ", ".join(_text_from_item(k) for k in bert_knowledge)
         
         system_prompt = """You are an expert in job market analysis, skill extraction, and educational taxonomy mapping.
 
@@ -1026,10 +1028,27 @@ class LLMExtractor:
             )
             
             data = json.loads(response.choices[0].message.content)
-            return {
-                "skills": data.get("skills", []),
-                "knowledge": data.get("knowledge", [])
-            }
+            if not isinstance(data, dict):
+                logger.warning(f"LLM returned non-dict (got {type(data).__name__}); using empty extraction")
+                return {"skills": [], "knowledge": []}
+            skills = data.get("skills", [])
+            knowledge = data.get("knowledge", [])
+            # Coerce to list: LLM may return string, single dict, or dict of items (avoid .items() on str)
+            if not isinstance(skills, list):
+                if isinstance(skills, dict):
+                    skills = list(skills.values())
+                elif isinstance(skills, str) and skills.strip():
+                    skills = [s.strip() for s in skills.split(",") if s.strip()]
+                else:
+                    skills = [skills] if skills else []
+            if not isinstance(knowledge, list):
+                if isinstance(knowledge, dict):
+                    knowledge = list(knowledge.values())
+                elif isinstance(knowledge, str) and knowledge.strip():
+                    knowledge = [k.strip() for k in knowledge.split(",") if k.strip()]
+                else:
+                    knowledge = [knowledge] if knowledge else []
+            return {"skills": skills, "knowledge": knowledge}
             
         except Exception as e:
             logger.error(f"LLM extraction error: {e}")
@@ -1096,10 +1115,16 @@ class ContextAwareExtractor:
 
         # --- LLM: run once on full posting ---
         gpt_output = self.gpt_extractor.extract_skills_and_knowledge(full_text, all_bert_knowledge)
+        if not isinstance(gpt_output, dict):
+            gpt_output = {"skills": [], "knowledge": []}
+
+        # Normalize LLM output: LLM may return skills as strings or dicts; knowledge as strings
+        gpt_skills_raw = self._normalize_llm_skills(gpt_output.get('skills', []))
+        gpt_knowledge_raw = self._normalize_llm_knowledge(gpt_output.get('knowledge', []))
 
         # Convert to structured format (use full_text as context for classification)
         bert_skills = self._process_bert_skills(all_bert_skills_raw, full_text)
-        gpt_skills = self._process_gpt_skills(gpt_output.get('skills', []), full_text)
+        gpt_skills = self._process_gpt_skills(gpt_skills_raw, full_text)
 
         # Analyze model agreement
         agreement_scores = self._analyze_model_agreement(bert_skills, gpt_skills)
@@ -1112,9 +1137,7 @@ class ContextAwareExtractor:
         bert_skills = self._check_bloom_consistency(bert_skills, full_text)
         gpt_skills = self._check_bloom_consistency(gpt_skills, full_text)
 
-        gpt_knowledge = self._filter_fragments(
-            gpt_output.get('knowledge', []), key='text'
-        )
+        gpt_knowledge = self._filter_fragments(gpt_knowledge_raw, key='text')
 
         return {
             'bert': bert_skills,
@@ -1123,6 +1146,51 @@ class ContextAwareExtractor:
             'gpt_knowledge': gpt_knowledge,
             'agreement_scores': agreement_scores,
         }
+
+    @staticmethod
+    def _normalize_llm_skills(items) -> List[Dict]:
+        """Normalize LLM skills output: may be list, single dict, string, or comma-sep string."""
+        out = []
+        if not isinstance(items, list):
+            if isinstance(items, dict):
+                items = [items]
+            elif isinstance(items, str) and items.strip():
+                items = [s.strip() for s in items.split(",") if s.strip()]
+            else:
+                items = []
+        for item in items:
+            if isinstance(item, str):
+                out.append({"skill": item.strip(), "type": "Hard"})
+            elif isinstance(item, dict):
+                s = item.get("skill") or item.get("text") or item.get("name") or ""
+                if s:
+                    out.append({
+                        "skill": str(s).strip(),
+                        "type": item.get("type", "Hard"),
+                    })
+            # skip malformed items
+        return out
+
+    @staticmethod
+    def _normalize_llm_knowledge(items) -> List[Dict]:
+        """Normalize LLM knowledge output: list of strings, single dict, or comma-sep string."""
+        out = []
+        if not isinstance(items, list):
+            if isinstance(items, dict):
+                items = [items]
+            elif isinstance(items, str) and items.strip():
+                items = [s.strip() for s in items.split(",") if s.strip()]
+            else:
+                items = []
+        for item in items:
+            if isinstance(item, str):
+                out.append({"text": item.strip()})
+            elif isinstance(item, dict):
+                t = item.get("text") or item.get("knowledge") or item.get("name") or ""
+                if t:
+                    out.append({"text": str(t).strip()})
+            # skip malformed items
+        return out
 
     @staticmethod
     def _deduplicate_raw(items: List[Dict], key: str = 'text') -> List[Dict]:
@@ -1136,9 +1204,13 @@ class ContextAwareExtractor:
         times without over-inflating items that just happen to repeat a lot.
         """
         import math
+        if not isinstance(items, list):
+            return []
         groups: Dict[str, List[Dict]] = {}
         for item in items:
-            norm = item.get(key, '').strip().lower()
+            if not isinstance(item, dict):
+                continue
+            norm = str(item.get(key, '') or '').strip().lower()
             if not norm:
                 continue
             groups.setdefault(norm, []).append(item)
@@ -1162,9 +1234,13 @@ class ContextAwareExtractor:
         '#miller', '+') and add noise to downstream analysis.
         """
         import re
+        if not isinstance(items, list):
+            return []
         _FRAGMENT_RE = re.compile(r'^[\-\#\+\&\*\(\)\[\]\{\}/\\|@!,;:.\d]')
         filtered = []
         for item in items:
+            if not isinstance(item, dict):
+                continue
             text = item.get(key, '').strip()
             if len(text) < 3:
                 continue
@@ -1178,8 +1254,13 @@ class ContextAwareExtractor:
         processed = []
         
         for skill in raw_skills:
-            text = skill['text']
-            raw_confidence = skill['confidence']
+            if not isinstance(skill, dict):
+                continue
+            text = skill.get('text') or skill.get('skill') or ''
+            raw_confidence = skill.get('confidence', 0.5)
+            if not text or not str(text).strip():
+                continue
+            text = str(text).strip()
             
             # Calculate semantic density
             semantic_density = AdvancedTaxonomyManager.calculate_semantic_density(text)
@@ -1338,7 +1419,9 @@ class ContextAwareExtractor:
                                         model: str) -> List[SkillItem]:
         """Adjust confidence scores based on model agreement."""
         adjusted = []
-        
+        if not isinstance(agreement_scores, dict):
+            return skills
+
         for skill_idx, skill in enumerate(skills):
             # Base adjustment from overall agreement
             agreement_factor = 1.0 + (agreement_scores['overall'] * 0.2 - 0.1)
@@ -1346,11 +1429,15 @@ class ContextAwareExtractor:
             # Additional adjustment if this skill has a match
             matched = False
             for match in agreement_scores.get('matches', []):
-                idx = match['bert_idx'] if model == 'bert' else match['gpt_idx']
+                if not isinstance(match, dict):
+                    continue
+                idx = match.get('bert_idx') if model == 'bert' else match.get('gpt_idx')
+                if idx is None:
+                    continue
                 if skill_idx == idx:
                     matched = True
                     # Higher confidence for matched skills
-                    match_factor = 1.0 + (match['similarity'] * 0.3)
+                    match_factor = 1.0 + (match.get('similarity', 0) * 0.3)
                     agreement_factor *= match_factor
                     break
             
@@ -1426,6 +1513,10 @@ class AdvancedFusionEngine:
         """
         Advanced fusion with continuous confidence scores and partial matching.
         """
+        if not isinstance(bert_skills, list):
+            bert_skills = []
+        if not isinstance(gpt_skills, list):
+            gpt_skills = []
         # Start with all LLM skills
         fused = gpt_skills.copy()
         
@@ -1581,23 +1672,35 @@ class AdvancedFusionEngine:
                               gpt_knowledge: List[str]) -> List[KnowledgeItem]:
         """Fuse knowledge items from BERT and LLM."""
         fused_knowledge = []
+        if not isinstance(bert_knowledge, list):
+            bert_knowledge = []
+        if not isinstance(gpt_knowledge, list):
+            gpt_knowledge = []
         
         # Convert BERT knowledge to KnowledgeItems
         bert_items = []
         for item in bert_knowledge:
+            if not isinstance(item, dict):
+                continue
+            text_val = item.get('text') or item.get('knowledge') or ''
+            if not text_val or not str(text_val).strip():
+                continue
             confidence = item.get('confidence', 0.5)
             bert_items.append(KnowledgeItem(
-                text=item['text'],
+                text=str(text_val).strip(),
                 confidence_score=confidence * 0.8,  # Slightly penalize BERT knowledge
                 confidence_tier=AdvancedTaxonomyManager.get_confidence_tier(confidence * 0.8),
                 source="BERT"
             ))
         
-        # Convert LLM knowledge to KnowledgeItems
+        # Convert LLM knowledge to KnowledgeItems (items may be dict {"text": "..."} or str)
         gpt_items = []
         for item in gpt_knowledge:
+            text = item.get("text", item) if isinstance(item, dict) else str(item)
+            if not text or not str(text).strip():
+                continue
             gpt_items.append(KnowledgeItem(
-                text=item,
+                text=str(text).strip(),
                 confidence_score=0.75,  # Base confidence for LLM
                 confidence_tier=AdvancedTaxonomyManager.get_confidence_tier(0.75),
                 source="LLM"
@@ -1741,6 +1844,8 @@ class AdvancedCoverageCalculator:
         """Calculate coverage for specific items."""
         if not items:
             return {}
+        if not isinstance(self.curriculum_tensors, dict):
+            return {}
         
         # Extract texts and confidence scores
         if item_type == 'skill':
@@ -1795,7 +1900,9 @@ class AdvancedCoverageCalculator:
     def _identify_coverage_gaps(self, coverage: Dict[str, float]) -> List[Dict]:
         """Identify specific coverage gaps with severity levels."""
         gaps = []
-        
+        if not isinstance(coverage, dict):
+            return gaps
+
         for component_id, weight in coverage.items():
             if weight < 0.3:  # Very poor coverage
                 severity = 'high'
@@ -2119,8 +2226,13 @@ class AdvancedDataManager:
             
             # Model agreement analysis
             agreement_scores = extraction_results.get('agreement_scores', {})
-            exact_matches = len([m for m in agreement_scores.get('matches', []) if m.get('type') == 'exact'])
-            partial_matches = len([m for m in agreement_scores.get('matches', []) if m.get('type') == 'partial'])
+            if not isinstance(agreement_scores, dict):
+                agreement_scores = {}
+            matches = agreement_scores.get('matches', [])
+            if not isinstance(matches, list):
+                matches = []
+            exact_matches = len([m for m in matches if isinstance(m, dict) and m.get('type') == 'exact'])
+            partial_matches = len([m for m in matches if isinstance(m, dict) and m.get('type') == 'partial'])
             no_matches = len(bert_skills) + len(gpt_skills) - (exact_matches + partial_matches)
             
             # Fusion statistics
@@ -2405,9 +2517,10 @@ class AdvancedSkillExtractionPipeline:
             self._load_curriculum_tensors()
             
             # 6. Initialize Coverage Calculator
+            tensors = self.curriculum_tensors if isinstance(self.curriculum_tensors, dict) else {}
             self.coverage_calculator = AdvancedCoverageCalculator(
                 self.model_manager.embedder,
-                self.curriculum_tensors
+                tensors
             )
             
             # 7. Initialize Data Manager
@@ -2430,17 +2543,18 @@ class AdvancedSkillExtractionPipeline:
     
     def _load_curriculum_tensors(self):
         """Load and prepare curriculum data."""
-        if not CURRICULUM_COMPONENTS:
+        if not CURRICULUM_COMPONENTS or not isinstance(CURRICULUM_COMPONENTS, dict):
             logger.warning("No curriculum components found. Using empty curriculum.")
             self.curriculum_tensors = {}
             return
-        
         self.curriculum_tensors = {}
-        
         for component_id, data in CURRICULUM_COMPONENTS.items():
+            if not isinstance(data, dict):
+                continue
             phrases = []
             for level_phrases in data.values():
-                phrases.extend(level_phrases)
+                if isinstance(level_phrases, list):
+                    phrases.extend(level_phrases)
             
             unique_phrases = list(set(phrases))
             embeddings = self.model_manager.embedder.encode(
@@ -2486,12 +2600,25 @@ class AdvancedSkillExtractionPipeline:
                 sentences=sentences,
                 full_text=full_text,
             )
+            if not isinstance(extraction_results, dict):
+                extraction_results = {}
 
-            bert_skills = extraction_results['bert']
-            gpt_skills = extraction_results['gpt']
-            bert_knowledge = extraction_results['bert_knowledge']
-            gpt_knowledge = extraction_results['gpt_knowledge']
-            agreement_scores = extraction_results['agreement_scores']
+            bert_skills = extraction_results.get('bert', [])
+            gpt_skills = extraction_results.get('gpt', [])
+            bert_knowledge = extraction_results.get('bert_knowledge', [])
+            gpt_knowledge = extraction_results.get('gpt_knowledge', [])
+            agreement_scores = extraction_results.get('agreement_scores', {})
+
+            if not isinstance(bert_skills, list):
+                bert_skills = []
+            if not isinstance(gpt_skills, list):
+                gpt_skills = []
+            if not isinstance(bert_knowledge, list):
+                bert_knowledge = []
+            if not isinstance(gpt_knowledge, list):
+                gpt_knowledge = []
+            if not isinstance(agreement_scores, dict):
+                agreement_scores = {'overall': 0.0, 'matches': [], 'match_count': 0}
 
             fused_skills = self.fusion_engine.fuse_skills_advanced(bert_skills, gpt_skills)
             fused_knowledge = self.fusion_engine.fuse_knowledge_advanced(bert_knowledge, gpt_knowledge)
@@ -2513,7 +2640,7 @@ class AdvancedSkillExtractionPipeline:
                     'bert_skill_count': len(bert_skills),
                     'gpt_skill_count': len(gpt_skills),
                     'fused_skill_count': len(fused_skills),
-                    'model_agreement': agreement_scores['overall'],
+                    'model_agreement': agreement_scores.get('overall', 0.0),
                     'match_count': agreement_scores.get('match_count', 0),
                     'extraction_time': extraction_time,
                     'sentence_count': len(sentences),

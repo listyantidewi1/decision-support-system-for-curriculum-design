@@ -364,7 +364,12 @@ def main():
             r["_key"] = r["knowledge"].apply(_normalize_for_grouping)
             r = r[r["_key"] != ""]
             r = r.loc[r.groupby("_key")["future_weight"].idxmax()].drop(columns=["_key"])
-            top_n = r.head(20)
+            r = r.sort_values("future_weight", ascending=False)
+            # Top 20: highest future_weight (exclude zeros so we show meaningful items)
+            r_positive = r[r["future_weight"] > 0]
+            top_n = r_positive.head(20) if len(r_positive) >= 20 else r_positive
+            if top_n.empty:
+                top_n = r.head(20)
             plt.figure(figsize=(10, 6))
             plt.barh(top_n["knowledge"], top_n["future_weight"])
             plt.xlabel("future_weight")
