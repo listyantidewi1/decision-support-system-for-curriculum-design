@@ -759,9 +759,21 @@ Output: `results/trend_score_sensitivity_report.json`
 
 ---
 
-## 16. Extraction Weight Justification and Sensitivity
+## 16. Extraction Architecture and Weight Justification
 
-### Overview
+### 16a. Extraction Design (Direction A)
+
+| Aspect | Design | Rationale |
+|--------|--------|-----------|
+| **BERT scope** | Per sentence | JobBERT has 128-token limit; short segments suit NER. Preprocess splits on bullet boundaries and paragraph breaks; max_len 600 chars. |
+| **LLM scope** | Full job description | Preserves document-level context; does not miss skills/knowledge that span sentences. |
+| **BERT knowledge → LLM** | Passed as "Context (Tools detected by JobBERT)" | Anti-hallucination: tools BERT detected anchor the LLM so it does not fabricate unrelated skills or knowledge. Per-job scoping only. |
+| **Knowledge output** | LLM-only (default) | BERT knowledge is not fused into final output. Evaluation showed BERT adds noise to knowledge (LLM 0.89 vs BERT+LLM 0.93). |
+| **Skills output** | BERT+LLM fusion | Unchanged. Semantic agreement and fusion for skills. |
+
+Config: `LLM_ONLY_KNOWLEDGE = True` (default). Use `--bert-knowledge` for hybrid knowledge fusion.
+
+### 16b. Extraction Weight Justification (Skills)
 
 The pipeline uses several heuristic weights for confidence scoring, fusion,
 and recommendation ranking.  These weights are **not learned from data** but
@@ -790,7 +802,9 @@ robustness results.
 | `LLM_BLOOM_FACTOR_BASE` | 0.7 | LLM Bloom assignment is moderately reliable; floor higher than BERT because LLM reasons about complexity. |
 | `LLM_DENSITY_FACTOR_BASE` | 0.8 | Same rationale as BERT: density should not dominate. |
 
-### C. Fusion Weights
+### C. Fusion Weights (Skills Only; Knowledge is LLM-Only)
+
+*Note: Knowledge output is LLM-only (Direction A); fusion applies to skills only.*
 
 | Parameter | Value | Rationale |
 |-----------|-------|-----------|

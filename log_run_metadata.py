@@ -71,7 +71,7 @@ def main():
     out_dir = Path(args.output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    input_csv = Path(config.PROJECT_ROOT) / "DATA" / "preprocessing" / "data_prepared" / "jobs_sentences.csv"
+    input_csv = Path(config.PIPELINE_INPUT_CSV)
 
     metadata = {
         "timestamp": datetime.now(timezone.utc).isoformat(),

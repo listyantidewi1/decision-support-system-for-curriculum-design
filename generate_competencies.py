@@ -443,6 +443,8 @@ Please follow these rules:
      Example: "Design scalable, high-performance software components by breaking down complex
      requirements into smaller, manageable subsystems and choosing appropriate technologies."
    - "related_skills": list of skill phrases from the input that this competency covers.
+     Do NOT add any skill to related_skills that was not in the input list above.
+     Only reference skills that appear in the list. Paraphrasing or inventing skills is not allowed.
    - "future_relevance": a short note (1–2 sentences) on why this competency
      matters for the future of work (based on the context if available).
 4. BLOOM ALIGNMENT: For each competency, use the HIGHEST Bloom taxonomy level among its
@@ -550,6 +552,15 @@ def call_llm_for_competencies(client: OpenAI,
                 if invalid_count > 0:
                     print(f"[WARN] Dropped {invalid_count} competencies "
                           f"with missing fields (attempt {attempt + 1})")
+                # Post-validation: filter related_skills to only those in input (anti-hallucination)
+                input_skills_set = {str(s).strip().lower() for s in skills}
+                for c in valid:
+                    rs = c.get("related_skills") or []
+                    filtered = [s for s in rs if str(s).strip().lower() in input_skills_set]
+                    if len(filtered) < len(rs):
+                        print(f"[WARN] Filtered {len(rs) - len(filtered)} non-input skills "
+                              f"from competency {c.get('id', '?')}")
+                    c["related_skills"] = filtered
                 data["competencies"] = valid
                 return data
 

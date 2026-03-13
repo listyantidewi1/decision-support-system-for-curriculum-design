@@ -7,7 +7,7 @@ Central index for all project documentation.
 | Document | Description |
 |----------|-------------|
 | [../README.md](../README.md) | Project overview, quick start, repository structure |
-| [../PIPELINE.md](../PIPELINE.md) | Pipeline architecture, phases, data flow, steps, troubleshooting |
+| [../PIPELINE.md](../PIPELINE.md) | Pipeline architecture, phases, data flow, steps, extraction design (Direction A), troubleshooting |
 | [../CALCULATIONS.md](../CALCULATIONS.md) | Formulas: priority score, future weight, ranking, voting, FDR |
 | [../SCIENTIFIC_METHODOLOGY.md](../SCIENTIFIC_METHODOLOGY.md) | **Full scientific documentation** with worked examples |
 | [../RESEARCH_QUESTIONS.md](../RESEARCH_QUESTIONS.md) | RQ1–RQ5, metrics, gold set design, power analysis, limitations |
@@ -44,15 +44,23 @@ The **[SCIENTIFIC_METHODOLOGY.md](../SCIENTIFIC_METHODOLOGY.md)** document cover
 | [../gold_labeling_ui/README.md](../gold_labeling_ui/README.md) | Gold labeling web UI |
 | [../dashboard/README.md](../dashboard/README.md) | Dashboard (admin, school) |
 | [../review_ui/README.md](../review_ui/README.md) | Internal review UI |
+| [../job_scraping/README.md](../job_scraping/README.md) | Job scrapers, default data source, pipeline integration |
+
+## Extraction Design (Direction A)
+
+- **BERT per sentence** (128-token limit); **LLM on full job** (full context)
+- **BERT knowledge** passed to LLM as anti-hallucination context; **knowledge output LLM-only**
+- See [PIPELINE.md](../PIPELINE.md) §2b and [SCIENTIFIC_METHODOLOGY.md](../SCIENTIFIC_METHODOLOGY.md) §16a
 
 ## Scripts (Key Scientific Logic)
 
 | Script | Scientific / Logic |
 |--------|--------------------|
+| `run_with_job_scraping.py` | One-step: preprocess (english_jobs.csv) + pipeline |
 | `evaluate_extraction.py` | Binomial test, effect sizes, Wilson CI, pairwise z-test, BH |
 | `import_feedback.py` | Majority vote, Cohen's Kappa, Fleiss' Kappa |
 | `future_weight_mapping.py` | Future weight formula, normalization, grouping |
-| `generate_competencies.py` | Domain-based batching, normalized-key lookup, confidence thresholds |
+| `generate_competencies.py` | Domain-based batching, anti-hallucination (prompt + related_skills filter) |
 | `domain_batching.py` | Domain grouping, on-the-fly domain assignment, batch merge by domain similarity |
 | `recommendations.py` | Priority score, weight sensitivity |
 | `skill_time_trend_analysis.py` | FDR (Benjamini-Hochberg), trend labels |

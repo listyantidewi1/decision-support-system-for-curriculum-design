@@ -2,456 +2,1027 @@
   "C10_b31": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C10_b87": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C11_b111": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C1_b1": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C1_b11": {
+    "quality": "4.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C1_b110": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C1_b12": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C1_b13": {
+    "quality": "nan",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C1_b14": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C1_b16": {
+    "quality": "4.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C1_b166": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C1_b2": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C1_b246": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C1_b3": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C1_b427": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
     "notes": "nan"
   },
   "C1_b429": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C1_b5": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C1_b6": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C1_b61": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
     "notes": "nan"
   },
   "C2_b1": {
+    "quality": "nan",
+    "relevant": "yes",
+    "skill_focus": "Both",
+    "notes": "nan"
+  },
+  "C2_b124": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C2_b147": {
+    "quality": "3.0",
+    "relevant": "partial",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C2_b157": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Soft",
+    "notes": "nan"
+  },
+  "C2_b16": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Soft",
     "notes": "nan"
   },
   "C2_b2": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C2_b262": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Both",
     "notes": "nan"
   },
   "C2_b3": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C2_b4": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C2_b40": {
     "quality": "4.0",
     "relevant": "partial",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C2_b42": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
     "notes": "nan"
   },
   "C2_b44": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C2_b623": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Soft",
+    "notes": "nan"
+  },
+  "C2_b656": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Both",
+    "notes": "nan"
+  },
+  "C2_b7": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C2_b77": {
+    "quality": "4.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C2_b85": {
+    "quality": "nan",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C2_b86": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C3_b1": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C3_b1002": {
+    "quality": "nan",
+    "relevant": "nan",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C3_b108": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C3_b139": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C3_b2": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C3_b3": {
+    "quality": "4.0",
+    "relevant": "partial",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C3_b32": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Soft",
+    "notes": "nan"
+  },
+  "C3_b354": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C3_b574": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C3_b576": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C3_b697": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Both",
+    "notes": "nan"
+  },
+  "C4_b1": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C4_b2": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C4_b200": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C4_b3": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C4_b32": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Soft",
+    "notes": "nan"
+  },
+  "C4_b479": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Soft",
+    "notes": "nan"
+  },
+  "C4_b558": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C4_b60": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Soft",
+    "notes": "nan"
+  },
+  "C4_b71": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C4_b740": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C4_b841": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C4_b866": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C4_b91": {
+    "quality": "4.0",
+    "relevant": "yes",
+    "skill_focus": "Both",
+    "notes": "nan"
+  },
+  "C5_b1": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C5_b1044": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C5_b115": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Both",
+    "notes": "nan"
+  },
+  "C5_b153": {
+    "quality": "4.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C5_b2": {
+    "quality": "5.0",
+    "relevant": "partial",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C5_b3": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C5_b390": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Soft",
+    "notes": "nan"
+  },
+  "C5_b487": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Both",
+    "notes": "nan"
+  },
+  "C5_b489": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Soft",
+    "notes": "nan"
+  },
+  "C5_b903": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C6_b10": {
+    "quality": "4.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C6_b160": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Both",
+    "notes": "nan"
+  },
+  "C6_b2": {
+    "quality": "3.0",
+    "relevant": "partial",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C6_b3": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C7_b137": {
+    "quality": "nan",
+    "relevant": "yes",
+    "skill_focus": "Both",
+    "notes": "nan"
+  },
+  "C7_b2": {
+    "quality": "4.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C7_b3": {
+    "quality": "4.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C7_b722": {
+    "quality": "3.0",
+    "relevant": "partial",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C8_b143": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Both",
     "notes": "nan"
   },
   "C8_b175": {
     "quality": "5.0",
     "relevant": "partial",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C8_b2": {
+    "quality": "3.0",
+    "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C8_b205": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C8_b23": {
+    "quality": "nan",
+    "relevant": "yes",
+    "skill_focus": "Soft",
     "notes": "nan"
   },
   "C8_b329": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C8_b354": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C8_b4": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C8_b681": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
+    "notes": "nan"
+  },
+  "C8_b71": {
+    "quality": "nan",
+    "relevant": "yes",
+    "skill_focus": "Soft",
+    "notes": "nan"
+  },
+  "C8_b8": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
     "notes": "nan"
   },
   "C9_b1": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b11": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b132": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b133": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b136": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b146": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C9_b15": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
     "notes": "nan"
   },
   "C9_b156": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b159": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b164": {
     "quality": "5.0",
     "relevant": "nan",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b166": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C9_b17": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
     "notes": "nan"
   },
   "C9_b177": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b197": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b2": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b211": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b213": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b245": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b248": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b249": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b25": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b257": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b260": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b262": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b265": {
     "quality": "5.0",
     "relevant": "partial",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b272": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b279": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b285": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b290": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b292": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b293": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b3": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b312": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b317": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b32": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b322": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b334": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b335": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b361": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b368": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b40": {
     "quality": "5.0",
     "relevant": "partial",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b406": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b42": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C9_b446": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Hard",
     "notes": "nan"
   },
   "C9_b448": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b451": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b464": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C9_b471": {
+    "quality": "5.0",
+    "relevant": "yes",
+    "skill_focus": "Soft",
     "notes": "nan"
   },
   "C9_b494": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b50": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b516": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b525": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b527": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b543": {
     "quality": "5.0",
     "relevant": "partial",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b56": {
     "quality": "4.0",
     "relevant": "partial",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b568": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b57": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b577": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b578": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b587": {
     "quality": "5.0",
     "relevant": "nan",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b591": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b593": {
     "quality": "5.0",
     "relevant": "partial",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b61": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b611": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b617": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b624": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b627": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b630": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b647": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b652": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b663": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b669": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b679": {
     "quality": "nan",
     "relevant": "partial",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b680": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b71": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b77": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b78": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b79": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   },
   "C9_b83": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
+    "notes": "nan"
+  },
+  "C9_b9": {
+    "quality": "3.0",
+    "relevant": "partial",
+    "skill_focus": "Hard",
     "notes": "nan"
   },
   "C9_b91": {
     "quality": "5.0",
     "relevant": "yes",
+    "skill_focus": "nan",
     "notes": "nan"
   }
 }

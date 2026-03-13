@@ -8,17 +8,25 @@ protocol for the Future-Aware Hybrid Skill Extraction pipeline as a
 
 ---
 
+## Design Intent
+
+The pipeline is a **curriculum gap / reform tool**, not a compliance tool. It surfaces what the job market demands regardless of existing curriculum. This design is intentional: in many contexts (e.g. Indonesia), vocational curricula lag behind labour-market requirements, so prioritising alignment with existing standards would perpetuate outdated curricula. Recommendations prioritise **demand**, **empirical trend**, and **future-domain alignment**; curriculum coverage is used for insights only, not for ranking. The system helps schools identify skills their curriculum lacks and design reforms accordingly.
+
+---
+
 ## Research Questions
 
 ### RQ1 — Extraction Quality
 **Does hybrid extraction (JobBERT + LLM) outperform each component alone on
 skill and knowledge correctness?**
 
+*Note: Skills use BERT+LLM fusion; knowledge output is LLM-only (Direction A). BERT knowledge is passed to LLM as anti-hallucination context but not fused into the final list.*
+
 | Metric | Definition | Target |
 |--------|-----------|--------|
 | Precision | correct extractions / all extractions | > 0.70 |
-| Recall | correct extractions / all true items in gold set | > 0.60 |
-| F1 | harmonic mean of precision and recall | > 0.65 |
+
+*Note: Recall and F1 are not estimable with this gold-set design (stratified sample of outputs, not exhaustive corpus annotations). See [SCIENTIFIC_METHODOLOGY.md §10](SCIENTIFIC_METHODOLOGY.md).*
 
 Evaluation: compare **BERT-only**, **LLM-only**, and **Hybrid** on the gold set
 (`DATA/labels/gold_skills.csv`, `DATA/labels/gold_knowledge.csv`).
@@ -61,6 +69,8 @@ Evaluation: compare against `DATA/labels/gold_future_domain.csv`.
 ### RQ5 — Recommendation Quality
 **Do ranked curriculum recommendations match expert priorities?**
 
+*Expert = curriculum reformers or labour-market-informed experts who judge relevance for **future curriculum design**, not alignment with current standards.*
+
 | Metric | Definition | Target |
 |--------|-----------|--------|
 | Precision@20 | fraction of top-20 recs rated priority by expert | > 0.60 |
@@ -78,7 +88,7 @@ signal at a time (demand, trend, future_weight). Coverage is optional (`with_cov
 - Skills: 150 items (stratified by source, confidence tier, type)
 - Knowledge: 100 items (stratified by confidence tier)
 - Future-domain mapping: 100 items (skills + knowledge)
-- Overlap for IRR: 20 items labeled by 2 reviewers
+- Overlap for IRR: 30 items (configurable via `--overlap_n`), labeled by 2+ reviewers
 
 ### Stratification
 - Extraction source: BERT / LLM / Hybrid (proportional)
@@ -141,6 +151,7 @@ Each item is labeled with:
 
 ## Limitations
 
+- **Scope of applicability**: Domains: IT / Software / Game Dev (current focus); other sectors require domain-specific validation. Geography/language: English job postings; results may not generalize to non-English markets. Use case: curriculum reform and gap identification; not validation against outdated national standards.
 - **BERT-only extraction**: BERT-only extraction performs below chance in current evaluation; Hybrid (BERT+GPT) and GPT-only are recommended for production. BERT is retained in the fusion pipeline for potential complementary signal.
 - **Recall**: Only estimable from the labeled sample; true recall is unknown without full population labeling. Gold sets are stratified samples of extractions, not exhaustive enumerations of all true items in job postings.
 - **Temporal bias**: Job posting dates may cluster in the scrape window; trend analyses reflect the available time range.
