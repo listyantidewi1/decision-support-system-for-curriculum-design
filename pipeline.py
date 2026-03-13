@@ -55,6 +55,9 @@ except ImportError:
         SKILL_ID2LABEL = {}
         KNOWLEDGE_ID2LABEL = {}
         CURRICULUM_COMPONENTS = {}
+        PROJECT_ROOT = __import__("pathlib").Path(".")
+        PREPROCESS_OUTPUT_DIR = PROJECT_ROOT / "DATA" / "preprocessing" / "data_prepared"
+        PIPELINE_INPUT_CSV = PREPROCESS_OUTPUT_DIR / "jobs_sentences.csv"
     
     config = DummyConfig()
     MULTITASK_MODEL_DIR = config.MULTITASK_MODEL_DIR
@@ -251,6 +254,9 @@ class AdvancedPipelineConfig:
     BERT_BLOOM_FACTOR_BASE = 0.5        # Minimum Bloom confidence factor (floor)
     BERT_DENSITY_FACTOR_BASE = 0.8      # Minimum semantic-density factor (floor)
     BERT_STANDALONE_PENALTY = 0.8       # Penalty when BERT skill has no LLM match
+    # Knowledge: LLM-only in final output. BERT knowledge is passed to LLM as anti-hallucination
+    # context but not fused (Direction A).
+    LLM_ONLY_KNOWLEDGE = True
 
     # Reproducibility (override via --seed)
     RANDOM_SEED = None  # Set from config.RANDOM_SEED or args.seed at runtime
@@ -271,9 +277,9 @@ class AdvancedPipelineConfig:
     AGREEMENT_PARTIAL_THRESHOLD = 0.5   # Minimum partial match confidence
     FUSION_OVERLAP_THRESHOLD = 0.6      # Substring overlap ratio for partial fusion
 
-    # File paths
-    INPUT_CSV = 'DATA\\preprocessing\\data_prepared\\jobs_sentences.csv'
-    SAMPLE_SIZE = 2000
+    # File paths (jobs_sentences.csv is output of preprocess when run on job_scraping/output/english_jobs.csv)
+    INPUT_CSV = str(config.PIPELINE_INPUT_CSV)
+    SAMPLE_SIZE = 10000
     
     # Output files
     OUTPUT_FILES = {
@@ -926,7 +932,12 @@ class LLMExtractor:
         self.client = openai_client
     
     def extract_skills_and_knowledge(self, text: str, bert_knowledge: List[Dict]) -> Dict:
-        """Extract skills and knowledge using the configured LLM."""
+        """Extract skills and knowledge using the configured LLM.
+
+        Receives full job description (text) plus bert_knowledge from the same job.
+        bert_knowledge provides anti-hallucination context: tools/technologies BERT
+        detected anchor the LLM so it does not fabricate unrelated skills or knowledge.
+        """
         if not self.client:
             return {"skills": [], "knowledge": []}
         
@@ -1080,10 +1091,15 @@ class ContextAwareExtractor:
     ) -> Dict[str, List[SkillItem]]:
         """Extract skills with context awareness and model agreement analysis.
 
-        Hybrid approach:
-        - **BERT** runs on each *sentence* (short segments suit the 128-token NER window).
-        - **LLM** runs on the *full_text* (full posting context avoids fragment issues).
-        - Fusion / agreement analysis operates on the aggregated results.
+        Design (Direction A):
+        - **BERT runs per sentence** — Token limit (128) suits short segments. Aggregates
+          skills and knowledge across sentences. Per-job scoping only.
+        - **LLM runs on full job description** — Full context so it does not miss skills
+          or knowledge that span sentences or require document-level understanding.
+        - **BERT knowledge → LLM context** — Passed as "Context (Tools detected by
+          JobBERT)" to ground extraction and reduce hallucination (anti-hallucination).
+        - **Knowledge output: LLM-only** — Final knowledge comes from LLM; BERT knowledge
+          is not fused into output (LLM_ONLY_KNOWLEDGE). Skills remain BERT+LLM hybrid.
 
         For backward compatibility, if *sentences* is not provided the method
         falls back to single-text mode (``text``).
@@ -1113,7 +1129,7 @@ class ContextAwareExtractor:
         all_bert_skills_raw = self._filter_fragments(all_bert_skills_raw, key='text')
         all_bert_knowledge = self._filter_fragments(all_bert_knowledge, key='text')
 
-        # --- LLM: run once on full posting ---
+        # --- LLM: run once on full posting (full context), with BERT knowledge as anti-hallucination ---
         gpt_output = self.gpt_extractor.extract_skills_and_knowledge(full_text, all_bert_knowledge)
         if not isinstance(gpt_output, dict):
             gpt_output = {"skills": [], "knowledge": []}
@@ -2621,7 +2637,10 @@ class AdvancedSkillExtractionPipeline:
                 agreement_scores = {'overall': 0.0, 'matches': [], 'match_count': 0}
 
             fused_skills = self.fusion_engine.fuse_skills_advanced(bert_skills, gpt_skills)
-            fused_knowledge = self.fusion_engine.fuse_knowledge_advanced(bert_knowledge, gpt_knowledge)
+            # Knowledge: LLM-only output. BERT knowledge stays as LLM context (anti-hallucination)
+            # but is not fused into final output per Direction A.
+            bert_k_for_fusion = [] if AdvancedPipelineConfig.LLM_ONLY_KNOWLEDGE else bert_knowledge
+            fused_knowledge = self.fusion_engine.fuse_knowledge_advanced(bert_k_for_fusion, gpt_knowledge)
 
             coverage_results = self.coverage_calculator.calculate_advanced_coverage(
                 fused_skills, fused_knowledge
@@ -2784,7 +2803,7 @@ def main():
             "--input_csv",
             type=str,
             default=AdvancedPipelineConfig.INPUT_CSV,
-            help="Input CSV path (default: DATA/preprocessing/data_prepared/jobs_sentences.csv)",
+            help="Pipeline input (preprocess output); default from config.PIPELINE_INPUT_CSV",
         )
         parser.add_argument(
             "--output_dir",
@@ -2804,12 +2823,24 @@ def main():
             default=config.RANDOM_SEED,
             help="Random seed for sampling (default: config.RANDOM_SEED)",
         )
+        parser.add_argument(
+            "--llm-only-knowledge",
+            action="store_true",
+            default=True,
+            help="Use LLM exclusively for knowledge output (default: True)",
+        )
+        parser.add_argument(
+            "--bert-knowledge",
+            action="store_true",
+            help="Fuse BERT knowledge into output (hybrid mode, for backward compatibility)",
+        )
         args = parser.parse_args()
 
         # Runtime overrides keep backward compatibility with existing run.bat defaults.
         AdvancedPipelineConfig.INPUT_CSV = args.input_csv
         AdvancedPipelineConfig.SAMPLE_SIZE = args.sample_size
         AdvancedPipelineConfig.RANDOM_SEED = args.seed
+        AdvancedPipelineConfig.LLM_ONLY_KNOWLEDGE = not args.bert_knowledge
 
         # Create pipeline instance
         pipeline = AdvancedSkillExtractionPipeline()

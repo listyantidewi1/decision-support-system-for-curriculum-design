@@ -1,101 +1,101 @@
-﻿gold_id,job_id,knowledge,confidence_score,confidence_tier,source,notes,is_correct,labeler_id
-gk_eac19662d2c6,in-3cb752ad4a2b2742,General Insurance reserving,0.83,High,BERT+LLM,,yes,alice
-gk_6ab1d024ae5b,in-892d5cac080587e9,Styled Components,0.809,High,BERT+LLM,,yes,alice
-gk_40b224eb0a70,in-688c9596567360d1,Python,0.846,High,BERT+LLM,,yes,alice
-gk_69a33adebc72,in-f394adc0c6946005,Object-oriented programming,0.807,High,BERT+LLM,,yes,alice
-gk_e7b8f95c6108,in-8922fb1fa43b8894,Go,0.844,High,BERT+LLM,,yes,alice
-gk_af95091af45e,in-363d647dec266b6b,version control tools,0.803,High,BERT+LLM,,yes,alice
-gk_e642e8ac6f08,in-b2dca9e3c6433a21,pretraining,0.852,High,BERT+LLM,,yes,alice
-gk_6d0c8af72026,in-678a2e293eb50faa,business,0.833,High,BERT+LLM,,yes,alice
-gk_dc7ae7802d51,in-b2dca9e3c6433a21,orchestration frameworks,0.836,High,BERT+LLM,,yes,alice
-gk_c4e2bf3af90a,in-062b683865789456,MongoDB,0.848,High,BERT+LLM,,yes,alice
-gk_dfc1ac09fc13,in-f3e4008c87930740,.NET,0.848,High,BERT+LLM,,yes,alice
-gk_97eb1e472884,in-3a39cfdef1dc8c0a,secure coding practices,0.851,High,BERT+LLM,,yes,alice
-gk_4b1b01d78f94,in-6cbd79acfd842c46,relational databases,0.85,High,BERT+LLM,,yes,alice
-gk_d768f148227e,in-ae4bd158a40ff371,Xbox,0.848,High,BERT+LLM,,yes,alice
-gk_40e02ef95e5e,in-8ac4086dd9ddd4b6,version control systems,0.843,High,BERT+LLM,,yes,alice
-gk_74b5a799bb31,in-5954110f7af52605,NodeJS,0.841,High,BERT+LLM,,yes,alice
-gk_a2555a4bead5,in-aafaf175d9daeacb,VRay,0.852,High,BERT+LLM,,yes,alice
-gk_73c62d1eb155,in-5f6b1fd17c9867d0,ServiceNow,0.83,High,BERT+LLM,,yes,alice
-gk_e0e35820f97a,in-d9c5a16b8c8a9873,"programming techniques, best practices",0.405,Low,BERT (standalone),,yes,alice
-gk_6ff8341c3f47,in-076c1dc9b22be783,Bachelor's or,0.441,Low,BERT (standalone),,no,alice
-gk_2689538e2da5,in-8ac4086dd9ddd4b6,Cloud,0.41,Low,BERT (standalone),,yes,alice
-gk_ce2e0f7403e9,in-ea5fe0c67dbb09a7,REST,0.687,Medium,BERT+LLM,,yes,alice
-gk_d5ce0175bf3f,in-e5a40a553d833e46,AI Business Process,0.7,Medium High,BERT+LLM,,yes,alice
-gk_7771cde8b091,in-fa78458f9443eaa7,web-based systems,0.762,Medium High,BERT+LLM,,yes,alice
-gk_0d30ef429bdf,in-300ad6c0e8012768,Engineering Geology,0.794,Medium High,BERT+LLM,,yes,alice
-gk_ec45c9a0a444,in-0cb1ebadc05ba17e,steam and hydronic heating,0.793,Medium High,BERT+LLM,,yes,alice
-gk_0dd35820a02b,in-80759602520c230d,company processes,0.75,Medium High,LLM,,yes,alice
-gk_9ae1fe96dfae,in-574bb29290066b49,structural design,0.75,Medium High,LLM,,yes,alice
-gk_3bd1bc1eae26,in-276ee08934e98ebb,ETL processes,0.75,Medium High,LLM,,yes,alice
-gk_6c81b44456fc,in-9f20bda14e76bb36,human rights,0.75,Medium High,LLM,,yes,alice
-gk_c44b37c34679,in-ad7d0fa387739d7f,analyses,0.75,Medium High,LLM,,no,alice
-gk_f0092274ac53,in-3c9053efee28bcf7,Data Science,0.75,Medium High,LLM,,yes,alice
-gk_79681549114e,in-2e00425a4374e584,Digital car marketplace,0.75,Medium High,LLM,,yes,alice
-gk_4f7db324eed1,in-46b87efdabab81b8,Retail Technology Services (RBS),0.75,Medium High,LLM,,yes,alice
-gk_fe64158785aa,in-cd349d1d935d2e5e,database infrastructure,0.75,Medium High,LLM,,yes,alice
-gk_f7706ff646b6,in-a55c33244443944b,System compliance,0.75,Medium High,LLM,,yes,alice
-gk_0001fa11f6e9,in-a0164aaab4c60f1a,Digital platforms,0.75,Medium High,LLM,,yes,alice
-gk_228bdd636eb1,in-da75ce1c71b76fd7,medical insurance,0.75,Medium High,LLM,,yes,alice
-gk_89cf694e848a,in-b4ba1f38c5f62d25,Microsoft,0.75,Medium High,LLM,,yes,alice
-gk_d01adfe9efd1,in-fac0a95b0783fd9d,uncertainty,0.75,Medium High,LLM,,no,alice
-gk_47ac1cd5924d,in-5954110f7af52605,web services,0.75,Medium High,LLM,,yes,alice
-gk_d8b75bd6088d,in-91f2b7a5bc51b432,community networks,0.75,Medium High,LLM,,yes,alice
-gk_a089b8b5240d,in-c674ecd13f250f5b,AI,0.75,Medium High,LLM,,yes,alice
-gk_74f3ce26a50e,in-e8e6926b64d2b259,SLA targets,0.75,Medium High,LLM,,yes,alice
-gk_b830b2df9ada,in-5f22cc9f13b5d3b9,recruitment,0.75,Medium High,LLM,,no,alice
-gk_64df8ccc0929,in-688c9596567360d1,vault strategies,0.75,Medium High,LLM,,yes,alice
-gk_db36129e95bd,in-31312032e7feb5d2,inventory units,0.75,Medium High,LLM,,no,alice
-gk_609ea925915c,in-b9ab4333e21cb5ef,NACES | National Association of Credential Evaluation Services,0.75,Medium High,LLM,,no,alice
-gk_dd04108293b2,in-1275cf05b8a8e15e,banking partners,0.75,Medium High,LLM,,no,alice
-gk_21c09755d8ce,in-8548b0597f7e73f4,L3 support,0.75,Medium High,LLM,,yes,alice
-gk_a66d5695e5dc,in-2b2bf00f37de72ce,banking,0.75,Medium High,LLM,,yes,alice
-gk_5d3bab0dbd47,in-43ef55143f3f5bc4,hybrid methodologies,0.75,Medium High,LLM,,yes,alice
-gk_d2e20d3cf187,in-4b1eb891426139d1,RAG pipelines,0.75,Medium High,LLM,,yes,alice
-gk_9314f8ad7e8f,in-1291b47e03c5d4d1,Salesforce Commerce Cloud,0.75,Medium High,LLM,,yes,alice
-gk_d80e89528f54,in-7433c244aa75bf36,Legal notification procedures,0.75,Medium High,LLM,,yes,alice
-gk_c7aeff3d888e,in-ad97db3183f887b0,performance-first messaging,0.75,Medium High,LLM,,yes,alice
-gk_705fa353046b,in-277cf9b06c74153d,Training and Development,0.75,Medium High,LLM,,yes,alice
-gk_32abd6c3e609,in-5211c83d2e8587c2,AI/ML pipelines,0.75,Medium High,LLM,,yes,alice
-gk_fd584e988447,in-e9b1c6997aa8f558,data solutions,0.75,Medium High,LLM,,yes,alice
-gk_9bc05af78a58,in-00c0b91f9c9cb324,AECOM University,0.75,Medium High,LLM,,no,alice
-gk_3b13f18f4ec6,in-5f1f0bf19752b894,Treaty of Waitangi,0.75,Medium High,LLM,,no,alice
-gk_2a666bdfa464,in-2852318d9eae20d7,data,0.75,Medium High,LLM,,yes,alice
-gk_afa573e630a7,in-2f43fa6cbbb72894,Visual arts,0.75,Medium High,LLM,,yes,alice
-gk_2c0bde2dc19a,in-678a2e293eb50faa,educational technology,0.75,Medium High,LLM,,yes,alice
-gk_82cd161f203d,in-b4b1e4c5481eb021,sea,0.75,Medium High,LLM,,no,alice
-gk_a7f363bfd21b,in-35108d28ef6423ea,cloud-based software,0.75,Medium High,LLM,,yes,alice
-gk_f35362d6ec98,in-d716af8536957907,Helpdesk,0.75,Medium High,LLM,,no,alice
-gk_4c3fc4ee99ff,in-ec8b3e52f58027f9,Wind generation,0.75,Medium High,LLM,,yes,alice
-gk_29f0eb64246c,in-d9c5a16b8c8a9873,internal documentation,0.75,Medium High,LLM,,yes,alice
-gk_3f26a8a7d0ac,in-184a7a102cde8e55,software,0.75,Medium High,LLM,,yes,alice
-gk_f1fe22b088ee,in-08d8ebb8b3e31904,IAEA (Institute of Automotive Engineers Assessors),0.75,Medium High,LLM,,no,alice
-gk_366309d114ba,in-5212768d253d606f,Innovation,0.75,Medium High,LLM,,no,alice
-gk_cc0751afc89c,in-67013bb2bdcd7a2e,Veteran Employment Support,0.75,Medium High,LLM,,no,alice
-gk_5d91aa1a83ff,in-e03357f052aa5454,queries,0.75,Medium High,LLM,,no,alice
-gk_bcc79eb1b046,in-63f514f2585f0cdf,Surveillance and Automation Solutions,0.75,Medium High,LLM,,yes,alice
-gk_08dd9a4884b8,in-b7f6c244f45d842b,Notice of Action,0.75,Medium High,LLM,,no,alice
-gk_d64cfcd07603,in-7461bc5cf0db64c7,data analytics,0.75,Medium High,LLM,,yes,alice
-gk_a35c12889920,in-5dc0137fea6a865d,public security,0.75,Medium High,LLM,,yes,alice
-gk_839f96e03c4a,in-d668cac92dcd7b94,networking background,0.75,Medium High,LLM,,yes,alice
-gk_f79170f141a4,in-cf7f60dee735734d,user feedback,0.75,Medium High,LLM,,yes,alice
-gk_fdfd553993ec,in-72108abf9de7587e,Hybrid working policy,0.75,Medium High,LLM,,yes,alice
-gk_278134f970e8,in-7df8014e102f91c2,Financial advisory,0.75,Medium High,LLM,,yes,alice
-gk_83ef6111221c,in-3b22d29313e48ebe,AdsWizz,0.75,Medium High,LLM,,yes,alice
-gk_20bb548aaeca,in-1f7c05e642b1bc5e,testing,0.75,Medium High,LLM,,no,alice
-gk_da8bde5a2ca8,in-19e9ead015fac709,advanced tracing,0.75,Medium High,LLM,,yes,alice
-gk_4209e6903b99,in-1c9bc4d03208284b,automation infrastructure,0.75,Medium High,LLM,,yes,alice
-gk_1a3f4c3df277,in-e58a2746f2f75385,Canadian construction industry,0.75,Medium High,LLM,,no,alice
-gk_b350a00a0df9,in-ae00f9eba4f4382f,industry frameworks,0.532,Medium Low,BERT (standalone),,yes,alice
-gk_14058d2a08fe,in-bc3b380ce792d5ca,real,0.559,Medium Low,BERT (standalone),,no,alice
-gk_d7c82421be64,in-d668cac92dcd7b94,"adjustment processes,",0.553,Medium Low,BERT (standalone),,no,alice
-gk_2cdf88b0f06e,in-b608315da704076b,API,0.506,Medium Low,BERT (standalone),,yes,alice
-gk_21cb6d12b636,in-421a4ae284174597,-to,0.559,Medium Low,BERT (standalone),,no,alice
-gk_58f0b5d298f5,in-b74251dde8b8ccd5,-time,0.526,Medium Low,BERT (standalone),,no,alice
-gk_b1af19ac75a4,in-ad97db3183f887b0,-first messaging.,0.522,Medium Low,BERT (standalone),,no,alice
-gk_bdf08961274a,in-ad97db3183f887b0,short,0.513,Medium Low,BERT (standalone),,no,alice
-gk_b67ff7ed33dd,in-3a39cfdef1dc8c0a,REST,0.56,Medium Low,BERT (standalone),,yes,alice
-gk_054bfa2cf145,in-765dbbb271494469,demonstrations,0.577,Medium Low,BERT+LLM,,no,alice
-gk_815e3c5735e5,in-f54c20b73814cf57,post,0.329,Very Low,BERT (standalone),,no,alice
-gk_d4088c727db6,in-d4f8ee872b7a72ec,adviser,0.266,Very Low,BERT (standalone),,no,alice
-gk_a260d7ee146d,in-68071ee351033ae8,-BGA,0.376,Very Low,BERT (standalone),,no,alice
+﻿gold_id,job_id,knowledge,confidence_score,confidence_tier,source,is_overlap,notes,is_correct,labeler_id
+gk_c71a3faea47d,in-c621a1b38d815259,Cyber Assurance,0.75,Medium High,LLM,True,,yes,labeler1
+gk_f8b4c266335e,in-2d603bfc2b84d854,multi-GPU training,0.75,Medium High,LLM,False,,yes,labeler1
+gk_5a60300acf3f,in-5bb3b900ca943f6e,strategic decision-making,0.75,Medium High,LLM,False,,yes,labeler1
+gk_eb5504ae1b63,in-7f6f6106b7ad9b74,system design,0.75,Medium High,LLM,False,,yes,labeler1
+gk_5566da36b96d,in-00b6e24ba74f5f55,Analytics,0.75,Medium High,LLM,True,,yes,labeler1
+gk_cf87224b87c1,in-b279c900a55222c2,Aerospike Real-time Data Platform,0.76,Medium High,BERT+LLM,False,,yes,labeler1
+gk_0c0ad70b2686,in-4b1eb891426139d1,RAG,0.849,High,BERT+LLM,False,,yes,labeler1
+gk_80fee8b1a59e,in-fcb73ba122d2cee7,marketing initiatives,0.75,Medium High,LLM,False,,yes,labeler1
+gk_4ce55de600c7,in-74f57a7d8a301377,Data Storage,0.851,High,BERT+LLM,False,,yes,labeler1
+gk_a2553dcdf835,in-4d80d51ffa972a83,Trade Screening,0.85,High,BERT+LLM,True,,yes,labeler1
+gk_dfc1a5557b47,in-c8d6d407de7c2c1a,statistical models,0.851,High,BERT+LLM,True,,yes,labeler1
+gk_d80c1d3792a2,in-2ad0acb1669d8377,Schedule Reconciliations).,0.466,Low,BERT (standalone),False,,no,labeler1
+gk_fdc3d6c7fb22,in-32b061902e0216bd,air,0.563,Medium Low,BERT+LLM,True,,no,labeler1
+gk_2f499fc4c248,in-e0d4f0620354c0ab,retail software industry,0.486,Low,BERT (standalone),False,,yes,labeler1
+gk_1b4ef63f32c3,in-2d603bfc2b84d854,regulatory trends,0.75,Medium High,LLM,False,,yes,labeler1
+gk_b19ba11cbdb3,in-f4c6dcb0104bf828,SaaS platforms,0.848,High,BERT+LLM,True,,yes,labeler1
+gk_eb7688a4efee,in-f9fad81782f9e356,"CD,",0.542,Medium Low,BERT (standalone),False,,yes,labeler1
+gk_ad335c712375,in-59f89f855608fde0,Glue,0.75,Medium High,LLM,False,,no,labeler1
+gk_0d731011dbe6,in-66e2f2f3d3633e25,CI automations,0.832,High,BERT+LLM,True,,yes,labeler1
+gk_6a5e4b056595,in-7ed40d80ae62c22c,Build,0.481,Low,BERT (standalone),False,,no,labeler1
+gk_fca6554f34dd,in-50cd9f94fb5151b1,Microsoft .NET,0.75,Medium High,LLM,False,,yes,labeler1
+gk_063c567de3d6,in-f4d30ac2ed1bed4e,Business IT,0.547,Medium Low,BERT (standalone),False,,yes,labeler1
+gk_50fcb525a16b,in-afe16e952954ef1f,data mining,0.832,High,BERT+LLM,True,,yes,labeler1
+gk_3208fdcee67d,in-c8b4987c770c7279,Python,0.773,Medium High,BERT+LLM,False,,yes,labeler1
+gk_46d94e1cdf0b,in-d9777329f5813be2,technical project delivery,0.75,Medium High,LLM,False,,yes,labeler1
+gk_2d2aaabada6e,in-9cc1fc88ccf5cf34,Keras,0.848,High,BERT+LLM,False,,yes,labeler1
+gk_237b1c024e83,in-722858fa27d70477,reserving,0.712,Medium High,BERT+LLM,True,,no,labeler1
+gk_cd4e5c6dbabc,in-1e9b715a37b889ab,sound design,0.75,Medium High,LLM,False,,yes,labeler1
+gk_84e50db4b72d,in-7423e70fc8e4c7d1,Angular,0.844,High,BERT+LLM,False,,yes,labeler1
+gk_e24fec68db5b,in-868c650ce29013f9,"recruitment,",0.532,Medium Low,BERT (standalone),False,,no,labeler1
+gk_91329d320c7f,in-7b9386684dd8a3e3,banking,0.85,High,BERT+LLM,True,,yes,labeler1
+gk_8fa37d414964,in-a155cba4b0635237,Bachelor’s degree,0.555,Medium Low,BERT (standalone),True,,no,labeler1
+gk_415feb31fa9f,in-cb9773a140443f81,quantum control infrastructure software,0.75,Medium High,LLM,False,,yes,labeler1
+gk_fa64ac136c51,in-988bc453a2bad628,analytics,0.844,High,BERT+LLM,True,,yes,labeler1
+gk_4c1493441693,in-726417b847d26566,scrum,0.75,Medium High,LLM,False,,yes,labeler1
+gk_d53bd42a2a01,in-00da6b68373c3343,Data Science,0.845,High,BERT+LLM,False,,yes,labeler1
+gk_c91c3b2a7f30,in-d8642547da129fa7,technical management,0.75,Medium High,LLM,False,,yes,labeler1
+gk_7400756c410c,in-b2e3f60666853a73,operational excellence,0.75,Medium High,LLM,False,,yes,labeler1
+gk_7588ef20579d,in-09b1ff68281ab218,email,0.664,Medium,BERT+LLM,False,,no,labeler1
+gk_b8a67b2595a6,in-ed389b13459a66ed,media processing,0.846,High,BERT+LLM,True,,yes,labeler1
+gk_f68ed31bd445,in-d7eb5b2a754ec1ba,API,0.75,Medium High,LLM,True,,yes,labeler1
+gk_f48f15426ab9,in-0a806b7018cb9b58,dispatch service,0.655,Medium,BERT+LLM,False,,yes,labeler1
+gk_fdc5483db93b,in-d0f29ba5682514a8,Business Administration,0.833,High,BERT+LLM,True,,yes,labeler1
+gk_4c939e4a0c83,in-977cc68b23fca00d,casual games,0.75,Medium High,LLM,False,,yes,labeler1
+gk_08b086cdc2c0,in-f9abf9434c1082da,Xero,0.75,Medium High,LLM,True,,yes,labeler1
+gk_059337e729d3,in-71e3a1925dad9e3d,SOAP,0.848,High,BERT+LLM,True,,yes,labeler1
+gk_44a09006db00,in-ffe72196b5fce2b0,BDD,0.852,High,BERT+LLM,False,,yes,labeler1
+gk_af0985a9f1a6,in-115609607f34b825,Adobe,0.514,Medium Low,BERT (standalone),False,,yes,labeler1
+gk_9b391c62928e,in-9b91583542850a6f,scalable data solutions,0.827,High,BERT+LLM,False,,yes,labeler1
+gk_c1391b40863a,in-72ce1e36b19889aa,regional sports network,0.75,Medium High,LLM,False,,yes,labeler1
+gk_1f7f247227b1,in-e006e7563f900a09,ISO 14044,0.75,Medium High,LLM,False,,yes,labeler1
+gk_b21a10584744,in-7423e70fc8e4c7d1,databases,0.806,High,BERT+LLM,False,,yes,labeler1
+gk_2db291881566,in-6542093c41876b6d,LLaMA,0.85,High,BERT+LLM,False,,yes,labeler1
+gk_fa9e6385d130,in-98a73fab548e6eec,security principles,0.816,High,BERT+LLM,True,,yes,labeler1
+gk_f77608d7b67c,in-001a5f7a1e04ac00,audio production,0.828,High,BERT+LLM,False,,yes,labeler1
+gk_75b1b2196a02,in-4587115ecc9d59ad,Fiber,0.725,Medium High,BERT+LLM,True,,yes,labeler1
+gk_1660420c2e67,in-c8db1b653c7e83d5,Excel,0.829,High,BERT+LLM,False,,yes,labeler1
+gk_738e21af2ae3,in-0a2cd8d2cf06658d,Canadian insurance,0.75,Medium High,LLM,False,,yes,labeler1
+gk_3b64a4eb27ab,in-3f52a749b5f4c201,sales,0.813,High,BERT+LLM,False,,yes,labeler1
+gk_f74508507173,in-e08ef62755b0f504,Operations,0.75,Medium High,LLM,False,,yes,labeler1
+gk_865f985eb226,in-f799d6ad16c4eab4,classification models,0.778,Medium High,BERT+LLM,False,,yes,labeler1
+gk_4c2d8b5b315c,in-1b07eb34b95bda42,"patient safety,",0.556,Medium Low,BERT (standalone),False,,no,labeler1
+gk_ac708f1e87f6,in-18cb5784cc91da52,road user charging,0.75,Medium High,LLM,False,,no,labeler1
+gk_29808d5dfd33,in-cb469524b35ad55f,monitoring,0.271,Very Low,BERT (standalone),False,,no,labeler1
+gk_b696ec883063,in-ec932e38e216e648,action RPG genre,0.75,Medium High,LLM,False,,yes,labeler1
+gk_d6325d7ecf3d,in-d7e16cc799ac4adb,Data Warehousing,0.75,Medium High,LLM,False,,yes,labeler1
+gk_81babeb37330,in-c530a3c8b8b21962,Electronic Trading,0.75,Medium High,LLM,False,,yes,labeler1
+gk_1582dda61f68,in-a224209703562542,user stories,0.75,Medium High,LLM,False,,no,labeler1
+gk_7694b44b30da,in-fea6f15911810b84,usability standards,0.75,Medium High,LLM,False,,yes,labeler1
+gk_bace02abd213,in-48920929fb5db222,mobile app development,0.75,Medium High,LLM,True,,yes,labeler1
+gk_829385b0e1e3,in-6179e27e3e3b1221,software,0.292,Very Low,BERT (standalone),True,,yes,labeler1
+gk_2dcd6c285840,in-ebbfe003a111e1ad,React,0.75,Medium High,LLM,False,,yes,labeler1
+gk_e5fdd42c6081,in-cc0c01e449ac8df0,user experience,0.785,Medium High,BERT+LLM,True,,yes,labeler1
+gk_eb31634b030d,in-cb469524b35ad55f,AI systems,0.75,Medium High,LLM,True,,yes,labeler1
+gk_1c218276b381,in-2d603bfc2b84d854,secure distributed systems,0.75,Medium High,LLM,False,,yes,labeler1
+gk_396cfdf9aac9,in-d58be9b941c40e7c,"Word,",0.517,Medium Low,BERT (standalone),False,,yes,labeler1
+gk_17814a3e0fc9,in-f9d488e0553375cd,e-trading,0.75,Medium High,LLM,True,,yes,labeler1
+gk_b1d1f9154e92,in-145f2060da39ba0c,UI/UX,0.75,Medium High,LLM,True,,no,labeler1
+gk_e42be2d52f22,in-5aca43f142c28402,modern front,0.463,Low,BERT (standalone),False,,no,labeler1
+gk_73562f311d15,in-a3fd845c660c8c35,Oracle E -Business Suite data model,0.5,Medium Low,BERT (standalone),False,,yes,labeler1
+gk_4e42ba42acdb,in-b3082e5e7e84fb6c,data analysis,0.75,Medium High,LLM,True,,yes,labeler1
+gk_296912e383bd,in-793abd07fa428a3b,reports,0.75,Medium High,LLM,False,,yes,labeler1
+gk_affd8cfb2818,in-cd12856de85dc43c,low carbon energy technology,0.75,Medium High,LLM,False,,yes,labeler1
+gk_d81fa2dea90d,in-efbca6ae81940ddf,corporate headshots,0.781,Medium High,BERT+LLM,True,,yes,labeler1
+gk_cb530a31b891,in-f7bdb497758a5bfa,professional degree,0.427,Low,BERT (standalone),False,,no,labeler1
+gk_f48c83a34e9e,in-89ac110868858b15,automation,0.844,High,BERT+LLM,False,,yes,labeler1
+gk_b30b26ac45d4,in-c550802932793d54,Federal Bureau of Investigation,0.75,Medium High,LLM,False,,no,labeler1
+gk_a6ce836adbb3,in-bacf82922de13ca1,Corporate Real Estate,0.836,High,BERT+LLM,False,,yes,labeler1
+gk_e7b6e358f457,in-208927b25247d93a,powder coating,0.846,High,BERT+LLM,True,,yes,labeler1
+gk_972aea131804,in-04a4733289ddfb31,machine learning,0.827,High,BERT+LLM,False,,yes,labeler1
+gk_4f08fa89f5a5,in-c1e5bef8c40f180e,WLM,0.544,Medium Low,BERT (standalone),True,,no,labeler1
+gk_bfc8d278393c,in-863349e3091efe5c,various,0.339,Very Low,BERT (standalone),False,,no,labeler1
+gk_b89602a00c48,in-b4b1e4c5481eb021,training and development framework,0.75,Medium High,LLM,False,,yes,labeler1
+gk_0b8942ea686e,in-558ae189d27d902f,"financial information),",0.542,Medium Low,BERT (standalone),False,,no,labeler1
+gk_026c6f2b1dd5,in-2c855b1de8c84f5d,CI/CD pipelines,0.75,Medium High,LLM,False,,yes,labeler1
+gk_e5258f3f3af5,in-22d874b31008ad6e,Power products,0.851,High,BERT+LLM,False,,yes,labeler1
+gk_9c5b0c4f575d,in-2273d0bbf45189ae,machine learning infrastructure,0.75,Medium High,LLM,True,,yes,labeler1
+gk_031850e4b283,in-f2eb771501a78e57,engineering,0.75,Medium High,LLM,False,,yes,labeler1
+gk_a4f3d481740b,in-3caaf408a8b81368,CSS,0.841,High,BERT+LLM,False,,yes,labeler1
+gk_21100b13979a,in-a6048f4784c10cfc,cloud provisioning,0.558,Medium Low,BERT (standalone),False,,yes,labeler1

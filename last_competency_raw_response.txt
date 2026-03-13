@@ -1,1 +1,63 @@
-Error: Error code: 400 - {'error': {'message': 'google/deepseek/deepseek-v3.2 is not a valid model ID', 'code': 400}, 'user_id': 'user_36JwUxMnQs6OotCRotgPYyjLRsR'}
+```json
+{
+    "competencies": [
+        {
+            "id": "C1",
+            "title": "Cloud Infrastructure Automation and Security",
+            "description": "Design and automate scalable, secure cloud infrastructure systems by provisioning resources, enforcing security standards, and deploying applications using platforms like AWS to maintain a ready operational environment.",
+            "related_skills": ["provision AWS resources", "enforce cloud security standards", "deliver automated environments", "design and automate infrastructure systems", "deploy scalable applications", "maintain a ready infrastructure.", "own infrastructure", "support implementation coordination of data center infrastructure"],
+            "future_relevance": "Cloud computing is a foundational technology with strong growth, and the ability to automate and secure infrastructure is critical for scalable, efficient, and resilient digital operations across all industries."
+        },
+        {
+            "id": "C2",
+            "AI-Enhanced Data Analytics and Strategy",
+            "title": "AI-Enhanced Data Analytics and Strategy",
+            "description": "Evaluate and implement comprehensive analytics strategies by incorporating advanced analytics and AI tools to analyze large datasets, influence data instrumentation, and generate actionable intelligence for business decision-making.",
+            "related_skills": ["use advanced analytics", "Use advanced analytics", "analysis of large datasets.", "influence data instrumentation", "incorporate analytics", "implement an analytics strategy", "actionable intelligence"],
+            "future_relevance": "Data-driven decision-making powered by AI is a core competitive advantage; professionals who can strategically implement analytics are essential for innovation and operational efficiency."
+        },
+        {
+            "id": "C3",
+            "title": "DevOps and Continuous Delivery Leadership",
+            "description": "Analyze and oversee DevOps practices and infrastructure delivery to ensure the reliable and efficient deployment of software systems, coordinating activities that bridge development and operations.",
+            "related_skills": ["oversee DevOps practices", "deliver infrastructure"],
+            "future_relevance": "DevOps principles are central to modern software development lifecycles, enabling faster, more reliable delivery of value and are crucial for maintaining agility in technology-driven organizations."
+        },
+        {
+            "id": "C4",
+            "title": "Data Project and Initiative Management",
+            "description": "Apply project management principles to lead data and business intelligence initiatives, ensuring the delivery of high-quality data projects that meet strategic objectives and drive innovation.",
+            "related_skills": ["delivering high -quality data projects", "lead data and BI initiatives", "driving innovation through data"],
+            "future_relevance": "The ability to successfully execute data projects transforms raw information into business value, a skill increasingly required as organizations become more data-centric."
+        },
+        {
+            "id": "C5",
+            "title": "Systems with Continuous Learning Capabilities",
+            "description": "Create intelligent systems that incorporate continuous learning mechanisms by applying architectural thinking and AI/ML concepts to build adaptive and evolving software solutions.",
+            "related_skills": ["build systems with continuous learning", "architectural thinking"],
+            "future_relevance": "Building self-improving systems is at the frontier of AI and software engineering, representing a key growth area for creating more autonomous and efficient technologies."
+        },
+        {
+            "id": "C6",
+            "title": "Digital Transformation Delivery",
+            "description": "Apply technological and analytical abilities to deliver digital transformation initiatives, leveraging ecosystem capabilities (like Salesforce) to modernize business processes and engage in business-critical activities.",
+            "related_skills": ["deliver digital transformation", "leverage your analytical abilities", "engage in business-critical activities", "leverage Salesforce ecosystem capabilities"],
+            "future_relevance": "Digital transformation is an ongoing imperative for all sectors; professionals who can effectively drive these changes ensure organizational resilience and competitiveness."
+        },
+        {
+            "id": "C7",
+            "title": "Cybersecurity Solution Implementation",
+            "description": "Apply security frameworks and best practices to implement effective cybersecurity solutions that protect infrastructure, data, and applications from evolving threats.",
+            "related_skills": ["implement security solutions"],
+            "future_relevance": "As digital infrastructure expands, so does the attack surface, making cybersecurity skills essential for protecting assets and maintaining trust in all technology-dependent operations."
+        },
+        {
+            "id": "C8",
+            "title": "Collaborative Innovation and Adaptability",
+            "description": "Apply empathetic collaboration and challenge techniques within teams to thrive on innovation, sustain projects through challenges, and foster a resilient and adaptable work culture.",
+            "related_skills": ["collaborate and challenge with empathy", "thrive on innovation", "sustainment"],
+            "future_relevance": "Human-centered skills like empathy and adaptability are critical for effective human-AI collaboration and for navigating the rapid pace of change in the future workplace."
+        }
+    ]
+}
+```

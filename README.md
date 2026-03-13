@@ -2,7 +2,7 @@
 
 ### **A Curriculum-Intelligence System for Vocational Education (IT / Software / Game Development)**
 
-This repository contains a full **research AI pipeline** designed to:
+This repository contains a full **research AI pipeline** designed to help schools identify skills their curriculum lacks and design reforms—especially in contexts where formal vocational standards lag behind job-market reality (e.g. Indonesia).
 
 * Extract **skills** and **knowledge** from job postings
 * Fuse outputs from **JobBERT + LLMs**
@@ -52,13 +52,14 @@ skill-extraction/
 ├── import_feedback.py               # Merge feedback_store → feedback artifacts
 ├── apply_feedback.py                # Apply Bloom/type corrections
 │
-├── evaluate_extraction.py           # P/R/F1 per extractor (BERT/LLM/Hybrid)
+├── evaluate_extraction.py           # Precision per extractor (BERT/LLM/Hybrid)
 ├── validate_parameters.py           # AUC, Brier, calibration, cross-validated AUC
 ├── evaluate_competency_generation.py # Competency quality metrics
 ├── evaluate_future_mapping.py       # Domain mapping accuracy vs gold labels
 ├── log_run_metadata.py              # Record run metadata for reproducibility
 ├── aggregate_results.py             # Aggregate runs + cross-run summary
 ├── preprocess_jobs_pipeline.py      # Raw jobs → jobs_sentences.csv, jobs_metadata.csv
+├── run_with_job_scraping.py        # One-step: preprocess + pipeline using job_scraping data
 │
 ├── review_ui/                       # Web UI for internal/development review
 │   ├── app.py                       # FastAPI backend
@@ -94,8 +95,13 @@ skill-extraction/
 │   │   ├── curriculum_sample.csv
 │   │   └── README.md
 │   └── preprocessing/data_prepared/
-│       ├── jobs_sentences.csv       # Pipeline input
+│       ├── jobs_sentences.csv       # Pipeline input (from preprocess on job_scraping/output/english_jobs.csv)
 │       └── jobs_metadata.csv        # job_id → job_date
+│
+├── job_scraping/                    # Job scrapers (default data source)
+│   ├── scrape_english_jobs.py      # → output/english_jobs.csv
+│   └── output/
+│       └── english_jobs.csv         # 12 months of job postings
 │
 ├── results/                         # Output of a single run
 ├── results_aggregated/              # Aggregated results across runs
@@ -103,7 +109,7 @@ skill-extraction/
 ├── RESEARCH_QUESTIONS.md            # RQs, metrics, ablation design
 ├── CALCULATIONS.md                  # Ranking, voting, weighting formulas
 ├── PIPELINE.md                      # Detailed pipeline documentation
-├── run.bat                          # Phase 1: Full pipeline (15 steps)
+├── run.bat                          # Phase 1: Full pipeline (16 steps)
 ├── run_phase_2.bat                  # Phase 2: Post-review pipeline (13 steps)
 └── scripts/create_sample_csvs.py   # Generate DATA/samples/*.csv for dashboard
 ```
@@ -116,7 +122,13 @@ skill-extraction/
 REM 0. (One-time) Generate real future domains from WEF/O*NET/McKinsey
 python ingest_future_domains.py
 
-REM 1. Phase 1 — Full pipeline (14 steps: extraction → trends → recommendations → gold set)
+REM 0b. (Optional) Scrape fresh job data: cd job_scraping && python scrape_english_jobs.py
+REM     Default pipeline uses job_scraping/output/english_jobs.csv
+
+REM 1a. Quick run with job_scraping data (preprocess + pipeline in one step):
+python run_with_job_scraping.py
+
+REM 1b. Or Phase 1 — Full pipeline (16 steps: extraction → trends → recommendations → gold set)
 run.bat
 
 REM 2. (Optional) Label gold set: uvicorn gold_labeling_ui.app:app --reload
@@ -126,7 +138,7 @@ REM 3. Expert review — start the web UI (optional but recommended)
 uvicorn review_ui.app:app --reload
 REM Open http://127.0.0.1:8000/?reviewer_id=alice
 
-REM 4. Phase 2 — Post-review (13 steps: calibration → re-generation → plots → evaluation)
+REM 4. Phase 2 — Post-review (17 steps: calibration → re-generation → plots → evaluation)
 run_phase_2.bat
 
 REM 5. Label top-20 recommendations (results/recommendations.csv → expert_priority column)
@@ -140,7 +152,7 @@ REM    plot_aggregated.bat
 REM    or: python aggregate_results.py ... --plot
 ```
 
-**Larger data:** Edit `run.bat` or run `python pipeline.py --sample_size 5000` (or `0` for no limit).
+**Larger data:** Edit `run.bat` or run `python run_with_job_scraping.py --sample_size 5000` (or `0` for no limit).
 
 See [PIPELINE.md](PIPELINE.md) for detailed steps, data flow, and troubleshooting.
 See [CALCULATIONS.md](CALCULATIONS.md) for ranking, voting, weighting, and evaluation formulas.
@@ -201,21 +213,24 @@ This project introduces a **multi-layer curriculum intelligence pipeline** combi
 
 ### **1. Data Acquisition & Cleaning**
 
+* **Default source:** `job_scraping/output/english_jobs.csv` (12 months of job postings; config.JOBS_SCRAPING_CSV)
 * Scraped job postings (IT / Software / Game Development)
 * Cleaning markdown noise (** \ // etc.)
-* Sentence splitting
+* Sentence splitting (bullet boundaries, paragraph breaks for JobBERT 128-token limit)
 * Every sentence carries **job_id + job_date**
 
 ### **2. Hybrid Extraction (JobBERT + LLM)**
 
-* **JobBERT + CRF** for BIO-tagged skill/knowledge spans
+**Design (Direction A):**
+* **BERT runs per sentence** — Token limit (128) suits short segments. Aggregates skills and knowledge across sentences.
+* **LLM runs on full job description** — Full context so it does not miss skills or knowledge that span sentences.
+* **BERT knowledge → LLM context** — Passed as "Context (Tools detected by JobBERT)" to ground extraction and reduce hallucination (anti-hallucination).
+* **Knowledge output: LLM-only** — Final knowledge comes from LLM only; BERT knowledge is not fused into output.
+
+* **JobBERT + CRF** for BIO-tagged skill/knowledge spans (per sentence)
 * **LLM-based extractor** for structured JSON (configurable: DeepSeek, GPT, Gemini, Claude, etc.)
 * **Semantic agreement** using SBERT embeddings
-* **Fusion Engine** merges both with:
-
-  * confidence tiers
-  * semantic density
-  * hard vs soft skill classification
+* **Fusion Engine** merges BERT+LLM for *skills* only; knowledge is LLM-only
 
 ### **3. Taxonomy Layer**
 
@@ -280,7 +295,7 @@ Creates sampled CSVs for expert validation (500 skills, 200 knowledge, 100 compe
 ### **10. Scientific Evaluation**
 
 * **Gold set labeling** (`DATA/labels/`) for ground-truth extraction quality
-* **Extraction evaluation**: P/R/F1 per source (BERT/LLM/Hybrid) with Wilson CIs
+* **Extraction evaluation**: Precision per source (BERT/LLM/Hybrid) with Wilson CIs (recall not estimable)
 * **Calibrated verification**: AUC-ROC, Brier score, calibration curve, cross-validated AUC
 * **Domain mapping validation**: Top-1 accuracy vs expert labels
 * **Reproducibility**: Run metadata with dataset hash, model versions, seeds
@@ -297,7 +312,7 @@ The system supports **multiple independent runs** for robust evaluation.
 run.bat
 ```
 
-For **larger data**: `python pipeline.py --sample_size 5000` (or `--sample_size 0` for no limit).
+For **larger data**: `python run_with_job_scraping.py --sample_size 5000` (or `--sample_size 0` for no limit).
 
 After the run completes, rename the results folder:
 
@@ -385,7 +400,7 @@ The system generates:
 
 # 🧠 Competency Generation
 
-`generate_competencies.py` produces:
+`generate_competencies.py` produces (with anti-hallucination: prompt rule + post-validation filter for `related_skills`):
 
 * JSON competency framework
 * 10–25 competencies per batch

@@ -22,20 +22,35 @@ from typing import List
 import pandas as pd
 from langdetect import detect, LangDetectException
 
+try:
+    import config
+    _JOBS_SCRAPING_CSV = config.JOBS_SCRAPING_CSV
+    _PREPROCESS_OUTPUT_DIR = config.PREPROCESS_OUTPUT_DIR
+except ImportError:
+    _JOBS_SCRAPING_CSV = Path("job_scraping/output/english_jobs.csv")
+    _PREPROCESS_OUTPUT_DIR = Path("DATA/preprocessing/data_prepared")
+
 
 # -------------------------------------------------------
 # Sentence splitting
 # -------------------------------------------------------
 
 SENT_SPLIT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9])")
+# Split on newline+bullet or paragraph breaks (keeps segments under ~128 BERT tokens)
+BULLET_OR_PARAGRAPH_RE = re.compile(r"\n\s*[\-\*\u2022\u00b7•·]\s+|\n\n+")
 
 
 def split_sentences(text: str) -> List[str]:
     if not isinstance(text, str):
         return []
-    text = text.replace("\r", " ").replace("\n", " ")
-    sents = [s.strip() for s in SENT_SPLIT_RE.split(text) if s.strip()]
-    return sents
+    # First split on bullet boundaries and paragraph breaks
+    parts = BULLET_OR_PARAGRAPH_RE.split(text)
+    result = []
+    for part in parts:
+        part = part.replace("\r", " ").replace("\n", " ")
+        sents = [s.strip() for s in SENT_SPLIT_RE.split(part) if s.strip()]
+        result.extend(sents)
+    return result
 
 
 # -------------------------------------------------------
@@ -104,19 +119,20 @@ def main():
     parser.add_argument(
         "--input",
         type=str,
-        default=r"DATA/preprocessing/jobs_rpl_id_raw_2.csv",
-        help="Raw scraped job postings CSV"
+        default=str(_JOBS_SCRAPING_CSV),
+        help="Raw scraped job postings CSV (default: job_scraping/output/english_jobs.csv for 12mo data)",
     )
     parser.add_argument(
         "--output_dir",
         type=str,
-        default=r"DATA/preprocessing/data_prepared",
-        help="Where to store metadata + cleaned sentence CSVs"
+        default=str(_PREPROCESS_OUTPUT_DIR),
+        help="Where to store metadata + cleaned sentence CSVs",
     )
     parser.add_argument("--translate", action="store_true", help="Translate non-English sentences → English")
     parser.add_argument("--dedupe", action="store_true", help="Remove duplicate cleaned sentences")
     parser.add_argument("--min_len", type=int, default=10)
-    parser.add_argument("--max_len", type=int, default=1000)
+    parser.add_argument("--max_len", type=int, default=600,
+        help="Max sentence length in chars (default 600 for JobBERT 128-token limit)")
     parser.add_argument("--translation_model", type=str, default="Helsinki-NLP/opus-mt-mul-en")
 
     args = parser.parse_args()

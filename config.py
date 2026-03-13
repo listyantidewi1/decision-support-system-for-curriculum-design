@@ -33,6 +33,13 @@ REAL_WORLD_JOBS_PATH = DATA_DIR / "real_job_sentences.txt"  # TODO: adjust
 OUTPUT_DIR = PROJECT_ROOT / "results"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
+# ---- JOB SCRAPING DATA (default pipeline source) ----
+# Raw job postings from job_scraping (12 months of data); input to preprocess
+JOBS_SCRAPING_CSV = PROJECT_ROOT / "job_scraping" / "output" / "english_jobs.csv"
+# Preprocess output dir; pipeline reads jobs_sentences.csv from here
+PREPROCESS_OUTPUT_DIR = PROJECT_ROOT / "DATA" / "preprocessing" / "data_prepared"
+PIPELINE_INPUT_CSV = PREPROCESS_OUTPUT_DIR / "jobs_sentences.csv"
+
 # ---- LABELS ----
 # We assume simple BIO: O, B, I for both skills and knowledge.
 # If your SkillSpan encoding differs, change these here.

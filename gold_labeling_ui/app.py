@@ -3,7 +3,7 @@ Gold Labeling UI - FastAPI web app for ground-truth labeling.
 
 Multi-reviewer support: each reviewer labels the same gold set. Labels are stored
 per (gold_id, labeler_id) in DATA/labels/gold_labels/ so reviewers don't overwrite
-each other. Used for extraction evaluation (precision/recall) and inter-rater reliability.
+each other. Used for extraction evaluation (precision) and inter-rater reliability.
 
 Run: uvicorn gold_labeling_ui.app:app --reload
 Usage: Open with ?labeler_id=alice (or dewi, r2, etc.) for multi-reviewer sessions.
