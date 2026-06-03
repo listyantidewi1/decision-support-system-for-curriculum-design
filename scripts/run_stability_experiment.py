@@ -141,7 +141,7 @@ def main() -> int:
                 mean_grounding = 0.0
             else:
                 g_cfg = GeneratorConfig(model=args.model)
-                comps, brs = generate_competencies_v2(
+                comps, brs, _dropped = generate_competencies_v2(
                     clusters=clusters, config=g_cfg, apply_grounding_gate=True,
                 )
                 comps_dicts = [c.to_dict() for c in comps]

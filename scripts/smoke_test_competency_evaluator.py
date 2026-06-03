@@ -49,8 +49,7 @@ def make_perfect():
     from competency_v2_schema import CompetencyV2
     return CompetencyV2(
         id="comp_perfect_001",
-        title="Implement secure authentication flows",
-        description="Build OAuth, sessions, and input validation.",
+        statement="Implement secure authentication flows by building OAuth 2.0 credential handling, session management, and input validation as an integrated layer.",
         related_skills=[
             "OAuth 2.0",
             "session management",
@@ -73,8 +72,7 @@ def make_paraphrase():
     from competency_v2_schema import CompetencyV2
     return CompetencyV2(
         id="comp_paraphrase_002",
-        title="Build modern web application UIs",
-        description="React + TypeScript + responsive design.",
+        statement="Build modern web application UIs using React with TypeScript and responsive design techniques.",
         related_skills=[
             "React component design",
             "type-safe JavaScript development",
@@ -97,8 +95,7 @@ def make_hallucinated():
     from competency_v2_schema import CompetencyV2
     return CompetencyV2(
         id="comp_hallucinated_003",
-        title="Deploy cloud infrastructure",
-        description="AWS, Terraform, Kubernetes.",
+        statement="Deploy cloud infrastructure across AWS using Terraform and Kubernetes orchestration patterns.",
         related_skills=[
             "AWS",                                      # IN source_sentences
             "quantum cryptography research",            # NOT in source — hallucinated
@@ -201,8 +198,7 @@ def test_empty_skills():
 
     comp = CompetencyV2(
         id="comp_empty",
-        title="x",
-        description="y",
+        statement="x" * 50,
         related_skills=[],
         rationale="x" * 400,
         batch_reasoning_id="br",

@@ -253,9 +253,9 @@ def evaluate_one(
         skill_embs = embedder.encode(
             skills, normalize_embeddings=True, convert_to_numpy=True, show_progress_bar=False,
         )
-        # Competency context: title + description. Add rationale's first sentence
+        # Competency context: the statement. Add rationale's first sentence
         # if available to give the embedder more signal.
-        context = f"{competency.title}. {competency.description}".strip()
+        context = (competency.statement or "").strip()
         if competency.rationale:
             first_rat = competency.rationale.split(".")[0].strip()
             if first_rat:

@@ -116,12 +116,20 @@ def main() -> int:
              "original Indonesian text in `sentence_text_original` for "
              "provenance. No-op when items are already English.",
     )
+    # Occupation (SKKNI) mapping defaults ON 2026-05-14 — curriculum
+    # designers consistently need the Indonesian occupational-standard
+    # anchor on every competency, and v10c shipped without it because the
+    # opt-in flag was missing from the re-run command. The skema okupasi
+    # mapping is now part of the standard pipeline contract; pass
+    # --disable-occupation-mapping to skip for ablation runs.
     parser.add_argument(
-        "--enable-occupation-mapping", action="store_true",
-        help="v9 sprint: after Phase 2.4, map each competency to the top-K "
-             "Indonesian SKKNI occupations (skema okupasi) via multilingual "
-             "SBERT cosine. Populates the `occupation_matches` field used "
-             "by the dashboard's occupation filter + per-competency chips.",
+        "--enable-occupation-mapping", action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Map each competency to the top-K Indonesian SKKNI occupations "
+             "(skema okupasi) via multilingual SBERT cosine. Populates the "
+             "`occupation_matches` field used by the dashboard's occupation "
+             "filter + per-competency chips. Default: enabled. Use "
+             "--no-enable-occupation-mapping to skip.",
     )
     parser.add_argument(
         "--skkni-csv", default="DATA/skema_okupasi_indonesia_with_desc.csv",
@@ -304,18 +312,23 @@ def main() -> int:
         except Exception as e:
             logger.warning("Phase 2.2: jobs_metadata load failed (%s); proceeding without role distribution", e)
 
-    competencies, batch_reasonings = generate_competencies_v2(
+    competencies, batch_reasonings, hallucination_dropped = generate_competencies_v2(
         clusters=clusters,
         config=g_cfg,
         apply_grounding_gate=True,
         job_titles=job_titles_for_generator or None,
     )
-    logger.info("Phase 2.2 + 2.5: %d competencies survived grounding gate", len(competencies))
+    logger.info(
+        "Phase 2.2: %d competencies passed anti-hallucination filter "
+        "(%d dropped for fabrication)",
+        len(competencies), len(hallucination_dropped),
+    )
     pipeline_report["stages"]["phase2_2_generation"] = {
         "n_competencies": len(competencies),
         "n_batch_reasonings": len(batch_reasonings),
+        "n_hallucination_dropped": len(hallucination_dropped),
         "model": args.model,
-        "grounding_threshold": args.grounding_threshold,
+        "contract": "demand-rank + anti-hallucination filter (was: grounding gate, until 2026-05-13b)",
     }
 
     # -------------------- Phase 2.5b: text-quality post-check --------------------
@@ -330,7 +343,8 @@ def main() -> int:
                 len(tq_failing),
             )
             for c in tq_failing:
-                logger.warning("  - %s: %s", c.id, c.title)
+                first_sent = (c.statement or "").split(".", 1)[0].strip()[:80]
+                logger.warning("  - %s: %s", c.id, first_sent)
         competencies = tq_passing
         failed_text_quality = tq_failing
         pipeline_report["stages"]["phase2_5b_text_quality"] = {
@@ -413,9 +427,17 @@ def main() -> int:
                 n_mapped, len(competencies),
             )
 
-    # -------------------- Phase 4 — priority / demand scoring --------------------
+    # -------------------- Phase 4 — priority / demand scoring + final cap --------------------
     # Computed AFTER Phase 2.4 so every competency has its final grounding +
     # demand + future_weight values. The priority_score formula tracks Req 9.6.
+    #
+    # 2026-05-13b contract change: this stage is now the SOLE place where the
+    # final cap is applied. The pipeline is "rank by priority_score, take
+    # top N" — not "grounding-gate to 20, then sort". This means high-demand
+    # topics like Java/Kotlin (25 jobs) and Databases reach the user even
+    # when their grounding score is moderate, because the anti-hallucination
+    # filter (Phase 2.2 final step) already removed actual fabrications.
+    rank_excluded: list = []
     if competencies:
         max_n_jobs = max((len(c.source_job_ids) for c in competencies), default=1) or 1
         for c in competencies:
@@ -426,9 +448,27 @@ def main() -> int:
             c.priority_score = round(
                 0.40 * c.demand_score + 0.30 * grounding + 0.30 * fw, 4
             )
+        n_before_cap = len(competencies)
+        # Sort by priority_score desc, then by n_unique_jobs desc as tiebreaker
+        competencies.sort(
+            key=lambda c: (-c.priority_score, -len(c.source_job_ids)),
+        )
+        cap = g_cfg.final_competency_cap
+        if n_before_cap > cap:
+            rank_excluded = competencies[cap:]
+            competencies = competencies[:cap]
+            logger.info(
+                "Phase 4: ranked %d competencies by priority_score; "
+                "kept top %d, excluded %d below the cut",
+                n_before_cap, len(competencies), len(rank_excluded),
+            )
         pipeline_report["stages"]["phase4_priority"] = {
             "max_n_unique_jobs": int(max_n_jobs),
             "formula": "0.40 * demand + 0.30 * grounding + 0.30 * future_weight",
+            "n_before_cap": n_before_cap,
+            "final_competency_cap": cap,
+            "n_after_cap": len(competencies),
+            "n_excluded_by_cap": len(rank_excluded),
         }
         logger.info(
             "Phase 4: priority/demand scored across %d competencies (max_n_jobs=%d)",
@@ -469,8 +509,38 @@ def main() -> int:
         json.dumps(competency_dicts, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
+    # competencies_failed.json: records EVERY drop with its reason. The 2026-
+    # 05-13b honesty audit found the old version only saved text-quality
+    # failures (0 entries at v9, despite 30 grounding-gate drops + 18
+    # invariant-violation drops). With the contract switch, drops happen at:
+    #   1. anti-hallucination filter (Phase 2.2 final step) — fabrications
+    #   2. text-quality post-check (Phase 2.5b) — language / length / etc.
+    #   3. priority-rank cap (Phase 4) — fell below the top-N cut
+    # All three groups are now serialised here so reviewers can audit the
+    # full pipeline behaviour and adjust thresholds with provenance.
+    failed_entries = []
+    for c in hallucination_dropped:
+        d = c.to_dict()
+        d["dropped_reason"] = "anti_hallucination_filter"
+        d["dropped_detail"] = {
+            "warnings": [w for w in (c.statement_evidence_concerns or []) if w.get("severity") == "warning"],
+        }
+        failed_entries.append(d)
+    for c in failed_text_quality:
+        d = c.to_dict()
+        d["dropped_reason"] = "text_quality_post_check"
+        failed_entries.append(d)
+    for c in rank_excluded:
+        d = c.to_dict()
+        d["dropped_reason"] = "priority_rank_cap"
+        d["dropped_detail"] = {
+            "priority_score": d.get("priority_score", 0.0),
+            "cap": g_cfg.final_competency_cap,
+            "note": "Excluded by final top-N cut; not a quality failure.",
+        }
+        failed_entries.append(d)
     (out_dir / "competencies_failed.json").write_text(
-        json.dumps([c.to_dict() for c in failed_text_quality], indent=2, ensure_ascii=False),
+        json.dumps(failed_entries, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
     (out_dir / "batch_reasonings.json").write_text(

@@ -58,11 +58,13 @@ def _write_summary(competencies, batch_reasonings, out_path: Path) -> str:
 
     for i, c in enumerate(competencies, 1):
         lines.append("-" * 88)
-        lines.append(f"[{i}] {c.title}")
+        # Header shows the first sentence of the statement (max 100 chars)
+        first_sent = (c.statement or "").split(".", 1)[0].strip()[:100]
+        lines.append(f"[{i}] {first_sent}")
         lines.append(f"    id={c.id}  cluster={c.cluster_id}  provider={c.provider}  model={c.model}")
         lines.append(f"    KKNI level: {c.kkni_level}   future_weight: {c.future_weight:.2f}   "
                      f"trend: {c.empirical_trend}   grounding_preview: {c.grounding_score_preview:.2f}")
-        lines.append(f"    description: {c.description}")
+        lines.append(f"    statement: {c.statement}")
         lines.append(f"    related_skills ({len(c.related_skills)}):")
         for s in c.related_skills:
             lines.append(f"       - {s}")
@@ -158,7 +160,7 @@ def main() -> int:
     print(f"[INFO] generating competencies via {cfg_g.model}")
     print("[INFO] this calls OpenRouter (DeepSeek) or Jatevo (GPT) — expect 30-90s wall-clock")
 
-    competencies, batch_reasonings = generate_competencies_v2(
+    competencies, batch_reasonings, _dropped = generate_competencies_v2(
         clusters=clusters,
         config=cfg_g,
     )

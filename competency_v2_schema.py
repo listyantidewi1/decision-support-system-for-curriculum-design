@@ -74,8 +74,15 @@ class CompetencyV2:
 
     # Identity
     id: str                                      # e.g. "comp_a1b2c3"
-    title: str                                   # verb-led learning outcome
-    description: str                             # 1-3 sentences, assessable
+    # ONE verb-led competency statement (2-4 sentences). Replaces the v1
+    # title+description split (2026-05-13): titles concentrated hallucination
+    # because the LLM compressed nuance into a 5-7 word phrase, and the
+    # title+description redundancy confused users (browse list showed the
+    # title, detail page repeated it as H1 then "Description:" with the
+    # actual statement). One field aligns with Indonesian CBE standards
+    # (Capaian Pembelajaran is a single statement) and removes one
+    # hallucination surface.
+    statement: str                               # full competency statement, verb-led
 
     # Content
     related_skills: List[str]                    # hard skills (drawn from cluster items)
@@ -143,12 +150,13 @@ class CompetencyV2:
     # Dedup audit (when a competency is the survivor of a merge)
     merged_from: List[str] = field(default_factory=list)
 
-    # Tier 2D (2026-05-13) — title evidence audit. Each entry is
+    # Statement evidence audit (renamed from title_evidence_concerns 2026-05-13
+    # when title was removed). Each entry is
     # {"term": "Azure DevOps", "literal_hits": 1, "n_sentences": 4, "min_required": 2,
-    #  "severity": "warning"|"info"}. Surfaces to the dashboard as a "title
-    # overreaches evidence" badge so reviewers can spot brand/proper-noun
-    # tokens in titles that the source sentences don't actually back.
-    title_evidence_concerns: List[dict] = field(default_factory=list)
+    #  "severity": "warning"|"info"}. After the v2 contract change this list
+    # also serves as a *filter* — entries with severity="warning" cause the
+    # competency to be dropped as a likely hallucination.
+    statement_evidence_concerns: List[dict] = field(default_factory=list)
 
     # v8 sprint Phase 4 — demand + priority signals. Computed as a post-process
     # after all competencies are generated and Phase 2.4 (education aggregation)
@@ -175,8 +183,7 @@ class CompetencyV2:
     def to_dict(self) -> dict:
         return {
             "id": self.id,
-            "title": self.title,
-            "description": self.description,
+            "statement": self.statement,
             "related_skills": list(self.related_skills),
             "soft_skills_required": list(self.soft_skills_required),
             "soft_skills_description": self.soft_skills_description,
@@ -214,7 +221,7 @@ class CompetencyV2:
             "provider": self.provider,
             "model": self.model,
             "merged_from": list(self.merged_from),
-            "title_evidence_concerns": list(self.title_evidence_concerns),
+            "statement_evidence_concerns": list(self.statement_evidence_concerns),
             "demand_score": round(float(self.demand_score), 4),
             "priority_score": round(float(self.priority_score), 4),
             "occupation_matches": list(self.occupation_matches),
@@ -253,10 +260,16 @@ class CompetencyV2:
             issues.append("rationale starts with boilerplate prefix 'This competency'")
         if not self.batch_reasoning_id:
             issues.append("batch_reasoning_id must be set")
-        if not self.title.strip():
-            issues.append("title must be non-empty")
-        if not self.description.strip():
-            issues.append("description must be non-empty")
+        if not self.statement.strip():
+            issues.append("statement must be non-empty")
+        # Statement should be a real sentence, not a 3-word title (statement
+        # replaces the legacy title+description split). Below 40 chars almost
+        # certainly indicates the LLM emitted a v1-style title.
+        if 0 < len(self.statement.strip()) < 40:
+            issues.append(
+                f"statement is too short ({len(self.statement.strip())} chars); "
+                "must be a full verb-led sentence, not a title fragment"
+            )
         return issues
 
 
@@ -303,18 +316,39 @@ class GeneratorConfig:
     #               but pedagogically-distinct titles as duplicates
     #               (e.g., "Apply Kubernetes" ≈ "Use Docker"). Raised
     #               SBERT title threshold 0.85 -> 0.92 so only near-exact
-    #               title duplicates merge. Pedagogically-distinct topics
-    #               survive.
-    dedup_semantic_title_threshold: float = 0.92  # SBERT cosine for title-merge
-    dedup_jaccard_skills_threshold: float = 0.65  # skill-overlap for merge
+    #               title duplicates merge.
+    #   2026-05-14  Title became statement (2-4 sentences); the SBERT
+    #               cosine on longer text is naturally lower than on
+    #               short titles, so 0.92 was over-strict. n1k_v10b
+    #               produced 6 cloud-related competencies that should
+    #               have collapsed to 3. Lowered SBERT to 0.82 (calibrated
+    #               for full-statement comparison). Jaccard lowered 0.65
+    #               -> 0.40 so paraphrased skill names like "AWS" /
+    #               "Amazon Web Services" and "Infrastructure as Code" /
+    #               "IaC" can drive a merge.
+    dedup_semantic_title_threshold: float = 0.82  # SBERT cosine for statement-merge
+    dedup_jaccard_skills_threshold: float = 0.40  # skill-overlap for merge
 
-    # Hard cap per pipeline run (after dedup across clusters).
-    # Raised 2026-05-13 from 12 to 50 after diagnosing that the n1k corpus
-    # (67 distinct cluster topics) was always truncating to 12 regardless of
-    # dedup threshold changes — losing 80% of curriculum signal. 50 still
-    # protects against runaway counts on noisy corpora but lets a real
-    # 50-topic curriculum surface.
-    final_competency_cap: int = 50
+    # Hard cap per pipeline run (after dedup + anti-hallucination filter +
+    # demand ranking). History:
+    #   2026-05-13a  Raised 12 -> 50 to stop the n1k corpus losing 80% of
+    #                curriculum signal at truncation.
+    #   2026-05-13b  Pipeline contract switched from grounding-gate to
+    #                demand-rank + anti-hallucination filter. Cap is now
+    #                applied AFTER ranking by priority_score, so it directly
+    #                controls how many of the MOST-DEMANDED competencies
+    #                reach the user. 30 covers the long tail (Java, Kotlin,
+    #                Databases, Mobile, etc.) without flooding the dashboard.
+    final_competency_cap: int = 30
+
+    # Statement-evidence floor (anti-hallucination filter, 2026-05-13b).
+    # Replaces the old grounding gate. A competency is dropped when its
+    # statement contains a product/proper-noun term that appears in fewer
+    # than this many source sentences (severity="warning"). Catches the
+    # "Innovate AI-enabled" hallucination case directly without the
+    # bidirectional-cosine math of the old grounding gate (which killed
+    # high-demand items like Java/Kotlin and Databases).
+    statement_evidence_min_required: int = 2
 
     # Reproducibility / audit
     seed: int = 42

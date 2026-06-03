@@ -65,12 +65,26 @@ class KkniLabellerConfig:
     allowed_levels: Tuple[int, int] = (3, 7)
 
     # Minimum cosine similarity required to override the LLM suggestion.
-    # Below this, we keep the LLM's suggestion (or default to floor).
-    override_min_similarity: float = 0.30
+    # Raised 2026-05-14 from 0.30 → 0.45 after the n1k_v10b expert review
+    # found 11 of 30 competencies placed at KKNI 7 — many incorrectly,
+    # because the SBERT labeller eagerly overrode the LLM on cosine deltas
+    # too small to trust. With 0.45, only confidently-different placements
+    # override the LLM, which calibrates KKNI from richer cluster context.
+    override_min_similarity: float = 0.45
+
+    # Tiebreaker: when the top-2 levels are within `tiebreak_cosine_window`
+    # of each other, prefer the LOWER level. Bias is intentional —
+    # personality-trait-ish wording in statements ("leadership",
+    # "strategic", "evaluate") cosine-matches KKNI 7 descriptors even
+    # when the underlying cognitive demand is KKNI 5-6. Conservative
+    # placement is the safer error mode for curriculum work.
+    tiebreak_cosine_window: float = 0.05
 
     # If allowed_levels=(3, 6) and best match is outside that range, snap to
-    # nearest allowed boundary. Set False to allow out-of-range labels.
-    snap_to_allowed: bool = True
+    # nearest allowed boundary. Disabled 2026-05-14 — with (3, 7) covering
+    # the realistic span, snapping is unnecessary and obscures which
+    # competencies the labeller had to clamp.
+    snap_to_allowed: bool = False
 
 
 # --------------------------------------------------------------------------- #
@@ -151,7 +165,7 @@ def label_one(
         kkni_level_source      = "sbert_labeller"
         kkni_match_similarity  (cosine to the chosen level)
     """
-    text = f"{competency.title or ''}. {competency.description or ''}".strip()
+    text = (competency.statement or "").strip()
     if not text:
         return
 
@@ -166,6 +180,19 @@ def label_one(
     if best_sim < config.override_min_similarity:
         # Low confidence — don't override
         return
+
+    # Prefer-lower tiebreaker: among levels whose cosine is within
+    # `tiebreak_cosine_window` of the best, pick the LOWEST level. Bias
+    # is intentional and conservative — see config docstring.
+    win = float(getattr(config, "tiebreak_cosine_window", 0.0) or 0.0)
+    if win > 0.0:
+        tied = [
+            (levels[i], float(sims[i]))
+            for i in range(len(levels))
+            if float(sims[i]) >= best_sim - win
+        ]
+        if tied:
+            best_level, best_sim = min(tied, key=lambda lv_s: lv_s[0])
 
     if config.snap_to_allowed:
         lo, hi = config.allowed_levels

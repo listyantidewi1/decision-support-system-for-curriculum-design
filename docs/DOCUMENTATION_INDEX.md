@@ -18,6 +18,12 @@ Central index for all project documentation.
 | [../SCIENTIFIC_METHODOLOGY.md](../SCIENTIFIC_METHODOLOGY.md) | **Full scientific documentation** with worked examples |
 | [../RESEARCH_QUESTIONS.md](../RESEARCH_QUESTIONS.md) | RQ1–RQ5, metrics, gold set design, power analysis, limitations |
 
+## Current Evaluation Contract
+
+| Document | Description |
+|----------|-------------|
+| [SCIENTIFIC_EVALUATION_PROTOCOL.md](SCIENTIFIC_EVALUATION_PROTOCOL.md) | Evaluation contract for the v2 competency recommendation system: claims, pass/fail gates, baselines, expert review, traceability, and reproducibility |
+
 ## Indonesian-Language Docs
 
 | Document | Audience |

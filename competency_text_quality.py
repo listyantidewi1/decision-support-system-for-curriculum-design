@@ -71,11 +71,12 @@ class TextQualityConfig:
     suspicious_repeated_words: tuple = ("religious",)
     suspicious_word_threshold: int = 3   # >= N occurrences in title+desc+rationale flags
 
-    # Length sanity
-    min_title_chars: int = 10
-    max_title_chars: int = 200
-    min_description_chars: int = 30
-    max_description_chars: int = 500
+    # Length sanity. v2 (2026-05-13b) merged title+description into a single
+    # `statement` field, so the legacy two-bucket length check becomes one.
+    # The lower bound (40) is the schema's own statement-minimum; the upper
+    # bound (700) is the legacy 200+500 sum minus connective overhead.
+    min_statement_chars: int = 40
+    max_statement_chars: int = 700
 
     # Language detection — set to None to disable
     expected_languages: tuple = ("en", "id")  # English or Indonesian
@@ -144,14 +145,11 @@ def _check_language(text: str, config: TextQualityConfig) -> Optional[str]:
 
 def _check_lengths(comp: CompetencyV2, config: TextQualityConfig) -> List[str]:
     out = []
-    tl = len((comp.title or "").strip())
-    if not (config.min_title_chars <= tl <= config.max_title_chars):
-        out.append(f"title length {tl} outside [{config.min_title_chars}, {config.max_title_chars}]")
-    dl = len((comp.description or "").strip())
-    if not (config.min_description_chars <= dl <= config.max_description_chars):
+    sl = len((comp.statement or "").strip())
+    if not (config.min_statement_chars <= sl <= config.max_statement_chars):
         out.append(
-            f"description length {dl} outside [{config.min_description_chars}, "
-            f"{config.max_description_chars}]"
+            f"statement length {sl} outside [{config.min_statement_chars}, "
+            f"{config.max_statement_chars}]"
         )
     return out
 
@@ -167,7 +165,7 @@ def check_one(comp: CompetencyV2, config: TextQualityConfig) -> List[str]:
     Returns a list of human-readable violation strings (empty = pass).
     """
     violations = []
-    combined = " ".join([comp.title or "", comp.description or "", comp.rationale or ""])
+    combined = " ".join([comp.statement or "", comp.rationale or ""])
 
     # 1. Suspicious-word substitutions (catches the "religious" bug class)
     v = _check_suspicious_words(combined, config)
@@ -175,7 +173,7 @@ def check_one(comp: CompetencyV2, config: TextQualityConfig) -> List[str]:
         violations.append(v)
 
     # 2. Per-field stopword density
-    for field_name, text in (("description", comp.description), ("rationale", comp.rationale)):
+    for field_name, text in (("statement", comp.statement), ("rationale", comp.rationale)):
         v = _check_stopword_density(text or "", config)
         if v:
             violations.append(f"{field_name}: {v}")

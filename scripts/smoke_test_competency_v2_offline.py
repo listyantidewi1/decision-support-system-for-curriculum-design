@@ -82,8 +82,7 @@ FAKE_AUTH = """
   "batch_reasoning": "This cluster centres on authentication and session security. The skills 'implementing OAuth 2.0 flows', 'session management', and 'input validation' co-occur in backend web-development job postings. I see one coherent sub-theme. I will produce ONE competency covering all three, because in practice they are designed and tested together — splitting them would create artificially narrow learning outcomes. No skills dropped.",
   "competencies": [
     {
-      "title": "Implement secure authentication flows",
-      "description": "Design, implement, and test secure authentication, session management, and input-validation logic for web applications, applying industry best practices for credential handling and CSRF/XSS protection.",
+      "statement": "Implement secure authentication flows for web applications. Design, build, and test OAuth 2.0 credential handling, session management, and input validation as an integrated authentication layer. Show mastery by shipping a working OAuth flow with proper session handling and validated inputs.",
       "related_skills": ["implementing OAuth 2.0 flows", "session management", "input validation"],
       "rationale": "These three skills together describe how a junior engineer builds the authentication layer of a web application. They cluster naturally because all three appear together in job postings for backend roles. I kept them as one competency rather than splitting because in practice they must be designed and tested as an integrated whole — you cannot ship OAuth without input validation, and session management is the bridge between them. A learner achieving this competency can demonstrate it by building a working OAuth 2.0 client + server flow with proper session handling and input sanitisation, which is exactly what backend engineering job postings list as a requirement together.",
       "soft_skills_required": ["attention to detail", "problem solving"],
@@ -103,8 +102,7 @@ FAKE_AUTH_DUP = """
   "batch_reasoning": "Same auth cluster as before. Producing one competency about secure authentication.",
   "competencies": [
     {
-      "title": "Implementing Secure Authentication Flows",
-      "description": "Build and test authentication, sessions, and input validation in web apps using current standards.",
+      "statement": "Implement secure authentication flows for web applications. Build and test OAuth-based authentication and session handling against current standards. Show mastery via working credential and session flows.",
       "related_skills": ["implementing OAuth 2.0 flows", "session management"],
       "rationale": "Two of the same skills as the prior auth cluster — the dedup pipeline should merge this into the survivor. The rationale here exists only so the validator accepts the competency long enough for dedup to absorb it; it intentionally talks about identical themes so that title-similarity and Jaccard both fire. Curriculum designers should not see this as a separate item.",
       "soft_skills_required": ["attention to detail"],
@@ -124,9 +122,8 @@ FAKE_FRONTEND = """
   "batch_reasoning": "This cluster is about modern frontend web development: React, TypeScript, CSS, responsive design, modern JS frameworks. All five items belong to one coherent competency about building modern web UIs. I see no need to split.",
   "competencies": [
     {
-      "title": "Build modern web application UIs",
-      "description": "Develop responsive, accessible web application interfaces using React with TypeScript, modern CSS layout techniques, and contemporary JavaScript framework patterns.",
-      "related_skills": ["React component design", "TypeScript development", "CSS layout", "responsive web design"],
+      "statement": "Build modern web application interfaces that are responsive and accessible. Develop interfaces with React component design and TypeScript development, apply current CSS layout techniques, and follow responsive web design patterns. Show mastery by shipping a type-safe React app with sound CSS layout and responsive behaviour across viewports.",
+      "related_skills": ["React component design", "TypeScript development", "CSS layout", "responsive web design", "modern JavaScript frameworks"],
       "rationale": "Modern web-application UI development is a single integrated skill set. React component design, TypeScript, CSS layout, and responsive design are not independent — they are the four legs of one stool. A learner who can implement responsive, type-safe React components with appropriate CSS layout has mastered the actual job-market competency. Treating them as separate competencies would fragment the assessment. This grouping also matches how frontend engineering roles describe their requirements in job postings: a single block listing React + TS + CSS + responsive together.",
       "soft_skills_required": ["collaboration", "design thinking"],
       "soft_skills_description": "Frontend work is inherently cross-functional with design and product roles.",
@@ -146,8 +143,7 @@ FAKE_BAD = """
   "batch_reasoning": "This cluster is on data engineering. One competency covers all items.",
   "competencies": [
     {
-      "title": "Build data pipelines",
-      "description": "Design ETL pipelines + warehousing.",
+      "statement": "Build data pipelines covering ETL design and warehousing fundamentals.",
       "related_skills": ["designing ETL pipelines", "data warehouse modeling"],
       "rationale": "Short rationale.",
       "soft_skills_required": [],
@@ -174,6 +170,15 @@ def build_clusters():
 
     import numpy as np
 
+    # Synthetic sentence_text long enough to clear the 30-char low-quality
+    # filter AND to contain a verb so it passes the _COMMON_VERB_RE check
+    # in competency_generator_v2._is_low_quality_sentence.
+    def _fake_sentence(text: str) -> str:
+        return (
+            f"The candidate should be comfortable working with {text} "
+            f"as part of their day-to-day delivery work."
+        )
+
     def s(text, sid):
         return SkillItem(
             text=text,
@@ -182,7 +187,7 @@ def build_clusters():
             confidence_tier=ConfidenceTier.VERY_HIGH,
             source="skill_llm_8b_lora_v1",
             sentence_id=sid,
-            sentence_text=f"... {text} ...",
+            sentence_text=_fake_sentence(text),
             extractor_source="skill_llm_8b_lora_v1",
         )
 
@@ -193,7 +198,7 @@ def build_clusters():
             confidence_tier=ConfidenceTier.VERY_HIGH,
             source="skill_llm_8b_lora_v1",
             sentence_id=sid,
-            sentence_text=f"... {text} ...",
+            sentence_text=_fake_sentence(text),
             extractor_source="skill_llm_8b_lora_v1",
         )
 
@@ -321,7 +326,7 @@ def test_end_to_end_offline():
         return FakeClient(), "openrouter"
 
     with patch("competency_generator_v2.get_client_for_model", fake_router):
-        competencies, batch_reasonings = generate_competencies_v2(
+        competencies, batch_reasonings, _dropped = generate_competencies_v2(
             clusters=clusters,
             config=GeneratorConfig(model="deepseek/deepseek-v3.2"),
             top_soft_skills=["teamwork", "collaboration", "attention to detail"],
@@ -333,15 +338,15 @@ def test_end_to_end_offline():
 
     # Competencies expected: AUTH (1) + FRONTEND (1) + DATA-ENG (0, rejected) + AUTH-DUP (1 then merged)
     # After dedup, AUTH-DUP merges into AUTH → 2 survivors
-    titles = [c.title for c in competencies]
-    print(f"        produced {len(competencies)} survivors: {titles}")
+    statements = [c.statement for c in competencies]
+    print(f"        produced {len(competencies)} survivors: {[s[:60] for s in statements]}")
     check("at least 2 competencies survive dedup", len(competencies) >= 2,
           f"got {len(competencies)}")
     check("at most 3 competencies survive (data-eng was rejected)", len(competencies) <= 3,
           f"got {len(competencies)} — data-eng should not have produced a valid competency")
 
     # AUTH-DUP should have been merged into the AUTH competency
-    auth_comp = next((c for c in competencies if "auth" in c.title.lower()), None)
+    auth_comp = next((c for c in competencies if "auth" in (c.statement or "").lower()), None)
     check("AUTH competency exists", auth_comp is not None)
     if auth_comp:
         check(

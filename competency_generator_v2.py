@@ -364,9 +364,11 @@ step-by-step in 3-6 sentences:
   - Which skills did you keep / drop / merge, and why?
 
 Step 2 — In a top-level field called "competencies", produce 1-{config.max_competencies_per_cluster}
-well-anchored competency statements. For each competency, write a "rationale"
-of {rationale_target} explaining specifically:
-  - Why this title and description match the included skills
+well-anchored competencies. Each competency is described by a SINGLE
+"statement" field — a self-contained, verb-led competency statement of
+2-4 sentences. For each competency, also write a "rationale" of
+{rationale_target} explaining specifically:
+  - Why this statement matches the included skills
   - What a learner could demonstrate to prove mastery
   - Why this competency is distinct from any other competency you produced
 
@@ -376,11 +378,29 @@ RULES (must follow):
     verbatim (or very close paraphrase). Do NOT invent skills.
   - Each competency must include AT LEAST {config.min_related_skills_per_competency}
     related_skills (singletons are usually too narrow for a curriculum competency).
-  - "title" should be a verb-led learning outcome (e.g. "Implement secure
-    authentication flows", "Build modern web application UIs").
-  - "description" is 1-3 sentences, concrete and assessable. Avoid HR jargon.
-  - Use the example sentences to DISAMBIGUATE skill meaning. Do NOT copy them
-    verbatim into descriptions or titles. The description must ABSTRACT from
+  - "statement" is a SINGLE field — 2-4 complete sentences, verb-led,
+    self-contained, assessable. The first sentence is the headline
+    learning outcome (start with an action verb: Design, Build, Analyse,
+    Apply, Train, Implement, etc.); subsequent sentences specify the
+    methods, tools, and demonstrable behaviour. Example shape:
+        "Design and operate multi-cloud platform infrastructure across
+         AWS, GCP, and Azure. Configure networking, automation, and
+         compliance controls that support secure, reliable deployment.
+         Justify deployment patterns for specific application needs."
+    Do NOT split into separate "title" and "description" fields — produce
+    ONE coherent statement. Avoid HR jargon ("drive impact", "stakeholder
+    alignment") and write in learning-outcome language.
+  - ANTI-HALLUCINATION: every product / vendor / framework / language name
+    you mention in the statement (e.g. "AWS", "React", ".NET Core",
+    "Java", "Salesforce") MUST appear in the example sentences for this
+    cluster at least {config.statement_evidence_min_required} times. If a
+    candidate term doesn't have that much evidence, DROP it from the
+    statement — broaden to a generic phrase ("cloud platforms") instead.
+    Vague generic adjectives like "Innovate", "advanced", "AI-enabled",
+    "cutting-edge" without specific evidence-anchored terms also count as
+    hallucination; remove them.
+  - Use the example sentences to DISAMBIGUATE skill meaning. Do NOT copy
+    them verbatim into the statement. The statement must ABSTRACT from
     the contexts, not quote them.
   - "kkni_level" — judge ONLY by cognitive complexity using the KKNI brief
     above (verbs, decision-autonomy, methodological depth). Do NOT consider
@@ -401,8 +421,7 @@ OUTPUT — JSON only, no markdown fences, exactly this shape:
   "batch_reasoning": "<your 3-6 sentence chain-of-thought for the whole cluster>",
   "competencies": [
     {{
-      "title": "...",
-      "description": "...",
+      "statement": "<2-4 verb-led sentences; first sentence states the learning outcome, subsequent sentences specify methods/tools/behaviour>",
       "related_skills": ["<must be from ITEMS>", "..."],
       "rationale": "<{rationale_target}, public-facing, explains why this competency is well-anchored>",
       "soft_skills_required": ["...", "..."],
@@ -665,14 +684,31 @@ def _dedup_near_duplicate_sentences(sentences: list) -> list:
 # Common verbs / English words that look Title-Cased at title-position but
 # aren't brand/proper-noun terms. These are skipped during candidate extraction.
 _TITLE_NOISE_TOKENS = frozenset({
-    # Verbs (the v2 prompt requires titles to be verb-led)
+    # Verbs (the v2 prompt requires statements to be verb-led)
     "build", "apply", "use", "develop", "design", "train", "coordinate",
     "lead", "implement", "partner", "propose", "select", "organize",
     "manage", "create", "maintain", "support", "deploy", "integrate",
     "explain", "operate", "analyze", "evaluate", "act",
+    # Additional CBE/curriculum verbs that appear in v2 statements
+    # (statements are 2-4 sentences, so more verbs are visible than in
+    # the legacy title-only form). 2026-05-13b.
+    "demonstrate", "demonstrating", "demonstrates",
+    "show", "shows", "showing", "produce", "produces", "producing",
+    "compare", "compares", "comparing", "configure", "configures",
+    "configuring", "include", "includes", "including", "follow",
+    "follows", "following", "perform", "performs", "performing",
+    "identify", "identifies", "identifying", "justify", "justifies",
+    "justifying", "explore", "explores", "exploring", "refine",
+    "refines", "refining", "establish", "establishes", "establishing",
+    "supervise", "supervises", "supervising", "ship", "ships", "shipping",
+    "synthesise", "synthesises", "synthesising", "synthesize", "synthesizes",
+    "synthesizing", "innovate", "innovates", "innovating",
+    "formulate", "formulates", "formulating", "strategise", "strategises",
+    "strategising", "strategize", "govern", "governs", "governing",
     # Connectors / determiners / generic nouns
     "across", "through", "with", "for", "and", "or", "the", "of", "in", "on",
-    "into", "to", "from", "as", "by", "using", "via",
+    "into", "to", "from", "as", "by", "using", "via", "that", "this",
+    "into", "out", "than",
     "software", "application", "applications", "web", "data", "cloud", "major",
     "modern", "standard", "effective", "successful", "multiple", "appropriate",
     "delivery", "team", "teams", "system", "systems", "service", "services",
@@ -683,6 +719,9 @@ _TITLE_NOISE_TOKENS = frozenset({
     "tasks", "task", "project", "projects", "outcome", "outcomes",
     "expertise", "context", "best", "lifecycle",
     "small", "large", "complex", "simple",
+    # 2-3 char generic-noun acronyms that aren't brand-worthy. UI/UIs is
+    # a generic abbreviation; CSS-vs-UI is fine because CSS is in items.
+    "ui", "uis", "ux", "qa", "ci", "cd",
     # Capitalised English words seen at sentence-initial positions
     "you", "your", "we", "our", "they", "their",
 })
@@ -704,6 +743,14 @@ def _normalise_for_match(s: str) -> str:
     low = re.sub(r"\s*([#+./\-])\s*", r"\1", low)
     # Collapse runs of whitespace
     low = re.sub(r"\s+", " ", low).strip()
+    # Strip trailing sentence-end punctuation (period, comma, semicolon,
+    # colon, exclamation, question). The token regex eagerly consumes
+    # trailing dots so "Node.js." (sentence-final) would otherwise not
+    # match "Node.js " (mid-sentence in source). This fix found via the
+    # n1k_v10 run where Azure., Node.js., React Native. all dropped on a
+    # false positive. Only strips at the END — internal punctuation
+    # (e.g. .NET, Node.js) is preserved.
+    low = low.rstrip(".,;:!?")
     return low
 
 
@@ -780,17 +827,91 @@ def _extract_product_terms(title: str) -> list:
     return out
 
 
-def _audit_title_evidence(
-    title: str,
+def _is_high_confidence_product_term(term: str) -> bool:
+    """Return True when the token's *shape* makes it a high-confidence product
+    or proper-noun name, as opposed to a plain English word capitalised
+    because it starts a sentence.
+
+    High-confidence shapes:
+      - All-caps, length >= 2:  AWS, GCP, NLP, AI, ML, IBM, ASIC
+      - Mixed-case with an internal capital: TypeScript, JavaScript, DevOps,
+        PowerShell, iOS, macOS, OAuth (the 'A' after 'O'), PostgreSQL
+      - Contains in-token punctuation (.NET, C#, C++, F#, .NET Core)
+      - Hyphenated compounds starting with all-caps fragment: AI-enabled,
+        ML-driven, KKNI-3, GPU-bound
+
+    Low-confidence (NOT flagged as warning, only info):
+      - Single capital at position 0 followed by lowercase: Analyse, Adjust,
+        Monitor, Refine, Design, Build — these are sentence-initial verbs,
+        not products. KKNI cognitive verbs match this shape by definition.
+        Flagging them produced a 12/15 false-positive rate on the first
+        live run after the 2026-05-13b contract change.
+    """
+    if not term:
+        return False
+    # Strip surrounding noise but keep in-word punctuation
+    t = term.strip()
+    if not t:
+        return False
+    # All-caps with at least 2 chars (allowing internal digits/punct)
+    alpha_only = "".join(ch for ch in t if ch.isalpha())
+    if len(alpha_only) >= 2 and alpha_only.isupper():
+        return True
+    # Contains in-token punctuation (.NET, C#, C++, F#, etc.)
+    if any(ch in t for ch in (".", "#", "+", "/")):
+        return True
+    # Internal capital — any uppercase letter at position > 0 (preceded by
+    # a lowercase letter). Catches TypeScript, DevOps, iOS, PostgreSQL.
+    for i in range(1, len(t)):
+        if t[i].isupper() and t[i - 1].islower():
+            return True
+    # Mixed acronym-prefix pattern: at least 2 uppercase letters AND at
+    # least 1 lowercase letter. Catches OAuth (O,A then uth), PCIe (PCI
+    # then e), HTTPS-style, OpenID, IPv6 (I,P,v then 6 — but no lowercase
+    # in IPv6 either, that one would already match all-caps). Plain
+    # sentence-initial verbs have exactly one uppercase (the first letter)
+    # so they don't match.
+    n_upper = sum(1 for ch in t if ch.isupper())
+    n_lower = sum(1 for ch in t if ch.islower())
+    if n_upper >= 2 and n_lower >= 1:
+        return True
+    # Hyphenated compounds where any fragment is all-caps (AI-enabled,
+    # ML-driven, KKNI-3). Splits on hyphen and checks each fragment.
+    if "-" in t:
+        for frag in t.split("-"):
+            fa = "".join(ch for ch in frag if ch.isalpha())
+            if len(fa) >= 2 and fa.isupper():
+                return True
+    return False
+
+
+def _audit_statement_evidence(
+    statement: str,
     source_sentences: list,
     min_required: int = 2,
 ) -> list:
-    """Return a list of title_evidence_concerns dicts. Each entry records one
-    product/proper-noun term in the title, how many source sentences contain
-    it literally (after whitespace/punctuation normalisation), the threshold,
-    and a severity tag.
+    """Return a list of statement_evidence_concerns dicts. Each entry records
+    one product/proper-noun term in the competency statement, how many source
+    sentences contain it literally (after whitespace/punctuation
+    normalisation), the threshold, and a severity tag.
+
+    severity="warning" → the term is shape-classified as a high-confidence
+                         product name AND has ZERO literal hits in source
+                         sentences. Used as a hallucination FILTER by the
+                         caller (drops the competency).
+    severity="info"    → the term has some hits but below the scaled
+                         threshold, OR the term is a plain capitalised
+                         English word that might just be a sentence-initial
+                         verb. Non-blocking, shown as a UI badge.
+
+    This audit replaces the bidirectional-cosine grounding gate as the
+    primary anti-hallucination mechanism. It is cheaper, more direct
+    (literal token presence), and does not conflate paraphrasing with
+    fabrication. The shape-classifier guard (2026-05-13b second iteration)
+    prevents KKNI cognitive verbs (Analyse, Adjust, Monitor, Refine, etc.)
+    from being misclassified as fabrications.
     """
-    terms = _extract_product_terms(title)
+    terms = _extract_product_terms(statement)
     if not terms:
         return []
     sents_norm = [_normalise_for_match(s) for s in (source_sentences or [])]
@@ -802,15 +923,21 @@ def _audit_title_evidence(
     threshold = max(min_required, n_sents // 4)
     for term, key in terms:
         hits = sum(1 for s in sents_norm if key in s)
-        if hits < threshold:
-            severity = "warning" if hits == 0 else "info"
-            concerns.append({
-                "term": term,
-                "literal_hits": hits,
-                "n_sentences": n_sents,
-                "min_required": threshold,
-                "severity": severity,
-            })
+        if hits >= threshold:
+            continue
+        is_product = _is_high_confidence_product_term(term)
+        if hits == 0 and is_product:
+            severity = "warning"
+        else:
+            severity = "info"
+        concerns.append({
+            "term": term,
+            "literal_hits": hits,
+            "n_sentences": n_sents,
+            "min_required": threshold,
+            "severity": severity,
+            "term_shape": "product" if is_product else "plain_capitalised",
+        })
     return concerns
 
 
@@ -843,9 +970,23 @@ def _attach_provenance_and_validate(
     """
     violations: List[str] = []
 
-    # Surface required fields
-    title = str(raw_comp.get("title", "")).strip()
-    description = str(raw_comp.get("description", "")).strip()
+    # Surface required fields. v2 (2026-05-13b) uses a single `statement`
+    # field that replaces the legacy title+description split. If the LLM
+    # still emits the v1 shape (some models cache prompt patterns), fall
+    # back by concatenating title + description so we don't throw away the
+    # call — but warn so we can spot prompt-adherence regressions.
+    statement = str(raw_comp.get("statement", "")).strip()
+    if not statement:
+        legacy_title = str(raw_comp.get("title", "")).strip()
+        legacy_desc = str(raw_comp.get("description", "")).strip()
+        if legacy_title and legacy_desc:
+            statement = f"{legacy_title}. {legacy_desc}".strip()
+            logger.warning(
+                "LLM emitted legacy title+description shape instead of `statement`; "
+                "concatenating. Prompt may need re-anchoring."
+            )
+        elif legacy_title or legacy_desc:
+            statement = (legacy_title or legacy_desc).strip()
     related = raw_comp.get("related_skills") or []
     if not isinstance(related, list):
         violations.append("related_skills is not a list")
@@ -965,14 +1106,17 @@ def _attach_provenance_and_validate(
         x for x in contributing_item_ids if not (x in seen_item_ids or seen_item_ids.add(x))
     ]
 
-    # Tier 2D — title evidence audit. Flags brand/proper-noun terms in the
-    # title that don't have enough literal hits in source sentences.
-    title_concerns = _audit_title_evidence(title, source_sentences)
+    # Statement-evidence audit. Flags brand/proper-noun terms in the
+    # statement that don't have enough literal hits in source sentences.
+    # severity="warning" entries are used as a HALLUCINATION FILTER by the
+    # caller (after this validation passes) — see _apply_anti_hallucination_filter.
+    statement_concerns = _audit_statement_evidence(
+        statement, source_sentences, min_required=config.statement_evidence_min_required
+    )
 
     comp = CompetencyV2(
         id=f"comp_{uuid.uuid4().hex[:8]}",
-        title=title,
-        description=description,
+        statement=statement,
         related_skills=matched_skill_texts,
         soft_skills_required=soft_required,
         soft_skills_description=soft_desc,
@@ -982,7 +1126,7 @@ def _attach_provenance_and_validate(
         source_job_ids=sorted(source_job_ids),
         source_sentence_ids=sorted(source_sentence_ids),
         source_sentences=list(source_sentences)[:20],  # cap for UI; ordering preserved
-        title_evidence_concerns=title_concerns,
+        statement_evidence_concerns=statement_concerns,
         future_relevance=future_relevance,
         future_weight=future_weight,
         empirical_trend=empirical_trend,
@@ -1025,7 +1169,7 @@ def _jaccard(a: Sequence[str], b: Sequence[str]) -> float:
 def _merge_into(survivor: CompetencyV2, absorbed: CompetencyV2) -> CompetencyV2:
     """Merge `absorbed` into `survivor` in place.
 
-    Updated 2026-05-13 after the n1k corpus showed that unioning source_sentences
+    Legacy comment (2026-05-13a, kept for context): unioning source_sentences
     on every merge breaks the title↔sentences alignment (the survivor's title
     represents one of N merged sub-competencies, so most of the absorbed
     sentences become "off-topic" under the Phase-2.5 grounding gate).
@@ -1044,13 +1188,38 @@ def _merge_into(survivor: CompetencyV2, absorbed: CompetencyV2) -> CompetencyV2:
         dict.fromkeys(survivor.contributing_item_ids + absorbed.contributing_item_ids)
     )
     survivor.source_job_ids = sorted(set(survivor.source_job_ids) | set(absorbed.source_job_ids))
-    # Sentences + sentence_ids: keep survivor's; do NOT union with absorbed.
-    # (See merge-policy comment above.)
+    # 2026-05-13b: union source_sentences too. The legacy "keep survivor's
+    # sentences only" policy was an artefact of running the bidirectional
+    # cosine grounding gate AFTER dedup — keeping only the survivor's
+    # sentences was a way to avoid sentence_relevance crashing on the
+    # absorbed sub-theme's content. With the contract switch to
+    # demand-rank + anti-hallucination filter, the bidirectional cosine no
+    # longer gates anything, so honest provenance (union both skills and
+    # sentences) is now strictly better than truncated provenance.
+    seen_sids = set(survivor.source_sentence_ids)
+    new_sids = [s for s in absorbed.source_sentence_ids if s not in seen_sids]
+    survivor.source_sentence_ids = sorted(set(survivor.source_sentence_ids) | set(absorbed.source_sentence_ids))
+    # Preserve order on source_sentences; add absorbed-only sentences after.
+    seen_sents = set(survivor.source_sentences)
+    for s in absorbed.source_sentences:
+        if s and s not in seen_sents:
+            survivor.source_sentences.append(s)
+            seen_sents.add(s)
+    survivor.source_sentences = survivor.source_sentences[:20]  # keep UI cap
     survivor.soft_skills_required = list(
         dict.fromkeys(survivor.soft_skills_required + absorbed.soft_skills_required)
     )
     survivor.merged_from = sorted(set(survivor.merged_from + [absorbed.id]))
     survivor.future_weight = max(survivor.future_weight, absorbed.future_weight)
+    # After merging skills+sentences, re-run the statement evidence audit:
+    # the absorbed sub-theme's sentences may now provide evidence for
+    # statement terms that previously had none, lifting them from
+    # severity="warning" to "info" or out of the concerns list entirely.
+    survivor.statement_evidence_concerns = _audit_statement_evidence(
+        survivor.statement,
+        survivor.source_sentences,
+        min_required=2,
+    )
     return survivor
 
 
@@ -1065,7 +1234,7 @@ def _dedup_competencies(
     # Stage 1: exact-normalized-title match (fast win)
     by_norm_title: Dict[str, CompetencyV2] = {}
     for c in competencies:
-        k = _norm_title_key(c.title)
+        k = _norm_title_key(c.statement)
         if k in by_norm_title:
             _merge_into(by_norm_title[k], c)
         else:
@@ -1094,8 +1263,8 @@ def _dedup_competencies(
         import numpy as np
 
         model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-        titles = [c.title for c in survivors]
-        embs = model.encode(titles, normalize_embeddings=True, convert_to_numpy=True, show_progress_bar=False)
+        statements = [c.statement for c in survivors]
+        embs = model.encode(statements, normalize_embeddings=True, convert_to_numpy=True, show_progress_bar=False)
         sim = embs @ embs.T
         absorbed_idx: set = set()
         for i in range(len(survivors)):
@@ -1111,16 +1280,55 @@ def _dedup_competencies(
     except Exception as e:
         logger.info("SBERT semantic-title dedup skipped (%s); Stage 1+2 only", e)
 
-    # Final cap
-    if len(survivors) > config.final_competency_cap:
-        # Keep the ones with highest grounding_score_preview, then most contributing items
-        survivors.sort(
-            key=lambda c: (c.grounding_score_preview, len(c.contributing_item_ids)),
-            reverse=True,
-        )
-        survivors = survivors[: config.final_competency_cap]
-
+    # No in-dedup cap. The 2026-05-13b contract change moved the cap to
+    # Phase 4 (driver), where it's applied AFTER ranking by priority_score.
+    # Dedup just returns all survivors of the 3-stage merge; the demand
+    # ranker is responsible for the top-N cut. An in-dedup cap using a
+    # local metric like grounding_score_preview would silently preempt
+    # the demand cut and drop high-demand low-grounding topics.
     return survivors
+
+
+# --------------------------------------------------------------------------- #
+# Anti-hallucination filter (2026-05-13b — replaces grounding gate)
+# --------------------------------------------------------------------------- #
+
+
+def _apply_anti_hallucination_filter(
+    competencies: List[CompetencyV2],
+) -> Tuple[List[CompetencyV2], List[CompetencyV2]]:
+    """Drop competencies whose statement contains a proper-noun term with
+    ZERO literal hits in their source sentences (severity="warning").
+
+    Returns (passing, failing). The "failing" list is preserved with the
+    `statement_evidence_concerns` field populated so callers can audit
+    exactly which term triggered the drop.
+
+    This replaces the bidirectional-cosine grounding gate. Rationale:
+      - Grounding gate killed 30 of 50 competencies at v9, mean grounding
+        0.316, because the cosine math conflated paraphrasing with
+        fabrication. High-demand items (Java/Kotlin: 25 jobs, Databases:
+        12 jobs, QA Testing: 27 jobs) all got dropped despite being real.
+      - Anti-hallucination filter uses literal token presence. If the
+        statement says "AWS", "AWS" must appear in source sentences. If
+        the statement says "Innovate AI-enabled solutions" and neither
+        "Innovate" nor "AI-enabled" appears in source sentences, it's a
+        fabrication and gets dropped.
+      - The filter is more specific (catches fabrication directly) and
+        more conservative (does not drop on paraphrase distance).
+    """
+    passing: List[CompetencyV2] = []
+    failing: List[CompetencyV2] = []
+    for c in competencies:
+        warnings = [
+            x for x in (c.statement_evidence_concerns or [])
+            if x.get("severity") == "warning"
+        ]
+        if warnings:
+            failing.append(c)
+        else:
+            passing.append(c)
+    return passing, failing
 
 
 # --------------------------------------------------------------------------- #
@@ -1135,7 +1343,7 @@ def generate_competencies_v2(
     future_weights: Optional[Dict[str, dict]] = None,
     apply_grounding_gate: bool = True,
     job_titles: Optional[Dict[str, str]] = None,
-) -> Tuple[List[CompetencyV2], List[BatchReasoning]]:
+) -> Tuple[List[CompetencyV2], List[BatchReasoning], List[CompetencyV2]]:
     """Cluster-driven competency generation.
 
     Args:
@@ -1145,16 +1353,24 @@ def generate_competencies_v2(
             reference list into every prompt.
         future_weights: optional dict[skill_text -> {future_weight, domain, trend}]
             to enrich the future-context block per cluster.
-        apply_grounding_gate: if True, run Phase 2.5 evaluator and return ONLY
-            competencies that pass the grounding gate. Failing competencies
-            are still mutated with their grounding fields so the caller can
-            audit. Default True (production). Set False for ablation runs.
+        apply_grounding_gate: if True (default), apply the anti-hallucination
+            filter and the demand-rank + final_competency_cap. Failing
+            competencies are returned in the third tuple element so the
+            caller can audit. Set False for ablation runs that want every
+            LLM-emitted competency surfaced. (The arg name is retained for
+            back-compat with existing callers; v2 (2026-05-13b) replaced
+            the bidirectional-cosine grounding gate with the
+            anti-hallucination filter — see _apply_anti_hallucination_filter
+            for rationale.)
         job_titles: optional {job_id: title} map. When provided, the prompt
             includes a per-cluster role-family distribution computed via
             `role_normalization.role_distribution`. v8 sprint Phase 2.A.
 
     Returns:
-        (competencies, batch_reasonings)
+        (passing_competencies, batch_reasonings, dropped_competencies)
+        — `dropped_competencies` contains the competencies dropped by the
+        anti-hallucination filter, with `statement_evidence_concerns`
+        populated. Empty when `apply_grounding_gate=False`.
     """
     if config is None:
         config = GeneratorConfig()
@@ -1222,17 +1438,42 @@ def generate_competencies_v2(
     survivors = _dedup_competencies(raw_competencies, config)
     logger.info("after dedup: %d competencies", len(survivors))
 
+    dropped_competencies: List[CompetencyV2] = []
+
+    # Compute grounding scores on every survivor (informational LABEL only,
+    # no longer a gate). Users see the score as a transparency badge so they
+    # can self-judge evidence strength without losing demand signal.
+    if survivors:
+        try:
+            from competency_evaluator import EvaluatorConfig, evaluate_competencies
+            _passed, _failed, eval_report = evaluate_competencies(
+                survivors, config=EvaluatorConfig()
+            )
+            logger.info(
+                "Phase 2.5 grounding (label-only, not a gate): "
+                "mean=%.3f, min=%.3f. "
+                "Use grounding_score as a UI badge; the gate is now the "
+                "anti-hallucination filter on statement_evidence_concerns.",
+                eval_report.grounding_mean,
+                eval_report.grounding_min,
+            )
+        except Exception as e:
+            logger.warning("Phase 2.5 grounding scoring skipped (%s); badge will be 0.0", e)
+
     if apply_grounding_gate and survivors:
-        from competency_evaluator import EvaluatorConfig, evaluate_competencies
+        passing, failing = _apply_anti_hallucination_filter(survivors)
+        n_drop = len(failing)
+        if n_drop:
+            sample = [
+                f"{c.id}: terms={[w['term'] for w in c.statement_evidence_concerns if w['severity']=='warning']}"
+                for c in failing[:5]
+            ]
+            logger.info(
+                "Anti-hallucination filter: dropped %d/%d competencies for "
+                "statement-evidence warnings. Sample: %s",
+                n_drop, len(survivors), "; ".join(sample),
+            )
+        survivors = passing
+        dropped_competencies = failing
 
-        passing, failing, eval_report = evaluate_competencies(
-            survivors, config=EvaluatorConfig()
-        )
-        logger.info(
-            "Phase 2.5 grounding gate: %d/%d pass (mean=%.3f, min=%.3f)",
-            eval_report.n_passed, eval_report.n_evaluated,
-            eval_report.grounding_mean, eval_report.grounding_min,
-        )
-        survivors = passing  # canonical Req-7 contract: failing competencies are dropped
-
-    return survivors, batch_reasonings
+    return survivors, batch_reasonings, dropped_competencies

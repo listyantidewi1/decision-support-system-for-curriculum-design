@@ -252,6 +252,46 @@ def _grounding_color(score: float) -> str:
     return "#d73027"                     # red
 
 
+def _grounding_tier(score: float) -> tuple:
+    """Return (icon, label, color) for the grounding transparency badge.
+
+    Replaces the legacy color-only display 2026-05-13b after the contract
+    switch from grounding-gate to demand-rank. Grounding is now an evidence-
+    strength LABEL, not a gate — users see the tier and can filter, but
+    high-demand low-grounding competencies still surface so the user can
+    decide whether the demand signal is enough on its own.
+    """
+    if score >= 0.60:
+        return "✅", "well grounded", "#1a9850"
+    if score >= 0.30:
+        return "⚠️", "partial evidence", "#fc8d59"
+    return "🚧", "thin evidence", "#d73027"
+
+
+def _statement(comp: dict, use_indonesian: bool) -> str:
+    """Return the competency statement, with read-side back-compat for v1
+    JSONs that stored title + description separately."""
+    s = _localize(comp, "statement", use_indonesian)
+    if isinstance(s, str) and s.strip():
+        return s
+    # Legacy path
+    t = _localize(comp, "title", use_indonesian) or comp.get("title", "")
+    d = _localize(comp, "description", use_indonesian) or comp.get("description", "")
+    if t and d:
+        return f"{t}. {d}"
+    return (t or d or "").strip()
+
+
+def _statement_first_sentence(comp: dict, use_indonesian: bool, max_chars: int = 110) -> str:
+    """Short label for the browse list — first sentence of the statement,
+    truncated. Used in place of the legacy `title`."""
+    full = _statement(comp, use_indonesian)
+    if not full:
+        return "(no statement)"
+    first = full.split(".", 1)[0].strip()
+    return (first[:max_chars] + "…") if len(first) > max_chars else first
+
+
 def _bar(fraction: float, color: str, label: str = "") -> str:
     pct = max(0, min(100, int(round(fraction * 100))))
     return f"""
@@ -297,8 +337,14 @@ def _render_detail(
     target_stage: str = "Any",
     use_indonesian: bool = False,
 ):
-    title = _localize(comp, "title", use_indonesian) or "(no title)"
-    st.markdown(f"## {title}")
+    statement = _statement(comp, use_indonesian) or "(no statement)"
+    # Use the FIRST sentence of the statement as the H2 heading so it
+    # stays compact; the rest of the statement is rendered below as the
+    # canonical body text. This replaces the legacy title+description
+    # split: there is no "Description:" anymore, the statement IS the
+    # competency.
+    heading = statement.split(".", 1)[0].strip() or statement[:110]
+    st.markdown(f"## {heading}")
 
     # Metadata row 1: Competency complexity / Labour-market demand /
     # Future weight / Source jobs. Splitting KKNI complexity from
@@ -359,9 +405,13 @@ def _render_detail(
         unsafe_allow_html=True,
     )
 
-    # Grounding (now on its own line below the metadata row so we have room
-    # for the skill/sentence axis breakdown without crowding the layout).
+    # Grounding badge — now a TRANSPARENCY LABEL, not a gate (2026-05-13b
+    # contract change). Three tiers: well-grounded / partial / thin. Users
+    # see the tier and can filter via the sidebar, but the pipeline does not
+    # drop low-grounding competencies — it drops fabrications via the
+    # anti-hallucination filter instead, which preserves the demand signal.
     gs = comp.get("grounding_score", comp.get("grounding_score_preview", 0.0))
+    tier_icon, tier_label, tier_color = _grounding_tier(gs)
     skill_g = comp.get("skill_grounding_score")
     sent_r = comp.get("sentence_relevance_score")
     if skill_g is not None and sent_r is not None and (skill_g != gs or sent_r != gs):
@@ -369,9 +419,9 @@ def _render_detail(
     else:
         breakdown = f"method: {comp.get('grounding_method','?')}"
     st.markdown(
-        f"<span style='font-size:14px; color:#444'>**Grounding**: "
-        f"<span style='color:{_grounding_color(gs)}; font-weight:bold'>{gs:.2f}</span> "
-        f"<span style='font-size:11px; color:#666'>· {breakdown}</span></span>",
+        f"<span style='font-size:14px; color:#444'>**Evidence**: "
+        f"<span style='color:{tier_color}; font-weight:bold'>{tier_icon} {tier_label}</span> "
+        f"<span style='font-size:11px; color:#666'>· grounding {gs:.2f} · {breakdown}</span></span>",
         unsafe_allow_html=True,
     )
 
@@ -399,7 +449,9 @@ def _render_detail(
         else:  # below
             st.caption(f"⬇ {fit['msg']}")
 
-    st.markdown(f"**Description:** {_localize(comp, 'description', use_indonesian)}")
+    # Full statement (verb-led, 2-4 sentences). Replaces the legacy
+    # "Description:" label which was a redundant duplicate of the title.
+    st.markdown(statement)
 
     # v9.10: SKKNI occupation matches. Each chip = one Indonesian
     # occupational standard the competency maps to (top-K, cosine >=
@@ -447,23 +499,32 @@ def _render_detail(
             "architect, ML engineer, frontend specialist)."
         )
 
-    # Title evidence concerns (Phase 2.1 Tier 2D). Flags brand/proper-noun
-    # tokens in the title that don't appear in enough source sentences —
-    # i.e. the title is overreaching what the cluster's evidence supports.
-    concerns = comp.get("title_evidence_concerns") or []
+    # Statement evidence concerns (anti-hallucination audit). After the
+    # 2026-05-13b contract change, severity="warning" entries cause the
+    # competency to be DROPPED upstream — so anything reaching the dashboard
+    # is "info" only (a term that appears in the statement but with fewer
+    # source-sentence hits than the threshold prefers). Reads from the new
+    # `statement_evidence_concerns` field; falls back to the legacy
+    # `title_evidence_concerns` for older run directories.
+    concerns = (
+        comp.get("statement_evidence_concerns")
+        or comp.get("title_evidence_concerns")
+        or []
+    )
     if concerns:
-        warnings = [c for c in concerns if c.get("severity") == "warning"]
         infos = [c for c in concerns if c.get("severity") == "info"]
+        warnings = [c for c in concerns if c.get("severity") == "warning"]
         if warnings:
+            # Should only appear for legacy run dirs (pre-contract-switch).
             for c in warnings:
                 st.warning(
-                    f"⚠️ Title mentions **{c['term']}** but it appears in "
+                    f"⚠️ Statement mentions **{c['term']}** but it appears in "
                     f"only **{c['literal_hits']} of {c['n_sentences']}** source sentences "
-                    f"(threshold {c['min_required']}). Title may overreach evidence."
+                    f"(threshold {c['min_required']}). Likely fabrication."
                 )
         if infos:
             terms = ", ".join(f"`{c['term']}` ({c['literal_hits']}/{c['n_sentences']})" for c in infos)
-            st.caption(f"ℹ️ Limited evidence for: {terms}")
+            st.caption(f"ℹ️ Limited literal evidence for: {terms}")
 
     # Related skills
     st.markdown("### Related skills")
@@ -1012,7 +1073,7 @@ def _render_coverage_page(comps):
             "well_covered": "#1a9850",
         }.get(a.coverage_label, "#888")
         st.markdown(
-            f"**{c['title']}** — "
+            f"**{_statement_first_sentence(c, False, max_chars=120)}** — "
             f"<span style='color:{label_color}'>{a.coverage_label}</span> "
             f"(coverage {a.coverage_score:.2f}, future weight {c.get('future_weight',0):.2f}, "
             f"priority-weighted gap {a.priority_weighted_gap:.2f})",
@@ -1029,7 +1090,7 @@ def _render_coverage_page(comps):
         if a is None:
             continue
         rows.append({
-            "Competency": c.get("title", ""),
+            "Competency": _statement_first_sentence(c, False, max_chars=120),
             "KKNI": c.get("kkni_level"),
             "Future weight": round(float(c.get("future_weight", 0.0)), 2),
             "Coverage": round(a.coverage_score, 2),
@@ -1080,7 +1141,10 @@ def main():
         index=0,
         horizontal=True,
     )
-    has_id_translations = any(c.get("title_id") for c in comps[:5])
+    # v2 (2026-05-13b) renamed title → statement; older runs still have title_id.
+    has_id_translations = any(
+        c.get("statement_id") or c.get("title_id") for c in comps[:5]
+    )
     if lang == "Bahasa Indonesia" and not has_id_translations:
         st.sidebar.warning(
             "This run wasn't built with `--translate-output-to-id`, so "
@@ -1134,24 +1198,36 @@ def main():
 
     # Future-weight filter
     min_fw = st.sidebar.slider("Min future weight", 0.0, 1.0, 0.0, 0.05)
-    # Grounding-score filter. Default 0.50 matches the canonical Phase-2.5 gate
-    # after the 2026-05-13 honesty audit (was 0.80 under the old substring-grounding
-    # regime, which inflated every score to 1.00 and made 0.80 meaningless).
-    min_grounding = st.sidebar.slider("Min grounding score", 0.0, 1.0, 0.50, 0.05)
+    # Grounding-score filter. After the 2026-05-13b contract change grounding
+    # is a transparency LABEL (not a gate), so the slider default is 0.0 —
+    # users see everything in the top-N by demand, and can raise the floor
+    # if they only want well-evidenced competencies.
+    min_grounding = st.sidebar.slider(
+        "Min grounding score (transparency filter)",
+        0.0, 1.0, 0.0, 0.05,
+        help="Grounding is shown as a badge (✅ well-grounded / ⚠️ partial / "
+             "🚧 thin). Raise this slider to hide thin-evidence competencies. "
+             "The pipeline itself does NOT gate on grounding — it drops "
+             "fabrications via an anti-hallucination filter and ranks the "
+             "rest by demand.",
+    )
 
     # Search
-    q = st.sidebar.text_input("Search title / description / skills", "")
+    q = st.sidebar.text_input("Search statement / skills", "")
 
-    # Sort. Default is "priority (desc)" — the spec's combined demand × grounding ×
-    # future_weight ranking (v8 sprint Phase 4).
+    # Sort. Default is "priority (desc)" — the spec's combined demand ×
+    # grounding × future_weight ranking. This is now also the contract:
+    # the pipeline returns top-N by priority_score, and the dashboard shows
+    # them in that order by default.
     sort_by = st.sidebar.selectbox(
         "Sort by",
         options=[
             "priority (desc)",
+            "demand (desc)",
             "future_weight (desc)",
             "grounding_score (desc)",
             "n source jobs (desc)",
-            "title (a-z)",
+            "statement (a-z)",
         ],
         index=0,
     )
@@ -1172,6 +1248,8 @@ def main():
                 return False
         if q:
             blob = " ".join([
+                c.get("statement", ""),
+                # Legacy back-compat for runs that pre-date the schema change
                 c.get("title", ""), c.get("description", ""),
                 " ".join(c.get("related_skills", [])), c.get("rationale", ""),
             ]).lower()
@@ -1192,6 +1270,8 @@ def main():
             return -(0.30 * float(c.get("grounding_score", 0.0))
                      + 0.30 * float(c.get("future_weight", 0.0)))
         filtered.sort(key=_priority_key)
+    elif sort_by == "demand (desc)":
+        filtered.sort(key=lambda c: -float(c.get("demand_score", 0.0)))
     elif sort_by == "future_weight (desc)":
         filtered.sort(key=lambda c: -float(c.get("future_weight", 0.0)))
     elif sort_by == "grounding_score (desc)":
@@ -1199,7 +1279,8 @@ def main():
     elif sort_by == "n source jobs (desc)":
         filtered.sort(key=lambda c: -len(c.get("source_job_ids", [])))
     else:
-        filtered.sort(key=lambda c: c.get("title", "").lower())
+        # statement (a-z) — use the same short label the browse list shows
+        filtered.sort(key=lambda c: _statement_first_sentence(c, False).lower())
 
     # --------- Header ---------
     st.markdown("# Competency Recommendations")
@@ -1216,13 +1297,18 @@ def main():
         if not filtered:
             st.info("No competencies match the current filters.")
             return
-        # Use radio for selection — single-select list. Titles localised
-        # via _localize so the browse panel matches the language toggle.
-        labels = [
-            f"{i+1}. {(_localize(c, 'title', use_indonesian) or '(untitled)')[:60]}  "
-            f"(KKNI {c.get('kkni_level','?')}, grounding {c.get('grounding_score', c.get('grounding_score_preview', 0.0)):.2f})"
-            for i, c in enumerate(filtered)
-        ]
+        # Use radio for selection — single-select list. Show the first
+        # sentence of each statement; a tiny chip line beneath shows the
+        # KKNI level and a grounding tier badge (✅/⚠️/🚧).
+        def _browse_label(i, c):
+            first = _statement_first_sentence(c, use_indonesian, max_chars=70)
+            gs = c.get("grounding_score", c.get("grounding_score_preview", 0.0))
+            tier_icon, _label, _color = _grounding_tier(gs)
+            return (
+                f"{i+1}. {first}  "
+                f"(KKNI {c.get('kkni_level','?')}, {tier_icon} grounding {gs:.2f})"
+            )
+        labels = [_browse_label(i, c) for i, c in enumerate(filtered)]
         selected = st.radio(
             "Pick a competency",
             options=range(len(filtered)),

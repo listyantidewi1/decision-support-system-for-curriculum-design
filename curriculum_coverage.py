@@ -263,12 +263,26 @@ def _embed(texts: Sequence[str], embedder):
 
 
 def _competency_text_for_embedding(comp_dict: dict) -> str:
-    parts = [
-        (comp_dict.get("title") or "").strip(),
-        (comp_dict.get("description") or "").strip(),
-        " ".join(comp_dict.get("related_skills") or []),
-    ]
+    # Statement is the canonical text (replaces v1 title+description).
+    # Fall back to legacy title/description for back-compat with old JSONs.
+    statement = (comp_dict.get("statement") or "").strip()
+    if not statement:
+        t = (comp_dict.get("title") or "").strip()
+        d = (comp_dict.get("description") or "").strip()
+        statement = ". ".join([p for p in (t, d) if p])
+    parts = [statement, " ".join(comp_dict.get("related_skills") or [])]
     return ". ".join([p for p in parts if p])
+
+
+def _competency_display_label(comp_dict: dict) -> str:
+    """Return a short string to identify the competency in coverage outputs.
+    Uses the first sentence of the statement (max 120 chars). Falls back to
+    title for legacy JSONs."""
+    s = (comp_dict.get("statement") or "").strip()
+    if s:
+        first = s.split(".", 1)[0].strip()
+        return first[:120] if first else s[:120]
+    return (comp_dict.get("title") or "")[:120]
 
 
 def compute_coverage(
@@ -286,7 +300,7 @@ def compute_coverage(
         return [
             CompetencyCoverage(
                 competency_id=c.get("id", ""),
-                competency_title=c.get("title", ""),
+                competency_title=_competency_display_label(c),
                 coverage_score=0.0,
                 coverage_label="missing",
                 gap_score=1.0,
@@ -344,7 +358,7 @@ def compute_coverage(
         annotations.append(
             CompetencyCoverage(
                 competency_id=c.get("id", ""),
-                competency_title=c.get("title", ""),
+                competency_title=_competency_display_label(c),
                 coverage_score=cov,
                 coverage_label=label,
                 best_matching_section_id=sections[best_idx].section_id if best_idx >= 0 else None,

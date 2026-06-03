@@ -162,6 +162,115 @@ def _is_too_generic_skill(text: str) -> bool:
     return norm in _GENERIC_SINGLE_TOKEN_SKILLS
 
 
+# Personality / character / attitude stems. These describe DISPOSITION, not
+# technical capability. They should never become competencies of their own
+# (where they'd surface as "Demonstrate professional drive" or "Apply
+# adaptive judgment"). They can still appear in soft_skills_required per
+# competency if the LLM chooses to include them, but they should not anchor
+# clusters in the hard-skill stream.
+#
+# Added 2026-05-14 after the n1k_v10b expert review surfaced 6 of 30 top
+# competencies as personality traits ranked above real technical content
+# (e.g., "Demonstrate sustained professional drive" at #1, demand=1.00).
+_PERSONALITY_STEMS = frozenset({
+    "drive", "driven", "motivate", "motivated", "motivation", "motivating",
+    "passion", "passionate", "passionately",
+    "enthusiasm", "enthusiastic", "enthusiastically",
+    "dedication", "dedicated",
+    "courage", "courageous", "bold", "boldness",
+    "initiative", "initiator", "self-starter", "selfstarter",
+    "curiosity", "curious",
+    "ownership", "owning",
+    "proactive", "proactivity", "proactively",
+    "adaptability", "adaptable", "adaptive",
+    "resilience", "resilient", "resilient-mindset",
+    "humility", "humble",
+    "empathy", "empathetic", "empathize",
+    "integrity",
+    "positivity", "positive", "positively",
+    "engagement", "engaged", "engaging",
+    "diligence", "diligent", "diligently",
+    "patience", "patient",
+    "conscientious", "conscientiousness",
+    "ambition", "ambitious", "ambitiously",
+    "perseverance", "persevering",
+    "grit", "tenacity", "tenacious",
+    "energy", "energetic", "energy-driven",
+    "personable", "approachable",
+    "self-aware", "selfaware", "self-awareness",
+    "self-directed", "selfdirected", "self-direction",
+    "self-improvement", "selfimprovement",
+    "self-motivated", "selfmotivated",
+    "trustworthy", "trustworthiness", "honesty", "honest",
+    "kindness", "kind",
+    "willing", "willingness",
+    "responsible", "responsibility", "accountable", "accountability",
+    "growth-mindset", "growthmindset", "mindset",
+})
+
+# Words that signal a phrase is describing a CHARACTER TRAIT rather than a
+# technical skill — even when paired with technical context. e.g., "shows
+# initiative", "demonstrates ownership", "sustained drive".
+_TRAIT_SIGNAL_VERBS = frozenset({
+    "shows", "show", "demonstrate", "demonstrates", "demonstrating",
+    "sustains", "sustained", "exhibits", "exhibit", "displays", "display",
+    "maintains", "maintain",
+})
+
+_WORD_RE = re.compile(r"[A-Za-z][A-Za-z\-]*")
+_TRAIT_STOPWORDS = frozenset({
+    "a", "an", "and", "or", "the", "of", "in", "to", "with", "for",
+    "as", "at", "on", "by", "is", "are", "be", "being",
+})
+
+
+def _is_personality_trait(text: str) -> bool:
+    """Return True when `text` is dominated by personality / character /
+    attitude words rather than concrete technical content.
+
+    Rules:
+      - Tokenise into content words (drop stopwords + 1-2 char tokens).
+      - If 50%+ of the content words are personality stems, classify as trait.
+      - Single-word match against a personality stem → trait.
+      - Phrases where the leading verb is a trait-signal AND any remaining
+        word is a personality stem → trait (e.g. "shows initiative").
+
+    Example trait hits:
+      "professional drive"            → drive
+      "positive engagement"           → positive + engagement (2/2 = 100%)
+      "self-motivated"                → self-motivated (single stem)
+      "sustained motivation"          → sustained + motivation
+      "shows initiative"              → trait-signal verb + initiative
+      "ambitious and proactive"       → ambitious + proactive (after stopword)
+
+    Example non-trait (kept):
+      "Python programming"            → no personality stems
+      "attention to detail"           → "detail" not a stem (attention is
+                                         a related skill, kept as legit soft)
+      "communication skills"          → handled by single-token filter
+    """
+    if not text:
+        return False
+    low = re.sub(r"\s+", " ", text.strip().lower())
+    if not low:
+        return False
+    tokens = [t for t in _WORD_RE.findall(low) if t and t not in _TRAIT_STOPWORDS and len(t) >= 3]
+    if not tokens:
+        return False
+    # Single-token: direct stem match
+    if len(tokens) == 1:
+        return tokens[0] in _PERSONALITY_STEMS
+    # Trait-signal verb + any personality stem in the rest
+    if tokens[0] in _TRAIT_SIGNAL_VERBS:
+        if any(t in _PERSONALITY_STEMS for t in tokens[1:]):
+            return True
+    # Majority-personality: >= 50% of content tokens are personality stems
+    n_stems = sum(1 for t in tokens if t in _PERSONALITY_STEMS)
+    if n_stems >= max(1, (len(tokens) + 1) // 2):
+        return True
+    return False
+
+
 class _CanonicalItem:
     """Lightweight container that holds a canonicalized SkillItem/KnowledgeItem.
 
@@ -255,6 +364,7 @@ def _canonicalize(
     """
     buckets: Dict[str, _CanonicalItem] = {}
     n_dropped_generic = 0
+    n_dropped_trait = 0
     for it in items:
         text = _item_text(it)
         key = _canonical_key(text)
@@ -271,12 +381,31 @@ def _canonicalize(
                     n_unique_jobs=0,
                 )
             continue
+        # Drop personality / trait phrases (Phase 2.1 quality filter,
+        # 2026-05-14 addition). Catches "professional drive",
+        # "self-motivated", "shows initiative", etc. — character
+        # descriptors that the v2 honesty audit found polluting the
+        # top of the demand-ranked output.
+        if _is_personality_trait(text):
+            n_dropped_trait += 1
+            if noise_tracker is not None:
+                noise_tracker.record(
+                    stage="personality_trait",
+                    text=text,
+                    n_unique_jobs=0,
+                )
+            continue
         bucket = buckets.setdefault(key, _CanonicalItem())
         bucket.absorb(it)
     if n_dropped_generic:
         logger.info(
             "canonicalize: dropped %d single-token generic skills (e.g., 'platform', 'tool')",
             n_dropped_generic,
+        )
+    if n_dropped_trait:
+        logger.info(
+            "canonicalize: dropped %d personality/trait phrases (e.g., 'professional drive', 'self-motivated')",
+            n_dropped_trait,
         )
 
     # Pick most-frequent surface form per bucket

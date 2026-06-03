@@ -264,8 +264,7 @@ def translate_competency_to_indonesian(
     """Translate the user-facing fields of one competency dict to Indonesian.
 
     Adds `_id`-suffixed keys without mutating the originals:
-        title          → title_id
-        description    → description_id
+        statement      → statement_id
         rationale      → rationale_id
         future_relevance → future_relevance_id
         soft_skills_description → soft_skills_description_id
@@ -276,7 +275,7 @@ def translate_competency_to_indonesian(
     so provenance is honest about what was actually in the posting.
     """
     out = dict(competency)
-    for field in ("title", "description", "rationale", "future_relevance",
+    for field in ("statement", "rationale", "future_relevance",
                   "soft_skills_description"):
         v = competency.get(field) or ""
         out[f"{field}_id"] = translate_to_indonesian(

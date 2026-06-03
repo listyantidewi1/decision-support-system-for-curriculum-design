@@ -34,6 +34,20 @@ def _rehydrate(dicts):
     out = []
     field_names = {f for f in CompetencyV2.__dataclass_fields__.keys()}
     for d in dicts:
+        # Read-side back-compat: legacy JSONs (pre-2026-05-13b) stored title +
+        # description instead of a single `statement`. Reconstruct so existing
+        # results/ directories still load. We do NOT keep the legacy fields
+        # in the rehydrated object.
+        if "statement" not in d:
+            t = (d.get("title") or "").strip()
+            desc = (d.get("description") or "").strip()
+            if t and desc:
+                d = dict(d, statement=f"{t}. {desc}")
+            elif t or desc:
+                d = dict(d, statement=t or desc)
+        # Same for the renamed concerns field
+        if "statement_evidence_concerns" not in d and "title_evidence_concerns" in d:
+            d = dict(d, statement_evidence_concerns=d["title_evidence_concerns"])
         kwargs = {k: v for k, v in d.items() if k in field_names}
         out.append(CompetencyV2(**kwargs))
     return out
@@ -96,7 +110,8 @@ def main() -> int:
     print("Per-competency:")
     for c in comps:
         status = "✓" if c.grounding_passed else "✗"
-        print(f"  {status}  {c.id}  score={c.grounding_score:.3f}  method={c.grounding_method:<24s}  {c.title[:80]}")
+        first_sent = (c.statement or "").split(".", 1)[0].strip()[:80]
+        print(f"  {status}  {c.id}  score={c.grounding_score:.3f}  method={c.grounding_method:<24s}  {first_sent}")
 
     # Save outputs
     (in_dir / "competencies_evaluated.json").write_text(

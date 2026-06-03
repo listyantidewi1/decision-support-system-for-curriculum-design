@@ -51,6 +51,7 @@ from typing import List, Optional
 
 _STAGE_REASONS = {
     "generic_single_token": "single-token generic word filtered during canonicalization",
+    "personality_trait":    "personality / character / attitude phrase (not a hard-skill competency); 2026-05-14",
     "below_frequency":      "canonical item appears in too few unique job postings",
     "hdbscan_noise":        "HDBSCAN tagged as noise; first recovery did not recover",
     "cluster_dropped_low_cohesion": "the cluster this item belonged to fell below cohesion threshold",
