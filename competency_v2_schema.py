@@ -291,13 +291,13 @@ class GeneratorConfig:
     # results/competency_v2_comparison/comparison.md). gpt-5.4-mini matched
     # the most expensive models (gpt-5.5, claude-sonnet-4.5) on every quality
     # metric while being 4× faster and ~30× cheaper.
-    #   Fallbacks (only if Jatevo is unavailable):
-    #     - "deepseek/deepseek-chat" (cheap, OpenRouter, no bug)
+    #   Fallback (only if gpt-5.4-mini via OpenRouter is unavailable):
     #     - "anthropic/claude-sonnet-4.5" (premium quality, OpenRouter)
     #   AVOID: "deepseek/deepseek-v3.2" — has a token-corruption bug that
     #          replaces " and " with "religious" throughout output.
-    # Current default: OpenRouter path while Jatevo is temporarily unavailable.
-    model: str = "deepseek/deepseek-chat"
+    # Current default: same gpt-5.4-mini model quality, forced through OpenRouter
+    # while Jatevo is temporarily unavailable.
+    model: str = "openrouter:gpt-5.4-mini"
 
     # Generation
     temperature: float = 0.3                # higher than legacy 0.2 — small creativity for rationale

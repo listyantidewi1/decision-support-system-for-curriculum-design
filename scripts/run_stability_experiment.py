@@ -32,7 +32,7 @@ Usage:
         [--phase1-input results.old2]
         [--ns 500,1000,2500,5000]
         [--seeds 1,2,3]
-        [--model deepseek/deepseek-chat]
+        [--model openrouter:gpt-5.4-mini]
 """
 from __future__ import annotations
 
@@ -92,7 +92,7 @@ def main() -> int:
     parser.add_argument("--ns", default="500,1000,2500,5000",
                         help="Comma-separated item counts to evaluate")
     parser.add_argument("--seeds", default="1,2,3")
-    parser.add_argument("--model", default="deepseek/deepseek-chat")
+    parser.add_argument("--model", default="openrouter:gpt-5.4-mini")
     parser.add_argument("--output-dir", default="results/stability_experiment")
     parser.add_argument("--skip-llm", action="store_true",
                         help="Skip Phase 2.2 LLM calls (clustering-only stability)")
