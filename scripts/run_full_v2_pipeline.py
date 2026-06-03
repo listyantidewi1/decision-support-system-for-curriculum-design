@@ -64,6 +64,12 @@ def main() -> int:
     parser.add_argument("--cohesion-threshold", type=float, default=0.55)
     parser.add_argument("--grounding-threshold", type=float, default=0.80)
     parser.add_argument("--skip-text-quality", action="store_true")
+    parser.add_argument("--skip-evidence-repair", action="store_true")
+    parser.add_argument("--evidence-repair-no-sbert", action="store_true")
+    parser.add_argument("--evidence-repair-statement-threshold", type=float, default=0.45)
+    parser.add_argument("--evidence-repair-skill-threshold", type=float, default=0.45)
+    parser.add_argument("--evidence-repair-min-skills", type=int, default=2)
+    parser.add_argument("--evidence-repair-max-sentences", type=int, default=8)
     parser.add_argument("--skip-kkni-labeller", action="store_true")
     parser.add_argument("--skip-education", action="store_true")
     parser.add_argument(
@@ -333,6 +339,30 @@ def main() -> int:
 
     # -------------------- Phase 2.5b: text-quality post-check --------------------
     failed_text_quality = []
+    failed_evidence_repair = []
+    if not args.skip_evidence_repair and competencies:
+        logger.info("PHASE 2.6: evidence linker / repair pass")
+        from competency_evidence_repair import EvidenceRepairConfig, repair_competencies
+        er_cfg = EvidenceRepairConfig(
+            disable_sbert=args.evidence_repair_no_sbert,
+            statement_threshold=args.evidence_repair_statement_threshold,
+            skill_threshold=args.evidence_repair_skill_threshold,
+            min_supported_skills=args.evidence_repair_min_skills,
+            max_supporting_sentences=args.evidence_repair_max_sentences,
+            final_grounding_threshold=args.grounding_threshold,
+        )
+        competencies, failed_evidence_repair, er_report = repair_competencies(
+            competencies, er_cfg
+        )
+        pipeline_report["stages"]["phase2_6_evidence_repair"] = er_report.to_dict()
+        logger.info(
+            "Phase 2.6: evidence repair kept %d, dropped %d; mean grounding %.3f -> %.3f",
+            er_report.n_repaired,
+            er_report.n_dropped,
+            er_report.grounding_mean_before,
+            er_report.grounding_mean_after,
+        )
+
     if not args.skip_text_quality and competencies:
         logger.info("PHASE 2.5b: text-quality post-check")
         from competency_text_quality import TextQualityConfig, check_text_quality
@@ -529,6 +559,11 @@ def main() -> int:
     for c in failed_text_quality:
         d = c.to_dict()
         d["dropped_reason"] = "text_quality_post_check"
+        failed_entries.append(d)
+    for c in failed_evidence_repair:
+        d = c.to_dict()
+        d["dropped_reason"] = "evidence_repair_gate"
+        d["dropped_detail"] = c.evidence_repair_audit
         failed_entries.append(d)
     for c in rank_excluded:
         d = c.to_dict()

@@ -113,5 +113,6 @@ The **[SCIENTIFIC_METHODOLOGY.md](../SCIENTIFIC_METHODOLOGY.md)** document cover
 | `skill_time_trend_analysis.py` | FDR (Benjamini-Hochberg), trend labels |
 | `validate_parameters.py` | AUC-ROC, Brier, calibration, Youden |
 | `log_run_metadata.py` | Run metadata + LLM prompt versioning (SHA-256) |
+| `competency_evidence_repair.py` | Repairs competency evidence chains: trims weak source sentences, removes unsupported skills, applies final grounding gate |
 | `scripts/build_evidence_package.py` | Builds v2 evidence package: automatic audits, provenance report, review CSVs, protocol gate summary |
 | `scripts/power_analysis_gold_set.py` | Power for one-proportion binomial |

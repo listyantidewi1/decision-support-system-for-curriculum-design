@@ -158,6 +158,11 @@ class CompetencyV2:
     # competency to be dropped as a likely hallucination.
     statement_evidence_concerns: List[dict] = field(default_factory=list)
 
+    # v2 evidence-repair audit. Populated by competency_evidence_repair.py
+    # after generation/dedup. It records which weak source sentences and
+    # unsupported related skills were removed before final ranking.
+    evidence_repair_audit: dict = field(default_factory=dict)
+
     # v8 sprint Phase 4 — demand + priority signals. Computed as a post-process
     # after all competencies are generated and Phase 2.4 (education aggregation)
     # has run.
@@ -222,6 +227,7 @@ class CompetencyV2:
             "model": self.model,
             "merged_from": list(self.merged_from),
             "statement_evidence_concerns": list(self.statement_evidence_concerns),
+            "evidence_repair_audit": dict(self.evidence_repair_audit),
             "demand_score": round(float(self.demand_score), 4),
             "priority_score": round(float(self.priority_score), 4),
             "occupation_matches": list(self.occupation_matches),

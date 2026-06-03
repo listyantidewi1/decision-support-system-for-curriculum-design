@@ -163,6 +163,7 @@ def build_automatic_evaluation(
     run_dir: Path,
     out_dir: Path,
     pipeline_report: dict[str, Any],
+    evidence_repair_report: dict[str, Any],
     competencies: list[dict[str, Any]],
     failed: list[dict[str, Any]],
     clusters: list[dict[str, Any]],
@@ -246,6 +247,7 @@ def build_automatic_evaluation(
             "phase1_load": stages.get("phase1_load", {}),
             "phase2_1_clustering": phase2_1,
             "phase2_2_generation": phase2_2,
+            "phase2_6_evidence_repair": evidence_repair_report or stages.get("phase2_6_evidence_repair", {}),
             "phase4_priority": phase4,
             "noise_audit": {
                 "n_items_dropped_total": noise_audit.get("n_items_dropped_total", 0),
@@ -617,7 +619,13 @@ def main() -> int:
         raise FileNotFoundError(f"Run directory not found: {run_dir}")
 
     pipeline_report = _load_json(run_dir / "pipeline_report.json", {})
-    competencies = _load_json(run_dir / "competencies.json", [])
+    evidence_repair_report = _load_json(run_dir / "evidence_repair_report.json", {})
+    competencies_path = (
+        run_dir / "competencies_evaluated.json"
+        if (run_dir / "competencies_evaluated.json").exists()
+        else run_dir / "competencies.json"
+    )
+    competencies = _load_json(competencies_path, [])
     failed = _load_json(run_dir / "competencies_failed.json", [])
     clusters = _load_json(run_dir / "clusters.json", [])
     batch_reasonings = _load_json(run_dir / "batch_reasonings.json", [])
@@ -638,6 +646,7 @@ def main() -> int:
         run_dir=run_dir,
         out_dir=out_dir,
         pipeline_report=pipeline_report,
+        evidence_repair_report=evidence_repair_report if isinstance(evidence_repair_report, dict) else {},
         competencies=competencies,
         failed=failed if isinstance(failed, list) else [],
         clusters=clusters,
@@ -726,4 +735,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
