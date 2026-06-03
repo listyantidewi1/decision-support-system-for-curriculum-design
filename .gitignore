@@ -148,6 +148,7 @@ results/llm_only/
 
 # Competency v2 experiment runs (regeneratable; can contain many JSON/CSV artifacts)
 results/competency_v2_pipeline*/
+results/evidence_packages/
 
 # Last-LLM-response debugging dump
 last_competency_raw_response.txt
