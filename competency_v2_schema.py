@@ -296,7 +296,8 @@ class GeneratorConfig:
     #     - "anthropic/claude-sonnet-4.5" (premium quality, OpenRouter)
     #   AVOID: "deepseek/deepseek-v3.2" — has a token-corruption bug that
     #          replaces " and " with "religious" throughout output.
-    model: str = "gpt-5.4-mini"
+    # Current default: OpenRouter path while Jatevo is temporarily unavailable.
+    model: str = "deepseek/deepseek-chat"
 
     # Generation
     temperature: float = 0.3                # higher than legacy 0.2 — small creativity for rationale

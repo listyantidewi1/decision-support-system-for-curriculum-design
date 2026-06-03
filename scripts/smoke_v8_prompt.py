@@ -66,7 +66,7 @@ def main() -> int:
                 if jid and t:
                     job_titles[jid] = t
 
-    cfg = GeneratorConfig(model="gpt-5.4-mini")
+    cfg = GeneratorConfig(model="deepseek/deepseek-chat")
     prompt = build_cluster_prompt(cluster, cfg, job_titles=job_titles)
     print("--- FULL PROMPT (v8) ---")
     print(prompt)

@@ -8,7 +8,7 @@ v2 stage in sequence, and emits a dashboard-ready directory:
         ↓
     Phase 2.1: skill_clusterer.cluster_skills        (cohesion >= 0.55)
         ↓
-    Phase 2.2: competency_generator_v2               (gpt-5.4-mini default)
+    Phase 2.2: competency_generator_v2               (deepseek/deepseek-chat default)
         ↓
     Phase 2.5: grounding gate (>= 0.80)              (auto in generate_competencies_v2)
         ↓
@@ -29,7 +29,7 @@ Usage:
     python scripts/run_full_v2_pipeline.py
         [--phase1-input results.old2]
         [--jobs-metadata DATA/preprocessing/data_prepared_n1k/jobs_metadata.csv]
-        [--model gpt-5.4-mini]
+        [--model deepseek/deepseek-chat]
         [--tag latest]
 """
 from __future__ import annotations
@@ -59,7 +59,7 @@ def main() -> int:
                         help="dir containing advanced_skills.csv + advanced_knowledge.csv")
     parser.add_argument("--jobs-metadata",
                         default="DATA/preprocessing/data_prepared_n1k/jobs_metadata.csv")
-    parser.add_argument("--model", default="gpt-5.4-mini")
+    parser.add_argument("--model", default="deepseek/deepseek-chat")
     parser.add_argument("--tag", default="latest")
     parser.add_argument("--cohesion-threshold", type=float, default=0.55)
     parser.add_argument("--grounding-threshold", type=float, default=0.80)
@@ -85,7 +85,7 @@ def main() -> int:
              "cluster cohesion improves monotonically.",
     )
     parser.add_argument(
-        "--refinement-model", default="gpt-5.4-mini",
+        "--refinement-model", default="deepseek/deepseek-chat",
         help="Model for the cluster-refinement arbiter (routed via llm_client_router).",
     )
     parser.add_argument(
@@ -110,9 +110,9 @@ def main() -> int:
              "as {field}_id keys. Powers the dashboard language toggle.",
     )
     parser.add_argument(
-        "--translation-model", default="gpt-5.4-mini",
+        "--translation-model", default="deepseek/deepseek-chat",
         help="Model for EN→ID competency translation. Default is the "
-             "same gpt-5.4-mini already used for generation.",
+             "same OpenRouter model already used for generation.",
     )
     parser.add_argument(
         "--translate-input-sentences", action="store_true",

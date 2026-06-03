@@ -46,6 +46,15 @@ _GPT_FAMILY_TOKENS = re.compile(
 )
 
 
+def _strip_force_prefix(model_name: str) -> tuple[str, str | None]:
+    """Allow explicit provider override via `openrouter:<model>` or `jatevo:<model>`."""
+    if model_name.startswith("openrouter:"):
+        return model_name.split(":", 1)[1], "openrouter"
+    if model_name.startswith("jatevo:"):
+        return model_name.split(":", 1)[1], "jatevo"
+    return model_name, None
+
+
 def is_gpt_family(model_name: str) -> bool:
     """Decide whether `model_name` belongs to the GPT family.
 
@@ -59,6 +68,7 @@ def is_gpt_family(model_name: str) -> bool:
         "claude-3-7-sonnet"      -> False
         "meta-llama/Llama-3.1-70b-instruct" -> False
     """
+    model_name, _forced_provider = _strip_force_prefix(model_name or "")
     if not model_name:
         return False
     return bool(_GPT_FAMILY_TOKENS.search(model_name))
@@ -104,7 +114,19 @@ def get_client_for_model(
     Returns:
         (client, provider) where provider is "jatevo" | "openrouter".
     """
-    if is_gpt_family(model_name):
+    model_name, forced_provider = _strip_force_prefix(model_name)
+    env_provider = os.getenv("LLM_FORCE_PROVIDER", "").strip().lower() or None
+    provider_override = forced_provider or env_provider
+
+    if provider_override == "openrouter":
+        api_key = _load_openrouter_key()
+        base_url = OPENROUTER_BASE_URL
+        provider = "openrouter"
+    elif provider_override == "jatevo":
+        api_key = _load_jatevo_key()
+        base_url = JATEVO_BASE_URL
+        provider = "jatevo"
+    elif is_gpt_family(model_name):
         api_key = _load_jatevo_key()
         base_url = JATEVO_BASE_URL
         provider = "jatevo"
@@ -126,6 +148,7 @@ def strip_provider_prefix(model_name: str) -> str:
     Only strips the prefix when routing to Jatevo (which doesn't use the
     provider/ namespace).
     """
-    if is_gpt_family(model_name) and "/" in model_name:
+    model_name, forced_provider = _strip_force_prefix(model_name)
+    if (forced_provider == "jatevo" or (forced_provider is None and is_gpt_family(model_name))) and "/" in model_name:
         return model_name.split("/", 1)[1]
     return model_name

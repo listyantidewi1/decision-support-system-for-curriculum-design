@@ -11,7 +11,7 @@ Top-level entry point:
     from competency_generator_v2 import generate_competencies_v2, GeneratorConfig
     competencies, batch_reasonings = generate_competencies_v2(
         clusters=clusters,  # output of clustering.cluster_skills(...)
-        config=GeneratorConfig(model="deepseek/deepseek-v3.2"),
+        config=GeneratorConfig(model="deepseek/deepseek-chat"),
         top_soft_skills=top_soft_skills_list,  # optional, for soft-skill reference
         future_weights=future_weights_dict,    # optional, for future-relevance hints
     )
@@ -1348,7 +1348,7 @@ def generate_competencies_v2(
 
     Args:
         clusters: list of Phase 2.1 Cluster objects.
-        config: GeneratorConfig (default: gpt-5.4-mini via Jatevo).
+        config: GeneratorConfig (default: deepseek/deepseek-chat via OpenRouter).
         top_soft_skills: optional list of soft-skill texts to inject as a
             reference list into every prompt.
         future_weights: optional dict[skill_text -> {future_weight, domain, trend}]
