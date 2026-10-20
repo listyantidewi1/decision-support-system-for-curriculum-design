@@ -121,9 +121,10 @@ Admin dashboard (FastAPI base): run pipeline, audit views, H1–H6 review queues
 
 ## 10. Immediate next actions (this week)
 
-1. Git housekeeping: commit June's untracked modules + WIP; tag current state as `v2-engineering-baseline`.
-2. Smoke-test JobSpy (upgrade lib; 1 IDN term × indeed/google, 1 ASEAN, 1 OECD) — confirm what still works in Oct 2026.
-3. Draft `docs/corpus/SOURCE_AUDIT.md` skeleton + platform decision matrix → discuss with promotor.
-4. Build `acquisition/` harness v1 (Tabel 3.10 schema, raw immutable batches, manifest) + ingest existing CSVs as batch-001.
-5. Run **batch-002**: Indonesia (broadened RPL terms, all viable platforms) + ASEAN + OECD refresh.
-6. Encode Tabel 3.9 inclusion/exclusion as versioned config consumed by the governance module.
+1. ✅ 2026-10-20 — Git housekeeping: 4 commits (`8ff2db2b`…`fc5cde3a`), tag `v2-engineering-baseline`, tree clean.
+2. ✅ 2026-10-20 — JobSpy smoke test (lib upgraded to 1.4.0): **Indeed works in all three strata** (IDN 13 / MY 20 / US 20 rows, full descriptions, fresh dates); **Google broken** ("no job data returned") → parked; LinkedIn untested pending A1.
+3. ✅ 2026-10-20 — `docs/corpus/SOURCE_AUDIT.md` v1.0 draft: 11-source matrix, legal–ethical principles, decisions K1–K4 → **awaiting promotor sign-off**.
+4. ✅ 2026-10-20 — `acquisition/` harness v1 (schema, immutable batch store + registry, jobspy adapter, run_batch CLI); batch-001 ingested from legacy CSVs (provenance reconstructed post-hoc, deviations in manifest).
+5. ✅ 2026-10-20 — **batch-002** launched: qp-v2-2026-10 plan, 247 queries (60 broadened IDN terms + 17 core × 5 ASEAN + 17 core × 6 OECD), Indeed-only, hours_old=∞ (all live postings).
+6. ☐ Encode Tabel 3.9 inclusion/exclusion as versioned config consumed by the governance module.
+7. ☐ Jobstreet/Glints/Kalibrr adapter prototypes + Adzuna API key application (per SOURCE_AUDIT K3/K4, after promotor sign-off).

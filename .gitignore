@@ -233,3 +233,6 @@ docs/articles/
 docs/**/*.pptx
 docs/**/*.xlsx
 docs/proposal/Prof*.txt
+
+# Raw immutable OJP corpus batches (large data, never versioned)
+DATA/corpus_raw/
