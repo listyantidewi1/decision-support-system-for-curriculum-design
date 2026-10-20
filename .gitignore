@@ -211,3 +211,25 @@ cache/translations.json
 
 # Streamlit cloud secrets file (if it exists locally)
 .streamlit/secrets.toml
+
+# --- 2026-10-20 build-phase housekeeping ---
+# Proposal binaries + literature PDFs stay local (extends docs/*.docx policy to subdirs)
+docs/**/*.docx
+docs/**/*.pdf
+docs/**/~$*.docx
+# Large prepared corpora / annotation data (local only, regenerable or archived separately)
+DATA/preprocessing/
+DATA/skillspan_ours/
+skill_llm_input_*.jsonl
+# Run outputs (results/ artifacts are not tracked)
+results/corpus_audits/
+results/dacum_cbc_packages/
+results/figures/
+results/stability_ablation/
+results/validation_packages/
+# Machine-specific utility
+relocate-claude-to-D.ps1
+docs/articles/
+docs/**/*.pptx
+docs/**/*.xlsx
+docs/proposal/Prof*.txt
