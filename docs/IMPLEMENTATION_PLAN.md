@@ -41,6 +41,7 @@ Legend: **REUSE** (works, minor config) · **ADAPT** (solid base, needs rework) 
 - Implication 2 — **Indonesia is the binding constraint** (2.2k vs target 10k–20k): Indeed-only and SMK-skewed query terms. Fix: more platforms (Glints, Kalibrr, Jobstreet/SEEK, Karier.mu), broaden terms to the full RPL function family (proposal does NOT restrict to SMK-level postings), monthly batches.
 - Implication 3 — OECD ≥5k and ASEAN ≥5k targets are **reachable**: OECD already exceeded in one batch; ASEAN has SG 10.6k, add MY/PH/TH/VN via JobStreet/SEEK + Indeed where available.
 - `date_posted` garbage + "12-month" parameter behaving as "currently live" must be documented in the acquisition method notes (Tabel 3.10 `acquisition_method/version`).
+- **Temporal coverage is discontinuous (confirmed 2026-10-20):** snapshots exist for Nov/Dec 2025 (batch-000), Mar 2026 (batch-001), Oct 2026 (batch-002/b) — a ~7-month hole Apr–Sep 2026 in which short-lived postings are unrecoverable; `posting_date` within batch-002 partially backfills it but with survival bias (only postings still live in Oct were captured). Frame the corpus as *3 archival snapshots + a continuous monthly series from Oct 2026*; between-snapshot demand-share comparisons are valid, within-gap timing claims are not. Report the hole explicitly in the representativeness tables (Gambar 3.7) and lean on the §1.4 conditional/exploratory fallback for temporal claims.
 
 ---
 
