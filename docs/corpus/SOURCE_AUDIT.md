@@ -90,8 +90,12 @@ bagian etika penelitian (§3.7).
   aktif menegakkannya secara hukum. Preseden *hiQ v. LinkedIn* berakhir dengan larangan permanen
   bagi hiQ (2022) — risiko hukum dan etika paling tinggi di antara semua kandidat.
 - **Status empiris:** sengaja TIDAK diuji.
-- **Keputusan diusulkan:** **JANGAN PAKAI** (drop permanen). Konsekuensi volume kecil karena
-  batch-001 praktis Indeed-only.
+- **Keputusan diusulkan:** **JANGAN PAKAI** (drop permanen untuk akuisisi baru). Konsekuensi volume
+  kecil karena batch-001 praktis Indeed-only.
+- **Catatan data historis:** batch-000 (arsip Nov–Des 2025, ditemukan 2026-10-20) memuat ±10,5 ribu
+  baris LinkedIn dan ±5,6 ribu baris Glassdoor yang telanjur terkumpul sebelum rekomendasi ini.
+  Lapisan mentah menyimpannya apa adanya (prinsip kekal); apakah baris tersebut ikut masuk
+  N_eligible diputuskan di lapisan tata kelola → keputusan K5.
 
 ### 3.4 ZipRecruiter — via JobSpy
 
@@ -156,6 +160,7 @@ API resmi memperkuat posisi etis korpus OECD dan menjadi pembanding independen t
 | K2 | Melanjutkan akuisisi Indeed via JobSpy dengan prinsip §2 dan dokumentasi jujur di §3.7 proposal | Setuju (pakai) |
 | K3 | Mengembangkan adapter Jobstreet → Glints → Kalibrr (urutan prioritas) untuk menutup target Indonesia | Setuju (evaluasi bertahap) |
 | K4 | Mengajukan akses API resmi Adzuna (+ opsional USAJOBS/Arbeitnow) untuk strata OECD | Setuju (ajukan) |
+| K5 | Perlakuan baris LinkedIn/Glassdoor historis pada batch-000 (Nov–Des 2025, terkumpul sebelum K1): ikut N_eligible dengan dokumentasi, atau dikecualikan di lapisan tata kelola | Usulan: ikut, dengan dokumentasi platform per baris |
 
 **Persetujuan promotor:**
 
@@ -169,3 +174,4 @@ API resmi memperkuat posisi etis korpus OECD dan menjadi pembanding independen t
 | Versi | Tanggal | Perubahan |
 |---|---|---|
 | 1.0 (draf) | 2026-10-20 | Draf awal: matriks 11 sumber, prinsip legal–etis, 4 butir keputusan |
+| 1.1 (draf) | 2026-10-20 | +K5: perlakuan baris LinkedIn/Glassdoor historis setelah penemuan arsip batch-000 (Nov–Des 2025) |
