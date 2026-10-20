@@ -27,11 +27,14 @@ import argparse
 import csv
 import json
 import sys
+from collections import Counter
 from pathlib import Path
 from typing import Dict, List
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+
+from extraction_typing import extraction_flags_to_text, phase1_decision_for_span
 
 
 # Default confidence for Skill-LLM extractions. The model doesn't emit per-span
@@ -92,11 +95,15 @@ def main() -> int:
     skills_rows: List[Dict] = []
     knowledge_rows: List[Dict] = []
     sentence_rows: List[Dict] = []
+    typing_decision_rows: List[Dict] = []
+    excluded_rows: List[Dict] = []
+    type_counts: Counter[str] = Counter()
+    target_counts: Counter[str] = Counter()
     n_records = 0
     n_with_extraction = 0
     n_parse_fail = 0
 
-    with open(in_path, encoding="utf-8") as f:
+    with open(in_path, encoding="utf-8-sig") as f:
         for line in f:
             line = line.strip()
             if not line:
@@ -109,7 +116,12 @@ def main() -> int:
 
             sid = rec.get("sentence_id", "")
             stext = rec.get("sentence_text", "")
-            jid = _job_id_from_sentence_id(sid)
+            jid = str(rec.get("job_id") or _job_id_from_sentence_id(sid))
+            sentence_text_original = rec.get("sentence_text_original", "")
+            sentence_text_en = rec.get("sentence_text_en", "")
+            source_language = rec.get("source_language", "")
+            normalized_language = rec.get("normalized_language", "")
+            translation_status = rec.get("translation_status", "")
             if rec.get("raw_output"):
                 n_parse_fail += 1
             had = False
@@ -120,18 +132,56 @@ def main() -> int:
                     "sentence_id": sid,
                     "job_id": jid,
                     "sentence_text": stext,
+                    "sentence_text_original": sentence_text_original,
+                    "sentence_text_en": sentence_text_en,
+                    "source_language": source_language,
+                    "normalized_language": normalized_language,
+                    "translation_status": translation_status,
                 })
+
+            def _typing_row(source_field: str, text: str, decision) -> Dict:
+                return {
+                    "job_id": jid,
+                    "sentence_id": sid,
+                    "source_field": source_field,
+                    "raw_span": text,
+                    "normalized_span": decision.normalized_span,
+                    "post_extraction_type": decision.post_extraction_type,
+                    "flags": extraction_flags_to_text(decision.flags),
+                    "phase1_target": decision.phase1_target,
+                    "skill_type": decision.skill_type,
+                    "hard_generation_eligible": decision.hard_generation_eligible,
+                    "sentence_text": stext,
+                    "sentence_text_original": sentence_text_original,
+                    "sentence_text_en": sentence_text_en,
+                    "source_language": source_language,
+                    "normalized_language": normalized_language,
+                    "translation_status": translation_status,
+                }
 
             for s in (rec.get("SKILL") or []):
                 text = (s.get("skill_span") or "").strip()
                 if not text:
                     continue
                 had = True
+                decision = phase1_decision_for_span(text, source_field="skill", sentence_text=stext)
+                decision_row = _typing_row("skill", text, decision)
+                typing_decision_rows.append(decision_row)
+                type_counts[decision.post_extraction_type] += 1
+                target_counts[decision.phase1_target] += 1
+                if decision.phase1_target != "advanced_skills":
+                    excluded_rows.append(decision_row)
+                    continue
                 skills_rows.append({
                     "job_id": jid,
                     "date_posted": "",
-                    "skill": text,
-                    "type": "Hard",
+                    "skill": decision.normalized_span,
+                    "raw_span": text,
+                    "type": decision.skill_type,
+                    "skill_subtype": decision.post_extraction_type if decision.post_extraction_type == "technical_process" else "",
+                    "post_extraction_type": decision.post_extraction_type,
+                    "extraction_flags": extraction_flags_to_text(decision.flags),
+                    "normalized_span": decision.normalized_span,
                     "bloom": "",
                     "confidence_score": args.confidence,
                     "confidence_tier": _confidence_tier_from_score(args.confidence),
@@ -140,42 +190,75 @@ def main() -> int:
                     "context_agreement": 1.0,
                     "sentence_id": sid,
                     "sentence_text": stext,
+                    "sentence_text_original": sentence_text_original,
+                    "sentence_text_en": sentence_text_en,
+                    "source_language": source_language,
+                    "normalized_language": normalized_language,
+                    "translation_status": translation_status,
                 })
             for k in (rec.get("KNOWLEDGE") or []):
                 text = (k.get("skill_span") or "").strip()
                 if not text:
                     continue
                 had = True
+                decision = phase1_decision_for_span(text, source_field="knowledge", sentence_text=stext)
+                decision_row = _typing_row("knowledge", text, decision)
+                typing_decision_rows.append(decision_row)
+                type_counts[decision.post_extraction_type] += 1
+                target_counts[decision.phase1_target] += 1
+                if decision.phase1_target != "advanced_knowledge":
+                    excluded_rows.append(decision_row)
+                    continue
                 knowledge_rows.append({
                     "job_id": jid,
                     "date_posted": "",
-                    "knowledge": text,
+                    "knowledge": decision.normalized_span,
+                    "raw_span": text,
+                    "post_extraction_type": decision.post_extraction_type,
+                    "extraction_flags": extraction_flags_to_text(decision.flags),
+                    "normalized_span": decision.normalized_span,
                     "confidence_score": args.confidence,
                     "confidence_tier": _confidence_tier_from_score(args.confidence),
                     "source": args.skill_llm_source_tag,
                     "sentence_id": sid,
                     "sentence_text": stext,
+                    "sentence_text_original": sentence_text_original,
+                    "sentence_text_en": sentence_text_en,
+                    "source_language": source_language,
+                    "normalized_language": normalized_language,
+                    "translation_status": translation_status,
                 })
             if had:
                 n_with_extraction += 1
 
     # Write CSVs
     skills_cols = [
-        "job_id", "date_posted", "skill", "type", "bloom",
+        "job_id", "date_posted", "skill", "raw_span", "type", "skill_subtype",
+        "post_extraction_type", "extraction_flags", "normalized_span", "bloom",
         "confidence_score", "confidence_tier", "source",
         "semantic_density", "context_agreement",
-        "sentence_id", "sentence_text",
+        "sentence_id", "sentence_text", "sentence_text_original", "sentence_text_en",
+        "source_language", "normalized_language", "translation_status",
     ]
     knowledge_cols = [
-        "job_id", "date_posted", "knowledge",
+        "job_id", "date_posted", "knowledge", "raw_span",
+        "post_extraction_type", "extraction_flags", "normalized_span",
         "confidence_score", "confidence_tier", "source",
-        "sentence_id", "sentence_text",
+        "sentence_id", "sentence_text", "sentence_text_original", "sentence_text_en",
+        "source_language", "normalized_language", "translation_status",
     ]
-    sentences_cols = ["sentence_id", "job_id", "sentence_text"]
+    sentences_cols = [
+        "sentence_id", "job_id", "sentence_text", "sentence_text_original",
+        "sentence_text_en", "source_language", "normalized_language",
+        "translation_status",
+    ]
 
     sp = out_dir / "advanced_skills.csv"
     kp = out_dir / "advanced_knowledge.csv"
     snp = out_dir / "job_sentences_mapping.csv"
+    tdp = out_dir / "extraction_typing_decisions.csv"
+    exp = out_dir / "excluded_extractions.csv"
+    auditp = out_dir / "extraction_typing_audit.json"
 
     with open(sp, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=skills_cols)
@@ -189,6 +272,44 @@ def main() -> int:
         w = csv.DictWriter(f, fieldnames=sentences_cols)
         w.writeheader()
         w.writerows(sentence_rows)
+    typing_cols = [
+        "job_id", "sentence_id", "source_field", "raw_span", "normalized_span",
+        "post_extraction_type", "flags", "phase1_target", "skill_type",
+        "hard_generation_eligible", "sentence_text", "sentence_text_original",
+        "sentence_text_en", "source_language", "normalized_language",
+        "translation_status",
+    ]
+    with open(tdp, "w", encoding="utf-8-sig", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=typing_cols, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(typing_decision_rows)
+    with open(exp, "w", encoding="utf-8-sig", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=typing_cols, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(excluded_rows)
+
+    audit = {
+        "schema_version": "2026-06-23.upstream_evidence_repair.v1",
+        "input_path": str(in_path),
+        "output_dir": str(out_dir),
+        "n_jsonl_records": n_records,
+        "n_records_with_at_least_one_extraction": n_with_extraction,
+        "n_parse_failures_or_raw_outputs": n_parse_fail,
+        "n_extraction_spans_total": len(typing_decision_rows),
+        "n_skill_rows_written": len(skills_rows),
+        "n_knowledge_rows_written": len(knowledge_rows),
+        "n_excluded_extractions": len(excluded_rows),
+        "post_extraction_type_distribution": dict(type_counts),
+        "phase1_target_distribution": dict(target_counts),
+        "outputs": {
+            "advanced_skills": str(sp),
+            "advanced_knowledge": str(kp),
+            "job_sentences_mapping": str(snp),
+            "extraction_typing_decisions": str(tdp),
+            "excluded_extractions": str(exp),
+        },
+    }
+    auditp.write_text(json.dumps(audit, indent=2, ensure_ascii=False), encoding="utf-8")
 
     n_unique_jobs = len({r["job_id"] for r in skills_rows} | {r["job_id"] for r in knowledge_rows})
     print(f"[INFO] read {n_records} JSONL records ({n_with_extraction} with at least one extraction, "
@@ -197,6 +318,9 @@ def main() -> int:
     print(f"  {sp}  ({len(skills_rows)} skill rows)")
     print(f"  {kp}  ({len(knowledge_rows)} knowledge rows)")
     print(f"  {snp}  ({len(sentence_rows)} sentence mappings)")
+    print(f"  {tdp}  ({len(typing_decision_rows)} typing decisions)")
+    print(f"  {exp}  ({len(excluded_rows)} excluded spans)")
+    print(f"  {auditp}")
     print(f"[INFO] {n_unique_jobs} unique job IDs covered")
     return 0
 

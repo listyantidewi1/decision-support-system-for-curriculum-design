@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 
 
 TRANSLATOR_VERSION = "v2.0.0"
-DEFAULT_MODEL = "gpt-5.4-mini"
+DEFAULT_MODEL = "openrouter:gpt-5.4-mini"
 DEFAULT_CACHE_PATH = Path("cache") / "translations.json"
 
 

@@ -16,11 +16,16 @@ Unified preprocessing pipeline:
 
 import argparse
 import re
+import sys
 from pathlib import Path
 from typing import List
 
 import pandas as pd
 from langdetect import detect, LangDetectException
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 try:
     import config
@@ -86,6 +91,152 @@ def clean_sentence(text: str) -> str:
     s = re.sub(r"\s{2,}", " ", s)
 
     return s.strip(" \"'")
+
+
+# -------------------------------------------------------
+# Conservative sentence relevance rescue
+# -------------------------------------------------------
+
+REQUIREMENT_VERB_RE = re.compile(
+    r"\b(required|requirement|must|should|responsibilit|qualifications?|"
+    r"experience|proficien|develop|build|design|implement|maintain|manage|"
+    r"deploy|test|debug|troubleshoot|analy[sz]e|integrate|configure|operate)\b",
+    re.I,
+)
+TECH_SIGNAL_RE = re.compile(
+    r"\b(python|java\b|javascript|typescript|sql|database|api|rest|backend|"
+    r"frontend|react|node|aws|azure|gcp|cloud|docker|kubernetes|terraform|"
+    r"linux|git|devops|ci/cd|testing|data|etl|pipeline|machine learning|"
+    r"ai\b|nlp|security|salesforce|tableau|power bi)\b",
+    re.I,
+)
+HEADER_ONLY_RE = re.compile(
+    r"^\s*(about us|benefits?|compensation|salary|location|schedule|apply now|"
+    r"job type|equal opportunity|privacy|company overview)\s*:?\s*$",
+    re.I,
+)
+
+
+def score_sentence_for_relevance_rescue(text: str) -> tuple[float, str]:
+    """Score dropped sentences when a job would otherwise lose all evidence."""
+    s = str(text or "").strip()
+    flags = []
+    score = 0.0
+    length = len(s)
+    if 35 <= length <= 420:
+        score += 1.0
+        flags.append("sane_length")
+    elif 15 <= length <= 600:
+        score += 0.25
+        flags.append("borderline_length")
+    else:
+        score -= 1.0
+        flags.append("poor_length")
+    if TECH_SIGNAL_RE.search(s):
+        score += 2.0
+        flags.append("technical_keyword")
+    if REQUIREMENT_VERB_RE.search(s):
+        score += 1.5
+        flags.append("requirement_or_action_verb")
+    if not HEADER_ONLY_RE.match(s):
+        score += 0.75
+        flags.append("non_header_text")
+    else:
+        score -= 2.0
+        flags.append("header_only")
+    if "," in s or ";" in s or " and " in s.lower():
+        score += 0.25
+        flags.append("contains_detail")
+    return round(score, 3), " | ".join(flags)
+
+
+def apply_min_sentence_coverage(
+    pipe_df: pd.DataFrame,
+    *,
+    min_kept_sentences_per_job: int = 1,
+    max_rescued_sentences_per_job: int = 3,
+) -> pd.DataFrame:
+    """Ensure a prepared job is not made invisible by the relevance filter."""
+    df = pipe_df.copy()
+    if "is_relevant" not in df.columns:
+        df["is_relevant"] = True
+    df["is_relevant_initial"] = df["is_relevant"].astype(bool)
+    df["is_relevant_final"] = df["is_relevant_initial"]
+    df["rescued_by_min_job_coverage"] = False
+    df["relevance_decision"] = df["is_relevant_initial"].map(
+        {True: "kept_by_relevance_filter", False: "dropped_by_relevance_filter"}
+    )
+    df["rescue_score"] = 0.0
+    df["rescue_reason"] = ""
+
+    min_keep = max(0, int(min_kept_sentences_per_job or 0))
+    max_rescue = max(0, int(max_rescued_sentences_per_job or 0))
+    if min_keep <= 0 or max_rescue <= 0 or df.empty:
+        return df
+
+    for _job_id, group in df.groupby("job_id", sort=False):
+        kept = int(group["is_relevant_final"].sum())
+        if kept >= min_keep:
+            continue
+        candidates = group[~group["is_relevant_final"]].copy()
+        if candidates.empty:
+            continue
+        scored = []
+        for idx, row in candidates.iterrows():
+            score, reason = score_sentence_for_relevance_rescue(row.get("sentence_text", ""))
+            scored.append((score, str(row.get("sentence_id", "")), idx, reason))
+        scored.sort(key=lambda x: (-x[0], x[1]))
+        rescue_needed = min(max_rescue, min_keep - kept, len(scored))
+        for score, _sid, idx, reason in scored[:rescue_needed]:
+            df.at[idx, "is_relevant_final"] = True
+            df.at[idx, "rescued_by_min_job_coverage"] = True
+            df.at[idx, "relevance_decision"] = "rescued_by_min_job_coverage"
+            df.at[idx, "rescue_score"] = score
+            df.at[idx, "rescue_reason"] = reason
+
+    return df
+
+
+def write_sentence_relevance_audits(df: pd.DataFrame, out_dir: Path) -> None:
+    audit_df = df.copy()
+    if "is_relevant_initial" not in audit_df.columns:
+        audit_df["is_relevant_initial"] = True
+    if "is_relevant_final" not in audit_df.columns:
+        audit_df["is_relevant_final"] = True
+    if "rescued_by_min_job_coverage" not in audit_df.columns:
+        audit_df["rescued_by_min_job_coverage"] = False
+    if "relevance_decision" not in audit_df.columns:
+        audit_df["relevance_decision"] = "kept_without_filter"
+    if "rescue_score" not in audit_df.columns:
+        audit_df["rescue_score"] = 0.0
+    if "rescue_reason" not in audit_df.columns:
+        audit_df["rescue_reason"] = ""
+
+    decision_cols = [
+        "job_id", "job_date", "sentence_id", "sentence_text",
+        "is_relevant_initial", "is_relevant_final",
+        "rescued_by_min_job_coverage", "relevance_decision",
+        "rescue_score", "rescue_reason",
+    ]
+    existing_decision_cols = [c for c in decision_cols if c in audit_df.columns]
+    audit_df[existing_decision_cols].to_csv(
+        out_dir / "sentence_relevance_decisions.csv",
+        index=False,
+        encoding="utf-8-sig",
+    )
+
+    per_job = (
+        audit_df.groupby("job_id")
+        .agg(
+            total=("sentence_text", "size"),
+            initially_kept=("is_relevant_initial", "sum"),
+            kept=("is_relevant_final", "sum"),
+            rescued=("rescued_by_min_job_coverage", "sum"),
+        )
+        .reset_index()
+    )
+    per_job["lost_all_sentences_after_filter"] = per_job["kept"] == 0
+    per_job.to_csv(out_dir / "sentence_relevance_per_job.csv", index=False, encoding="utf-8-sig")
 
 
 # -------------------------------------------------------
@@ -155,6 +306,18 @@ def main():
         help="Sentences per LLM call for the relevance filter "
              "(default: sentence_relevance_filter.DEFAULT_BATCH_SIZE = 30; "
              "minimum recommended is 30 to amortize prompt overhead).",
+    )
+    parser.add_argument(
+        "--min-kept-sentences-per-job",
+        type=int,
+        default=1,
+        help="Minimum filtered sentences to retain per prepared job when the relevance filter would drop them all.",
+    )
+    parser.add_argument(
+        "--max-rescued-sentences-per-job",
+        type=int,
+        default=3,
+        help="Maximum dropped sentences to rescue per job to satisfy min-kept coverage.",
     )
 
     args = parser.parse_args()
@@ -339,6 +502,12 @@ def main():
             "will be a copy of the unfiltered sentences."
         )
         pipe_df.to_csv(filtered_path, index=False, encoding="utf-8-sig")
+        audit_df = pipe_df.copy()
+        audit_df["is_relevant_initial"] = True
+        audit_df["is_relevant_final"] = True
+        audit_df["rescued_by_min_job_coverage"] = False
+        audit_df["relevance_decision"] = "kept_filter_skipped"
+        write_sentence_relevance_audits(audit_df, out_dir)
         print(f"[INFO] Saved: {filtered_path} (filter skipped — same as audit)")
     else:
         try:
@@ -353,6 +522,12 @@ def main():
                 f"skipping filter and copying unfiltered sentences to {filtered_path}."
             )
             pipe_df.to_csv(filtered_path, index=False, encoding="utf-8-sig")
+            audit_df = pipe_df.copy()
+            audit_df["is_relevant_initial"] = True
+            audit_df["is_relevant_final"] = True
+            audit_df["rescued_by_min_job_coverage"] = False
+            audit_df["relevance_decision"] = "kept_filter_unavailable"
+            write_sentence_relevance_audits(audit_df, out_dir)
         else:
             cache_path = out_dir / "sentence_relevance_cache.json"
             sentences_for_filter = pipe_df["sentence_text"].astype(str).tolist()
@@ -374,35 +549,50 @@ def main():
                     f"unfiltered sentences for {filtered_path}."
                 )
                 pipe_df.to_csv(filtered_path, index=False, encoding="utf-8-sig")
+                audit_df = pipe_df.copy()
+                audit_df["is_relevant_initial"] = True
+                audit_df["is_relevant_final"] = True
+                audit_df["rescued_by_min_job_coverage"] = False
+                audit_df["relevance_decision"] = "kept_filter_failed"
+                write_sentence_relevance_audits(audit_df, out_dir)
             else:
                 pipe_df = pipe_df.copy()
                 pipe_df["is_relevant"] = verdicts
-                kept_df = pipe_df[pipe_df["is_relevant"]].drop(columns=["is_relevant"])
+                pipe_df = apply_min_sentence_coverage(
+                    pipe_df,
+                    min_kept_sentences_per_job=args.min_kept_sentences_per_job,
+                    max_rescued_sentences_per_job=args.max_rescued_sentences_per_job,
+                )
+                kept_df = pipe_df[pipe_df["is_relevant_final"]][
+                    ["job_id", "job_date", "sentence_id", "sentence_text"]
+                ]
 
                 # Per-job kept / total log (Req 4.5)
                 per_job = (
                     pipe_df.groupby("job_id")
                     .agg(
                         total=("sentence_text", "size"),
-                        kept=("is_relevant", "sum"),
+                        initially_kept=("is_relevant_initial", "sum"),
+                        kept=("is_relevant_final", "sum"),
+                        rescued=("rescued_by_min_job_coverage", "sum"),
                     )
                     .reset_index()
                 )
                 total_total = int(per_job["total"].sum())
                 total_kept = int(per_job["kept"].sum())
+                total_rescued = int(per_job["rescued"].sum())
                 pct = (total_kept / total_total * 100.0) if total_total else 0.0
                 print(
                     f"[INFO] Relevance filter kept {total_kept}/{total_total} "
-                    f"sentences ({pct:.1f}%) across {len(per_job)} jobs."
+                    f"sentences ({pct:.1f}%) across {len(per_job)} jobs "
+                    f"({total_rescued} rescued by min-job coverage)."
                 )
 
                 kept_df.to_csv(filtered_path, index=False, encoding="utf-8-sig")
                 print(f"[INFO] Saved: {filtered_path} (pipeline input — filtered)")
 
-                # Persist the per-job log for audit / debugging.
-                log_path = out_dir / "sentence_relevance_per_job.csv"
-                per_job.to_csv(log_path, index=False, encoding="utf-8-sig")
-                print(f"[INFO] Saved per-job kept/total log: {log_path}")
+                write_sentence_relevance_audits(pipe_df, out_dir)
+                print(f"[INFO] Saved relevance audit files in: {out_dir}")
 
     print("[INFO] Preprocessing completed successfully.", flush=True)
 

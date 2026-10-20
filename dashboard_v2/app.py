@@ -302,6 +302,547 @@ def _bar(fraction: float, color: str, label: str = "") -> str:
 """
 
 
+def _safe_float(value, default: float = 0.0) -> float:
+    try:
+        if value is None:
+            return default
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+_CORPUS_STATUS_LABELS = {
+    "valid_for_engineering_test": "Engineering/test corpus",
+    "valid_for_indonesian_claim": "Valid Indonesian corpus",
+    "invalid_or_incomplete": "Invalid or incomplete lineage",
+    "needs_manual_review": "Needs manual corpus review",
+}
+
+
+_RECOMMENDATION_STATUS_LABELS = {
+    "exploratory": "Exploratory",
+    "review_candidate": "Review candidate",
+    "official_ready": "Official ready",
+    "not_recommended_from_this_corpus": "Not recommended from this corpus",
+}
+
+
+_COMPETENCY_CLASS_LABELS = {
+    "core_technical": "Core technical",
+    "engineering_process": "Engineering process / leadership",
+    "employability_support": "Employability / support",
+    "out_of_domain_or_needs_review": "Needs review / out-of-domain",
+}
+
+
+def _competency_class_label(comp: dict) -> str:
+    value = comp.get("competency_class_label") or comp.get("competency_class") or "Unclassified"
+    return _COMPETENCY_CLASS_LABELS.get(str(value), str(value))
+
+
+def _support_tier_label(comp: dict) -> str:
+    return str(comp.get("support_tier_label") or comp.get("support_tier") or "Not tiered")
+
+
+def _recommendation_status_label(comp: dict) -> str:
+    status = str(comp.get("recommendation_status") or "exploratory")
+    return _RECOMMENDATION_STATUS_LABELS.get(status, status)
+
+
+def _corpus_status_label(status: str) -> str:
+    return _CORPUS_STATUS_LABELS.get(str(status or "needs_manual_review"), str(status or "needs_manual_review"))
+
+
+def _job_prevalence_pct(comp: dict) -> float:
+    if comp.get("job_prevalence_pct") is not None:
+        return _safe_float(comp.get("job_prevalence_pct"))
+    prevalence = _safe_float(comp.get("job_prevalence"))
+    return prevalence * 100.0 if prevalence else 0.0
+
+
+def _public_future_weight(comp: dict) -> float:
+    source = comp.get("future_weight_source") or "llm_suggested_not_evidence"
+    if source in {"deterministic_domain_mapping", "external_trend_evidence", "official_reference_mapping"}:
+        return _safe_float(comp.get("future_weight"))
+    return 0.0
+
+
+def _load_run_json(run_dir: Path, filename: str, default):
+    path = run_dir / filename
+    if not path.exists():
+        return default
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return default
+
+
+def _has_sprint1_fields(comps: list) -> bool:
+    return any(c.get("scientific_sprint1_schema_version") for c in comps or [])
+
+
+def _load_corpus_report(run_dir: Path) -> dict:
+    local = run_dir / "corpus_lineage_report.json"
+    if local.exists():
+        try:
+            return json.loads(local.read_text(encoding="utf-8"))
+        except Exception:
+            return {}
+    pr = run_dir / "pipeline_report.json"
+    if not pr.exists():
+        return {}
+    try:
+        pipeline_report = json.loads(pr.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    candidate = (
+        pipeline_report.get("corpus_lineage_report")
+        or ((pipeline_report.get("stages", {}) or {}).get("corpus_lineage_audit", {}) or {}).get("report_path")
+        or ""
+    )
+    if not candidate:
+        return {}
+    path = Path(candidate)
+    if not path.is_absolute():
+        path = PROJECT_ROOT / path
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _corpus_context(comps: list, corpus_report: dict | None = None) -> dict:
+    corpus_report = corpus_report or {}
+    first = comps[0] if comps else {}
+    return {
+        "dataset_id": corpus_report.get("dataset_id") or first.get("corpus_dataset_id") or "",
+        "status": corpus_report.get("corpus_validity_status") or first.get("corpus_validity_status") or "needs_manual_review",
+        "country": corpus_report.get("corpus_country") or first.get("corpus_country") or "unknown",
+        "language": corpus_report.get("corpus_language") or first.get("corpus_language") or "unknown",
+        "metadata_jobs": corpus_report.get("metadata_unique_job_ids") or first.get("demand_denominator") or first.get("eligible_job_denominator") or "",
+        "phase1_jobs": corpus_report.get("phase1_unique_job_ids") or "",
+    }
+
+
+def _render_corpus_notice(comps: list, corpus_report: dict | None = None) -> None:
+    ctx = _corpus_context(comps, corpus_report)
+    status = ctx["status"]
+    label = _corpus_status_label(status)
+    detail = (
+        f"{label}; country={ctx['country']}; language={ctx['language']}; "
+        f"denominator={ctx['metadata_jobs'] or 'unknown'} postings."
+    )
+    if status == "valid_for_indonesian_claim":
+        st.success(f"Corpus validity: {detail}")
+    elif status == "valid_for_engineering_test":
+        st.warning(
+            f"Corpus validity: {detail} This run is useful for engineering validation, "
+            "but it should not be presented as Indonesian curriculum demand."
+        )
+    elif status == "invalid_or_incomplete":
+        st.error(f"Corpus validity: {detail} Demand claims should be blocked until lineage is fixed.")
+    else:
+        st.warning(f"Corpus validity: {detail} Treat recommendations as exploratory until audited.")
+
+
+def _ranked_competencies(comps: list) -> list:
+    if any(c.get("class_rank") for c in comps or []):
+        return sorted(
+            comps or [],
+            key=lambda c: (
+                int(c.get("class_sort_group") if c.get("class_sort_group") is not None else 99),
+                int(c.get("class_rank") or 999999),
+                -_job_prevalence_pct(c),
+                -int(c.get("n_source_jobs") or len(c.get("source_job_ids") or [])),
+                -_safe_float(c.get("grounding_score", c.get("grounding_score_preview", 0.0))),
+                -_public_future_weight(c),
+                -_safe_float(c.get("priority_score")),
+                str(c.get("id", "")),
+            ),
+        )
+    return sorted(
+        comps or [],
+        key=lambda c: (
+            -_safe_float(c.get("priority_score")),
+            -len(c.get("source_job_ids") or []),
+            str(c.get("id", "")),
+        ),
+    )
+
+
+def _competency_chart_rows(comps: list) -> list:
+    rows = []
+    for rank, c in enumerate(_ranked_competencies(comps), 1):
+        gs = _safe_float(c.get("grounding_score", c.get("grounding_score_preview", 0.0)))
+        _tier_icon, tier_label, _tier_color = _grounding_tier(gs)
+        rows.append({
+            "rank": rank,
+            "competency_id": c.get("id", ""),
+            "statement": _statement_first_sentence(c, False, max_chars=86),
+            "priority_score": _safe_float(c.get("priority_score")),
+            "demand_score": _safe_float(c.get("demand_score")),
+            "future_weight": _safe_float(c.get("future_weight")),
+            "future_weight_source": c.get("future_weight_source") or "llm_suggested_not_evidence",
+            "public_future_weight": _public_future_weight(c),
+            "grounding_score": gs,
+            "grounding_tier": tier_label,
+            "kkni_level": c.get("kkni_level"),
+            "n_source_jobs": len(c.get("source_job_ids") or []),
+            "n_source_jobs_sprint1": int(c.get("n_source_jobs") or len(c.get("source_job_ids") or [])),
+            "eligible_job_denominator": c.get("eligible_job_denominator"),
+            "job_prevalence_pct": _job_prevalence_pct(c),
+            "n_related_skills": len(c.get("related_skills") or []),
+            "n_occupation_matches": len(c.get("occupation_matches") or []),
+            "competency_class": _competency_class_label(c),
+            "support_tier": _support_tier_label(c),
+            "recommendation_status": _recommendation_status_label(c),
+            "repair_decision": c.get("repair_decision") or "",
+            "repair_flags": ", ".join(c.get("repair_flags") or []),
+            "curriculum_dedup_group": c.get("curriculum_dedup_group") or "",
+            "recovered_from_failed": bool(c.get("recovered_from_failed")),
+            "corpus_validity_status": c.get("corpus_validity_status") or "",
+            "corpus_country": c.get("corpus_country") or "",
+            "corpus_language": c.get("corpus_language") or "",
+            "official_core_eligible": bool(c.get("official_core_eligible")),
+            "official_core_rank": c.get("official_core_rank"),
+            "occupation_mapping_status": c.get("occupation_mapping_label") or c.get("occupation_mapping_status") or "",
+            "cluster_validity_status": c.get("cluster_validity_status") or "",
+            "cluster_validity_flags": ", ".join(c.get("cluster_validity_flags") or []),
+            "technical_theme_label": c.get("technical_theme_label") or "",
+            "theme_evidence_status": c.get("theme_evidence_status") or "",
+            "theme_recommendation_status": c.get("theme_recommendation_status") or "",
+            "not_recommended_reason": c.get("not_recommended_reason") or "",
+        })
+    return rows
+
+
+def _education_totals(comps: list) -> dict:
+    totals: dict = {}
+    for c in comps or []:
+        edu = c.get("education_levels_demanded") or {}
+        if not isinstance(edu, dict):
+            continue
+        for stage, frac in edu.items():
+            totals[stage] = totals.get(stage, 0.0) + _safe_float(frac)
+    return totals
+
+
+def _occupation_counts(comps: list) -> dict:
+    counts: dict = {}
+    for c in comps or []:
+        for m in c.get("occupation_matches") or []:
+            name = m.get("occupation_en") or m.get("occupation_id") or ""
+            if name:
+                counts[name] = counts.get(name, 0) + 1
+    return counts
+
+
+def _render_market_insights_page(comps: list, run_dir: Path, corpus_report: dict | None = None):
+    """Decision-oriented charts for curriculum designers."""
+    st.markdown("# Market insights")
+    st.caption(
+        "High-level view of what the final recommendation set says about "
+        "market demand, future relevance, KKNI complexity, education-stage "
+        "demand, and Indonesian occupation mapping."
+    )
+    if not comps:
+        st.info("No competencies found for this run.")
+        return
+    _render_corpus_notice(comps, corpus_report)
+
+    import pandas as pd
+    import matplotlib.pyplot as plt
+
+    rows = _competency_chart_rows(comps)
+    df = pd.DataFrame(rows)
+    has_sprint1 = _has_sprint1_fields(comps)
+
+    stage_coverage = _load_run_json(run_dir, "stage_coverage_report.json", {})
+    cluster_validity = _load_run_json(run_dir, "cluster_validity_report.json", {})
+    demand_theme = _load_run_json(run_dir, "demand_theme_audit.json", {})
+
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Final competencies", len(comps))
+    if has_sprint1:
+        c2.metric("Core candidates", f"{int(df['official_core_eligible'].sum())}/{len(df)}")
+        c3.metric("Mean prevalence", f"{df['job_prevalence_pct'].mean():.2f}%")
+        c4.metric("Mapped to SKKNI", f"{int((df['n_occupation_matches'] > 0).sum())}/{len(df)}")
+    else:
+        c2.metric("Mapped to SKKNI", f"{int((df['n_occupation_matches'] > 0).sum())}/{len(df)}")
+        c3.metric("Mean grounding", f"{df['grounding_score'].mean():.2f}")
+        c4.metric("Mean demand", f"{df['demand_score'].mean():.2f}")
+
+    if stage_coverage or cluster_validity or demand_theme:
+        st.markdown("## Scientific audit snapshot")
+        audit_cols = st.columns(4)
+        audit_cols[0].metric(
+            "Denominator",
+            stage_coverage.get("labor_market_denominator", df.get("eligible_job_denominator", [""])[0] if not df.empty else ""),
+        )
+        audit_cols[1].metric(
+            "Coverage blockers",
+            len(stage_coverage.get("coverage_blockers") or []),
+        )
+        audit_cols[2].metric(
+            "Split/mixed clusters",
+            int(cluster_validity.get("n_split_candidates") or 0),
+        )
+        audit_cols[3].metric(
+            "Not-recommended themes",
+            int((demand_theme.get("recommendation_distribution") or {}).get("not_recommended_from_this_corpus", 0)),
+        )
+        blockers = stage_coverage.get("coverage_blockers") or []
+        if blockers:
+            st.warning("Coverage blockers: " + ", ".join(str(b) for b in blockers))
+        with st.expander("Show audit distributions"):
+            if cluster_validity:
+                st.write("Cluster validity")
+                st.json(cluster_validity.get("status_distribution", {}), expanded=False)
+            if demand_theme:
+                st.write("Demand theme evidence")
+                st.json(demand_theme.get("status_distribution", {}), expanded=False)
+
+    if has_sprint1:
+        st.markdown("## Recommendation contract")
+        st.caption(
+            "Recommendations are class-aware and status-capped by corpus validity. "
+            "The original priority score remains visible as a research baseline, "
+            "while the stricter core technical list is demand-first."
+        )
+        class_col, support_col, status_col = st.columns(3)
+        with class_col:
+            class_counts = df["competency_class"].value_counts()
+            st.bar_chart(class_counts.rename("competencies"), height=280, color="#4477aa")
+        with support_col:
+            support_counts = df["support_tier"].value_counts()
+            st.bar_chart(support_counts.rename("competencies"), height=280, color="#66aa55")
+        with status_col:
+            status_counts = df["recommendation_status"].value_counts()
+            st.bar_chart(status_counts.rename("competencies"), height=280, color="#cc9944")
+
+        core = df[df["official_core_eligible"]].copy()
+        if not core.empty:
+            core = core.sort_values(["official_core_rank", "rank"])
+            st.markdown("## Core technical candidates")
+            st.caption(
+                "Demand-first subset passing sprint-1 gates: core technical class, "
+                "minimum source-job support, grounding threshold, and at least one occupation mapping."
+            )
+            st.dataframe(
+                core[[
+                    "official_core_rank", "rank", "statement", "n_source_jobs_sprint1",
+                    "job_prevalence_pct", "grounding_score", "public_future_weight",
+                    "future_weight_source", "occupation_mapping_status", "repair_decision",
+                    "cluster_validity_status", "theme_evidence_status",
+                ]].rename(columns={
+                    "official_core_rank": "core_rank",
+                    "rank": "pipeline_rank",
+                    "n_source_jobs_sprint1": "source_jobs",
+                    "job_prevalence_pct": "prevalence_pct",
+                }),
+                use_container_width=True,
+                hide_index=True,
+            )
+        else:
+            st.warning("No competencies passed the sprint-1 core technical candidate gates.")
+
+    st.markdown("## Top recommendations")
+    st.caption(
+        "Ranked by the public recommendation contract when available. The priority "
+        "score is retained as the legacy demand/grounding/future baseline."
+    )
+    top = df.head(15).copy()
+    if not top.empty:
+        chart = top[["statement", "priority_score"]].set_index("statement").sort_values("priority_score")
+        st.bar_chart(chart, height=440, color="#4477aa")
+        with st.expander("Show score table"):
+            st.dataframe(
+                top[[
+                    "rank", "statement", "priority_score", "demand_score",
+                    "future_weight", "future_weight_source", "public_future_weight",
+                    "grounding_score", "kkni_level",
+                    "n_source_jobs", "job_prevalence_pct", "competency_class",
+                    "support_tier", "recommendation_status", "repair_decision",
+                    "recovered_from_failed", "official_core_eligible", "n_occupation_matches",
+                    "cluster_validity_status", "theme_evidence_status", "not_recommended_reason",
+                ]],
+                use_container_width=True,
+                hide_index=True,
+            )
+
+    st.markdown("## Demand vs future relevance")
+    st.caption(
+        "Bubble size reflects number of source jobs; color reflects grounding score. "
+        "The y-axis uses public future weight, so LLM-suggested future scores appear as 0 unless backed by deterministic or external evidence."
+    )
+    fig, ax = plt.subplots(figsize=(7.5, 5.2))
+    sizes = (df["n_source_jobs"].clip(lower=1) * 9).tolist()
+    scatter = ax.scatter(
+        df["demand_score"], df["public_future_weight"],
+        s=sizes,
+        c=df["grounding_score"],
+        cmap="viridis",
+        alpha=0.75,
+        edgecolor="#333333",
+        linewidth=0.4,
+    )
+    ax.set_xlim(-0.03, 1.03)
+    ax.set_ylim(-0.03, 1.03)
+    ax.set_xlabel("Demand score")
+    ax.set_ylabel("Public future relevance")
+    ax.grid(True, alpha=0.22)
+    for _, row in df.head(8).iterrows():
+        ax.annotate(str(int(row["rank"])), (row["demand_score"], row["public_future_weight"]),
+                    color="white", fontsize=8, ha="center", va="center")
+    cbar = fig.colorbar(scatter, ax=ax)
+    cbar.set_label("Grounding score")
+    st.pyplot(fig, clear_figure=True)
+
+    col_a, col_b = st.columns(2)
+    with col_a:
+        st.markdown("## KKNI complexity")
+        kkni = df["kkni_level"].dropna().astype(int).value_counts().sort_index()
+        if not kkni.empty:
+            st.bar_chart(kkni.rename("competencies"), height=300, color="#66aa55")
+        else:
+            st.info("No KKNI labels available.")
+
+    with col_b:
+        st.markdown("## Evidence strength")
+        grounding_bins = pd.cut(
+            df["grounding_score"],
+            bins=[-0.01, 0.30, 0.60, 0.80, 1.01],
+            labels=["thin <0.30", "partial 0.30-0.60", "strong 0.60-0.80", "gate >=0.80"],
+        )
+        st.bar_chart(grounding_bins.value_counts().sort_index().rename("competencies"), height=300, color="#aa7744")
+
+    col_c, col_d = st.columns(2)
+    with col_c:
+        st.markdown("## Education-stage demand")
+        edu = _education_totals(comps)
+        if edu:
+            preferred = ["SMK", "SMA", "D1", "D2", "D3", "D4", "S1", "Profesi", "S2", "S3"]
+            edu_df = pd.DataFrame(
+                [{"stage": k, "summed_share": v} for k, v in edu.items()]
+            ).sort_values(
+                "stage",
+                key=lambda s: s.map(lambda x: preferred.index(x) if x in preferred else 99),
+            )
+            st.bar_chart(edu_df.set_index("stage"), height=320, color="#4477aa")
+        else:
+            st.info("No education demand data available.")
+
+    with col_d:
+        st.markdown("## SKKNI occupation coverage")
+        occ = _occupation_counts(comps)
+        mapped = int((df["n_occupation_matches"] > 0).sum())
+        st.metric("Competencies with occupation match", f"{mapped}/{len(df)}")
+        if occ:
+            occ_df = pd.DataFrame(
+                [{"occupation": k, "matches": v} for k, v in occ.items()]
+            ).sort_values("matches", ascending=False).head(10)
+            st.bar_chart(occ_df.set_index("occupation"), height=320, color="#7755aa")
+        else:
+            st.info("No SKKNI occupation matches available.")
+
+    figs_dir = PROJECT_ROOT / "results" / "figures" / run_dir.name.replace("competency_v2_pipeline_", "") / "dashboard"
+    if figs_dir.exists():
+        with st.expander("Static dashboard figures saved for this run"):
+            for p in sorted(figs_dir.glob("*.png")):
+                st.image(str(p), caption=p.name, use_container_width=True)
+
+
+def _render_pipeline_charts(run_dir: Path, pipeline_report: dict, noise_audit: dict):
+    """Compact research/audit charts for the Pipeline audit page."""
+    import pandas as pd
+    import matplotlib.pyplot as plt
+
+    st.markdown("## Run charts")
+    stages = pipeline_report.get("stages", {}) if isinstance(pipeline_report, dict) else {}
+    p1 = stages.get("phase1_load", {}) or {}
+    p21 = stages.get("phase2_1_clustering", {}) or {}
+    p22 = stages.get("phase2_2_generation", {}) or {}
+    p26 = stages.get("phase2_6_evidence_repair", {}) or {}
+    p4 = stages.get("phase4_priority", {}) or {}
+
+    funnel = [
+        ("Extracted items", p1.get("n_items")),
+        ("Canonical items", p21.get("n_items_canonical")),
+        ("Frequency-filtered items", p21.get("n_items_after_frequency_filter")),
+        ("Clusters", (p21.get("n_clusters_hdbscan", 0) or 0) + (p21.get("n_clusters_recovered", 0) or 0) + (p21.get("n_clusters_split", 0) or 0)),
+        ("Generated competencies", p22.get("n_competencies")),
+    ]
+    if p26:
+        funnel.append(("Evidence-repaired", p26.get("n_repaired")))
+    funnel.append(("Final recommendations", pipeline_report.get("final_n_competencies") or p4.get("n_after_cap")))
+    funnel = [(label, int(value)) for label, value in funnel if value is not None]
+
+    if funnel:
+        st.markdown("### Pipeline funnel")
+        funnel_df = pd.DataFrame(funnel, columns=["stage", "count"]).set_index("stage")
+        st.bar_chart(funnel_df, height=300, color="#4477aa")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("### Drop reasons")
+        counts = {}
+        for stage, n in (noise_audit.get("by_stage", {}) or {}).items():
+            counts[f"Phase 2.1: {stage}"] = int(n)
+        failed_path = run_dir / "competencies_failed.json"
+        if failed_path.exists():
+            try:
+                failed = json.loads(failed_path.read_text(encoding="utf-8"))
+                for item in failed or []:
+                    reason = item.get("dropped_reason")
+                    if reason:
+                        counts[f"Competency: {reason}"] = counts.get(f"Competency: {reason}", 0) + 1
+            except Exception:
+                pass
+        if counts:
+            drop_df = pd.DataFrame(
+                [{"reason": k, "count": v} for k, v in counts.items()]
+            ).sort_values("count", ascending=False).head(12)
+            st.bar_chart(drop_df.set_index("reason"), height=360, color="#888888")
+        else:
+            st.info("No drop-reason data available.")
+
+    with col2:
+        st.markdown("### Evidence repair")
+        if p26:
+            repair_df = pd.DataFrame([
+                {"metric": "mean before", "score": _safe_float(p26.get("grounding_mean_before"))},
+                {"metric": "mean after", "score": _safe_float(p26.get("grounding_mean_after"))},
+                {"metric": "min before", "score": _safe_float(p26.get("grounding_min_before"))},
+                {"metric": "min after", "score": _safe_float(p26.get("grounding_min_after"))},
+            ]).set_index("metric")
+            st.bar_chart(repair_df, height=280, color="#228833")
+            st.caption(
+                f"Repaired {p26.get('n_repaired', 0)} of {p26.get('n_input', 0)} "
+                f"candidates; dropped {p26.get('n_dropped', 0)}."
+            )
+        else:
+            st.info("No evidence repair stage found in this run.")
+
+    clusters_path = run_dir / "clusters.json"
+    if clusters_path.exists():
+        try:
+            clusters = json.loads(clusters_path.read_text(encoding="utf-8"))
+            scores = [_safe_float(c.get("cohesion_score")) for c in clusters if c.get("cohesion_score") is not None]
+            if scores:
+                st.markdown("### Cluster cohesion distribution")
+                fig, ax = plt.subplots(figsize=(8, 4.2))
+                ax.hist(scores, bins=14, color="#66aa55", edgecolor="white")
+                ax.axvline(0.55, color="#cc3311", linestyle="--", linewidth=1.2, label="threshold 0.55")
+                ax.set_xlabel("Cohesion score")
+                ax.set_ylabel("Clusters")
+                ax.legend()
+                st.pyplot(fig, clear_figure=True)
+        except Exception as e:
+            st.warning(f"Could not render cluster cohesion chart: {e}")
+
+
 # --------------------------------------------------------------------------- #
 # Detail panel
 # --------------------------------------------------------------------------- #
@@ -382,18 +923,24 @@ def _render_detail(
         unsafe_allow_html=True,
     )
     fg = comp.get("future_weight", 0.0)
+    fg_source = comp.get("future_weight_source") or "llm_suggested_not_evidence"
+    public_fg = _public_future_weight(comp)
     cols[2].markdown(
         f"**Future weight**<br>"
-        f"<span style='font-size:24px; font-weight:bold'>{fg:.2f}</span>"
-        f"<br><span style='font-size:11px; color:#666'>{comp.get('empirical_trend','?')}</span>",
+        f"<span style='font-size:24px; font-weight:bold'>{public_fg:.2f}</span>"
+        f"<br><span style='font-size:11px; color:#666'>raw {fg:.2f} | {comp.get('empirical_trend','?')}</span>"
+        f"<br><span style='font-size:10px; color:#888'>{fg_source}</span>",
         unsafe_allow_html=True,
     )
     nj = len(comp.get("source_job_ids", []))
+    if comp.get("n_source_jobs") is not None:
+        nj = int(comp.get("n_source_jobs") or nj)
     demand = float(comp.get("demand_score") or 0.0)
-    # v8 sprint Phase 4: surface demand as a relative chip (top X% of corpus).
-    # demand_score is normalised against the run's max n_unique_jobs so 1.00
-    # = the most-demanded competency in this run.
-    if demand > 0:
+    denominator = comp.get("eligible_job_denominator")
+    prevalence_pct = _job_prevalence_pct(comp)
+    if denominator:
+        demand_caption = f"{prevalence_pct:.2f}% of {int(denominator)} postings"
+    elif demand > 0:
         top_pct = max(1, int(round((1 - demand) * 100)))
         demand_caption = f"top {top_pct}% by demand"
     else:
@@ -424,6 +971,63 @@ def _render_detail(
         f"<span style='font-size:11px; color:#666'>· grounding {gs:.2f} · {breakdown}</span></span>",
         unsafe_allow_html=True,
     )
+
+    if comp.get("scientific_sprint1_schema_version"):
+        class_label = _competency_class_label(comp)
+        support_label = _support_tier_label(comp)
+        status_label = _recommendation_status_label(comp)
+        occ_label = comp.get("occupation_mapping_label") or comp.get("occupation_mapping_status") or "unknown"
+        if comp.get("official_core_eligible"):
+            st.success(
+                f"Sprint-1 core candidate #{comp.get('official_core_rank')}: "
+                f"{class_label}; {support_label}; {prevalence_pct:.2f}% prevalence; "
+                f"occupation mapping: {occ_label}."
+            )
+        else:
+            blockers = comp.get("official_core_blockers") or []
+            blocker_text = ", ".join(blockers) if blockers else "not selected by sprint-1 gates"
+            st.caption(
+                f"Sprint-1 class: {class_label}; support: {support_label}; "
+                f"prevalence: {prevalence_pct:.2f}%; occupation mapping: {occ_label}. "
+                f"Not in core candidate list: {blocker_text}."
+            )
+        readiness_blockers = comp.get("official_readiness_blockers") or []
+        if comp.get("recommendation_status") == "official_ready":
+            st.success("Recommendation status: official ready.")
+        elif readiness_blockers:
+            st.warning(
+                f"Recommendation status: {status_label}. Official-readiness blockers: "
+                f"{', '.join(readiness_blockers)}."
+            )
+        else:
+            st.info(f"Recommendation status: {status_label}.")
+
+    if comp.get("cluster_validity_status") or comp.get("theme_evidence_status"):
+        audit_bits = []
+        if comp.get("cluster_validity_status"):
+            audit_bits.append(f"cluster: {comp.get('cluster_validity_status')}")
+        if comp.get("technical_theme_label") or comp.get("theme_evidence_status"):
+            theme = comp.get("technical_theme_label") or "theme"
+            audit_bits.append(f"{theme}: {comp.get('theme_evidence_status') or 'unclassified'}")
+        if comp.get("not_recommended_reason"):
+            audit_bits.append(f"reason: {comp.get('not_recommended_reason')}")
+        st.caption("Scientific audit: " + " | ".join(audit_bits))
+
+    if comp.get("repair_decision") or comp.get("repair_flags"):
+        repair_decision = comp.get("repair_decision") or "unmarked"
+        repair_flags = comp.get("repair_flags") or []
+        dedup_group = comp.get("curriculum_dedup_group") or ""
+        recovered = bool(comp.get("recovered_from_failed"))
+        repair_bits = [f"decision: {repair_decision}"]
+        if recovered:
+            repair_bits.append("recovered from failed high-support evidence")
+        if dedup_group:
+            repair_bits.append(f"dedup group: {dedup_group}")
+        if comp.get("source_failure_reason"):
+            repair_bits.append(f"source failure: {comp.get('source_failure_reason')}")
+        st.caption("Repair audit: " + "; ".join(repair_bits) + ".")
+        if repair_flags:
+            st.caption("Repair flags: " + ", ".join(str(f) for f in repair_flags))
 
     # Caption explaining the independence of KKNI complexity vs labour-market
     # demand. Shown once per detail page, right under the metadata row.
@@ -825,6 +1429,57 @@ def _render_pipeline_audit_page(run_dir: Path):
     except Exception as e:
         st.warning(f"Could not load it_relevance_audit.json: {e}")
 
+    corpus_report = _load_corpus_report(run_dir)
+    _render_corpus_notice([], corpus_report)
+    if corpus_report:
+        st.markdown("## Corpus lineage")
+        cols = st.columns(4)
+        cols[0].metric("Raw rows", corpus_report.get("raw_row_count", 0))
+        cols[1].metric("Metadata jobs", corpus_report.get("metadata_unique_job_ids", 0))
+        cols[2].metric("Phase-1 jobs", corpus_report.get("phase1_unique_job_ids", 0))
+        cols[3].metric("Duplicates", f"{_safe_float(corpus_report.get('duplicate_rate')):.2%}")
+        st.caption(
+            f"Raw CSV: `{corpus_report.get('raw_csv_path') or 'unknown'}` | "
+            f"Prepared: `{corpus_report.get('prepared_dir') or 'unknown'}` | "
+            f"Skill-LLM output: `{corpus_report.get('skill_llm_output_path') or 'unknown'}`"
+        )
+        with st.expander("Show job-ID coverage checks"):
+            coverage = [
+                corpus_report.get("job_id_overlap_raw_to_metadata") or {},
+                corpus_report.get("job_id_overlap_metadata_to_phase1") or {},
+                corpus_report.get("job_id_overlap_metadata_to_skill_llm_input") or {},
+                corpus_report.get("job_id_overlap_skill_llm_input_to_output") or {},
+            ]
+            st.dataframe(coverage, use_container_width=True, hide_index=True)
+
+    stage_coverage = _load_run_json(run_dir, "stage_coverage_report.json", {})
+    extraction_quality = _load_run_json(run_dir, "extraction_quality_audit.json", {})
+    cluster_validity = _load_run_json(run_dir, "cluster_validity_report.json", {})
+    demand_theme = _load_run_json(run_dir, "demand_theme_audit.json", {})
+    if stage_coverage or extraction_quality or cluster_validity or demand_theme:
+        st.markdown("## Evidence-first scientific audits")
+        cols = st.columns(4)
+        cols[0].metric("Labor denominator", stage_coverage.get("labor_market_denominator", 0))
+        cols[1].metric("Non-hard extraction spans", extraction_quality.get("n_not_hard_technical", 0))
+        cols[2].metric("Split candidates", cluster_validity.get("n_split_candidates", 0))
+        cols[3].metric(
+            "Theme recovery candidates",
+            len(demand_theme.get("recovery_candidate_theme_ids") or []),
+        )
+        if stage_coverage.get("coverage_blockers"):
+            st.warning("Coverage blockers: " + ", ".join(stage_coverage.get("coverage_blockers") or []))
+        with st.expander("Stage coverage rows"):
+            st.dataframe(stage_coverage.get("stage_rows") or [], use_container_width=True, hide_index=True)
+        with st.expander("Extraction type distribution"):
+            st.json(extraction_quality.get("type_distribution") or {}, expanded=False)
+        with st.expander("Cluster validity distribution"):
+            st.json(cluster_validity.get("status_distribution") or {}, expanded=False)
+        with st.expander("Demand theme audit"):
+            st.dataframe(demand_theme.get("themes") or [], use_container_width=True, hide_index=True)
+
+    _render_pipeline_charts(run_dir, pipeline_report, noise_audit)
+    st.markdown("---")
+
     # ---- IT-relevance gate section (v9 sprint) ----
     if it_audit:
         st.markdown("## IT-relevance gate")
@@ -1117,15 +1772,19 @@ def main():
     # job_id -> title for the role-shape panel. Empty dict when this run's
     # jobs_metadata isn't reachable (older e2e runs); the panel hides itself.
     job_titles = load_job_titles(str(run_dir))
+    corpus_report = _load_corpus_report(run_dir)
 
     # Top-level page switcher
     page = st.sidebar.radio(
         "Page",
-        options=["Browse competencies", "Curriculum coverage", "Pipeline audit"],
+        options=["Browse competencies", "Market insights", "Curriculum coverage", "Pipeline audit"],
         label_visibility="visible",
     )
     if page == "Pipeline audit":
         _render_pipeline_audit_page(run_dir)
+        return
+    if page == "Market insights":
+        _render_market_insights_page(comps, run_dir, corpus_report)
         return
     if page == "Curriculum coverage":
         _render_coverage_page(comps)
@@ -1152,10 +1811,13 @@ def main():
         )
         lang = "English"
     use_indonesian = (lang == "Bahasa Indonesia")
+    has_sprint1 = _has_sprint1_fields(comps)
+    corpus_ctx = _corpus_context(comps, corpus_report)
 
     st.sidebar.markdown("## Filters")
     st.sidebar.caption(f"Reading from: `{run_dir.name}`")
     st.sidebar.caption(f"{len(comps)} competencies, {len(brs)} LLM calls")
+    st.sidebar.caption(f"Corpus: {_corpus_status_label(corpus_ctx['status'])}")
 
     # KKNI level filter
     all_levels = sorted({c.get("kkni_level") for c in comps if c.get("kkni_level")})
@@ -1196,6 +1858,45 @@ def main():
                  "competencies are shown.",
         )
 
+    chosen_classes = []
+    chosen_statuses = []
+    official_core_only = False
+    min_source_jobs = 0
+    if has_sprint1:
+        all_classes = sorted({_competency_class_label(c) for c in comps})
+        chosen_classes = st.sidebar.multiselect(
+            "Recommendation class",
+            options=all_classes,
+            default=all_classes,
+            help="Sprint-1 classification separates core technical competencies "
+                 "from process, employability/support, and out-of-domain signals.",
+        )
+        official_core_only = st.sidebar.checkbox(
+            "Core technical candidates only",
+            value=False,
+            help="Show only competencies that pass the sprint-1 core technical "
+                 "candidate gates.",
+        )
+        all_statuses = sorted({_recommendation_status_label(c) for c in comps})
+        chosen_statuses = st.sidebar.multiselect(
+            "Recommendation status",
+            options=all_statuses,
+            default=all_statuses,
+            help="Official-ready requires Indonesian corpus validity, official mapping, expert review, and stability validation.",
+        )
+        max_source_jobs = max(
+            (int(c.get("n_source_jobs") or len(c.get("source_job_ids") or [])) for c in comps),
+            default=0,
+        )
+        min_source_jobs = st.sidebar.slider(
+            "Min source jobs",
+            0,
+            max_source_jobs,
+            0,
+            1,
+            help="True unique job-posting support, shown against the run denominator.",
+        )
+
     # Future-weight filter
     min_fw = st.sidebar.slider("Min future weight", 0.0, 1.0, 0.0, 0.05)
     # Grounding-score filter. After the 2026-05-13b contract change grounding
@@ -1215,20 +1916,24 @@ def main():
     # Search
     q = st.sidebar.text_input("Search statement / skills", "")
 
-    # Sort. Default is "priority (desc)" — the spec's combined demand ×
-    # grounding × future_weight ranking. This is now also the contract:
-    # the pipeline returns top-N by priority_score, and the dashboard shows
-    # them in that order by default.
+    # Sort. New runs default to the class-aware recommendation contract.
+    # The original priority score remains available as a baseline/ablation
+    # ranking for research comparison.
+    sort_options = [
+        "priority baseline (desc)",
+        "demand (desc)",
+        "future_weight (desc)",
+        "grounding_score (desc)",
+        "n source jobs (desc)",
+        "statement (a-z)",
+    ]
+    if has_sprint1:
+        sort_options.insert(0, "recommendation rank")
+        sort_options.insert(2, "core candidate rank")
+        sort_options.insert(4, "job prevalence (desc)")
     sort_by = st.sidebar.selectbox(
         "Sort by",
-        options=[
-            "priority (desc)",
-            "demand (desc)",
-            "future_weight (desc)",
-            "grounding_score (desc)",
-            "n source jobs (desc)",
-            "statement (a-z)",
-        ],
+        options=sort_options,
         index=0,
     )
 
@@ -1240,6 +1945,16 @@ def main():
             return False
         if c.get("grounding_score", c.get("grounding_score_preview", 0.0)) < min_grounding:
             return False
+        if has_sprint1:
+            if chosen_classes and _competency_class_label(c) not in chosen_classes:
+                return False
+            if chosen_statuses and _recommendation_status_label(c) not in chosen_statuses:
+                return False
+            if official_core_only and not c.get("official_core_eligible"):
+                return False
+            n_jobs = int(c.get("n_source_jobs") or len(c.get("source_job_ids") or []))
+            if n_jobs < min_source_jobs:
+                return False
         if chosen_occupations:
             match_set = {
                 m.get("occupation_en", "") for m in (c.get("occupation_matches") or [])
@@ -1259,7 +1974,20 @@ def main():
 
     filtered = [c for c in comps if _match(c)]
 
-    if sort_by == "priority (desc)":
+    if sort_by == "recommendation rank":
+        filtered.sort(
+            key=lambda c: (
+                int(c.get("class_sort_group") if c.get("class_sort_group") is not None else 99),
+                int(c.get("class_rank") or 999999),
+                -_job_prevalence_pct(c),
+                -int(c.get("n_source_jobs") or len(c.get("source_job_ids") or [])),
+                -float(c.get("grounding_score", c.get("grounding_score_preview", 0.0))),
+                -_public_future_weight(c),
+                -float(c.get("priority_score", 0.0)),
+                _statement_first_sentence(c, False).lower(),
+            )
+        )
+    elif sort_by == "priority baseline (desc)":
         # v8 sprint Phase 4. Falls back to grounding+future when priority_score
         # is missing (legacy runs).
         def _priority_key(c):
@@ -1270,8 +1998,19 @@ def main():
             return -(0.30 * float(c.get("grounding_score", 0.0))
                      + 0.30 * float(c.get("future_weight", 0.0)))
         filtered.sort(key=_priority_key)
+    elif sort_by == "core candidate rank":
+        filtered.sort(
+            key=lambda c: (
+                not bool(c.get("official_core_eligible")),
+                int(c.get("official_core_rank") or 999999),
+                -int(c.get("n_source_jobs") or len(c.get("source_job_ids") or [])),
+                _statement_first_sentence(c, False).lower(),
+            )
+        )
     elif sort_by == "demand (desc)":
         filtered.sort(key=lambda c: -float(c.get("demand_score", 0.0)))
+    elif sort_by == "job prevalence (desc)":
+        filtered.sort(key=lambda c: -_job_prevalence_pct(c))
     elif sort_by == "future_weight (desc)":
         filtered.sort(key=lambda c: -float(c.get("future_weight", 0.0)))
     elif sort_by == "grounding_score (desc)":
@@ -1288,6 +2027,7 @@ def main():
         f"Cluster-driven curriculum competencies generated from real job-market data. "
         f"Showing **{len(filtered)} of {len(comps)}** competencies."
     )
+    _render_corpus_notice(comps, corpus_report)
 
     # Two-column layout: left = list, right = detail
     list_col, detail_col = st.columns([0.4, 0.6])
@@ -1304,6 +2044,14 @@ def main():
             first = _statement_first_sentence(c, use_indonesian, max_chars=70)
             gs = c.get("grounding_score", c.get("grounding_score_preview", 0.0))
             tier_icon, _label, _color = _grounding_tier(gs)
+            if has_sprint1:
+                class_label = _competency_class_label(c).replace(" / ", "/")
+                status_label = _recommendation_status_label(c)
+                jobs = int(c.get("n_source_jobs") or len(c.get("source_job_ids") or []))
+                return (
+                    f"{i+1}. {first}  "
+                    f"({class_label}, {status_label}, {jobs} jobs, {tier_icon} grounding {gs:.2f})"
+                )
             return (
                 f"{i+1}. {first}  "
                 f"(KKNI {c.get('kkni_level','?')}, {tier_icon} grounding {gs:.2f})"

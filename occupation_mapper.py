@@ -201,15 +201,24 @@ def _embed(texts: Iterable[str], model_name: str = DEFAULT_SBERT_MODEL) -> np.nd
 
 
 def _competency_embedding_text(comp: dict) -> str:
-    """The text we embed for a competency. Combines title + description; the
-    related_skills list adds breadth without dominating the signal."""
+    """The text we embed for a competency.
+
+    v2 competencies are statement-first. Older runs may still contain
+    title/description, so keep them as fallbacks only.
+    """
     parts = []
+    statement = comp.get("statement") or ""
     title = comp.get("title") or ""
     desc = comp.get("description") or ""
-    if title:
+    if statement:
+        parts.append(statement)
+    elif title:
         parts.append(title)
     if desc:
         parts.append(desc)
+    rationale = comp.get("rationale") or ""
+    if rationale:
+        parts.append(rationale[:400])
     rs = comp.get("related_skills") or []
     if rs:
         parts.append("Related skills: " + ", ".join(rs[:10]))

@@ -271,19 +271,23 @@ def load_real_items(
             else:
                 real_sentence = _best_matching_sentence(text, _job_sentences(jid))
                 sentence_text = real_sentence if real_sentence else text
-            items.append(
-                SkillItem(
-                    text=text,
-                    type=stype,
-                    confidence_score=conf,
-                    confidence_tier=_confidence_tier_from_score(conf),
-                    source=src,
-                    sentence_id=sid,
-                    sentence_text=sentence_text,
-                    extractor_source=src,
-                    job_title=_job_title_for(jid),
-                )
+            item = SkillItem(
+                text=text,
+                type=stype,
+                confidence_score=conf,
+                confidence_tier=_confidence_tier_from_score(conf),
+                source=src,
+                sentence_id=sid,
+                sentence_text=sentence_text,
+                extractor_source=src,
+                job_title=_job_title_for(jid),
             )
+            item.job_id = jid
+            item.post_extraction_type = (row.get("post_extraction_type") or "").strip()
+            item.extraction_flags = (row.get("extraction_flags") or "").strip()
+            item.normalized_span = (row.get("normalized_span") or text).strip()
+            item.skill_subtype = (row.get("skill_subtype") or "").strip()
+            items.append(item)
 
     # Knowledge
     with open(knowledge_path, encoding="utf-8") as f:
@@ -309,18 +313,21 @@ def load_real_items(
             else:
                 real_sentence = _best_matching_sentence(text, _job_sentences(jid))
                 sentence_text = real_sentence if real_sentence else text
-            items.append(
-                KnowledgeItem(
-                    text=text,
-                    confidence_score=conf,
-                    confidence_tier=_confidence_tier_from_score(conf),
-                    source=src,
-                    sentence_id=sid,
-                    sentence_text=sentence_text,
-                    extractor_source=src,
-                    job_title=_job_title_for(jid),
-                )
+            item = KnowledgeItem(
+                text=text,
+                confidence_score=conf,
+                confidence_tier=_confidence_tier_from_score(conf),
+                source=src,
+                sentence_id=sid,
+                sentence_text=sentence_text,
+                extractor_source=src,
+                job_title=_job_title_for(jid),
             )
+            item.job_id = jid
+            item.post_extraction_type = (row.get("post_extraction_type") or "").strip()
+            item.extraction_flags = (row.get("extraction_flags") or "").strip()
+            item.normalized_span = (row.get("normalized_span") or text).strip()
+            items.append(item)
 
     if max_items and len(items) > max_items:
         items = items[:max_items]

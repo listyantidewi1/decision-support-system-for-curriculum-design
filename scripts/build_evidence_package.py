@@ -16,6 +16,8 @@ and writes:
         expert_review_competencies.csv
         expert_review_clusters.csv
         expert_review_recommendations.csv
+        dacum_cbc/
+        dacum_cbc_manifest.json
         README.md
 
 The package separates automatic evidence from human-review evidence. It does
@@ -27,6 +29,7 @@ import argparse
 import csv
 import json
 import math
+import shutil
 import statistics
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
@@ -122,6 +125,20 @@ def _run_tag(run_dir: Path, pipeline_report: dict[str, Any]) -> str:
 
 
 def _ranked_competencies(competencies: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    if any(c.get("class_rank") for c in competencies):
+        return sorted(
+            competencies,
+            key=lambda c: (
+                int(c.get("class_sort_group") if c.get("class_sort_group") is not None else 99),
+                int(c.get("class_rank") or 999999),
+                -_as_float(c.get("job_prevalence")),
+                -int(c.get("n_source_jobs") or len(_as_list(c.get("source_job_ids")))),
+                -_as_float(c.get("grounding_score")),
+                -_as_float(c.get("future_weight")),
+                -_as_float(c.get("priority_score")),
+                str(c.get("id", "")),
+            ),
+        )
     return sorted(
         competencies,
         key=lambda c: (
@@ -130,6 +147,115 @@ def _ranked_competencies(competencies: list[dict[str, Any]]) -> list[dict[str, A
             str(c.get("id", "")),
         ),
     )
+
+
+def _contract_fields(c: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "recommendation_status": c.get("recommendation_status", ""),
+        "official_readiness_blockers": _join_list(c.get("official_readiness_blockers")),
+        "class_rank": c.get("class_rank", ""),
+        "demand_denominator": c.get("demand_denominator", c.get("eligible_job_denominator", "")),
+        "corpus_country": c.get("corpus_country", ""),
+        "corpus_language": c.get("corpus_language", ""),
+        "corpus_validity_status": c.get("corpus_validity_status", ""),
+        "repair_decision": c.get("repair_decision", ""),
+        "repair_flags": _join_list(c.get("repair_flags")),
+        "curriculum_dedup_group": c.get("curriculum_dedup_group", ""),
+        "recovered_from_failed": c.get("recovered_from_failed", ""),
+        "source_failure_reason": c.get("source_failure_reason", ""),
+        "cluster_validity_status": c.get("cluster_validity_status", ""),
+        "cluster_validity_flags": _join_list(c.get("cluster_validity_flags")),
+        "technical_theme_id": c.get("technical_theme_id", ""),
+        "technical_theme_label": c.get("technical_theme_label", ""),
+        "theme_evidence_status": c.get("theme_evidence_status", ""),
+        "theme_recommendation_status": c.get("theme_recommendation_status", ""),
+        "not_recommended_reason": c.get("not_recommended_reason", ""),
+        "future_weight_source": c.get("future_weight_source", ""),
+    }
+
+
+CONTRACT_FIELDNAMES = [
+    "recommendation_status",
+    "official_readiness_blockers",
+    "class_rank",
+    "demand_denominator",
+    "corpus_country",
+    "corpus_language",
+    "corpus_validity_status",
+    "repair_decision",
+    "repair_flags",
+    "curriculum_dedup_group",
+    "recovered_from_failed",
+    "source_failure_reason",
+    "cluster_validity_status",
+    "cluster_validity_flags",
+    "technical_theme_id",
+    "technical_theme_label",
+    "theme_evidence_status",
+    "theme_recommendation_status",
+    "not_recommended_reason",
+    "future_weight_source",
+]
+
+
+def _load_corpus_report(run_dir: Path, pipeline_report: dict[str, Any]) -> dict[str, Any]:
+    local = run_dir / "corpus_lineage_report.json"
+    if local.exists():
+        data = _load_json(local, {})
+        return data if isinstance(data, dict) else {}
+    candidate = (
+        pipeline_report.get("corpus_lineage_report")
+        or ((pipeline_report.get("stages", {}) or {}).get("corpus_lineage_audit", {}) or {}).get("report_path")
+        or ""
+    )
+    if not candidate:
+        return {}
+    path = Path(candidate)
+    if not path.is_absolute():
+        path = PROJECT_ROOT / path
+    data = _load_json(path, {}) if path.exists() else {}
+    return data if isinstance(data, dict) else {}
+
+
+def _copy_optional_dacum_package(run_tag: str, out_dir: Path) -> dict[str, Any]:
+    source_dir = PROJECT_ROOT / "results" / "dacum_cbc_packages" / run_tag
+    dest_dir = out_dir / "dacum_cbc"
+    manifest: dict[str, Any] = {
+        "available": False,
+        "expected_source_dir": str(source_dir),
+        "copied_dir": str(dest_dir),
+        "copied_files": [],
+    }
+    if not source_dir.exists():
+        _write_json(out_dir / "dacum_cbc_manifest.json", manifest)
+        return manifest
+
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    filenames = [
+        "dacum_competency_chain.csv",
+        "dacum_expert_worksheet.csv",
+        "occupation_mapping_audit.csv",
+        "skkni_unit_candidates.csv",
+        "spektrum_alignment.csv",
+        "dacum_cbc_report.json",
+        "README.md",
+    ]
+    copied_files: list[str] = []
+    for filename in filenames:
+        src = source_dir / filename
+        if src.exists():
+            shutil.copy2(src, dest_dir / filename)
+            copied_files.append(filename)
+
+    report = _load_json(source_dir / "dacum_cbc_report.json", {})
+    manifest.update({
+        "available": True,
+        "source_dir": str(source_dir),
+        "copied_files": copied_files,
+        "report_summary": report if isinstance(report, dict) else {},
+    })
+    _write_json(out_dir / "dacum_cbc_manifest.json", manifest)
+    return manifest
 
 
 def _competency_cluster_counts(competencies: list[dict[str, Any]]) -> Counter:
@@ -164,6 +290,9 @@ def build_automatic_evaluation(
     out_dir: Path,
     pipeline_report: dict[str, Any],
     evidence_repair_report: dict[str, Any],
+    repair_audit_report: dict[str, Any],
+    scientific_fix_report: dict[str, Any],
+    corpus_lineage_report: dict[str, Any],
     competencies: list[dict[str, Any]],
     failed: list[dict[str, Any]],
     clusters: list[dict[str, Any]],
@@ -186,6 +315,11 @@ def build_automatic_evaluation(
     phase2_1 = stages.get("phase2_1_clustering", {})
     phase2_2 = stages.get("phase2_2_generation", {})
     phase4 = stages.get("phase4_priority", {})
+    corpus_status = (
+        corpus_lineage_report.get("corpus_validity_status")
+        or (scientific_fix_report.get("corpus_context", {}) if isinstance(scientific_fix_report, dict) else {}).get("corpus_validity_status")
+        or "needs_manual_review"
+    )
 
     gate_summary = {
         "sentence_relevance": {
@@ -228,6 +362,11 @@ def build_automatic_evaluation(
             "status": "not_measured_in_single_run",
             "required_next_step": "Run N/seed stability experiment and compute top-20 Jaccard.",
         },
+        "corpus_validity": {
+            "status": "pass" if corpus_status == "valid_for_indonesian_claim" else "review_or_blocked",
+            "criterion": "official Indonesian curriculum claims require corpus_validity_status == valid_for_indonesian_claim",
+            "observed_status": corpus_status,
+        },
     }
 
     return {
@@ -243,17 +382,22 @@ def build_automatic_evaluation(
             "total_runtime_seconds": pipeline_report.get("total_runtime_seconds"),
             "final_n_competencies": pipeline_report.get("final_n_competencies"),
         },
+        "corpus_lineage_report": corpus_lineage_report or {},
         "stage_summary": {
             "phase1_load": stages.get("phase1_load", {}),
+            "corpus_lineage_audit": stages.get("corpus_lineage_audit", {}),
             "phase2_1_clustering": phase2_1,
             "phase2_2_generation": phase2_2,
             "phase2_6_evidence_repair": evidence_repair_report or stages.get("phase2_6_evidence_repair", {}),
+            "phase2_7_repair": repair_audit_report or stages.get("phase2_7_repair", {}),
+            "scientific_sprint1": stages.get("scientific_sprint1", {}),
             "phase4_priority": phase4,
             "noise_audit": {
                 "n_items_dropped_total": noise_audit.get("n_items_dropped_total", 0),
                 "by_stage": noise_audit.get("by_stage", {}),
             },
         },
+        "scientific_sprint1_report": scientific_fix_report or {},
         "competency_summary": {
             "n_final": n,
             "n_failed_or_dropped": len(failed),
@@ -297,6 +441,15 @@ def build_automatic_evaluation(
                 "n_mapped": sum(1 for c in competencies if _as_list(c.get("occupation_matches"))),
                 "n_unmapped": sum(1 for c in competencies if not _as_list(c.get("occupation_matches"))),
             },
+            "recommendation_status_distribution": _distribution(c.get("recommendation_status") for c in competencies),
+            "competency_class_distribution": _distribution(c.get("competency_class") for c in competencies),
+            "repair_decision_distribution": _distribution(c.get("repair_decision") or "unrepaired" for c in competencies),
+            "n_recovered_from_failed": sum(1 for c in competencies if c.get("recovered_from_failed")),
+            "n_curriculum_dedup_groups": len({
+                c.get("curriculum_dedup_group")
+                for c in competencies
+                if c.get("curriculum_dedup_group")
+            }),
         },
         "cluster_summary": {
             "n_clusters": len(clusters),
@@ -314,6 +467,9 @@ def build_automatic_evaluation(
                 "grounding_score": c.get("grounding_score"),
                 "future_weight": c.get("future_weight"),
                 "kkni_level": c.get("kkni_level"),
+                "competency_class": c.get("competency_class"),
+                "recommendation_status": c.get("recommendation_status"),
+                "job_prevalence_pct": c.get("job_prevalence_pct"),
                 "statement": _compact(c.get("statement"), 180),
             }
             for i, c in enumerate(top20)
@@ -324,6 +480,7 @@ def build_automatic_evaluation(
             "Sentence relevance and extraction correctness require separate labeled gold sets.",
             "Single-run evidence cannot establish production-volume stability.",
             "Generated results folders are local/regeneratable and are not committed to Git by default.",
+            "Official-ready recommendations are blocked unless Indonesian corpus lineage, official mapping, expert review, and stability gates pass.",
         ],
     }
 
@@ -336,6 +493,13 @@ def build_provenance_rows(competencies: list[dict[str, Any]]) -> list[dict[str, 
             "rank": rank,
             "competency_id": c.get("id", ""),
             "statement": c.get("statement", ""),
+            "competency_class": c.get("competency_class", ""),
+            "support_tier": c.get("support_tier", ""),
+            "official_core_eligible": c.get("official_core_eligible", ""),
+            "official_core_rank": c.get("official_core_rank", ""),
+            "official_core_blockers": _join_list(c.get("official_core_blockers")),
+            **_contract_fields(c),
+            "job_prevalence_pct": c.get("job_prevalence_pct", ""),
             "priority_score": c.get("priority_score", ""),
             "demand_score": c.get("demand_score", ""),
             "future_weight": c.get("future_weight", ""),
@@ -364,6 +528,13 @@ def build_quality_rows(competencies: list[dict[str, Any]]) -> list[dict[str, Any
             "rank": rank,
             "competency_id": c.get("id", ""),
             "statement": c.get("statement", ""),
+            "competency_class": c.get("competency_class", ""),
+            "support_tier": c.get("support_tier", ""),
+            "official_core_eligible": c.get("official_core_eligible", ""),
+            "official_core_rank": c.get("official_core_rank", ""),
+            "official_core_blockers": _join_list(c.get("official_core_blockers")),
+            **_contract_fields(c),
+            "job_prevalence_pct": c.get("job_prevalence_pct", ""),
             "statement_chars": len(str(c.get("statement") or "")),
             "rationale_chars": len(str(c.get("rationale") or "")),
             "n_related_skills": len(_as_list(c.get("related_skills"))),
@@ -440,6 +611,13 @@ def build_top_recommendation_rows(competencies: list[dict[str, Any]], top_n: int
             "rank": rank,
             "competency_id": c.get("id", ""),
             "statement": c.get("statement", ""),
+            "competency_class": c.get("competency_class", ""),
+            "support_tier": c.get("support_tier", ""),
+            "official_core_eligible": c.get("official_core_eligible", ""),
+            "official_core_rank": c.get("official_core_rank", ""),
+            "official_core_blockers": _join_list(c.get("official_core_blockers")),
+            **_contract_fields(c),
+            "job_prevalence_pct": c.get("job_prevalence_pct", ""),
             "priority_score": c.get("priority_score", ""),
             "demand_score": c.get("demand_score", ""),
             "grounding_score": c.get("grounding_score", ""),
@@ -473,6 +651,13 @@ def build_expert_competency_rows(competencies: list[dict[str, Any]], top_n: int 
             "rank": rank,
             "competency_id": c.get("id", ""),
             "statement": c.get("statement", ""),
+            "competency_class": c.get("competency_class", ""),
+            "support_tier": c.get("support_tier", ""),
+            "official_core_eligible": c.get("official_core_eligible", ""),
+            "official_core_rank": c.get("official_core_rank", ""),
+            "official_core_blockers": _join_list(c.get("official_core_blockers")),
+            **_contract_fields(c),
+            "job_prevalence_pct": c.get("job_prevalence_pct", ""),
             "related_skills": _join_list(c.get("related_skills")),
             "rationale": c.get("rationale", ""),
             "source_sentences_sample": _join_list([_compact(s, 220) for s in _as_list(c.get("source_sentences"))[:5]]),
@@ -495,6 +680,13 @@ def build_expert_recommendation_rows(competencies: list[dict[str, Any]], top_n: 
             "rank": rank,
             "competency_id": c.get("id", ""),
             "statement": c.get("statement", ""),
+            "competency_class": c.get("competency_class", ""),
+            "support_tier": c.get("support_tier", ""),
+            "official_core_eligible": c.get("official_core_eligible", ""),
+            "official_core_rank": c.get("official_core_rank", ""),
+            "official_core_blockers": _join_list(c.get("official_core_blockers")),
+            **_contract_fields(c),
+            "job_prevalence_pct": c.get("job_prevalence_pct", ""),
             "priority_score": c.get("priority_score", ""),
             "score_explanation": (
                 f"demand={_as_float(c.get('demand_score')):.3f}; "
@@ -515,10 +707,16 @@ def write_readme(
     run_dir: Path,
     top_n: int,
     automatic_eval: dict[str, Any],
+    dacum_manifest: dict[str, Any],
 ) -> None:
     summary = automatic_eval["competency_summary"]
     cluster = automatic_eval["cluster_summary"]
     gates = automatic_eval["protocol_gate_summary"]
+    dacum_status = (
+        "available in `dacum_cbc/`"
+        if dacum_manifest.get("available")
+        else "not generated for this run"
+    )
     text = f"""# Evidence Package: {run_tag}
 
 Generated: {automatic_eval["created_at"]}
@@ -539,6 +737,11 @@ pipeline run. It separates automatic checks from human-review materials.
 | File | Purpose |
 |---|---|
 | `automatic_evaluation.json` | Machine-readable summary of automatic evidence and pass/fail status |
+| `corpus_lineage_report.json` | Data-lineage and corpus-validity audit for raw, prepared, Skill-LLM, and Phase-1 evidence |
+| `scientific_fix_report.json` | Sprint-1 recommendation contract, class distribution, support tiers, and core-candidate list |
+| `repair_audit_report.json` | Precision, redundancy, recovery, and curriculum-dedup audit when the repair stage ran |
+| `repair_candidates.csv` | High-support failed competencies considered for targeted recovery |
+| `dropped_high_support.csv` | High-support candidates that still could not be recovered |
 | `provenance_audit.csv` | Per-competency traceability from recommendation to source evidence |
 | `competency_quality_report.csv` | Grounding, text-quality, KKNI, education, occupation, and rationale audit |
 | `cluster_coherence_report.csv` | Per-cluster cohesion and cluster-review worksheet |
@@ -546,6 +749,8 @@ pipeline run. It separates automatic checks from human-review materials.
 | `expert_review_competencies.csv` | Human-review form for competency validity and clarity |
 | `expert_review_clusters.csv` | Human-review form for cluster coherence |
 | `expert_review_recommendations.csv` | Human-review form for top recommendation usefulness |
+| `dacum_cbc_manifest.json` | Availability and source path for the DACUM/CBC review package |
+| `dacum_cbc/` | Optional copied DACUM/CBC chain, expert worksheet, occupation audit, SKKNI candidates, and Spektrum alignment |
 
 ## Automatic Snapshot
 
@@ -571,6 +776,8 @@ pipeline run. It separates automatic checks from human-review materials.
 | Recommendation quality | {gates["recommendation_quality"]["status"]} |
 | Production stability | {gates["production_stability"]["status"]} |
 
+DACUM/CBC package: {dacum_status}
+
 ## Reviewer Instructions
 
 1. Use `expert_review_competencies.csv` to rate whether each generated
@@ -579,7 +786,10 @@ pipeline run. It separates automatic checks from human-review materials.
    belong together.
 3. Use `expert_review_recommendations.csv` to judge whether the top ranked
    recommendations deserve curriculum-design priority.
-4. Keep `reviewer_id` stable for each reviewer. Do not change system-generated
+4. If `dacum_cbc/` is present, use `dacum_expert_worksheet.csv` to validate
+   occupation/skema, duty area, task evidence, SKKNI unit candidates, Spektrum
+   alignment, and curriculum-module recommendations.
+5. Keep `reviewer_id` stable for each reviewer. Do not change system-generated
    IDs or ranks.
 
 ## Interpretation
@@ -620,6 +830,9 @@ def main() -> int:
 
     pipeline_report = _load_json(run_dir / "pipeline_report.json", {})
     evidence_repair_report = _load_json(run_dir / "evidence_repair_report.json", {})
+    repair_audit_report = _load_json(run_dir / "repair_audit_report.json", {})
+    scientific_fix_report = _load_json(run_dir / "scientific_fix_report.json", {})
+    corpus_lineage_report = _load_corpus_report(run_dir, pipeline_report if isinstance(pipeline_report, dict) else {})
     competencies_path = (
         run_dir / "competencies_evaluated.json"
         if (run_dir / "competencies_evaluated.json").exists()
@@ -647,6 +860,9 @@ def main() -> int:
         out_dir=out_dir,
         pipeline_report=pipeline_report,
         evidence_repair_report=evidence_repair_report if isinstance(evidence_repair_report, dict) else {},
+        repair_audit_report=repair_audit_report if isinstance(repair_audit_report, dict) else {},
+        scientific_fix_report=scientific_fix_report if isinstance(scientific_fix_report, dict) else {},
+        corpus_lineage_report=corpus_lineage_report,
         competencies=competencies,
         failed=failed if isinstance(failed, list) else [],
         clusters=clusters,
@@ -656,10 +872,47 @@ def main() -> int:
         engineering_grounding_gate=args.engineering_grounding_gate,
     )
     _write_json(out_dir / "automatic_evaluation.json", automatic_eval)
+    if isinstance(scientific_fix_report, dict) and scientific_fix_report:
+        _write_json(out_dir / "scientific_fix_report.json", scientific_fix_report)
+    if isinstance(corpus_lineage_report, dict) and corpus_lineage_report:
+        _write_json(out_dir / "corpus_lineage_report.json", corpus_lineage_report)
+    if isinstance(repair_audit_report, dict) and repair_audit_report:
+        _write_json(out_dir / "repair_audit_report.json", repair_audit_report)
+    for repair_name in [
+        "stage_coverage_report.json",
+        "stage_coverage_report.csv",
+        "extraction_quality_audit.json",
+        "extraction_quality_audit.csv",
+        "sentence_filter_audit.json",
+        "sentence_filter_audit.csv",
+        "domain_filter_audit.csv",
+        "cluster_validity_report.json",
+        "cluster_validity_report.csv",
+        "cluster_split_candidates.csv",
+        "low_frequency_theme_audit.csv",
+        "demand_theme_audit.json",
+        "demand_theme_audit.csv",
+        "not_recommended_themes.csv",
+        "theme_recovery_candidates.csv",
+        "theme_recovery_audit_report.json",
+        "repair_candidates.csv",
+        "recovered_competencies.json",
+        "dropped_high_support.csv",
+        "ranked_core_technical_repaired.csv",
+        "ranked_engineering_process_repaired.csv",
+        "ranked_employability_support_repaired.csv",
+        "ranked_out_of_domain_or_needs_review_repaired.csv",
+    ]:
+        src = run_dir / repair_name
+        if src.exists():
+            shutil.copy2(src, out_dir / repair_name)
 
     provenance_rows = build_provenance_rows(competencies)
     _write_csv(out_dir / "provenance_audit.csv", provenance_rows, [
-        "rank", "competency_id", "statement", "priority_score", "demand_score",
+        "rank", "competency_id", "statement", "competency_class",
+        "support_tier", "official_core_eligible", "official_core_rank",
+        "official_core_blockers", *CONTRACT_FIELDNAMES, "job_prevalence_pct",
+        "priority_score", "demand_score",
         "future_weight", "grounding_score", "skill_grounding_score",
         "sentence_relevance_score", "n_related_skills", "n_contributing_item_ids",
         "n_source_jobs", "n_source_sentence_ids", "n_source_sentences",
@@ -669,7 +922,10 @@ def main() -> int:
 
     quality_rows = build_quality_rows(competencies)
     _write_csv(out_dir / "competency_quality_report.csv", quality_rows, [
-        "rank", "competency_id", "statement", "statement_chars", "rationale_chars",
+        "rank", "competency_id", "statement", "competency_class",
+        "support_tier", "official_core_eligible", "official_core_rank",
+        "official_core_blockers", *CONTRACT_FIELDNAMES, "job_prevalence_pct",
+        "statement_chars", "rationale_chars",
         "n_related_skills", "n_soft_skills", "n_source_jobs", "n_source_sentences",
         "grounding_score", "grounding_passed", "grounding_method",
         "n_statement_evidence_concerns", "n_statement_evidence_warnings",
@@ -690,7 +946,10 @@ def main() -> int:
 
     top_rows = build_top_recommendation_rows(competencies, args.top_n)
     _write_csv(out_dir / "top_recommendation_audit.csv", top_rows, [
-        "rank", "competency_id", "statement", "priority_score", "demand_score",
+        "rank", "competency_id", "statement", "competency_class",
+        "support_tier", "official_core_eligible", "official_core_rank",
+        "official_core_blockers", *CONTRACT_FIELDNAMES, "job_prevalence_pct",
+        "priority_score", "demand_score",
         "grounding_score", "future_weight", "n_source_jobs", "n_source_sentences",
         "kkni_level", "education_levels_demanded", "occupation_matches",
         "score_explanation", "related_skills", "evidence_sample",
@@ -699,7 +958,10 @@ def main() -> int:
     review_top_n = None if args.review_competencies <= 0 else args.review_competencies
     expert_comp_rows = build_expert_competency_rows(competencies, review_top_n)
     _write_csv(out_dir / "expert_review_competencies.csv", expert_comp_rows, [
-        "reviewer_id", "rank", "competency_id", "statement", "related_skills",
+        "reviewer_id", "rank", "competency_id", "statement",
+        "competency_class", "support_tier", "official_core_eligible",
+        "official_core_rank", "official_core_blockers", *CONTRACT_FIELDNAMES, "job_prevalence_pct",
+        "related_skills",
         "rationale", "source_sentences_sample", "validity_1_5",
         "relevance_yes_partial_no", "grounding_clarity_1_5",
         "rationale_clarity_1_5", "actionability_1_5",
@@ -717,12 +979,16 @@ def main() -> int:
 
     expert_rec_rows = build_expert_recommendation_rows(competencies, args.top_n)
     _write_csv(out_dir / "expert_review_recommendations.csv", expert_rec_rows, [
-        "reviewer_id", "rank", "competency_id", "statement", "priority_score",
+        "reviewer_id", "rank", "competency_id", "statement",
+        "competency_class", "support_tier", "official_core_eligible",
+        "official_core_rank", "official_core_blockers", *CONTRACT_FIELDNAMES, "job_prevalence_pct",
+        "priority_score",
         "score_explanation", "priority_label_yes_partial_no",
         "curriculum_usefulness_1_5", "ranking_reasonableness_1_5", "comments",
     ])
 
-    write_readme(out_dir / "README.md", tag, run_dir, args.top_n, automatic_eval)
+    dacum_manifest = _copy_optional_dacum_package(tag, out_dir)
+    write_readme(out_dir / "README.md", tag, run_dir, args.top_n, automatic_eval, dacum_manifest)
 
     print(f"[OK] Evidence package written to: {out_dir}")
     print(f"     Final competencies: {len(competencies)}")

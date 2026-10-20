@@ -31,7 +31,47 @@ from competency_v2_schema import CompetencyV2
 
 logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parent
-REPAIR_VERSION = "v2.6.0"
+REPAIR_VERSION = "v2.7.0"
+
+_SPECIFIC_TECH_SINGLE_SKILLS = {
+    ".net",
+    ".net core",
+    "android",
+    "angular",
+    "api",
+    "apis",
+    "aws",
+    "azure",
+    "azure devops",
+    "c#",
+    "c++",
+    "ci/cd",
+    "css",
+    "database",
+    "databases",
+    "devops",
+    "docker",
+    "gcp",
+    "git",
+    "github",
+    "html",
+    "infrastructure as code",
+    "iac",
+    "ios",
+    "java",
+    "javascript",
+    "kubernetes",
+    "machine learning",
+    "node.js",
+    "python",
+    "react",
+    "rest api",
+    "restful api",
+    "sql",
+    "swift",
+    "terraform",
+    "typescript",
+}
 
 
 @dataclass
@@ -49,6 +89,9 @@ class EvidenceRepairConfig:
     drop_generic_skills: bool = True
     apply_final_evaluator_gate: bool = True
     final_grounding_threshold: float = 0.80
+    allow_single_specific_technical_skill: bool = True
+    single_skill_min_source_jobs: int = 15
+    single_skill_min_supporting_sentences: int = 3
 
 
 @dataclass
@@ -175,6 +218,33 @@ def _lexical_similarity(a: str, b: str) -> float:
     return len(ta & tb) / len(ta | tb)
 
 
+def _source_job_count(comp: CompetencyV2) -> int:
+    return len({str(j).strip() for j in (comp.source_job_ids or []) if str(j).strip()})
+
+
+def _is_specific_technical_skill(skill: str) -> bool:
+    key = _normalize_key(skill)
+    if key in _SPECIFIC_TECH_SINGLE_SKILLS:
+        return True
+    compact = key.replace(" ", "")
+    return compact in {s.replace(" ", "") for s in _SPECIFIC_TECH_SINGLE_SKILLS}
+
+
+def _single_skill_allowed(
+    comp: CompetencyV2,
+    skills: Sequence[str],
+    sentences: Sequence[str],
+    config: EvidenceRepairConfig,
+) -> bool:
+    if not config.allow_single_specific_technical_skill or len(skills) != 1:
+        return False
+    if not _is_specific_technical_skill(skills[0]):
+        return False
+    if _source_job_count(comp) < config.single_skill_min_source_jobs:
+        return False
+    return len(sentences) >= config.single_skill_min_supporting_sentences
+
+
 def _dedupe_skills(skills: Sequence[str], drop_generic: bool = True) -> tuple[list[str], list[str]]:
     kept: list[str] = []
     removed: list[str] = []
@@ -287,8 +357,14 @@ def _repair_one(
         "drop_reason": "",
     }
 
-    if len(skills) < config.min_supported_skills or len(sentences) < config.min_supporting_sentences:
+    single_skill_allowed = _single_skill_allowed(comp, skills, sentences, config)
+    if (
+        (len(skills) < config.min_supported_skills and not single_skill_allowed)
+        or len(sentences) < config.min_supporting_sentences
+    ):
         audit["drop_reason"] = "insufficient_input_after_skill_normalization"
+        if len(skills) < config.min_supported_skills:
+            audit["single_skill_allowed"] = single_skill_allowed
         comp.evidence_repair_audit = audit
         return None, audit
 
@@ -313,6 +389,7 @@ def _repair_one(
     unsupported_skills: list[str] = []
     weak_supported_skills: list[str] = []
 
+    chosen_support: list[tuple[str, int, bool]] = []
     for si, skill in enumerate(skills):
         candidates: list[tuple[float, int, bool, bool]] = []
         for sent_idx, sent in enumerate(sentences):
@@ -320,7 +397,11 @@ def _repair_one(
             skill_hit = skill_scores[si][sent_idx] >= config.skill_threshold or lexical_hit
             statement_hit = statement_scores[sent_idx] >= config.statement_threshold
             weak_statement_hit = statement_scores[sent_idx] >= config.weak_statement_threshold
-            if skill_hit and (statement_hit or weak_statement_hit):
+            if skill_hit and (
+                statement_hit
+                or weak_statement_hit
+                or (single_skill_allowed and lexical_hit)
+            ):
                 score = (
                     statement_scores[sent_idx]
                     + 0.50 * skill_scores[si][sent_idx]
@@ -331,31 +412,62 @@ def _repair_one(
         if not candidates:
             unsupported_skills.append(skill)
             continue
-        best_score, best_idx, strong_statement, _lexical = candidates[0]
+        strong_candidates = [c for c in candidates if c[2]]
+        best_score, best_idx, strong_statement, _lexical = (
+            strong_candidates[0] if strong_candidates else candidates[0]
+        )
         supported_skills.append(skill)
         support_sentence_idxs.add(best_idx)
+        chosen_support.append((skill, best_idx, strong_statement))
         if not strong_statement:
             weak_supported_skills.append(skill)
 
-    if len(supported_skills) < config.min_supported_skills:
+    if len(supported_skills) < config.min_supported_skills and not (
+        len(supported_skills) == 1 and single_skill_allowed
+    ):
         audit["drop_reason"] = "fewer_than_min_supported_skills"
         audit["unsupported_related_skills"] = unsupported_skills
+        audit["single_skill_allowed"] = single_skill_allowed
         comp.evidence_repair_audit = audit
         return None, audit
 
-    # Add the best statement-supporting sentences until the UI cap. This keeps
-    # high-relevance evidence visible without reintroducing broad cluster noise.
+    # Add the best statement-supporting sentences until the UI cap, preferring
+    # strong statement evidence over weak skill-only support. This recovers
+    # over-broad generated statements by trimming off-topic cluster evidence
+    # before the final evaluator sees the competency.
     ranked_statement_idxs = sorted(
         good_statement_idxs,
         key=lambda idx: statement_scores[idx],
         reverse=True,
     )
     keep_idxs: list[int] = []
-    for idx in list(support_sentence_idxs) + ranked_statement_idxs:
+    strong_support_idxs = [
+        idx for _skill, idx, strong in chosen_support if strong
+    ]
+    weak_support_idxs = [
+        idx for _skill, idx, strong in chosen_support if not strong
+    ]
+    single_skill_literal_idxs: list[int] = []
+    if single_skill_allowed and supported_skills:
+        skey = _normalize_key(supported_skills[0])
+        single_skill_literal_idxs = [
+            idx for idx, sent in enumerate(sentences)
+            if _lexical_match(skey, sent)
+        ]
+    for idx in strong_support_idxs + ranked_statement_idxs + single_skill_literal_idxs + weak_support_idxs:
         if idx not in keep_idxs:
             keep_idxs.append(idx)
         if len(keep_idxs) >= config.max_supporting_sentences:
             break
+
+    # If weak support sentences would make the final sentence-relevance ratio
+    # fail, remove them as long as the minimum evidence count is preserved.
+    optimized: list[int] = []
+    for idx in keep_idxs:
+        if statement_scores[idx] >= config.statement_threshold:
+            optimized.append(idx)
+    if len(optimized) >= config.min_supporting_sentences:
+        keep_idxs = optimized[: config.max_supporting_sentences]
 
     if len(keep_idxs) < config.min_supporting_sentences:
         audit["drop_reason"] = "fewer_than_min_supporting_sentences"

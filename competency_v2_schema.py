@@ -163,6 +163,27 @@ class CompetencyV2:
     # unsupported related skills were removed before final ranking.
     evidence_repair_audit: dict = field(default_factory=dict)
 
+    # Repair sprint audit fields. These are intentionally optional and
+    # additive so older result folders remain readable.
+    repair_decision: str = ""                     # kept|recovered|merged|demoted|dropped
+    repair_flags: List[str] = field(default_factory=list)
+    curriculum_dedup_group: str = ""
+    recovered_from_failed: bool = False
+    source_failure_reason: str = ""
+
+    # Evidence-first scientific audit fields. Populated by
+    # pipeline_scientific_audits.py and the recommendation contract so public
+    # surfaces can distinguish grounded recommendations from split-needed
+    # clusters, weak themes, or absent demand signals.
+    cluster_validity_status: str = ""
+    cluster_validity_flags: List[str] = field(default_factory=list)
+    technical_theme_id: str = ""
+    technical_theme_label: str = ""
+    theme_evidence_status: str = ""
+    theme_recommendation_status: str = ""
+    not_recommended_reason: str = ""
+    future_weight_source: str = "llm_suggested_not_evidence"
+
     # v8 sprint Phase 4 — demand + priority signals. Computed as a post-process
     # after all competencies are generated and Phase 2.4 (education aggregation)
     # has run.
@@ -228,6 +249,19 @@ class CompetencyV2:
             "merged_from": list(self.merged_from),
             "statement_evidence_concerns": list(self.statement_evidence_concerns),
             "evidence_repair_audit": dict(self.evidence_repair_audit),
+            "repair_decision": self.repair_decision,
+            "repair_flags": list(self.repair_flags),
+            "curriculum_dedup_group": self.curriculum_dedup_group,
+            "recovered_from_failed": bool(self.recovered_from_failed),
+            "source_failure_reason": self.source_failure_reason,
+            "cluster_validity_status": self.cluster_validity_status,
+            "cluster_validity_flags": list(self.cluster_validity_flags),
+            "technical_theme_id": self.technical_theme_id,
+            "technical_theme_label": self.technical_theme_label,
+            "theme_evidence_status": self.theme_evidence_status,
+            "theme_recommendation_status": self.theme_recommendation_status,
+            "not_recommended_reason": self.not_recommended_reason,
+            "future_weight_source": self.future_weight_source,
             "demand_score": round(float(self.demand_score), 4),
             "priority_score": round(float(self.priority_score), 4),
             "occupation_matches": list(self.occupation_matches),

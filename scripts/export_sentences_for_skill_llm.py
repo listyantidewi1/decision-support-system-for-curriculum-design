@@ -74,6 +74,16 @@ def main() -> int:
         default="sentence",
         help="Column name for sentence_text in the input CSV.",
     )
+    parser.add_argument(
+        "--include-metadata",
+        action="store_true",
+        help="Include optional provenance columns such as job_id, original text, language, and translation status.",
+    )
+    parser.add_argument(
+        "--metadata-cols",
+        default="job_id,sentence_text_original,sentence_text_en,source_language,normalized_language,translation_status",
+        help="Comma-separated optional columns to copy into each JSONL record when --include-metadata is set.",
+    )
     args = parser.parse_args()
 
     in_path = Path(args.input)
@@ -114,13 +124,24 @@ def main() -> int:
         print(f"[INFO] capped output to first {args.max_sentences} sentences (smoke-test mode)")
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    metadata_cols = [
+        c.strip()
+        for c in args.metadata_cols.split(",")
+        if c.strip() and c.strip() in df.columns
+    ] if args.include_metadata else []
     with open(out_path, "w", encoding="utf-8") as f:
         for _, row in df.iterrows():
             sid = str(row[args.sentence_id_col]).strip()
             stext = str(row[args.sentence_text_col]).strip()
             if not stext:
                 continue
-            f.write(json.dumps({"sentence_id": sid, "sentence_text": stext}, ensure_ascii=False))
+            rec = {"sentence_id": sid, "sentence_text": stext}
+            for col in metadata_cols:
+                value = row.get(col)
+                if pd.isna(value):
+                    value = ""
+                rec[col] = str(value)
+            f.write(json.dumps(rec, ensure_ascii=False))
             f.write("\n")
 
     print(
