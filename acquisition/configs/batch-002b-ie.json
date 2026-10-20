@@ -1,0 +1,38 @@
+{
+  "batch_id": "batch-002b",
+  "query_plan_version": "qp-v2-2026-10",
+  "notes": "Supplementary batch: re-run of the Ireland (OECD) stratum only. A local DNS outage (getaddrinfo failed on apis.indeed.com) zeroed queries 232-247 of batch-002 on 2026-10-20; jobspy returns empty frames on connection errors, so they were logged as 0 rows rather than failures. Same qp-v2-2026-10 term list and parameters as batch-002.",
+  "defaults": {
+    "sites": ["indeed"],
+    "hours_old": null,
+    "sleep_seconds": 6
+  },
+  "strata": [
+    {
+      "name": "oecd",
+      "results_wanted": 250,
+      "countries": [
+        {"iso": "IE", "location": "Ireland", "country_indeed": "Ireland"}
+      ],
+      "terms": [
+        {"term": "software engineer", "family": "software_developer"},
+        {"term": "software developer", "family": "software_developer"},
+        {"term": "programmer", "family": "software_developer"},
+        {"term": "web developer", "family": "web_developer"},
+        {"term": "front end developer", "family": "web_developer"},
+        {"term": "backend developer", "family": "web_developer"},
+        {"term": "full stack developer", "family": "web_developer"},
+        {"term": "mobile developer", "family": "mobile_developer"},
+        {"term": "android developer", "family": "mobile_developer"},
+        {"term": "devops engineer", "family": "devops_cloud"},
+        {"term": "qa engineer", "family": "qa_tester"},
+        {"term": "software tester", "family": "qa_tester"},
+        {"term": "data engineer", "family": "data_ai"},
+        {"term": "machine learning engineer", "family": "data_ai"},
+        {"term": "game developer", "family": "game_developer"},
+        {"term": "ui ux designer", "family": "ui_ux"},
+        {"term": "database administrator", "family": "database"}
+      ]
+    }
+  ]
+}

@@ -64,6 +64,7 @@ def main() -> None:
 
     frames: list[pd.DataFrame] = []
     query_log: list[dict] = []
+    zero_streak = 0
     for i, (stratum, country, term) in enumerate(queries, 1):
         df, log = scrape_term(
             sites=sites,
@@ -78,6 +79,13 @@ def main() -> None:
         status = log["error"] or f"{log['rows']} rows"
         print(f"[{i}/{len(queries)}] {stratum['name']}/{country['iso']} "
               f"'{term['term']}': {status} ({log['secs']}s)", flush=True)
+
+        # jobspy catches connection errors internally and returns an empty frame,
+        # so an outage is only visible as a run of zero-row queries.
+        zero_streak = zero_streak + 1 if log["rows"] == 0 else 0
+        if zero_streak == 3:
+            print("WARNING: 3 consecutive zero-row queries — possible network/endpoint "
+                  "outage; affected queries may need a supplementary batch.", flush=True)
 
         if len(df):
             frames.append(add_provenance(
