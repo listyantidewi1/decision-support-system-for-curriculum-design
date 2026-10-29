@@ -99,7 +99,7 @@
 
   "conditional_platforms": {
     "platforms": ["linkedin", "glassdoor"],
-    "note": "Decision K5 (SOURCE_AUDIT): historical rows collected Nov-Dec 2025 before the K1 LinkedIn drop. The ladder reports N_eligible both including and excluding them."
+    "note": "DECIDED 2026-10-29 (K5, SOURCE_AUDIT v1.2): historical linkedin/glassdoor rows ARE included in N_eligible, documented per row by platform. The ladder keeps reporting both numbers for transparency. K1 was also decided: LinkedIn stays in the acquisition design with operational guardrails."
   },
 
   "coverage_gate": {

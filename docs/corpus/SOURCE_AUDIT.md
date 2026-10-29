@@ -1,7 +1,7 @@
 # Audit Sumber Data & Legalitas Akuisisi Korpus OJP (Workstream A1)
 
-**Status:** DRAF v1.0 — menunggu tinjauan dan persetujuan promotor
-**Tanggal:** 20 Oktober 2026
+**Status:** v1.2 — keputusan K1–K5 tercatat 29 Oktober 2026 (lihat §5); tanda tangan formal promotor menyusul
+**Tanggal:** 20 Oktober 2026 (rev. 29 Oktober 2026)
 **Rujukan proposal:** §3.4.1 (akuisisi korpus), Tabel 3.9 (inklusi/eksklusi), Tabel 3.10 (skema metadata), §3.7 (etika penelitian)
 **Penyusun:** Listyanti Dewi Astuti (dengan asistensi teknis)
 
@@ -20,9 +20,9 @@ bagian etika penelitian (§3.7).
 
 | Sumber | Keputusan yang diusulkan |
 |---|---|
-| Indeed (via pustaka JobSpy) | **PAKAI, dengan catatan metode** — kanal utama ketiga strata |
+| Indeed (via pustaka JobSpy) | **PAKAI, dengan catatan metode** — kanal utama ketiga strata (K2 ✓) |
 | Google Jobs (via JobSpy) | **PARKIR** — rusak secara teknis per Okt 2026; kontribusi historis ≈0,2% |
-| LinkedIn (via JobSpy) | **JANGAN PAKAI** — ToS melarang eksplisit; risiko hukum/etika tertinggi |
+| LinkedIn (via JobSpy) | **DIPERTAHANKAN dalam desain akuisisi** (keputusan K1, 2026-10-29 — menolak usulan drop); dengan pagar operasional §3.3 dan risiko ToS terdokumentasi |
 | ZipRecruiter (via JobSpy) | **PARKIR** — cakupan AS saja; Indeed sudah memadai untuk strata OECD |
 | Jobstreet by SEEK (ID/MY/SG/PH) | **EVALUASI** — kandidat kuat penambah volume Indonesia & ASEAN |
 | Glints (ID/SEA) | **EVALUASI** — kandidat penambah volume Indonesia |
@@ -89,9 +89,15 @@ bagian etika penelitian (§3.7).
 - **Posisi ToS:** User Agreement LinkedIn **melarang eksplisit** scraping/akses otomatis; LinkedIn
   aktif menegakkannya secara hukum. Preseden *hiQ v. LinkedIn* berakhir dengan larangan permanen
   bagi hiQ (2022) — risiko hukum dan etika paling tinggi di antara semua kandidat.
-- **Status empiris:** sengaja TIDAK diuji.
-- **Keputusan diusulkan:** **JANGAN PAKAI** (drop permanen untuk akuisisi baru). Konsekuensi volume
-  kecil karena batch-001 praktis Indeed-only.
+- **Status empiris:** belum diuji ulang pada Okt 2026. Catatan penting dari batch-000: seluruh
+  1.832 baris LinkedIn Indonesia **tanpa deskripsi** (JobSpy tidak mengambil deskripsi LinkedIn
+  kecuali `linkedin_fetch_description=True`) sehingga gagal syarat metadata Tabel 3.9 — scraping
+  LinkedIn tanpa opsi tersebut tidak menghasilkan data yang dapat dipakai.
+- **KEPUTUSAN (K1, 2026-10-29): DIPERTAHANKAN dalam desain akuisisi** — usulan drop DITOLAK oleh
+  peneliti. Pagar operasional yang diadopsi: (a) volume rendah dan berkala (politeness §2),
+  (b) `linkedin_fetch_description` diaktifkan agar data memenuhi Tabel 3.10, (c) risiko ToS/hukum
+  tetap terdokumentasi jujur di §3.7 proposal, (d) kanal ditinjau ulang bila terjadi pemblokiran
+  atau keberatan dari platform.
 - **Catatan data historis:** batch-000 (arsip Nov–Des 2025, ditemukan 2026-10-20) memuat ±10,5 ribu
   baris LinkedIn dan ±5,6 ribu baris Glassdoor yang telanjur terkumpul sebelum rekomendasi ini.
   Lapisan mentah menyimpannya apa adanya (prinsip kekal); apakah baris tersebut ikut masuk
@@ -154,13 +160,13 @@ API resmi memperkuat posisi etis korpus OECD dan menjadi pembanding independen t
 
 ## 5. Keputusan yang dimintakan persetujuan promotor
 
-| # | Keputusan | Usulan |
-|---|---|---|
-| K1 | Menghapus LinkedIn dari seluruh desain akuisisi | Setuju (drop) |
-| K2 | Melanjutkan akuisisi Indeed via JobSpy dengan prinsip §2 dan dokumentasi jujur di §3.7 proposal | Setuju (pakai) |
-| K3 | Mengembangkan adapter Jobstreet → Glints → Kalibrr (urutan prioritas) untuk menutup target Indonesia | Setuju (evaluasi bertahap) |
-| K4 | Mengajukan akses API resmi Adzuna (+ opsional USAJOBS/Arbeitnow) untuk strata OECD | Setuju (ajukan) |
-| K5 | Perlakuan baris LinkedIn/Glassdoor historis pada batch-000 (Nov–Des 2025, terkumpul sebelum K1): ikut N_eligible dengan dokumentasi, atau dikecualikan di lapisan tata kelola | Usulan: ikut, dengan dokumentasi platform per baris |
+| # | Keputusan | Usulan | **Keputusan (2026-10-29)** |
+|---|---|---|---|
+| K1 | Menghapus LinkedIn dari seluruh desain akuisisi | Setuju (drop) | **DITOLAK — LinkedIn dipertahankan** dengan pagar operasional §3.3 |
+| K2 | Melanjutkan akuisisi Indeed via JobSpy dengan prinsip §2 dan dokumentasi jujur di §3.7 proposal | Setuju (pakai) | **SETUJU** |
+| K3 | Mengembangkan adapter Jobstreet → Glints → Kalibrr (urutan prioritas) untuk menutup target Indonesia | Setuju (evaluasi bertahap) | **SETUJU** |
+| K4 | Mengajukan akses API resmi Adzuna (+ opsional USAJOBS/Arbeitnow) untuk strata OECD | Setuju (ajukan) | **SETUJU** |
+| K5 | Perlakuan baris LinkedIn/Glassdoor historis pada batch-000 (Nov–Des 2025): ikut N_eligible dengan dokumentasi, atau dikecualikan di lapisan tata kelola | Usulan: ikut, dengan dokumentasi platform per baris | **SETUJU — ikut, dengan dokumentasi platform per baris** |
 
 **Persetujuan promotor:**
 
@@ -175,3 +181,4 @@ API resmi memperkuat posisi etis korpus OECD dan menjadi pembanding independen t
 |---|---|---|
 | 1.0 (draf) | 2026-10-20 | Draf awal: matriks 11 sumber, prinsip legal–etis, 4 butir keputusan |
 | 1.1 (draf) | 2026-10-20 | +K5: perlakuan baris LinkedIn/Glassdoor historis setelah penemuan arsip batch-000 (Nov–Des 2025) |
+| 1.2 | 2026-10-29 | Keputusan K1–K5 tercatat: K1 ditolak (LinkedIn dipertahankan + pagar operasional), K2–K5 disetujui |
