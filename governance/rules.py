@@ -77,7 +77,8 @@ def apply_rules(df: pd.DataFrame, rules: dict) -> pd.DataFrame:
     flags["meta_valid"] = meta_ok
 
     # --- Period + date sanity (Tabel 3.9 Periode) ---
-    posted = pd.to_datetime(df["date_posted"], errors="coerce")
+    # utc=True: sources mix date-only strings with tz-aware ISO timestamps (Jobstreet).
+    posted = pd.to_datetime(df["date_posted"], errors="coerce", utc=True).dt.tz_localize(None)
     acquired = pd.to_datetime(df["acquisition_timestamp"], errors="coerce", utc=True).dt.tz_localize(None)
     start = pd.Timestamp(rules["period"]["window_start"])
     end = pd.Timestamp(rules["period"]["window_end"])
