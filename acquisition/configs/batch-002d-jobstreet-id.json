@@ -1,0 +1,34 @@
+{
+  "batch_id": "batch-002d",
+  "query_plan_version": "qp-v2-2026-10",
+  "notes": "K3 evaluation prototype (SOURCE_AUDIT v1.2, approved 2026-10-29): Jobstreet Indonesia via the SEEK v5 public search API + server-rendered job detail state. Modest first increment (12 core terms x 150 results, details fetched once per unique job) to audit metadata completeness vs Tabel 3.10 before scaling. Descriptions stored as returned (raw HTML).",
+  "defaults": {
+    "sites": ["jobstreet"],
+    "hours_old": null,
+    "sleep_seconds": 4,
+    "fetch_description": true
+  },
+  "strata": [
+    {
+      "name": "indonesia",
+      "results_wanted": 150,
+      "countries": [
+        {"iso": "ID", "location": "Indonesia", "country_indeed": "Indonesia"}
+      ],
+      "terms": [
+        {"term": "software engineer", "family": "software_developer"},
+        {"term": "software developer", "family": "software_developer"},
+        {"term": "programmer", "family": "software_developer"},
+        {"term": "pengembang perangkat lunak", "family": "software_developer"},
+        {"term": "backend developer", "family": "software_developer"},
+        {"term": "frontend developer", "family": "software_developer"},
+        {"term": "full stack developer", "family": "software_developer"},
+        {"term": "web developer", "family": "web_developer"},
+        {"term": "mobile developer", "family": "mobile_developer"},
+        {"term": "qa engineer", "family": "qa_tester"},
+        {"term": "devops engineer", "family": "devops_cloud"},
+        {"term": "data engineer", "family": "data_ai"}
+      ]
+    }
+  ]
+}

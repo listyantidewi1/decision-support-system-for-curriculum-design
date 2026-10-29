@@ -14,6 +14,8 @@ import pandas as pd
 
 from .batch_store import DEFAULT_ROOT, write_batch
 from .jobspy_adapter import JOBSPY_VERSION, polite_sleep, scrape_term
+from .jobstreet_adapter import ADAPTER_VERSION as JOBSTREET_VERSION
+from .jobstreet_adapter import scrape_term_jobstreet
 from .schema import add_provenance
 
 CHECKPOINT_EVERY = 25
@@ -65,17 +67,28 @@ def main() -> None:
     frames: list[pd.DataFrame] = []
     query_log: list[dict] = []
     zero_streak = 0
+    jobstreet_cache: dict = {}  # job detail fetched once per run across all terms
     for i, (stratum, country, term) in enumerate(queries, 1):
-        df, log = scrape_term(
-            sites=sites,
-            term=term["term"],
-            location=country["location"],
-            country_indeed=country["country_indeed"],
-            results_wanted=stratum.get("results_wanted", 100),
-            hours_old=stratum.get("hours_old", hours_old),
-            fetch_description=stratum.get("fetch_description",
-                                          defaults.get("fetch_description", False)),
-        )
+        if "jobstreet" in sites:
+            df, log = scrape_term_jobstreet(
+                term=term["term"],
+                country_iso=country["iso"],
+                results_wanted=stratum.get("results_wanted", 100),
+                fetch_description=stratum.get("fetch_description",
+                                              defaults.get("fetch_description", True)),
+                detail_cache=jobstreet_cache,
+            )
+        else:
+            df, log = scrape_term(
+                sites=sites,
+                term=term["term"],
+                location=country["location"],
+                country_indeed=country["country_indeed"],
+                results_wanted=stratum.get("results_wanted", 100),
+                hours_old=stratum.get("hours_old", hours_old),
+                fetch_description=stratum.get("fetch_description",
+                                              defaults.get("fetch_description", False)),
+            )
         log.update(stratum=stratum["name"], country_iso=country["iso"])
         query_log.append(log)
         status = log["error"] or f"{log['rows']} rows"
@@ -97,6 +110,8 @@ def main() -> None:
                 country_iso=country["iso"],
                 acquisition_timestamp=_utc_now_iso(),
                 acquisition_method=(
+                    f"{JOBSTREET_VERSION} (SEEK v5 search API + rendered detail state)"
+                    if "jobstreet" in sites else
                     f"python-jobspy {JOBSPY_VERSION} via acquisition.run_batch "
                     f"(sites={','.join(sites)})"
                 ),
