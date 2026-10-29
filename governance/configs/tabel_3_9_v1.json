@@ -1,0 +1,109 @@
+{
+  "config_version": "tabel-3.9-v1.0",
+  "source_table": "Tabel 3.9, Proposal_Disertasi_04102026_4D_final (p.107) + 3.4.1",
+  "notes": "Deterministic, versioned encoding of the inclusion/exclusion criteria. Domain membership is decided primarily on stated functions/tasks in the description, not the job title alone (per the note under Tabel 3.9). Thresholds marked 'provisional' await promotor review.",
+
+  "period": {
+    "window_start": "2023-11-01",
+    "window_end": "2027-12-31",
+    "note": "36-month research window anchored at M1=Oct 2026, extended through the research period; posting_date outside [window_start, acquisition date] fails the period rule. Garbage dates (1983/1990/2017) fall out here."
+  },
+
+  "metadata_required": ["country_iso", "date_posted", "title", "description"],
+
+  "language": {
+    "allowed": ["id", "en", "ms", "vi", "th", "de", "fr", "nl"],
+    "note": "Languages the pipeline can process and audit/translate responsibly (multilingual encoder + translator). Others are reported, not silently dropped."
+  },
+
+  "domain": {
+    "min_desc_signals_general": 2,
+    "min_desc_signals_boundary": 2,
+    "include_title_patterns": [
+      "software (develop|engineer|programmer|test|quality)",
+      "(web|mobile|app(lication)?|game|front[ -]?end|back[ -]?end|full[ -]?stack) (develop|engineer|programmer)",
+      "\\b(developer|programmer|pemrogram)\\b",
+      "\\bdevops\\b",
+      "\\bsdet\\b",
+      "qa (engineer|analyst|tester)",
+      "(quality assurance|penjamin(an)? mutu) (engineer|software|perangkat lunak)?",
+      "software tester|penguji perangkat lunak",
+      "pengembang (perangkat lunak|aplikasi|web|gim|game)",
+      "(java|python|php|golang|javascript|\\.net|node|react|laravel|flutter|kotlin|ios|android|wordpress|sql) (developer|engineer|programmer)",
+      "ui[ /]?ux|ux (designer|engineer)|ui (designer|engineer)",
+      "database (administrator|engineer|developer)",
+      "site reliability engineer",
+      "system analyst|analis sistem"
+    ],
+    "boundary_title_patterns": [
+      "data (engineer|scientist|analyst|engineering)|analis data",
+      "machine learning|ml engineer|ai engineer|artificial intelligence",
+      "cyber ?security|security (engineer|analyst)|keamanan (siber|informasi)",
+      "cloud (engineer|architect|developer)"
+    ],
+    "exclude_title_patterns": [
+      "it support|helpdesk|help desk|desktop support|technical support(?! engineer.*(software|develop))",
+      "network (administrator|technician)|administrator jaringan|teknisi jaringan",
+      "hardware (technician|engineer)|teknisi (komputer|hardware|perangkat keras)",
+      "data entry|operator (produksi|mesin|komputer)|admin(istrasi)? (kantor|gudang)",
+      "customer (service|support|care)|call cent(er|re)|telemarketing",
+      "sales|marketing(?! technology)|account (executive|manager)",
+      "graphic designer|desain(er)? grafis|video editor|content (writer|creator)|social media",
+      "teacher|guru|instruktur|tutor|dosen",
+      "electrical|electrician|plumb|welder|mekanik|drafter|surveyor",
+      "accountant|akuntan|finance|pajak|audit(or)?(?! trail)",
+      "hrd?|human resources?|recruit(er|ment)",
+      "driver|kurir|security(?! (engineer|analyst|software|application))|satpam|cleaning"
+    ],
+    "include_description_patterns": [
+      "software (development|engineering)|pengembangan (perangkat lunak|aplikasi|sistem)",
+      "(write|writing|develop|developing|build|building|maintain|maintaining) (clean |scalable |high[- ]quality )?(code|software|application|aplikasi|api)",
+      "(menulis|membangun|mengembangkan|membuat) (kode|aplikasi|sistem|perangkat lunak|api|fitur)",
+      "\\b(programming|pemrograman|coding)\\b",
+      "\\b(java|python|php|javascript|typescript|golang|c\\+\\+|c#|kotlin|swift|ruby|rust|scala)\\b",
+      "\\b(react|angular|vue|laravel|django|spring|node\\.?js|\\.net|flutter|react native)\\b",
+      "\\b(api|rest(ful)?|microservices?|backend|back[- ]end|frontend|front[- ]end|full[- ]stack)\\b",
+      "\\b(git|github|gitlab|bitbucket|ci/cd|docker|kubernetes)\\b",
+      "(unit|integration|automated|automation) test(ing|s)?|pengujian (perangkat lunak|aplikasi|otomatis)",
+      "software testing|test case|test plan|selenium|cypress|playwright|appium",
+      "\\bsql\\b|database (design|development|query)|basis data",
+      "(web|mobile|game) (development|developer|app(lication)?s?)|pengembangan (web|mobile|gim)",
+      "(code review|debugging|refactor|deployment|deploy aplikasi)",
+      "(agile|scrum|sprint|kanban)",
+      "(sdlc|software development life ?cycle|siklus hidup pengembangan)"
+    ],
+    "note": "include wins over exclude when both title groups match (function over title); boundary titles require >= min_desc_signals_boundary distinct description signals; titles matching nothing fall back to >= min_desc_signals_general distinct description signals."
+  },
+
+  "content": {
+    "non_job_title_patterns": [
+      "\\b(bootcamp|kursus|webinar|seminar|workshop|pelatihan bersertifikat)\\b",
+      "(free|gratis) (course|training|kelas)",
+      "lowongan palsu|scam"
+    ],
+    "note": "Career articles / course promotions / non-job ads. Conservative v1: title-level only."
+  },
+
+  "duplication": {
+    "exact_key": "source_record_id",
+    "near_exact": "sha1 of normalized description (lowercase, alphanumeric-only, collapsed whitespace)",
+    "near_dup": {
+      "method": "MinHash LSH (datasketch)",
+      "num_perm": 128,
+      "threshold": 0.85,
+      "shingle_words": 5,
+      "max_chars": 2500
+    },
+    "note": "One unique representative enters the analytic denominator; duplicate relations are preserved in the audit output, never deleted (Tabel 3.9 Duplikasi)."
+  },
+
+  "conditional_platforms": {
+    "platforms": ["linkedin", "glassdoor"],
+    "note": "Decision K5 (SOURCE_AUDIT): historical rows collected Nov-Dec 2025 before the K1 LinkedIn drop. The ladder reports N_eligible both including and excluding them."
+  },
+
+  "coverage_gate": {
+    "min_unique_eligible_per_country": 1000,
+    "note": "PROVISIONAL threshold for inclusion in comparative claims (proposal: 'jumlah OJP RPL yang memadai' + minimum metadata). Countries failing the gate stay in the acquisition report but out of comparative claims."
+  }
+}
