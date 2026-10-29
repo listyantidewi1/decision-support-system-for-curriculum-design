@@ -124,6 +124,10 @@ bagian etika penelitian (§3.7).
   Indonesia yang ada; **62% lolos aturan deterministik Tabel 3.9** (vs ±32% Indeed ID) dan yang
   tersisih memang di luar lingkup (sales/civil/MEP engineer). Kelengkapan metadata TERBAIK dari
   semua kanal yang diaudit. Lanjut: akuisisi skala penuh Indonesia, lalu adaptasi MY/SG/PH.
+- **Pagar operasional (empiris, batch-002e 2026-10-29):** WAF SEEK memblokir (HTTP 403) setelah
+  ±33 istilah berat / ±2.000 pengambilan detail dalam satu sesi; blokir berlangsung berjam-jam.
+  Anggaran per sesi: **≤25 istilah atau ≤1.500 detail**, jeda antar-sesi ≥24 jam; harness kini
+  menghentikan diri (circuit breaker) saat mendeteksi rentetan 403/429.
 
 ### 3.6 Glints (Indonesia/SEA) dan 3.7 Kalibrr (Indonesia/Filipina)
 

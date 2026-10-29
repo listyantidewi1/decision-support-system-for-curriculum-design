@@ -101,6 +101,17 @@ def main() -> None:
         if zero_streak == 3:
             print("WARNING: 3 consecutive zero-row queries — possible network/endpoint "
                   "outage; affected queries may need a supplementary batch.", flush=True)
+        # Circuit breaker: a 403/429 streak means the platform has rate-banned us.
+        # Continuing extends the ban; stop and write what we have (batch-002e lesson:
+        # Jobstreet WAF banned after ~33 heavy terms / ~2,000 detail fetches).
+        if zero_streak >= 3 and all(
+            q["error"] and ("403" in q["error"] or "429" in q["error"])
+            for q in query_log[-3:]
+        ):
+            print("ABORTING remaining queries: rate-ban detected (403/429 streak). "
+                  "Re-run the missing terms as a supplementary batch after a cooldown.",
+                  flush=True)
+            break
 
         if len(df):
             frames.append(add_provenance(
