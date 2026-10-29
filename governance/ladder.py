@@ -143,8 +143,8 @@ def main() -> None:
     per_country = elig.groupby("country_iso")["source_record_id"].nunique().sort_values(ascending=False)
     gates = {c: {"n_eligible": int(n), "passes_gate": bool(n >= gate_min)} for c, n in per_country.items()}
 
-    elig_q = elig.assign(quarter=pd.to_datetime(elig["date_posted"], errors="coerce")
-                         .dt.to_period("Q").astype(str))
+    elig_q = elig.assign(quarter=pd.to_datetime(elig["date_posted"], errors="coerce",
+                         utc=True, format="mixed").dt.to_period("Q").astype(str))
     report = {
         "created_utc": stamp,
         "governance_version": GOVERNANCE_VERSION,
