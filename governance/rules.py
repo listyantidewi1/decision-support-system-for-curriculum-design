@@ -43,6 +43,16 @@ def _count_matches(series: pd.Series, patterns: list[str]) -> pd.Series:
     return counts
 
 
+def chunked_map(series: pd.Series, fn, chunk: int = 5000) -> pd.Series:
+    """Element-wise map in small slices — avoids bulk Arrow->numpy materialization,
+    which intermittently fails ("Wrapping ... failed") on very large string columns."""
+    parts = []
+    for i in range(0, len(series), chunk):
+        piece = series.iloc[i:i + chunk]
+        parts.append(pd.Series([fn(t) for t in piece.tolist()], index=piece.index))
+    return pd.concat(parts) if parts else pd.Series(dtype=object)
+
+
 def normalized_text_hash(text: str) -> str:
     if not isinstance(text, str) or not text.strip():
         return ""
@@ -116,4 +126,4 @@ def detect_languages(texts: pd.Series, max_chars: int = 1200) -> pd.Series:
         except Exception:
             return "und"
 
-    return texts.map(_detect)
+    return chunked_map(texts, _detect)

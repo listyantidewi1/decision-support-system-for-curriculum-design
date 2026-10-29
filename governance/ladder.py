@@ -17,7 +17,7 @@ from pathlib import Path
 import pandas as pd
 
 from . import GOVERNANCE_VERSION
-from .rules import apply_rules, detect_languages, load_rules, normalized_text_hash
+from .rules import apply_rules, chunked_map, detect_languages, load_rules, normalized_text_hash
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 RAW_ROOT = REPO_ROOT / "DATA" / "corpus_raw"
@@ -103,7 +103,7 @@ def main() -> None:
     n_unique_exact = len(reps)
 
     print("Near-exact dedup (normalized description hash) ...", flush=True)
-    norm_hash = reps["description"].map(normalized_text_hash)
+    norm_hash = chunked_map(reps["description"], normalized_text_hash)
     norm_dup = norm_hash.duplicated() & (norm_hash != "")
     rflags["near_exact_dup"] = norm_dup
     n_unique_norm = int((~norm_dup).sum())
