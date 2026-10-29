@@ -73,6 +73,8 @@ def main() -> None:
             country_indeed=country["country_indeed"],
             results_wanted=stratum.get("results_wanted", 100),
             hours_old=stratum.get("hours_old", hours_old),
+            fetch_description=stratum.get("fetch_description",
+                                          defaults.get("fetch_description", False)),
         )
         log.update(stratum=stratum["name"], country_iso=country["iso"])
         query_log.append(log)

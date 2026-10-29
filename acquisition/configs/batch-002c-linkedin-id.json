@@ -1,0 +1,37 @@
+{
+  "batch_id": "batch-002c",
+  "query_plan_version": "qp-v2-2026-10",
+  "notes": "Supplementary Oct-2026 snapshot: LinkedIn Indonesia with fetch_description=true, per decision K1 (2026-10-29, SOURCE_AUDIT v1.2) which retained LinkedIn with operational guardrails. Deliberately modest volume (15 core terms x 40 results, ~600 description requests) to stay under LinkedIn rate-limit/block thresholds; future monthly batches add increments rather than one large pull.",
+  "defaults": {
+    "sites": ["linkedin"],
+    "hours_old": null,
+    "sleep_seconds": 10,
+    "fetch_description": true
+  },
+  "strata": [
+    {
+      "name": "indonesia",
+      "results_wanted": 40,
+      "countries": [
+        {"iso": "ID", "location": "Indonesia", "country_indeed": "Indonesia"}
+      ],
+      "terms": [
+        {"term": "software engineer", "family": "software_developer"},
+        {"term": "software developer", "family": "software_developer"},
+        {"term": "programmer", "family": "software_developer"},
+        {"term": "backend developer", "family": "software_developer"},
+        {"term": "frontend developer", "family": "software_developer"},
+        {"term": "full stack developer", "family": "software_developer"},
+        {"term": "pengembang perangkat lunak", "family": "software_developer"},
+        {"term": "web developer", "family": "web_developer"},
+        {"term": "mobile developer", "family": "mobile_developer"},
+        {"term": "android developer", "family": "mobile_developer"},
+        {"term": "qa engineer", "family": "qa_tester"},
+        {"term": "software tester", "family": "qa_tester"},
+        {"term": "devops engineer", "family": "devops_cloud"},
+        {"term": "game developer", "family": "game_developer"},
+        {"term": "ui ux designer", "family": "ui_ux"}
+      ]
+    }
+  ]
+}

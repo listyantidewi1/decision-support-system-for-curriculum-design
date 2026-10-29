@@ -25,6 +25,7 @@ def scrape_term(
     country_indeed: str,
     results_wanted: int,
     hours_old: int | None = None,
+    fetch_description: bool = False,
 ) -> tuple[pd.DataFrame, dict]:
     """Fetch one query; returns (raw df, log entry). Retries once, never raises."""
     kwargs = dict(
@@ -36,6 +37,10 @@ def scrape_term(
     )
     if hours_old:
         kwargs["hours_old"] = hours_old
+    if fetch_description:
+        # Required for LinkedIn: without it every row lacks a description and
+        # fails the Tabel 3.10 metadata rule (K1 guardrail, SOURCE_AUDIT 3.3).
+        kwargs["fetch_description"] = True
 
     log = {"term": term, "location": location, "sites": sites}
     t0 = time.time()
