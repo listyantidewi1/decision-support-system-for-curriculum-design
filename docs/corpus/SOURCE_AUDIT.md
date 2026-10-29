@@ -24,7 +24,7 @@ bagian etika penelitian (§3.7).
 | Google Jobs (via JobSpy) | **PARKIR** — rusak secara teknis per Okt 2026; kontribusi historis ≈0,2% |
 | LinkedIn (via JobSpy) | **DIPERTAHANKAN dalam desain akuisisi** (keputusan K1, 2026-10-29 — menolak usulan drop); dengan pagar operasional §3.3 dan risiko ToS terdokumentasi |
 | ZipRecruiter (via JobSpy) | **PARKIR** — cakupan AS saja; Indeed sudah memadai untuk strata OECD |
-| Jobstreet by SEEK (ID/MY/SG/PH) | **EVALUASI** — kandidat kuat penambah volume Indonesia & ASEAN |
+| Jobstreet by SEEK (ID/MY/SG/PH) | **PAKAI** — lolos evaluasi K3 (2026-10-29): metadata terlengkap dari semua kanal, 34% berbahasa Indonesia, 1% tumpang-tindih (lihat §3.5) |
 | Glints (ID/SEA) | **EVALUASI** — kandidat penambah volume Indonesia |
 | Kalibrr (ID/PH) | **EVALUASI** — kandidat penambah volume Indonesia |
 | Adzuna API (OECD) | **AJUKAN AKSES** — API resmi, legal paling bersih untuk strata OECD |
@@ -114,9 +114,16 @@ bagian etika penelitian (§3.7).
   sendiri. Perlu adapter khusus (belum ada di JobSpy).
 - **Posisi ToS:** ToS SEEK membatasi akses otomatis; data publik, prinsip yang sama dengan Indeed.
 - **Nilai:** papan lowongan terbesar untuk pasar kerja formal Indonesia/ASEAN — kandidat terkuat
-  untuk menutup kekurangan strata Indonesia (saat ini 2,2 ribu vs target 10–20 ribu).
-- **Keputusan diusulkan:** **EVALUASI** — bangun purwarupa adapter kecil, ukur kelengkapan metadata
-  terhadap Tabel 3.10, lalu putuskan bersama promotor.
+  untuk menutup kekurangan strata Indonesia.
+- **HASIL EVALUASI (K3, batch-002d, 2026-10-29):** **LOLOS — PAKAI.** Purwarupa adapter
+  (`acquisition/jobstreet_adapter.py`, API pencarian v5 publik + status halaman detail) pada
+  12 istilah × 150 hasil: 826 lowongan unik; **100% berdeskripsi penuh** (median 1.858 karakter),
+  100% bertanggal (timestamp ISO penuh), **100% memuat `expiresAt`** (bukti langsung `last_seen`
+  Tabel 3.10), 93% nama perusahaan, 33% gaji; **34% berbahasa Indonesia** (280 — bandingkan 294
+  pada SELURUH korpus eligible sebelumnya); **hanya 1% tumpang-tindih konten** dengan korpus
+  Indonesia yang ada; **62% lolos aturan deterministik Tabel 3.9** (vs ±32% Indeed ID) dan yang
+  tersisih memang di luar lingkup (sales/civil/MEP engineer). Kelengkapan metadata TERBAIK dari
+  semua kanal yang diaudit. Lanjut: akuisisi skala penuh Indonesia, lalu adaptasi MY/SG/PH.
 
 ### 3.6 Glints (Indonesia/SEA) dan 3.7 Kalibrr (Indonesia/Filipina)
 
