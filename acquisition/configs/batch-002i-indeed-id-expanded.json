@@ -1,0 +1,52 @@
+{
+  "batch_id": "batch-002i",
+  "query_plan_version": "qp-v2.1-2026-10",
+  "notes": "Indonesia term EXPANSION (qp-v2.1): 24 NEW RPL terms not in the qp-v2 60-term list, run on Indeed. Motivation: all four reachable platforms (Indeed/Jobstreet/Glints/Kalibrr) saturated the original 60 terms this snapshot; Jobstreet is Cloudflare-blocked. New terms are weighted toward Indonesian-language roles (grow the 933 ID-language eligible) and specialized/engineer-variant roles absent from qp-v2. 'rekayasa perangkat lunak' (the core RPL term) was missing from qp-v2 and is added here. All terms stay inside the Tabel 3.9 software-development domain (okupasi-berbatas rules apply at the governance ladder, not here).",
+  "defaults": {
+    "sites": [
+      "indeed"
+    ],
+    "hours_old": null,
+    "sleep_seconds": 5,
+    "fetch_description": true
+  },
+  "strata": [
+    {
+      "name": "indonesia",
+      "results_wanted": 200,
+      "countries": [
+        {
+          "iso": "ID",
+          "location": "Indonesia",
+          "country_indeed": "Indonesia"
+        }
+      ],
+      "terms": [
+        { "term": "rekayasa perangkat lunak", "family": "software_developer" },
+        { "term": "insinyur perangkat lunak", "family": "software_developer" },
+        { "term": "pemrograman", "family": "software_developer" },
+        { "term": "staf programmer", "family": "software_developer" },
+        { "term": "teknisi perangkat lunak", "family": "software_developer" },
+        { "term": "pengembang aplikasi", "family": "software_developer" },
+        { "term": "pengembang web", "family": "web_developer" },
+        { "term": "pemrogram web", "family": "web_developer" },
+        { "term": "pengembang game", "family": "game_developer" },
+        { "term": "jaminan kualitas perangkat lunak", "family": "qa_tester" },
+        { "term": "backend engineer", "family": "software_developer" },
+        { "term": "frontend engineer", "family": "software_developer" },
+        { "term": "fullstack engineer", "family": "software_developer" },
+        { "term": "software architect", "family": "software_developer" },
+        { "term": "embedded software engineer", "family": "embedded_software" },
+        { "term": "qa automation engineer", "family": "qa_tester" },
+        { "term": "test engineer", "family": "qa_tester" },
+        { "term": "vue developer", "family": "language_specific" },
+        { "term": "angular developer", "family": "language_specific" },
+        { "term": "typescript developer", "family": "language_specific" },
+        { "term": "c# developer", "family": "language_specific" },
+        { "term": "unity developer", "family": "game_developer" },
+        { "term": "odoo developer", "family": "language_specific" },
+        { "term": "salesforce developer", "family": "language_specific" }
+      ]
+    }
+  ]
+}

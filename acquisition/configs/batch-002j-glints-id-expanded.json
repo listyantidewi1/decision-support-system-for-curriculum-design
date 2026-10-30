@@ -1,0 +1,51 @@
+{
+  "batch_id": "batch-002j",
+  "query_plan_version": "qp-v2.1-2026-10",
+  "notes": "Indonesia term EXPANSION (qp-v2.1) on Glints — same 24 NEW terms as batch-002i (Indeed). Glints is the highest Tabel-3.9 pass-rate reachable platform (66%, tech-focused). 24 terms stays inside the per-session guardrail (<=25 terms / <=1,500 detail fetches). results_wanted modest (150); circuit breaker guards 403/429. Detail cache de-dups within the run. Run AFTER batch-002i so the Glints detail-fetch load is monitored on its own (Jobstreet Cloudflare-ban lesson).",
+  "defaults": {
+    "sites": [
+      "glints"
+    ],
+    "hours_old": null,
+    "sleep_seconds": 2
+  },
+  "strata": [
+    {
+      "name": "indonesia",
+      "results_wanted": 150,
+      "countries": [
+        {
+          "iso": "ID",
+          "location": "Indonesia",
+          "country_indeed": "Indonesia"
+        }
+      ],
+      "terms": [
+        { "term": "rekayasa perangkat lunak", "family": "software_developer" },
+        { "term": "insinyur perangkat lunak", "family": "software_developer" },
+        { "term": "pemrograman", "family": "software_developer" },
+        { "term": "staf programmer", "family": "software_developer" },
+        { "term": "teknisi perangkat lunak", "family": "software_developer" },
+        { "term": "pengembang aplikasi", "family": "software_developer" },
+        { "term": "pengembang web", "family": "web_developer" },
+        { "term": "pemrogram web", "family": "web_developer" },
+        { "term": "pengembang game", "family": "game_developer" },
+        { "term": "jaminan kualitas perangkat lunak", "family": "qa_tester" },
+        { "term": "backend engineer", "family": "software_developer" },
+        { "term": "frontend engineer", "family": "software_developer" },
+        { "term": "fullstack engineer", "family": "software_developer" },
+        { "term": "software architect", "family": "software_developer" },
+        { "term": "embedded software engineer", "family": "embedded_software" },
+        { "term": "qa automation engineer", "family": "qa_tester" },
+        { "term": "test engineer", "family": "qa_tester" },
+        { "term": "vue developer", "family": "language_specific" },
+        { "term": "angular developer", "family": "language_specific" },
+        { "term": "typescript developer", "family": "language_specific" },
+        { "term": "c# developer", "family": "language_specific" },
+        { "term": "unity developer", "family": "game_developer" },
+        { "term": "odoo developer", "family": "language_specific" },
+        { "term": "salesforce developer", "family": "language_specific" }
+      ]
+    }
+  ]
+}
