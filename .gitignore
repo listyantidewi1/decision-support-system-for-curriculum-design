@@ -236,3 +236,6 @@ docs/proposal/Prof*.txt
 
 # Raw immutable OJP corpus batches (large data, never versioned)
 DATA/corpus_raw/
+
+# Adzuna benchmark (separate from extraction corpus; flagged, truncated descriptions)
+DATA/corpus_benchmark/
