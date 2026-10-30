@@ -132,8 +132,20 @@ bagian etika penelitian (§3.7).
 ### 3.6 Glints (Indonesia/SEA) dan 3.7 Kalibrr (Indonesia/Filipina)
 
 - Platform lowongan teknologi populer di Indonesia; halaman publik dengan endpoint JSON.
-- **Keputusan diusulkan:** **EVALUASI** dengan prosedur yang sama dengan Jobstreet (purwarupa →
-  audit metadata → keputusan). Prioritas setelah Jobstreet.
+- **HASIL EVALUASI (K3, 2026-10-30):** keduanya **PAKAI** — adapter dibangun
+  (`acquisition/glints_adapter.py`, `acquisition/kalibrr_adapter.py`), deskripsi penuh 100%.
+  - **Glints (batch-002h):** 835 lowongan unik; platform fokus-teknologi → **66% lolos Tabel 3.9**
+    (554 eligible). State Next.js tertanam + detail per lowongan (deskripsi Draft.js); memuat
+    `educationLevel`, rentang pengalaman, dan daftar `skills` pra-ekstraksi. Risiko rate-limit sama
+    dengan Jobstreet → circuit breaker + anggaran sesi.
+  - **Kalibrr (batch-002g):** 1.402 lowongan unik, deskripsi penuh (median 637 karakter), tetapi
+    **hanya ~104 lolos Tabel 3.9 (≈7%)** — Kalibrr adalah papan lowongan UMUM; pencarian "programmer"
+    mengembalikan banyak lowongan non-RPL (bartender, auditor, business development, teknisi jaringan)
+    yang benar disaring. Metadata kaya (`application_end_date` → last_seen, `education_level`), API
+    cepat tanpa detail-fetch. Nilai per lowongan rendah tetapi sah; dipakai untuk melengkapi.
+  - **Catatan keterbatasan:** sebagian kecil peran QA/testing berdeskripsi pendek pada Kalibrr
+    mungkin tersaring sebagai false-negative (ambang 2 sinyal deskripsi); diterima sebagai
+    konservatif (lebih baik under-count) dan ditinjau saat validasi gold-standard.
 
 ### 3.8 API resmi (legal paling bersih)
 
