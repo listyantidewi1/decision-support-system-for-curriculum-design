@@ -139,11 +139,23 @@ bagian etika penelitian (§3.7).
 
 | API | Cakupan | Catatan |
 |---|---|---|
-| **Adzuna** | ~16 negara OECD + SG | API resmi, kuota riset gratis, metadata baik; **ajukan kunci API** |
+| **Adzuna** | OECD + SG (BUKAN Indonesia) | API resmi, kuota gratis; **deskripsi dipotong 500 karakter** (lihat evaluasi) |
 | **USAJOBS** | AS (pemerintah federal) | API resmi; relevansi RPL sempit tapi bersih |
 | **Arbeitnow** | Eropa | API publik gratis; volume kecil |
 
 API resmi memperkuat posisi etis korpus OECD dan menjadi pembanding independen terhadap Indeed.
+
+**HASIL EVALUASI Adzuna (K4, 2026-10-30):** kunci API berfungsi (HTTP 200). Cakupan baik untuk
+strata pembanding — US 156.209, GB 10.949, CA 10.643, AU 4.174, NZ 246 (OECD); SG 5.223 (ASEAN);
+DE/FR/NL juga tersedia. **Indonesia TIDAK dicakup (HTTP 404)** sehingga tidak membantu strata utama.
+**Keterbatasan kritis: deskripsi dipotong tepat 500 karakter** (diakhiri elipsis) — API gratis
+tidak menyediakan teks lowongan penuh. Konsekuensi: field `description_raw` Tabel 3.10 menjadi
+parsial, sehingga **tidak layak untuk ekstraksi span lima-tag** (persyaratan/skill biasanya berada
+di luar 500 karakter pertama). **Keputusan: PAKAI TERBATAS sebagai sumber pembanding/validasi
+independen** (hitungan permintaan, audit representativitas lintas-sumber, penguatan posisi etis
+korpus OECD) — **bukan** sumber pembangun korpus ekstraksi. Rekaman Adzuna, bila diakuisisi, ditandai
+`description_truncated=true` dan dipisahkan dari korpus ekstraksi utama. Strata OECD sudah >11× target
+dari Indeed, sehingga nilai tambah korpus dari Adzuna rendah; nilainya murni pada legalitas/validasi.
 
 ### 3.9 Dataset berlisensi (Lightcast/Burning Glass, Indeed Hiring Lab)
 
