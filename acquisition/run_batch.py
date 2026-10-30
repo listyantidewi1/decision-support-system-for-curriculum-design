@@ -16,6 +16,8 @@ from .batch_store import DEFAULT_ROOT, write_batch
 from .jobspy_adapter import JOBSPY_VERSION, polite_sleep, scrape_term
 from .jobstreet_adapter import ADAPTER_VERSION as JOBSTREET_VERSION
 from .jobstreet_adapter import scrape_term_jobstreet
+from .kalibrr_adapter import ADAPTER_VERSION as KALIBRR_VERSION
+from .kalibrr_adapter import scrape_term_kalibrr
 from .schema import add_provenance
 
 CHECKPOINT_EVERY = 25
@@ -78,6 +80,12 @@ def main() -> None:
                                               defaults.get("fetch_description", True)),
                 detail_cache=jobstreet_cache,
             )
+        elif "kalibrr" in sites:
+            df, log = scrape_term_kalibrr(
+                term=term["term"],
+                country_iso=country["iso"],
+                results_wanted=stratum.get("results_wanted", 100),
+            )
         else:
             df, log = scrape_term(
                 sites=sites,
@@ -123,6 +131,8 @@ def main() -> None:
                 acquisition_method=(
                     f"{JOBSTREET_VERSION} (SEEK v5 search API + rendered detail state)"
                     if "jobstreet" in sites else
+                    f"{KALIBRR_VERSION} (Kalibrr public job_board search API)"
+                    if "kalibrr" in sites else
                     f"python-jobspy {JOBSPY_VERSION} via acquisition.run_batch "
                     f"(sites={','.join(sites)})"
                 ),
