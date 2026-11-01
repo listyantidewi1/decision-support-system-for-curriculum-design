@@ -20,6 +20,8 @@ from .kalibrr_adapter import ADAPTER_VERSION as KALIBRR_VERSION
 from .kalibrr_adapter import scrape_term_kalibrr
 from .glints_adapter import ADAPTER_VERSION as GLINTS_VERSION
 from .glints_adapter import scrape_term_glints
+from .kitalulus_adapter import ADAPTER_VERSION as KITALULUS_VERSION
+from .kitalulus_adapter import scrape_term_kitalulus
 from .schema import add_provenance
 
 CHECKPOINT_EVERY = 25
@@ -95,6 +97,13 @@ def main() -> None:
                 results_wanted=stratum.get("results_wanted", 100),
                 detail_cache=jobstreet_cache,  # reuse the one per-run detail cache
             )
+        elif "kitalulus" in sites:
+            df, log = scrape_term_kitalulus(
+                term=term["term"],
+                country_iso=country["iso"],
+                results_wanted=stratum.get("results_wanted", 100),
+                detail_cache=jobstreet_cache,  # reuse the one per-run detail cache
+            )
         else:
             df, log = scrape_term(
                 sites=sites,
@@ -144,6 +153,8 @@ def main() -> None:
                     if "kalibrr" in sites else
                     f"{GLINTS_VERSION} (Glints Next.js embedded state + detail)"
                     if "glints" in sites else
+                    f"{KITALULUS_VERSION} (Kitalulus listing + JobPosting JSON-LD)"
+                    if "kitalulus" in sites else
                     f"python-jobspy {JOBSPY_VERSION} via acquisition.run_batch "
                     f"(sites={','.join(sites)})"
                 ),

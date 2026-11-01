@@ -1,6 +1,6 @@
 # Audit Sumber Data & Legalitas Akuisisi Korpus OJP (Workstream A1)
 
-**Status:** v1.2 — keputusan K1–K5 tercatat 29 Oktober 2026 (lihat §5); tanda tangan formal promotor menyusul
+**Status:** v1.3 — keputusan K1–K8 tercatat (K1–K5: 29 Okt 2026; K6–K8 sumber baru: 2 Nov 2026, lihat §5); tanda tangan formal promotor menyusul
 **Tanggal:** 20 Oktober 2026 (rev. 29 Oktober 2026)
 **Rujukan proposal:** §3.4.1 (akuisisi korpus), Tabel 3.9 (inklusi/eksklusi), Tabel 3.10 (skema metadata), §3.7 (etika penelitian)
 **Penyusun:** Listyanti Dewi Astuti (dengan asistensi teknis)
@@ -202,6 +202,9 @@ dari Indeed, sehingga nilai tambah korpus dari Adzuna rendah; nilainya murni pad
 | K3 | Mengembangkan adapter Jobstreet → Glints → Kalibrr (urutan prioritas) untuk menutup target Indonesia | Setuju (evaluasi bertahap) | **SETUJU** |
 | K4 | Mengajukan akses API resmi Adzuna (+ opsional USAJOBS/Arbeitnow) untuk strata OECD | Setuju (ajukan) | **SETUJU** |
 | K5 | Perlakuan baris LinkedIn/Glassdoor historis pada batch-000 (Nov–Des 2025): ikut N_eligible dengan dokumentasi, atau dikecualikan di lapisan tata kelola | Usulan: ikut, dengan dokumentasi platform per baris | **SETUJU — ikut, dengan dokumentasi platform per baris** |
+| K6 | Membangun adapter **Dealls** (dealls.com, ID) sebagai kanal baru | Di-*greenlight* pengguna 2026-11-02 ("bangun ketiganya") | **PARKIR (2026-11-02)** — API pencarian `/v1/explore-job/job` terbuka, tetapi halaman detail (sumber deskripsi) dijaga anti-bot (403 → pengalih `sh.dealls.com`); deskripsi wajib Tabel 3.10 tidak dapat diambil tanpa *evasion* (dilarang, dan tidak dapat dipertanggungjawabkan di §3.7). Pencarian juga kabur (mirip Kalibrr). Dicek ulang bila ada jalur deskripsi yang sah. |
+| K7 | Membangun adapter **Arbeitnow API** untuk strata OECD/EU | Di-*greenlight* pengguna 2026-11-02 | **TIDAK DIPAKAI (2026-11-02)** — *feed* tanpa pencarian kata kunci (`?search=` diabaikan), lokasi teks-bebas tanpa kode negara (sulit atribusi strata), lintas banyak negara termasuk di luar himpunan pantauan (mis. CH), dan OECD sudah >10× target (59k). Biaya integrasi + dilusi domain tidak sepadan. Dicek ulang hanya bila celah OECD spesifik perlu ditutup; bila dipakai, berperan sebagai sumber pelengkap, bukan tulang punggung strata. |
+| K8 | Membangun adapter **Kitalulus** (ID) via JobPosting JSON-LD | Di-*greenlight* pengguna 2026-11-02 | **PAKAI (2026-11-02)** — JSON-LD schema.org pada halaman detail (data terstruktur publik untuk SEO, dibaca apa adanya, **tanpa evasion**); payload Tabel 3.10 lengkap (deskripsi + pendidikan/pengalaman/gaji). **Catatan etika:** robots `User-Agent: *` mengizinkan `/lowongan` (hanya `/auth/`, `/my/` dilarang — tidak disentuh); ada blok khusus `GPTBot: Disallow /` — kami bukan GPTBot, penggunaan untuk analisis riset (bukan redistribusi pelatihan model), volume rendah, didokumentasikan transparan. **Catatan kualitas:** listing promosi "Misi Seru - KitaLulus" bukan lowongan nyata → ditolak di tahap konten/domain Tabel 3.9; yield riil rendah, nilainya pada katalog baru + metadata kaya. |
 
 **Persetujuan promotor:**
 
@@ -217,3 +220,4 @@ dari Indeed, sehingga nilai tambah korpus dari Adzuna rendah; nilainya murni pad
 | 1.0 (draf) | 2026-10-20 | Draf awal: matriks 11 sumber, prinsip legal–etis, 4 butir keputusan |
 | 1.1 (draf) | 2026-10-20 | +K5: perlakuan baris LinkedIn/Glassdoor historis setelah penemuan arsip batch-000 (Nov–Des 2025) |
 | 1.2 | 2026-10-29 | Keputusan K1–K5 tercatat: K1 ditolak (LinkedIn dipertahankan + pagar operasional), K2–K5 disetujui |
+| 1.3 | 2026-11-02 | +K6–K8 sumber baru (hasil recon): Dealls PARKIR (detail anti-bot), Arbeitnow TIDAK DIPAKAI (misfit stratifikasi, OECD sudah terpenuhi), Kitalulus PAKAI (JSON-LD JobPosting; catatan etika GPTBot + spam "Misi Seru"). Adapter + perbaikan bug `-I` pada probe/runbook Jobstreet. |

@@ -5,8 +5,9 @@ before each run, whether the Cloudflare managed-challenge ban (403 "Just a momen
 active since 2026-10-29) has lifted. It makes ONE search-API GET per region and no
 detail fetches, so it will not deepen an active ban.
 
-Run:  .venv-ml\\Scripts\\python.exe -I -m acquisition.probe_jobstreet          # ID only
-      .venv-ml\\Scripts\\python.exe -I -m acquisition.probe_jobstreet --all     # ID+MY+SG+PH
+Run:  .venv-ml\\Scripts\\python.exe -m acquisition.probe_jobstreet          # ID only
+      .venv-ml\\Scripts\\python.exe -m acquisition.probe_jobstreet --all     # ID+MY+SG+PH
+(Do not add -I: isolated mode drops cwd from sys.path and breaks the -m import.)
 
 Exit code 0 = ID reachable (HTTP 200); 1 = ID still blocked. (MY/SG/PH are advisory.)
 """

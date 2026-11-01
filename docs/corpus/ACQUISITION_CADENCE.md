@@ -24,7 +24,7 @@ Governs Workstream A3 (rolling batch schedule) from `docs/IMPLEMENTATION_PLAN.md
 | LinkedIn / Glassdoor | historical only | — | Not re-acquired | K1/K5: historical rows kept with provenance; not part of forward cadence |
 
 **Before every cadence run, re-probe Jobstreet** (single search GET, no detail fetch):
-`.venv-ml\Scripts\python.exe -I -m acquisition.probe_jobstreet` (add `--all` for MY/SG/PH)
+`.venv-ml\Scripts\python.exe -m acquisition.probe_jobstreet` (add `--all` for MY/SG/PH)
 → exit 0 / HTTP 200 means Jobstreet is back; queue batch-002f (the 32 ID terms interrupted in batch-002e) + MY/SG/PH.
 
 ---
