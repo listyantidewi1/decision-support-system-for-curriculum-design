@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -25,6 +26,45 @@ from .kitalulus_adapter import scrape_term_kitalulus
 from .schema import add_provenance
 
 CHECKPOINT_EVERY = 25
+MAX_TRANSIENT_RETRIES = 3           # extra attempts when a query hits a local net blip
+TRANSIENT_BACKOFF = (30, 90, 180)   # seconds to wait before each retry
+
+
+def _is_transient(error) -> bool:
+    """True for a local-connectivity hiccup (DNS/timeout/reset), not a server verdict."""
+    if not error:
+        return False
+    return any(s in str(error) for s in (
+        "ConnectionError", "NameResolution", "getaddrinfo", "ConnectTimeout",
+        "ReadTimeout", "Timeout", "timed out", "Max retries", "Temporary failure"))
+
+
+def _dispatch(sites, term, country, stratum, defaults, hours_old, jobstreet_cache):
+    """Call the right adapter for `sites`; returns (df, log)."""
+    rw = stratum.get("results_wanted", 100)
+    if "jobstreet" in sites:
+        return scrape_term_jobstreet(
+            term=term["term"], country_iso=country["iso"], results_wanted=rw,
+            fetch_description=stratum.get("fetch_description",
+                                          defaults.get("fetch_description", True)),
+            detail_cache=jobstreet_cache)
+    if "kalibrr" in sites:
+        return scrape_term_kalibrr(
+            term=term["term"], country_iso=country["iso"], results_wanted=rw)
+    if "glints" in sites:
+        return scrape_term_glints(
+            term=term["term"], country_iso=country["iso"], results_wanted=rw,
+            detail_cache=jobstreet_cache)
+    if "kitalulus" in sites:
+        return scrape_term_kitalulus(
+            term=term["term"], country_iso=country["iso"], results_wanted=rw,
+            detail_cache=jobstreet_cache)
+    return scrape_term(
+        sites=sites, term=term["term"], location=country["location"],
+        country_indeed=country["country_indeed"], results_wanted=rw,
+        hours_old=stratum.get("hours_old", hours_old),
+        fetch_description=stratum.get("fetch_description",
+                                      defaults.get("fetch_description", False)))
 
 
 def _utc_now_iso() -> str:
@@ -73,53 +113,38 @@ def main() -> None:
     frames: list[pd.DataFrame] = []
     query_log: list[dict] = []
     zero_streak = 0
+    transient_fail_streak = 0
     jobstreet_cache: dict = {}  # job detail fetched once per run across all terms
     for i, (stratum, country, term) in enumerate(queries, 1):
-        if "jobstreet" in sites:
-            df, log = scrape_term_jobstreet(
-                term=term["term"],
-                country_iso=country["iso"],
-                results_wanted=stratum.get("results_wanted", 100),
-                fetch_description=stratum.get("fetch_description",
-                                              defaults.get("fetch_description", True)),
-                detail_cache=jobstreet_cache,
-            )
-        elif "kalibrr" in sites:
-            df, log = scrape_term_kalibrr(
-                term=term["term"],
-                country_iso=country["iso"],
-                results_wanted=stratum.get("results_wanted", 100),
-            )
-        elif "glints" in sites:
-            df, log = scrape_term_glints(
-                term=term["term"],
-                country_iso=country["iso"],
-                results_wanted=stratum.get("results_wanted", 100),
-                detail_cache=jobstreet_cache,  # reuse the one per-run detail cache
-            )
-        elif "kitalulus" in sites:
-            df, log = scrape_term_kitalulus(
-                term=term["term"],
-                country_iso=country["iso"],
-                results_wanted=stratum.get("results_wanted", 100),
-                detail_cache=jobstreet_cache,  # reuse the one per-run detail cache
-            )
-        else:
-            df, log = scrape_term(
-                sites=sites,
-                term=term["term"],
-                location=country["location"],
-                country_indeed=country["country_indeed"],
-                results_wanted=stratum.get("results_wanted", 100),
-                hours_old=stratum.get("hours_old", hours_old),
-                fetch_description=stratum.get("fetch_description",
-                                              defaults.get("fetch_description", False)),
-            )
+        df, log = _dispatch(sites, term, country, stratum, defaults, hours_old, jobstreet_cache)
+        # Ride out local connectivity blips (DNS/timeout): retry the same query
+        # with backoff before giving up, so a brief outage doesn't zero a term.
+        for attempt in range(MAX_TRANSIENT_RETRIES):
+            if len(df) or not _is_transient(log.get("error")):
+                break
+            wait = TRANSIENT_BACKOFF[min(attempt, len(TRANSIENT_BACKOFF) - 1)]
+            print(f"    transient error, retry {attempt + 1}/{MAX_TRANSIENT_RETRIES} "
+                  f"in {wait}s: {str(log.get('error'))[:70]}", flush=True)
+            time.sleep(wait)
+            df, log = _dispatch(sites, term, country, stratum, defaults, hours_old, jobstreet_cache)
+
         log.update(stratum=stratum["name"], country_iso=country["iso"])
         query_log.append(log)
         status = log["error"] or f"{log['rows']} rows"
         print(f"[{i}/{len(queries)}] {stratum['name']}/{country['iso']} "
               f"'{term['term']}': {status} ({log['secs']}s)", flush=True)
+
+        # Sustained connectivity outage (still failing transiently after retries):
+        # abort with bounded waste and write what we have; the rest is re-runnable.
+        if not len(df) and _is_transient(log.get("error")):
+            transient_fail_streak += 1
+            if transient_fail_streak >= 3:
+                print("ABORTING remaining queries: sustained connectivity outage "
+                      "(3 terms failed after retries). Re-run the missing terms as a "
+                      "supplementary batch once the connection is back.", flush=True)
+                break
+        else:
+            transient_fail_streak = 0
 
         # jobspy catches connection errors internally and returns an empty frame,
         # so an outage is only visible as a run of zero-row queries.

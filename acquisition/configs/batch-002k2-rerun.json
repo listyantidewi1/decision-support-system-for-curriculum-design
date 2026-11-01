@@ -1,0 +1,155 @@
+{
+  "batch_id": "batch-002k2",
+  "query_plan_version": "qp-v2.1-2026-11",
+  "notes": "Kitalulus ID re-run = the 32 terms that FAILED in batch-002k due to the 2026-11-02 outage. Kitalulus is not ban-prone (ordinary site); safe to run once connectivity is back. Runner now retries transient connection/DNS errors with backoff.",
+  "defaults": {
+    "sites": [
+      "kitalulus"
+    ],
+    "hours_old": null,
+    "sleep_seconds": 2
+  },
+  "strata": [
+    {
+      "name": "indonesia",
+      "results_wanted": 30,
+      "countries": [
+        {
+          "iso": "ID",
+          "location": "Indonesia",
+          "country_indeed": "Indonesia"
+        }
+      ],
+      "terms": [
+        {
+          "term": "node js developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "react developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "laravel developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "kotlin developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "wordpress developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "web developer",
+          "family": "web_developer"
+        },
+        {
+          "term": "web programmer",
+          "family": "web_developer"
+        },
+        {
+          "term": "programmer web",
+          "family": "web_developer"
+        },
+        {
+          "term": "mobile developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "android developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "ios developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "flutter developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "react native developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "pengembang aplikasi mobile",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "data analyst",
+          "family": "data_ai"
+        },
+        {
+          "term": "data engineer",
+          "family": "data_ai"
+        },
+        {
+          "term": "data scientist",
+          "family": "data_ai"
+        },
+        {
+          "term": "machine learning engineer",
+          "family": "data_ai"
+        },
+        {
+          "term": "ai engineer",
+          "family": "data_ai"
+        },
+        {
+          "term": "analis data",
+          "family": "data_ai"
+        },
+        {
+          "term": "game developer",
+          "family": "game_developer"
+        },
+        {
+          "term": "game programmer",
+          "family": "game_developer"
+        },
+        {
+          "term": "game designer",
+          "family": "game_developer"
+        },
+        {
+          "term": "game tester",
+          "family": "game_developer"
+        },
+        {
+          "term": "pengembang gim",
+          "family": "game_developer"
+        },
+        {
+          "term": "ui ux designer",
+          "family": "ui_ux"
+        },
+        {
+          "term": "ui designer",
+          "family": "ui_ux"
+        },
+        {
+          "term": "ux designer",
+          "family": "ui_ux"
+        },
+        {
+          "term": "desainer ui ux",
+          "family": "ui_ux"
+        },
+        {
+          "term": "quality assurance",
+          "family": "qa_tester"
+        },
+        {
+          "term": "insinyur perangkat lunak",
+          "family": "software_developer"
+        },
+        {
+          "term": "pemrograman",
+          "family": "software_developer"
+        }
+      ]
+    }
+  ]
+}

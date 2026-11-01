@@ -1,0 +1,88 @@
+{
+  "batch_id": "batch-002f2",
+  "query_plan_version": "qp-v2-2026-10",
+  "notes": "Jobstreet ID remainder tranche 2 = the 15 terms that FAILED in batch-002f due to the 2026-11-02 DNS/internet outage (NOT a ban; probe confirmed Jobstreet reachable). DEFER >=24h after batch-002f to respect the ~2,000-detail/session Cloudflare guardrail (batch-002f already spent ~859 detail fetches). Runner now retries transient errors.",
+  "defaults": {
+    "sites": [
+      "jobstreet"
+    ],
+    "hours_old": null,
+    "sleep_seconds": 4,
+    "fetch_description": true
+  },
+  "strata": [
+    {
+      "name": "indonesia",
+      "results_wanted": 300,
+      "countries": [
+        {
+          "iso": "ID",
+          "location": "Indonesia",
+          "country_indeed": "Indonesia"
+        }
+      ],
+      "terms": [
+        {
+          "term": "ai engineer",
+          "family": "data_ai"
+        },
+        {
+          "term": "analis data",
+          "family": "data_ai"
+        },
+        {
+          "term": "game developer",
+          "family": "game_developer"
+        },
+        {
+          "term": "game programmer",
+          "family": "game_developer"
+        },
+        {
+          "term": "game designer",
+          "family": "game_developer"
+        },
+        {
+          "term": "game tester",
+          "family": "game_developer"
+        },
+        {
+          "term": "pengembang gim",
+          "family": "game_developer"
+        },
+        {
+          "term": "ui ux designer",
+          "family": "ui_ux"
+        },
+        {
+          "term": "ui designer",
+          "family": "ui_ux"
+        },
+        {
+          "term": "ux designer",
+          "family": "ui_ux"
+        },
+        {
+          "term": "desainer ui ux",
+          "family": "ui_ux"
+        },
+        {
+          "term": "quality assurance",
+          "family": "qa_tester"
+        },
+        {
+          "term": "qa engineer",
+          "family": "qa_tester"
+        },
+        {
+          "term": "software tester",
+          "family": "qa_tester"
+        },
+        {
+          "term": "software quality assurance",
+          "family": "qa_tester"
+        }
+      ]
+    }
+  ]
+}
