@@ -23,6 +23,8 @@ from .glints_adapter import ADAPTER_VERSION as GLINTS_VERSION
 from .glints_adapter import scrape_term_glints
 from .kitalulus_adapter import ADAPTER_VERSION as KITALULUS_VERSION
 from .kitalulus_adapter import scrape_term_kitalulus
+from .kemnaker_adapter import ADAPTER_VERSION as KEMNAKER_VERSION
+from .kemnaker_adapter import scrape_term_kemnaker
 from .schema import add_provenance
 
 CHECKPOINT_EVERY = 25
@@ -57,6 +59,10 @@ def _dispatch(sites, term, country, stratum, defaults, hours_old, jobstreet_cach
             detail_cache=jobstreet_cache)
     if "kitalulus" in sites:
         return scrape_term_kitalulus(
+            term=term["term"], country_iso=country["iso"], results_wanted=rw,
+            detail_cache=jobstreet_cache)
+    if "kemnaker" in sites:
+        return scrape_term_kemnaker(
             term=term["term"], country_iso=country["iso"], results_wanted=rw,
             detail_cache=jobstreet_cache)
     return scrape_term(
@@ -180,6 +186,8 @@ def main() -> None:
                     if "glints" in sites else
                     f"{KITALULUS_VERSION} (Kitalulus listing + JobPosting JSON-LD)"
                     if "kitalulus" in sites else
+                    f"{KEMNAKER_VERSION} (Kemnaker Karirhub published-industrial-vacancies API)"
+                    if "kemnaker" in sites else
                     f"python-jobspy {JOBSPY_VERSION} via acquisition.run_batch "
                     f"(sites={','.join(sites)})"
                 ),
