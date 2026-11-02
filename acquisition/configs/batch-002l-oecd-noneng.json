@@ -1,0 +1,71 @@
+{
+  "batch_id": "batch-002l",
+  "query_plan_version": "qp-v2-2026-11",
+  "notes": "OECD stratum EXPANSION to key non-English economies, per user decision 2026-11-02: add Japan, Germany, France, South Korea, Italy, Spain, Netherlands, Mexico to the MAIN corpus (not a separate benchmark store). Non-English descriptions are expected and ACCEPTED — they will be machine-translated later, after the raw corpus is complete. This is a deliberate change to the sampling frame documented as 'IDN + 7-country English' (IMPLEMENTATION_PLAN 3.4.1 / KAJIAN_AKADEMIK 'Korpus saat ini berbahasa Inggris'); requires promotor sign-off on the revised OECD frame (English-speaking -> OECD major economies). Acquisition path = Indeed via JobSpy (description returned inline; NOT Cloudflare-detail-gated, so no Jobstreet-style ban risk). Same 17 core English tech terms as batch-002 OECD (English job titles are common in software roles across these markets and still surface local-language descriptions). results_wanted 250 to clear the provisional 1,000-unique-eligible per-country gate. Second stratum = New Zealand TOP-UP: NZ was at 985 eligible (15 short of the gate) after batch-002's 17-term run; this adds 15 fresh English terms (qp-v2 terms NOT in the original 17) to push NZ over 1,000 without re-duplicating. Both strata tagged stratum='oecd'. Runner now rides out transient connectivity blips and circuit-breaks on a 403/429 ban streak.",
+  "defaults": {
+    "sites": [
+      "indeed"
+    ],
+    "hours_old": null,
+    "sleep_seconds": 6
+  },
+  "strata": [
+    {
+      "name": "oecd",
+      "results_wanted": 250,
+      "countries": [
+        { "iso": "JP", "location": "Japan", "country_indeed": "japan" },
+        { "iso": "DE", "location": "Germany", "country_indeed": "germany" },
+        { "iso": "FR", "location": "France", "country_indeed": "france" },
+        { "iso": "KR", "location": "South Korea", "country_indeed": "south korea" },
+        { "iso": "IT", "location": "Italy", "country_indeed": "italy" },
+        { "iso": "ES", "location": "Spain", "country_indeed": "spain" },
+        { "iso": "NL", "location": "Netherlands", "country_indeed": "netherlands" },
+        { "iso": "MX", "location": "Mexico", "country_indeed": "mexico" }
+      ],
+      "terms": [
+        { "term": "software engineer", "family": "software_developer" },
+        { "term": "software developer", "family": "software_developer" },
+        { "term": "programmer", "family": "software_developer" },
+        { "term": "web developer", "family": "web_developer" },
+        { "term": "front end developer", "family": "web_developer" },
+        { "term": "backend developer", "family": "web_developer" },
+        { "term": "full stack developer", "family": "web_developer" },
+        { "term": "mobile developer", "family": "mobile_developer" },
+        { "term": "android developer", "family": "mobile_developer" },
+        { "term": "devops engineer", "family": "devops_cloud" },
+        { "term": "qa engineer", "family": "qa_tester" },
+        { "term": "software tester", "family": "qa_tester" },
+        { "term": "data engineer", "family": "data_ai" },
+        { "term": "machine learning engineer", "family": "data_ai" },
+        { "term": "game developer", "family": "game_developer" },
+        { "term": "ui ux designer", "family": "ui_ux" },
+        { "term": "database administrator", "family": "database" }
+      ]
+    },
+    {
+      "name": "oecd",
+      "results_wanted": 150,
+      "countries": [
+        { "iso": "NZ", "location": "New Zealand", "country_indeed": "new zealand" }
+      ],
+      "terms": [
+        { "term": "junior programmer", "family": "software_developer" },
+        { "term": "application developer", "family": "software_developer" },
+        { "term": "java developer", "family": "language_specific" },
+        { "term": "python developer", "family": "language_specific" },
+        { "term": "javascript developer", "family": "language_specific" },
+        { "term": "php developer", "family": "language_specific" },
+        { "term": "node js developer", "family": "language_specific" },
+        { "term": "react developer", "family": "language_specific" },
+        { "term": "ios developer", "family": "mobile_developer" },
+        { "term": "data analyst", "family": "data_ai" },
+        { "term": "data scientist", "family": "data_ai" },
+        { "term": "cloud engineer", "family": "devops_cloud" },
+        { "term": "site reliability engineer", "family": "devops_cloud" },
+        { "term": "system analyst", "family": "system_analysis" },
+        { "term": "quality assurance", "family": "qa_tester" }
+      ]
+    }
+  ]
+}
