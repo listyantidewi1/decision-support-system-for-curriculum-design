@@ -30,6 +30,15 @@ LOAD_COLUMNS = [
 ]
 
 
+# Free-text columns are read back as Arrow-backed strings (string[pyarrow]).
+# At corpus scale these hold hundreds of MB each, and any boolean-mask .copy()
+# or Arrow string kernel (.str.lower / .take) must then allocate a single
+# contiguous multi-GB buffer, which fails on a 16 GB box even with GBs free.
+# Casting them to numpy object makes those ops move 8-byte pointers and run on
+# the general heap instead of Arrow's pool — same values, bounded peak memory.
+OBJECT_TEXT_COLUMNS = ("title", "description")
+
+
 def load_all_batches() -> pd.DataFrame:
     frames = []
     for batch_dir in sorted(RAW_ROOT.glob("batch-*")):
@@ -37,7 +46,14 @@ def load_all_batches() -> pd.DataFrame:
         if path.exists():
             frames.append(pd.read_parquet(path, columns=LOAD_COLUMNS))
             print(f"  loaded {batch_dir.name}: {len(frames[-1]):,} rows", flush=True)
-    return pd.concat(frames, ignore_index=True)
+    df = pd.concat(frames, ignore_index=True)
+    # Convert chunk-wise: a one-shot df[col].astype(object) is itself a bulk
+    # Arrow->numpy materialization and trips the same "Wrapping ... failed"
+    # pyarrow bug that chunked_map (see rules.py) exists to avoid.
+    for col in OBJECT_TEXT_COLUMNS:
+        if col in df.columns and df[col].dtype != object:
+            df[col] = chunked_map(df[col], lambda t: t)
+    return df
 
 
 def minhash_near_dups(texts: pd.Series, cfg: dict) -> pd.Series:

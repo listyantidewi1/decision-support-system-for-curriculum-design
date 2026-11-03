@@ -70,8 +70,13 @@ def apply_rules(df: pd.DataFrame, rules: dict) -> pd.DataFrame:
     meta_ok = pd.Series(True, index=df.index)
     for col in rules["metadata_required"]:
         if col in df.columns:
-            meta_ok &= df[col].notna() & (df[col].astype(str).str.strip() != "") \
-                       & (df[col].astype(str) != "??") & (df[col].astype(str).str.lower() != "nan")
+            # Materialize the Arrow string column to numpy once and reuse it; the
+            # three checks below previously triggered three full copies of the
+            # (very large) description column, spiking peak RSS enough to fail the
+            # Arrow allocator under memory pressure. Result is byte-identical.
+            s = df[col].astype(str)
+            meta_ok &= df[col].notna() & (s.str.strip() != "") \
+                       & (s != "??") & (s.str.lower() != "nan")
         else:
             meta_ok &= False
     flags["meta_valid"] = meta_ok
