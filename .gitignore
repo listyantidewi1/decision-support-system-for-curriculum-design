@@ -239,3 +239,7 @@ DATA/corpus_raw/
 
 # Adzuna benchmark (separate from extraction corpus; flagged, truncated descriptions)
 DATA/corpus_benchmark/
+
+# Gold-standard sentence pool, samples, worksheets, annotations (reproducible from
+# the gold_standard/ code + the raw corpus; the pool alone is ~124 MB)
+DATA/gold_standard/
