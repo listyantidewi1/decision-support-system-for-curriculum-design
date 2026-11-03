@@ -55,6 +55,14 @@ ANNOTATORS = {
     "AD": "Ahli sains data / NLP",
 }
 
+# The three expert annotators read only English and Indonesian (including ID-EN
+# code-mixing, guideline rule 7.13). The human-annotated gold standard is therefore
+# restricted to these languages; non-EN/ID postings stay in the raw corpus and are
+# handled downstream via the translation layer + the B-6 LLM-labeling audit, not by
+# direct human annotation. This also drops the rare cross-border mis-stratified
+# posting (e.g. a Vietnamese listing tagged Indonesia).
+ANNOTATOR_LANGUAGES = ("en", "id")
+
 # Pilot stratum quotas — Indonesian + bilingual boost (purposive, not corpus
 # proportional): the dissertation targets Indonesian SMK RPL and a cross-language
 # claim, so Indonesia is deliberately over-represented relative to its ~6% corpus

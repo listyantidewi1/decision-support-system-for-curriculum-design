@@ -24,8 +24,9 @@ from pathlib import Path
 import pandas as pd
 
 from governance.ladder import REPO_ROOT
-from . import (BORDERLINE_SHARE, GOLD_STANDARD_VERSION, GUIDELINE_CODE,
-               MAIN_N, MIN_LOCAL_LANG_SHARE, PILOT_N, SEED, STRATUM_QUOTA)
+from . import (ANNOTATOR_LANGUAGES, BORDERLINE_SHARE, GOLD_STANDARD_VERSION,
+               GUIDELINE_CODE, MAIN_N, MIN_LOCAL_LANG_SHARE, PILOT_N, SEED,
+               STRATUM_QUOTA)
 
 GS_DIR = REPO_ROOT / "DATA" / "gold_standard"
 POOL_PATH = GS_DIR / "sentence_pool.parquet"
@@ -102,6 +103,8 @@ def draw_sample(n: int, exclude_ids: set[str] | None = None,
                 seed: int = SEED) -> pd.DataFrame:
     pool = pd.read_parquet(POOL_PATH)
     pool = pool.sort_values("sentence_id").drop_duplicates("sentence_text", keep="first")
+    # Restrict to languages the human annotators can read (English + Indonesian).
+    pool = pool[pool["posting_language"].isin(ANNOTATOR_LANGUAGES)]
     if exclude_ids:
         pool = pool[~pool["posting_id"].isin(exclude_ids)]
 
@@ -139,6 +142,7 @@ def _write(sample: pd.DataFrame, split: str) -> None:
         "seed": SEED,
         "guideline": GUIDELINE_CODE,
         "gold_standard_version": GOLD_STANDARD_VERSION,
+        "annotator_languages": list(ANNOTATOR_LANGUAGES),
         "pool_file": POOL_PATH.name,
         "pool_sha1_16": pool_hash,
         "relevance_floor": RELEVANCE_FLOOR,

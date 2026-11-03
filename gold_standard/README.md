@@ -35,6 +35,12 @@ streamlit run gold_standard/app.py           # interactive annotator (?annotator
 
 ## Sampling design (purposive — see `*_manifest.json`)
 
+- **English + Indonesian only** (`ANNOTATOR_LANGUAGES`): the three expert annotators
+  read only English and Indonesian (incl. ID–EN code-mixing, rule 7.13), so the
+  human-annotated gold standard is restricted to these. Non-EN/ID postings stay in
+  the raw corpus and are handled downstream via the translation layer + the B-6
+  LLM-labeling audit — not by direct human annotation. (This also drops rare
+  cross-border mis-stratified postings, e.g. a Vietnamese listing tagged Indonesia.)
 - **Indonesian + bilingual boost**: Indonesia 45% / ASEAN 20% / OECD 35% of the
   sample (vs ~6% ID in the corpus), with a per-stratum minimum share of Indonesian /
   mixed-language sentences so rules 7.13 / 7.14 are exercised.
