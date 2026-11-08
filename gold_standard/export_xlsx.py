@@ -31,12 +31,18 @@ from . import (ANNOTATORS, CONFIDENCE, FLAGS, GUIDELINE_CODE, HAS_5TAG,
 
 GS_DIR = REPO_ROOT / "DATA" / "gold_standard"
 OUT_DIR = GS_DIR / "worksheets"
-SPAN_ROWS_PER_SENTENCE = 6
+# Generous prepared SPAN rows per sentence so even enumeration-dense sentences don't
+# overflow; annotators may still insert more rows (whole-column validation covers them).
+SPAN_ROWS_PER_SENTENCE = 14
 
+# occurrence_no disambiguates a span_text that appears more than once in the sentence
+# (default 1 = first match), so the researcher can recover exact offsets the way the
+# Streamlit app captures them directly.
 HEADERS = ["row_type", "sentence_id", "meta", "previous_sentence", "sentence_text",
            "next_sentence", "relevance", "has_5tag", "span_no", "span_text",
-           "start_char", "end_char", "label", "confidence", "flag",
+           "occurrence_no", "start_char", "end_char", "label", "confidence", "flag",
            "parent_span_id", "note"]
+COL = {h: i + 1 for i, h in enumerate(HEADERS)}
 
 _SENTENCE_FILL = PatternFill("solid", fgColor="DDEBF7")
 _SPAN_FILL = PatternFill("solid", fgColor="F2F2F2")
@@ -76,9 +82,12 @@ def _panduan(ws, code: str) -> None:
         ("", ""),
         ("CARA MENGISI", "Pada sheet 'Anotasi': untuk tiap kalimat, isi baris "
          "SENTENCE (relevansi + has_5tag). Untuk tiap entitas yang tertulis, isi "
-         "satu baris SPAN di bawahnya: salin teks span persis dari kalimat, pilih "
+         "satu baris SPAN di bawahnya: salin teks span PERSIS dari kalimat, pilih "
          "label dan tingkat keyakinan, dan isi penanda bila ada. start_char/end_char "
-         "boleh dikosongkan — diisi oleh sistem."),
+         "diisi oleh sistem. Jika teks span muncul lebih dari sekali dalam kalimat, "
+         "isi occurrence_no dengan kemunculan ke berapa (1 = pertama). Bila entitas "
+         "lebih banyak daripada baris SPAN yang tersedia, sisipkan baris SPAN baru di "
+         "bawahnya (daftar dropdown tetap berlaku)."),
         ("", ""),
         ("LABEL (lima tag)", ""),
     ]
@@ -118,53 +127,60 @@ def _panduan(ws, code: str) -> None:
     ws.cell(1, 1).font = Font(bold=True, size=13)
 
 
+_WRAP_COLS = {COL["previous_sentence"], COL["sentence_text"], COL["next_sentence"]}
+_MAXROW = 5000   # whole-column validation range, covers any rows annotators insert
+
+
 def _anotasi(ws, sample: pd.DataFrame) -> None:
-    widths = {"A": 10, "B": 20, "C": 16, "D": 34, "E": 46, "F": 34, "G": 15,
-              "H": 9, "I": 7, "J": 30, "K": 9, "L": 9, "M": 8, "N": 11,
-              "O": 7, "P": 14, "Q": 28}
-    for col, w in widths.items():
-        ws.column_dimensions[col].width = w
+    widths = {"row_type": 10, "sentence_id": 20, "meta": 16, "previous_sentence": 30,
+              "sentence_text": 46, "next_sentence": 30, "relevance": 15, "has_5tag": 9,
+              "span_no": 7, "span_text": 30, "occurrence_no": 8, "start_char": 9,
+              "end_char": 9, "label": 15, "confidence": 13, "flag": 14,
+              "parent_span_id": 12, "note": 26}
+    for name, w in widths.items():
+        ws.column_dimensions[get_column_letter(COL[name])].width = w
     for c, h in enumerate(HEADERS, start=1):
         cell = ws.cell(1, c, h)
         cell.fill, cell.font, cell.alignment, cell.border = (
             _HEAD_FILL, _HEAD_FONT, _TOP, _BORDER)
     ws.freeze_panes = "A2"
 
-    dv_rel, dv_has = _dv(RELEVANCE, False), _dv(HAS_5TAG, False)
-    dv_label = _dv(list(TAGS), True)
-    dv_conf = _dv([str(x) for x in CONFIDENCE], True)
-    dv_flag = _dv(list(FLAGS), True)
-    for dv in (dv_rel, dv_has, dv_label, dv_conf, dv_flag):
+    # Whole-column data validations so any inserted row inherits the pick-list too.
+    def _col_range(name: str) -> str:
+        L = get_column_letter(COL[name])
+        return f"{L}2:{L}{_MAXROW}"
+
+    for name, options in (("relevance", RELEVANCE), ("has_5tag", HAS_5TAG),
+                          ("label", list(TAGS)), ("flag", list(FLAGS)),
+                          ("confidence", [str(x) for x in CONFIDENCE])):
+        dv = _dv(options, True)
+        dv.add(_col_range(name))
         ws.add_data_validation(dv)
 
     row = 2
     for rec in sample.itertuples(index=False):
         meta = f"{rec.country_iso}/{rec.site}/{rec.posting_language} · {rec.quarter}"
-        ws.cell(row, 1, "SENTENCE")
-        ws.cell(row, 2, rec.sentence_id)
-        ws.cell(row, 3, meta)
-        ws.cell(row, 4, rec.previous_sentence)
-        ws.cell(row, 5, rec.sentence_text)
-        ws.cell(row, 6, rec.next_sentence)
+        ws.cell(row, COL["row_type"], "SENTENCE")
+        ws.cell(row, COL["sentence_id"], rec.sentence_id)
+        ws.cell(row, COL["meta"], meta)
+        ws.cell(row, COL["previous_sentence"], rec.previous_sentence)
+        ws.cell(row, COL["sentence_text"], rec.sentence_text)
+        ws.cell(row, COL["next_sentence"], rec.next_sentence)
         for c in range(1, len(HEADERS) + 1):
             cc = ws.cell(row, c)
             cc.fill, cc.border = _SENTENCE_FILL, _BORDER
-            cc.alignment = _WRAP if c in (4, 5, 6) else _TOP
-        dv_rel.add(ws.cell(row, 7))
-        dv_has.add(ws.cell(row, 8))
+            cc.alignment = _WRAP if c in _WRAP_COLS else _TOP
         sent_row = row
         row += 1
         for i in range(1, SPAN_ROWS_PER_SENTENCE + 1):
-            ws.cell(row, 1, "SPAN")
-            ws.cell(row, 2, rec.sentence_id)
-            ws.cell(row, 9, i)
+            ws.cell(row, COL["row_type"], "SPAN")
+            ws.cell(row, COL["sentence_id"], rec.sentence_id)
+            ws.cell(row, COL["span_no"], i)
+            ws.cell(row, COL["occurrence_no"], 1)   # default to the 1st match
             for c in range(1, len(HEADERS) + 1):
                 cc = ws.cell(row, c)
                 cc.fill, cc.border = _SPAN_FILL, _BORDER
-                cc.alignment = _WRAP if c == 10 else _TOP
-            dv_label.add(ws.cell(row, 13))
-            dv_conf.add(ws.cell(row, 14))
-            dv_flag.add(ws.cell(row, 15))
+                cc.alignment = _WRAP if c == COL["span_text"] else _TOP
             row += 1
         ws.row_dimensions[sent_row].height = 46
 

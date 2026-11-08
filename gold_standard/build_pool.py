@@ -47,6 +47,10 @@ _MD_ESCAPE_RE = re.compile(r"\\([^\sA-Za-z0-9])")  # \-  \#  \&  ->  - # &
 # Glyph bullets the splitter doesn't know (●○▪▸‣⁃◦ …); turn into a bullet form it
 # does, so each list item becomes its own sentence.
 _GLYPH_BULLET_RE = re.compile(r"[\u25CF\u25CB\u25AA\u25B8\u2023\u2043\u25E6\u25AB\u2219]")
+# Line-start bullet markers (markdown '*'/ '\u2022'/'\u00B7') -> a boundary the splitter
+# understands. Done BEFORE stripping '*', so list bullets survive while inline
+# emphasis '*' and sentence-fusing '.*' residue are removed.
+_MD_BULLET_LINE_RE = re.compile(r"(?m)^[ \t]*[\*\u2022\u00B7]\s+")
 
 
 def _html_to_text(text: str) -> str:
@@ -57,8 +61,9 @@ def _html_to_text(text: str) -> str:
     t = _htmllib.unescape(t)
     for _ in range(2):                      # resolve single- and double-escaped md
         t = _MD_ESCAPE_RE.sub(r"\1", t)
+    t = _MD_BULLET_LINE_RE.sub("\n\u2022 ", t)
     t = _GLYPH_BULLET_RE.sub("\n\u2022 ", t)
-    return t.replace("**", "").replace("`", "")
+    return t.replace("`", "").replace("*", "")  # strip emphasis + fused-sentence '*'
 # A light Indonesian-token probe: common function words that rarely appear in
 # English sentences. Two or more hits flags a sentence as Indonesian / mixed,
 # giving a sentence-level bilingual signal even inside English-language postings.
@@ -134,7 +139,8 @@ def build_pool() -> pd.DataFrame:
 
     print("loading raw batches (first sighting per posting) ...", flush=True)
     raw = load_all_batches()
-    raw = raw.sort_values("acquisition_timestamp").drop_duplicates("source_record_id")
+    raw = (raw.sort_values(["acquisition_timestamp", "source_record_id"], kind="stable")
+              .drop_duplicates("source_record_id"))   # deterministic first sighting
     raw = raw[["source_record_id", "batch_id", "title", "description",
                "date_posted"]]
 
@@ -155,7 +161,7 @@ def build_pool() -> pd.DataFrame:
         sents = []
         for seg in split_sentences(_html_to_text(rec.description)):
             for piece in _resplit_long(_normalize_sentence(seg)):
-                piece = piece.strip()
+                piece = _normalize_sentence(piece)   # re-strip markers on split pieces
                 if len(piece) >= 15:        # drop degenerate fragments
                     sents.append(piece)
         n = len(sents)

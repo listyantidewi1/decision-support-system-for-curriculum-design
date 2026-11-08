@@ -31,7 +31,11 @@ from . import (ANNOTATOR_LANGUAGES, BORDERLINE_SHARE, GOLD_STANDARD_VERSION,
 GS_DIR = REPO_ROOT / "DATA" / "gold_standard"
 POOL_PATH = GS_DIR / "sentence_pool.parquet"
 
-RELEVANCE_FLOOR = 1.0   # score >= floor counts as content-bearing
+# score >= floor counts as content-bearing; below it is the deliberate low-relevance
+# minority. Must sit ABOVE the scorer's practical minimum (~1.0 for a short, non-
+# header sentence) or the borderline bucket is empty and no NON_RELEVANT/UNCERTAIN
+# calibration examples reach annotators.
+RELEVANCE_FLOOR = 2.0
 MAX_PER_POSTING = 2
 # Keep sampled sentences to an annotatable length: drop degenerate fragments and
 # run-on blobs that survived re-splitting (matches build_pool.MAX_SENT_CHARS).
@@ -169,6 +173,11 @@ def _write(sample: pd.DataFrame, split: str) -> None:
     }
     (GS_DIR / f"{split}_manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
+    target_border = round(len(sample) * BORDERLINE_SHARE)
+    if manifest["borderline_count"] < max(1, target_border // 2):
+        print(f"  WARNING: borderline_count={manifest['borderline_count']} far below "
+              f"target ~{target_border}; low-relevance calibration examples are thin "
+              f"(check RELEVANCE_FLOOR vs the relevance scorer).", flush=True)
     print(f"{split}: {len(sample)} sentences, {manifest['distinct_postings']} postings", flush=True)
     print(json.dumps({k: manifest[k] for k in (
         "by_stratum", "by_posting_language", "indonesian_sentence_count",

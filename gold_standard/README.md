@@ -54,13 +54,18 @@ streamlit run gold_standard/app.py           # interactive annotator (?annotator
 
 | | Form A-1 workbook (`export_xlsx`) | Streamlit app (`app.py`) |
 |---|---|---|
-| Span offsets | annotator types span text; researcher derives offsets (fragile on repeated substrings) | selected from tokens → **exact** start/end |
-| Setup | none; opens in Excel | `streamlit run`, one URL per annotator |
-| Dropdowns | locked (label / confidence / flag / relevance / has_5tag) | native widgets |
-| Output | one `.xlsx` per annotator (SENTENCE + 6 SPAN rows each) | per-annotator JSON autosave + Form A-1 CSV export |
+| Span offsets | annotator types span text + `occurrence_no`; researcher derives offsets in a post-pass | selected from tokens → **exact** start/end, captured live |
+| Setup | none; opens in Excel | `streamlit run`, one locked URL per annotator |
+| Dropdowns | locked (label / confidence / flag / relevance / has_5tag), whole-column so inserted rows keep them | native widgets, guideline-enforced (no span on NON_RELEVANT, required note, etc.) |
+| Output | one `.xlsx` per annotator (SENTENCE + 14 SPAN rows each, insert more as needed) | per-annotator JSON autosave + Form A-1 CSV export |
 
-Both converge to the same Form A-1 row schema, so IAA (Fleiss/Krippendorff +
-exact-span + span-F1, built next) consumes either identically.
+Both emit the **same canonical Form A-1 columns** (`FORM_A1_COLUMNS` in `app.py` /
+`HEADERS` in `export_xlsx.py`), but they are **not** byte-identical: the **app is
+authoritative for exact character offsets** (captured at selection time), while the
+**xlsx offsets are derived in a researcher post-pass** from `span_text` + `occurrence_no`
+(needed because a span text can repeat within a sentence). The IAA step therefore runs a
+small per-format normalizer (xlsx → derive offsets + validate completeness; app → as-is)
+before strict-span comparison. Prefer the app when exact offsets matter.
 
 Outputs live under `DATA/gold_standard/` and are **gitignored** (reproducible from
 this code + the raw corpus); only the code here is tracked.
