@@ -86,6 +86,20 @@ def _normalize_sentence(text: str) -> str:
     return _WS_RE.sub(" ", t).strip()
 
 
+# Above this, a "sentence" is really a segmentation failure — a run-on posting with
+# no terminal punctuation. Re-split it on secondary delimiters; any piece still over
+# the cap is dropped from the sample downstream (not an annotatable unit).
+MAX_SENT_CHARS = 300
+_HARD_SPLIT_RE = re.compile(r"(?<=[.!?;:])\s+|\s{2,}|\t|[•·●○]")
+
+
+def _resplit_long(sent: str) -> list[str]:
+    if len(sent) <= MAX_SENT_CHARS:
+        return [sent]
+    pieces = [p.strip() for p in _HARD_SPLIT_RE.split(sent) if p.strip()]
+    return pieces or [sent]
+
+
 def _length_band(n: int) -> str:
     if n < 60:
         return "short"
@@ -138,9 +152,12 @@ def build_pool() -> pd.DataFrame:
 
     rows = []
     for rec in df.itertuples(index=False):
-        sents = [_normalize_sentence(s)
-                 for s in split_sentences(_html_to_text(rec.description))]
-        sents = [s for s in sents if len(s) >= 15]  # drop degenerate fragments
+        sents = []
+        for seg in split_sentences(_html_to_text(rec.description)):
+            for piece in _resplit_long(_normalize_sentence(seg)):
+                piece = piece.strip()
+                if len(piece) >= 15:        # drop degenerate fragments
+                    sents.append(piece)
         n = len(sents)
         dt = pd.to_datetime(rec.date_posted, errors="coerce", utc=True)
         quarter = str(dt.to_period("Q")) if pd.notna(dt) else "NA"

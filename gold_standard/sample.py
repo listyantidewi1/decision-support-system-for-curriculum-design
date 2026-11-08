@@ -33,6 +33,10 @@ POOL_PATH = GS_DIR / "sentence_pool.parquet"
 
 RELEVANCE_FLOOR = 1.0   # score >= floor counts as content-bearing
 MAX_PER_POSTING = 2
+# Keep sampled sentences to an annotatable length: drop degenerate fragments and
+# run-on blobs that survived re-splitting (matches build_pool.MAX_SENT_CHARS).
+SAMPLE_MIN_CHARS = 20
+SAMPLE_MAX_CHARS = 300
 
 # Columns carried into the delivered sample (provenance + context + annotation aids).
 SAMPLE_COLUMNS = [
@@ -105,6 +109,9 @@ def draw_sample(n: int, exclude_ids: set[str] | None = None,
     pool = pool.sort_values("sentence_id").drop_duplicates("sentence_text", keep="first")
     # Restrict to languages the human annotators can read (English + Indonesian).
     pool = pool[pool["posting_language"].isin(ANNOTATOR_LANGUAGES)]
+    # Keep sentences within an annotatable length band.
+    pool = pool[(pool["char_len"] >= SAMPLE_MIN_CHARS)
+                & (pool["char_len"] <= SAMPLE_MAX_CHARS)]
     if exclude_ids:
         pool = pool[~pool["posting_id"].isin(exclude_ids)]
 
@@ -146,6 +153,8 @@ def _write(sample: pd.DataFrame, split: str) -> None:
         "pool_file": POOL_PATH.name,
         "pool_sha1_16": pool_hash,
         "relevance_floor": RELEVANCE_FLOOR,
+        "char_len_range": [SAMPLE_MIN_CHARS, SAMPLE_MAX_CHARS],
+        "max_char_len_in_sample": int(sample["char_len"].max()),
         "max_per_posting": MAX_PER_POSTING,
         "stratum_quota": STRATUM_QUOTA,
         "min_local_lang_share": MIN_LOCAL_LANG_SHARE,

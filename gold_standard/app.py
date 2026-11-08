@@ -114,13 +114,26 @@ def to_form_a1(sample: pd.DataFrame, ann: dict, code: str) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def highlight(sent: str, toks: list, sel: set[int]) -> str:
+def committed_token_idxs(toks: list, spans: list) -> set[int]:
+    """Token indices overlapped by an already-saved span, for green highlighting."""
+    out = set()
+    for s in spans:
+        for i, (_t, a, b) in enumerate(toks):
+            if a < s["end_char"] and b > s["start_char"]:
+                out.add(i)
+    return out
+
+
+def highlight(sent: str, toks: list, sel: set[int], committed: set[int]) -> str:
     out, prev = [], 0
     for i, (t, a, b) in enumerate(toks):
         out.append(esc(sent[prev:a]))
         chip = esc(t)
-        out.append(f"<mark style='background:#ffd966;border-radius:3px'>{chip}</mark>"
-                   if i in sel else chip)
+        if i in sel:                       # in-progress selection -> yellow
+            chip = f"<mark style='background:#ffd966;border-radius:3px'>{chip}</mark>"
+        elif i in committed:               # already-saved span -> green
+            chip = f"<mark style='background:#b6e3b6;border-radius:3px'>{chip}</mark>"
+        out.append(chip)
         prev = b
     out.append(esc(sent[prev:]))
     return "".join(out)
@@ -172,9 +185,14 @@ rec = sample.iloc[i]
 sid = rec["sentence_id"]
 cur = ann.get(sid, {})
 toks = tokenize(rec["sentence_text"])
-sel_key = f"pills::{sid}"
+# The chip widget is keyed by a nonce so that committing a span (or navigating)
+# makes a FRESH, empty widget next run — reliably clearing the selection and its
+# highlight. Deleting a st.pills key in place does not clear it reliably.
+st.session_state.setdefault("pills_nonce", 0)
+sel_key = f"pills::{sid}::{st.session_state.pills_nonce}"
 sel = sorted(st.session_state.get(sel_key, []) or [])
 sel_set = set(sel)
+committed = committed_token_idxs(toks, cur.get("spans", []))
 
 with st.expander("📖 Pedoman ringkas (lima tag, urutan keputusan, batas span)"):
     for c, full in TAGS.items():
@@ -194,7 +212,7 @@ ctx = []
 if rec["previous_sentence"]:
     ctx.append(f"<span style='color:#999'>… {esc(rec['previous_sentence'])}</span>")
 ctx.append(f"<div style='font-size:1.3rem;font-weight:600;line-height:1.6;margin:"
-           f".4rem 0'>{highlight(rec['sentence_text'], toks, sel_set)}</div>")
+           f".4rem 0'>{highlight(rec['sentence_text'], toks, sel_set, committed)}</div>")
 if rec["next_sentence"]:
     ctx.append(f"<span style='color:#999'>{esc(rec['next_sentence'])} …</span>")
 st.markdown("".join(ctx), unsafe_allow_html=True)
@@ -208,6 +226,7 @@ has5 = c2.radio("has_5tag (minimal satu dari lima tag?)", HAS_5TAG,
                 horizontal=True)
 
 st.markdown("#### Tandai span")
+st.caption("🟨 kuning = sedang dipilih · 🟩 hijau = span yang sudah disimpan")
 # st.pills identifies chips by their displayed label, so repeated words (e.g. two
 # "data") collide and a click resolves to the LAST occurrence — breaking contiguous
 # spans. Append i zero-width spaces (invisible) to make every chip's label unique
@@ -240,7 +259,7 @@ if st.button("➕ Tambah span", disabled=add_disabled, type="primary"):
     cur["relevance"], cur["has_5tag"] = rel, has5
     ann[sid] = cur
     save_ann(split, code, ann)
-    st.session_state.pop(sel_key, None)      # clear chip selection
+    st.session_state.pills_nonce += 1        # fresh chips -> clears selection + highlight
     st.rerun()
 if sel and label == "":
     st.caption("Pilih label dulu untuk menambah span.")
@@ -267,6 +286,7 @@ def _persist():
     cur["relevance"], cur["has_5tag"] = rel, has5
     ann[sid] = cur
     save_ann(split, code, ann)
+    st.session_state.pills_nonce += 1        # clear selection on save / navigation
 
 
 if n1.button("⟵ Sebelumnya", disabled=i == 0, use_container_width=True):
