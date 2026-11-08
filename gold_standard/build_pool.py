@@ -70,7 +70,7 @@ _ID_TOKENS = {
 }
 
 
-_LEADING_BULLET_RE = re.compile(r"^[\s\-\*•·●○▪◦]+")
+_LEADING_BULLET_RE = re.compile(r"^[\s\-\*•·●○▪◦#>]+")
 _STRAY_STAR_RE = re.compile(r"\s\*+\s")
 
 
