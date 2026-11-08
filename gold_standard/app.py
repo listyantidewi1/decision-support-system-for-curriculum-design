@@ -208,8 +208,13 @@ has5 = c2.radio("has_5tag (minimal satu dari lima tag?)", HAS_5TAG,
                 horizontal=True)
 
 st.markdown("#### Tandai span")
+# st.pills identifies chips by their displayed label, so repeated words (e.g. two
+# "data") collide and a click resolves to the LAST occurrence — breaking contiguous
+# spans. Append i zero-width spaces (invisible) to make every chip's label unique
+# while looking identical; the real token text is used everywhere else.
 st.pills("Klik kata-kata entitas (berdampingan)", options=list(range(len(toks))),
-         format_func=lambda n: toks[n][0], selection_mode="multi", key=sel_key)
+         format_func=lambda n: toks[n][0] + "​" * n,
+         selection_mode="multi", key=sel_key)
 span_text, span_start, span_end = "", 0, 0
 if sel:
     if sel != list(range(sel[0], sel[-1] + 1)):
