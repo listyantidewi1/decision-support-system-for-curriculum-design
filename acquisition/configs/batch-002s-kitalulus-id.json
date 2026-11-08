@@ -1,0 +1,363 @@
+{
+  "batch_id": "batch-002s",
+  "query_plan_version": "qp-v2.1-2026-11",
+  "notes": "Kitalulus ID forward refresh (2026-11-08). Low volume.",
+  "defaults": {
+    "sites": [
+      "kitalulus"
+    ],
+    "hours_old": null,
+    "sleep_seconds": 2
+  },
+  "strata": [
+    {
+      "name": "indonesia",
+      "results_wanted": 30,
+      "countries": [
+        {
+          "iso": "ID",
+          "location": "Indonesia",
+          "country_indeed": "Indonesia"
+        }
+      ],
+      "terms": [
+        {
+          "term": "programmer",
+          "family": "software_developer"
+        },
+        {
+          "term": "junior programmer",
+          "family": "software_developer"
+        },
+        {
+          "term": "software developer",
+          "family": "software_developer"
+        },
+        {
+          "term": "software engineer",
+          "family": "software_developer"
+        },
+        {
+          "term": "backend developer",
+          "family": "software_developer"
+        },
+        {
+          "term": "frontend developer",
+          "family": "software_developer"
+        },
+        {
+          "term": "full stack developer",
+          "family": "software_developer"
+        },
+        {
+          "term": "application developer",
+          "family": "software_developer"
+        },
+        {
+          "term": "developer aplikasi",
+          "family": "software_developer"
+        },
+        {
+          "term": "pengembang perangkat lunak",
+          "family": "software_developer"
+        },
+        {
+          "term": "pemrogram",
+          "family": "software_developer"
+        },
+        {
+          "term": "it programmer",
+          "family": "software_developer"
+        },
+        {
+          "term": "java developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "python developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "javascript developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "php developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "golang developer",
+          "family": "language_specific"
+        },
+        {
+          "term": ".net developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "node js developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "react developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "laravel developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "kotlin developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "wordpress developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "web developer",
+          "family": "web_developer"
+        },
+        {
+          "term": "web programmer",
+          "family": "web_developer"
+        },
+        {
+          "term": "programmer web",
+          "family": "web_developer"
+        },
+        {
+          "term": "mobile developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "android developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "ios developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "flutter developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "react native developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "pengembang aplikasi mobile",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "data analyst",
+          "family": "data_ai"
+        },
+        {
+          "term": "data engineer",
+          "family": "data_ai"
+        },
+        {
+          "term": "data scientist",
+          "family": "data_ai"
+        },
+        {
+          "term": "machine learning engineer",
+          "family": "data_ai"
+        },
+        {
+          "term": "ai engineer",
+          "family": "data_ai"
+        },
+        {
+          "term": "analis data",
+          "family": "data_ai"
+        },
+        {
+          "term": "game developer",
+          "family": "game_developer"
+        },
+        {
+          "term": "game programmer",
+          "family": "game_developer"
+        },
+        {
+          "term": "game designer",
+          "family": "game_developer"
+        },
+        {
+          "term": "game tester",
+          "family": "game_developer"
+        },
+        {
+          "term": "pengembang gim",
+          "family": "game_developer"
+        },
+        {
+          "term": "ui ux designer",
+          "family": "ui_ux"
+        },
+        {
+          "term": "ui designer",
+          "family": "ui_ux"
+        },
+        {
+          "term": "ux designer",
+          "family": "ui_ux"
+        },
+        {
+          "term": "desainer ui ux",
+          "family": "ui_ux"
+        },
+        {
+          "term": "quality assurance",
+          "family": "qa_tester"
+        },
+        {
+          "term": "qa engineer",
+          "family": "qa_tester"
+        },
+        {
+          "term": "software tester",
+          "family": "qa_tester"
+        },
+        {
+          "term": "software quality assurance",
+          "family": "qa_tester"
+        },
+        {
+          "term": "database administrator",
+          "family": "database"
+        },
+        {
+          "term": "database engineer",
+          "family": "database"
+        },
+        {
+          "term": "sql developer",
+          "family": "database"
+        },
+        {
+          "term": "basis data",
+          "family": "database"
+        },
+        {
+          "term": "devops engineer",
+          "family": "devops_cloud"
+        },
+        {
+          "term": "cloud engineer",
+          "family": "devops_cloud"
+        },
+        {
+          "term": "site reliability engineer",
+          "family": "devops_cloud"
+        },
+        {
+          "term": "system analyst",
+          "family": "system_analysis"
+        },
+        {
+          "term": "analis sistem",
+          "family": "system_analysis"
+        },
+        {
+          "term": "rekayasa perangkat lunak",
+          "family": "software_developer"
+        },
+        {
+          "term": "insinyur perangkat lunak",
+          "family": "software_developer"
+        },
+        {
+          "term": "pemrograman",
+          "family": "software_developer"
+        },
+        {
+          "term": "staf programmer",
+          "family": "software_developer"
+        },
+        {
+          "term": "teknisi perangkat lunak",
+          "family": "software_developer"
+        },
+        {
+          "term": "pengembang aplikasi",
+          "family": "software_developer"
+        },
+        {
+          "term": "pengembang web",
+          "family": "web_developer"
+        },
+        {
+          "term": "pemrogram web",
+          "family": "web_developer"
+        },
+        {
+          "term": "pengembang game",
+          "family": "game_developer"
+        },
+        {
+          "term": "jaminan kualitas perangkat lunak",
+          "family": "qa_tester"
+        },
+        {
+          "term": "backend engineer",
+          "family": "software_developer"
+        },
+        {
+          "term": "frontend engineer",
+          "family": "software_developer"
+        },
+        {
+          "term": "fullstack engineer",
+          "family": "software_developer"
+        },
+        {
+          "term": "software architect",
+          "family": "software_developer"
+        },
+        {
+          "term": "embedded software engineer",
+          "family": "embedded_software"
+        },
+        {
+          "term": "qa automation engineer",
+          "family": "qa_tester"
+        },
+        {
+          "term": "test engineer",
+          "family": "qa_tester"
+        },
+        {
+          "term": "vue developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "angular developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "typescript developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "c# developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "unity developer",
+          "family": "game_developer"
+        },
+        {
+          "term": "odoo developer",
+          "family": "language_specific"
+        },
+        {
+          "term": "salesforce developer",
+          "family": "language_specific"
+        }
+      ]
+    }
+  ]
+}

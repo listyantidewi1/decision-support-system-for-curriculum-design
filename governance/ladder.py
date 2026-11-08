@@ -159,8 +159,12 @@ def main() -> None:
     per_country = elig.groupby("country_iso")["source_record_id"].nunique().sort_values(ascending=False)
     gates = {c: {"n_eligible": int(n), "passes_gate": bool(n >= gate_min)} for c, n in per_country.items()}
 
+    # tz_localize(None) before to_period: quarter is tz-invariant for UTC, and
+    # to_period on a tz-aware series emits a UserWarning that run.ps1's
+    # ErrorActionPreference=Stop escalates into a fatal NativeCommandError,
+    # aborting the run after the ladder is computed but before the report write.
     elig_q = elig.assign(quarter=pd.to_datetime(elig["date_posted"], errors="coerce",
-                         utc=True, format="mixed").dt.to_period("Q").astype(str))
+                         utc=True, format="mixed").dt.tz_localize(None).dt.to_period("Q").astype(str))
     report = {
         "created_utc": stamp,
         "governance_version": GOVERNANCE_VERSION,

@@ -1,0 +1,139 @@
+{
+  "batch_id": "batch-002r",
+  "query_plan_version": "qp-v2.1-2026-11",
+  "notes": "Kemnaker ID forward refresh (2026-11-08). Official govt source, low volume, rich metadata + structured skills.",
+  "defaults": {
+    "sites": [
+      "kemnaker"
+    ],
+    "hours_old": null,
+    "sleep_seconds": 1
+  },
+  "strata": [
+    {
+      "name": "indonesia",
+      "results_wanted": 150,
+      "countries": [
+        {
+          "iso": "ID",
+          "location": "Indonesia",
+          "country_indeed": "Indonesia"
+        }
+      ],
+      "terms": [
+        {
+          "term": "software engineer",
+          "family": "software_developer"
+        },
+        {
+          "term": "software developer",
+          "family": "software_developer"
+        },
+        {
+          "term": "programmer",
+          "family": "software_developer"
+        },
+        {
+          "term": "developer",
+          "family": "software_developer"
+        },
+        {
+          "term": "perangkat lunak",
+          "family": "software_developer"
+        },
+        {
+          "term": "rekayasa perangkat lunak",
+          "family": "software_developer"
+        },
+        {
+          "term": "pengembang aplikasi",
+          "family": "software_developer"
+        },
+        {
+          "term": "pemrograman",
+          "family": "software_developer"
+        },
+        {
+          "term": "web developer",
+          "family": "web_developer"
+        },
+        {
+          "term": "frontend developer",
+          "family": "web_developer"
+        },
+        {
+          "term": "backend developer",
+          "family": "web_developer"
+        },
+        {
+          "term": "full stack developer",
+          "family": "web_developer"
+        },
+        {
+          "term": "pengembang web",
+          "family": "web_developer"
+        },
+        {
+          "term": "mobile developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "android developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "ios developer",
+          "family": "mobile_developer"
+        },
+        {
+          "term": "data engineer",
+          "family": "data_ai"
+        },
+        {
+          "term": "data analyst",
+          "family": "data_ai"
+        },
+        {
+          "term": "data scientist",
+          "family": "data_ai"
+        },
+        {
+          "term": "machine learning",
+          "family": "data_ai"
+        },
+        {
+          "term": "devops",
+          "family": "devops_cloud"
+        },
+        {
+          "term": "qa engineer",
+          "family": "qa_tester"
+        },
+        {
+          "term": "software tester",
+          "family": "qa_tester"
+        },
+        {
+          "term": "ui ux designer",
+          "family": "ui_ux"
+        },
+        {
+          "term": "game developer",
+          "family": "game_developer"
+        },
+        {
+          "term": "analis sistem",
+          "family": "system_analysis"
+        },
+        {
+          "term": "teknik informatika",
+          "family": "software_developer"
+        },
+        {
+          "term": "database administrator",
+          "family": "database"
+        }
+      ]
+    }
+  ]
+}
