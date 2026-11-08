@@ -1,0 +1,40 @@
+{
+  "batch_id": "batch-002n",
+  "query_plan_version": "qp-core-2026-11",
+  "notes": "Forward-delta + core-role coverage. The recent Jobstreet runs (002f/002f2, 2026-11-03) covered the data/game/ui-ux/qa families; this run takes the 18 CORE software-developer / language-specific / web / mobile terms, which are the highest ID-relevance roles and were not in that pass. Jobstreet reachable (probed 2026-11-08, ID/MY/SG/PH all HTTP 200). results_wanted 200 x 18 terms keeps detail fetches near the ~2,000/session Cloudflare guardrail; the runner's circuit breaker aborts cleanly on a 403/429 streak. >=24h since batch-002f2.",
+  "defaults": {
+    "sites": ["jobstreet"],
+    "hours_old": null,
+    "sleep_seconds": 4,
+    "fetch_description": true
+  },
+  "strata": [
+    {
+      "name": "indonesia",
+      "results_wanted": 200,
+      "countries": [
+        {"iso": "ID", "location": "Indonesia", "country_indeed": "Indonesia"}
+      ],
+      "terms": [
+        {"term": "programmer", "family": "software_developer"},
+        {"term": "junior programmer", "family": "software_developer"},
+        {"term": "software developer", "family": "software_developer"},
+        {"term": "software engineer", "family": "software_developer"},
+        {"term": "backend developer", "family": "software_developer"},
+        {"term": "frontend developer", "family": "software_developer"},
+        {"term": "full stack developer", "family": "software_developer"},
+        {"term": "application developer", "family": "software_developer"},
+        {"term": "developer aplikasi", "family": "software_developer"},
+        {"term": "pengembang perangkat lunak", "family": "software_developer"},
+        {"term": "pemrogram", "family": "software_developer"},
+        {"term": "it programmer", "family": "software_developer"},
+        {"term": "java developer", "family": "language_specific"},
+        {"term": "python developer", "family": "language_specific"},
+        {"term": "php developer", "family": "language_specific"},
+        {"term": "web developer", "family": "web_developer"},
+        {"term": "mobile developer", "family": "mobile_developer"},
+        {"term": "android developer", "family": "mobile_developer"}
+      ]
+    }
+  ]
+}
