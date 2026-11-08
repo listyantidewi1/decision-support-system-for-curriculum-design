@@ -31,7 +31,23 @@ python -m gold_standard.build_pool          # eligible corpus -> sentence pool
 python -m gold_standard.sample               # -> pilot_100 (add --main for 1,200)
 python -m gold_standard.export_xlsx          # -> Form A-1 workbooks (one per annotator)
 streamlit run gold_standard/app.py           # interactive annotator (?annotator=AV)
+python -m gold_standard.iaa                   # after annotation: IAA + adjudication queue
 ```
+
+## IAA + adjudication (`iaa.py`, step B-5)
+
+After the three annotators (AV/AI/AD) finish, `gold_standard.iaa` reads their files
+(app JSON by default; `--format csv|xlsx` for the Form A-1 deliverables) and reports
+agreement at three levels — **sentence** (Fleiss κ + Krippendorff α + pairwise Cohen κ
+for `relevance` and `has_5tag`), **span** (span-F1 under exact / IoU≥0.5-overlap /
+boundary-only match, pairwise + micro + per-tag), and **token** (chance-corrected
+Fleiss/Krippendorff over per-token tags). It then writes a provisional gold
+(FULL_AGREEMENT = all coders agree on relevance, has_5tag, and every span at identical
+boundaries; `NON_RELEVANT ⇒ has_5tag=TIDAK` per guideline Bagian 3.2) plus an
+**adjudication queue** CSV of every non-unanimous item, with each span disagreement
+typed LABEL / BOUND / PRESENCE for the lead. Outputs land in `DATA/gold_standard/iaa/`
+(gitignored). Span comparison is restricted to sentences both coders actually judged,
+so span-F1 is identical whichever delivery format the annotators used.
 
 ## Sampling design (purposive — see `*_manifest.json`)
 
