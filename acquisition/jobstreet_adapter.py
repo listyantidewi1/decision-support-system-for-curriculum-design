@@ -62,13 +62,29 @@ def search(session: requests.Session, term: str, site: dict, results_wanted: int
     return jobs[:results_wanted]
 
 
-def fetch_detail(session: requests.Session, job_id: str, site: dict) -> dict | None:
-    """Parse the server-rendered SEEK_REDUX_DATA for one job; None on any failure."""
+def fetch_detail(session: requests.Session, job_id: str, site: dict,
+                 stats: dict | None = None) -> dict | None:
+    """Parse the server-rendered SEEK_REDUX_DATA for one job; None on any failure.
+
+    `stats` (optional) accumulates WHY fetches fail. Collapsing every non-200 to a
+    bare None made a 403/429 WAF wall on detail pages indistinguishable from a
+    parse miss: the search endpoint kept returning rows, so the run looked healthy,
+    no error was ever logged, and the circuit breaker never tripped while we went
+    on hammering a platform that was already blocking us — the most likely ban
+    mode, and the one the guardrail exists to prevent."""
     try:
         r = session.get(f"https://{site['host']}/{site['job_path']}/{job_id}",
                         headers={"User-Agent": HEADERS["User-Agent"]}, timeout=25)
         if r.status_code != 200:
+            if stats is not None:
+                stats["attempted"] = stats.get("attempted", 0) + 1
+                if r.status_code in (403, 429):
+                    stats["blocked"] = stats.get("blocked", 0) + 1
+                else:
+                    stats["other_http"] = stats.get("other_http", 0) + 1
             return None
+        if stats is not None:
+            stats["attempted"] = stats.get("attempted", 0) + 1
         m = _REDUX_RE.search(r.text)
         if not m:
             return None
@@ -98,15 +114,20 @@ def scrape_term_jobstreet(
             found = search(session, term, site, results_wanted)
             rows = []
             n_detail_fail = 0
+            detail_stats: dict = {}
             for j in found:
                 job_id = str(j.get("id"))
                 detail = cache.get(job_id)
                 if detail is None and fetch_description and job_id not in cache:
-                    detail = fetch_detail(session, job_id, site)
+                    detail = fetch_detail(session, job_id, site, detail_stats)
                     cache[job_id] = detail
                     if detail is None:
                         n_detail_fail += 1
                     _sleep(DETAIL_DELAY)
+                    # Stop inside the term as soon as the WAF is clearly blocking,
+                    # rather than walking the whole result set collecting 403s.
+                    if detail_stats.get("blocked", 0) >= 5:
+                        break
                 detail = detail or {}
                 locations = j.get("locations") or []
                 rows.append({
@@ -127,8 +148,15 @@ def scrape_term_jobstreet(
                     "is_verified": detail.get("isVerified"),
                     "adapter_version": ADAPTER_VERSION,
                 })
+        blocked = detail_stats.get("blocked", 0)
+        # Surface a detail-page WAF block as a REAL error even though the search
+        # endpoint returned rows, so run_batch's circuit breaker can see it.
+        err = (f"HTTP 403/429 on {blocked} detail page(s) — WAF blocking detail "
+               f"fetches (search still returns rows)") if blocked >= 5 else None
         log.update(rows=len(rows), secs=round(time.time() - t0, 1),
-                   detail_failures=n_detail_fail, error=None)
+                   detail_failures=n_detail_fail,
+                   detail_attempted=detail_stats.get("attempted", 0),
+                   detail_blocked=blocked, error=err)
         return pd.DataFrame(rows), log
     except Exception as e:
         log.update(rows=0, secs=round(time.time() - t0, 1), error=f"{type(e).__name__}: {e}")

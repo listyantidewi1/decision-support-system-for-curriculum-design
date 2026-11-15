@@ -214,8 +214,14 @@ def _find_candidates(text: str, needle: str) -> list[tuple[int, int]]:
             for m in re.finditer(lead + core + trail, text, re.IGNORECASE)]
 
 
-def _resolve_span(text: str, txt: str, occ: int, start_char, end_char, lab: str):
+def _resolve_span(text: str, txt: str, occ: int, start_char, end_char, lab: str,
+                  occ_given: bool = True):
     """Locate a typed span. Returns (Span|None, ok, reason).
+
+    `occ_given=False` means the annotator left occurrence_no blank. If the text
+    occurs more than once the span still resolves to the first occurrence, but
+    `reason` is prefixed AMBIGUOUS so the caller records it: silently picking one
+    of several candidate locations is how a span ends up on the wrong characters.
 
     Offsets are trimmed with the UI's punctuation rule so a workbook span and the
     same span captured in the app agree exactly. The researcher-supplied
@@ -230,6 +236,11 @@ def _resolve_span(text: str, txt: str, occ: int, start_char, end_char, lab: str)
             s, e = cands[occ - 1]
             s, e = _trim_offsets(text, s, e)
             if e > s:
+                if not occ_given and len(cands) > 1:
+                    return Span(s, e, lab), True, (
+                        f"AMBIGUOUS: «{txt}» occurs {len(cands)} times and "
+                        "occurrence_no was left blank — resolved to the first; "
+                        "confirm this is the span the annotator meant")
                 return Span(s, e, lab), True, "matched"
         else:
             return None, False, (f"occurrence_no={occ} but only {len(cands)} "
@@ -299,14 +310,19 @@ def _anns_from_anotasi_df(df: pd.DataFrame) -> tuple[dict[str, SentAnn], list[di
                     "reason": f"row {row_no}: incomplete span row "
                               f"(span_text={txt!r}, label={lab!r})"})
             continue
+        occ_raw = str(r.get("occurrence_no", "")).strip()
+        occ_given = occ_raw != ""
         try:
-            occ = int(float(r.get("occurrence_no") or 1))
+            occ = int(float(occ_raw)) if occ_given else 1
         except (TypeError, ValueError):
-            occ = 1
+            occ, occ_given = 1, False
         span, ok, reason = _resolve_span(cur["text"], txt, occ, r.get("start_char"),
-                                         r.get("end_char"), lab)
+                                         r.get("end_char"), lab, occ_given=occ_given)
         if ok:
             cur["spans"].append(span)
+            if reason.startswith("AMBIGUOUS"):
+                problems.append({"sentence_id": cur["sid"], "span_text": txt,
+                                 "reason": f"row {row_no}: {reason}"})
         else:
             problems.append({"sentence_id": cur["sid"], "span_text": txt,
                              "reason": f"row {row_no}: {reason}"})
@@ -338,12 +354,31 @@ def _anns_from_anotasi_df(df: pd.DataFrame) -> tuple[dict[str, SentAnn], list[di
     return out, problems
 
 
-def load_xlsx(path: Path) -> dict[str, SentAnn]:
+def load_xlsx(path: Path, expected_text: dict[str, str] | None = None) -> dict[str, SentAnn]:
     """Form A-1 workbook: derive span offsets from span_text (+ occurrence_no),
     taking sentence_text from the SENTENCE row. Captures annotator-inserted
-    overflow SPAN rows, and reports every span it could not resolve."""
+    overflow SPAN rows, and reports every span it could not resolve.
+
+    If `expected_text` is given (the sample parquet's sentence_text), every
+    workbook cell is compared against it. The cell is editable and offsets are
+    resolved against it, while token-level scoring uses the parquet text — so an
+    edited cell silently decouples the offsets from the text being scored."""
     df = pd.read_excel(path, sheet_name="Anotasi", dtype=str)
     anns, problems = _anns_from_anotasi_df(df)
+    if expected_text:
+        seen = df.fillna("")
+        for _, r in seen.iterrows():
+            if str(r.get("row_type", "")).strip().upper() != "SENTENCE":
+                continue
+            sid = str(r.get("sentence_id", "")).strip()
+            got = str(r.get("sentence_text", ""))
+            want = expected_text.get(sid)
+            if want is not None and _norm_ws(got) != _norm_ws(want):
+                problems.append({
+                    "sentence_id": sid, "span_text": "",
+                    "reason": "sentence_text in the workbook differs from the "
+                              "sample — span offsets were resolved against the "
+                              "EDITED text and will not line up with scoring"})
     LOAD_PROBLEMS[Path(path).name] = problems
     if problems:
         shown = "; ".join(f"{p['sentence_id']}:«{p['span_text']}» {p['reason']}"
@@ -354,8 +389,11 @@ def load_xlsx(path: Path) -> dict[str, SentAnn]:
 
 
 def load_annotator_set(split: str, fmt: str = "json",
-                       ann_dir: Path | None = None) -> AnnSet:
-    """Discover and load the AV/AI/AD files for `split` in the requested format."""
+                       ann_dir: Path | None = None,
+                       expected_text: dict[str, str] | None = None) -> AnnSet:
+    """Discover and load the AV/AI/AD files for `split` in the requested format.
+    `expected_text` (the sample's sentence_text) lets the workbook loader verify
+    that nobody edited the sentence the offsets are resolved against."""
     loaders = {"json": (ann_dir or ANN_DIR, "{split}_{code}.json", load_json),
                "csv": (ann_dir or ANN_DIR, "{split}_{code}_form_a1.csv", load_form_a1_csv),
                "xlsx": (ann_dir or WS_DIR, "{split}_{code}.xlsx", load_xlsx)}
@@ -364,7 +402,7 @@ def load_annotator_set(split: str, fmt: str = "json",
     for code in ANNOTATORS:
         p = base / pattern.format(split=split, code=code)
         if p.exists():
-            annset[code] = loader(p)
+            annset[code] = (loader(p, expected_text) if fmt == "xlsx" else loader(p))
     return annset
 
 
@@ -1012,7 +1050,10 @@ def main() -> None:
     args = ap.parse_args()
 
     ann_dir = Path(args.ann_dir) if args.ann_dir else None
-    annset = load_annotator_set(args.split, args.format, ann_dir)
+    # load the sample text first so the workbook loader can verify that the
+    # sentence_text the annotator saw (and offsets resolve against) is unedited
+    text_by_sid = _text_by_sid(args.split)
+    annset = load_annotator_set(args.split, args.format, ann_dir, text_by_sid)
     if len(annset) < 2:
         raise SystemExit(
             f"Need >=2 annotator files for {args.split} ({args.format}); found "
@@ -1022,7 +1063,6 @@ def main() -> None:
         print(f"WARNING: only {sorted(annset)} present; IAA computed on this subset.",
               flush=True)
 
-    text_by_sid = _text_by_sid(args.split)
     report = compute_iaa(annset, text_by_sid)
     adj = build_adjudication(annset, text_by_sid)
 

@@ -126,13 +126,28 @@ def draw_sample(n: int, exclude_ids: set[str] | None = None,
         parts.append(_take_stratum(cand, k, MIN_LOCAL_LANG_SHARE.get(stratum, 0.0), seed))
     sample = pd.concat(parts, ignore_index=True)
 
-    # Correct any rounding drift to land exactly on n.
+    # Correct rounding drift to land exactly on n. _spread_sample can itself
+    # under-fill (its per-group allocation is capped by each group's size), so a
+    # single top-up call could still leave the sample short of n while claiming
+    # to "land exactly on n". Top up repeatedly until n is reached or the pool is
+    # exhausted, and say so if it is.
     if len(sample) > n:
         sample = sample.sample(n=n, random_state=seed).reset_index(drop=True)
-    elif len(sample) < n:
-        extra = (pool[~pool["sentence_id"].isin(sample["sentence_id"])]
-                 .pipe(_spread_sample, n - len(sample), seed, ("stratum", "length_band")))
-        sample = pd.concat([sample, extra], ignore_index=True)
+    else:
+        for attempt in range(20):
+            if len(sample) >= n:
+                break
+            remaining = pool[~pool["sentence_id"].isin(sample["sentence_id"])]
+            if remaining.empty:
+                break
+            extra = _spread_sample(remaining, n - len(sample), seed + attempt,
+                                   ("stratum", "length_band"))
+            if extra.empty:
+                break
+            sample = pd.concat([sample, extra], ignore_index=True)
+        if len(sample) < n:
+            print(f"  WARNING: drew {len(sample)} of the requested {n} sentences — "
+                  "the filtered pool is exhausted. Report the achieved n.", flush=True)
 
     sample = sample.sample(frac=1.0, random_state=seed).reset_index(drop=True)
     sample.insert(0, "sample_order", range(1, len(sample) + 1))
@@ -161,7 +176,14 @@ def _write(sample: pd.DataFrame, split: str) -> None:
         "max_char_len_in_sample": int(sample["char_len"].max()),
         "max_per_posting": MAX_PER_POSTING,
         "stratum_quota": STRATUM_QUOTA,
-        "min_local_lang_share": MIN_LOCAL_LANG_SHARE,
+        # Record the CONFIGURED target and the ACHIEVED share separately. Writing
+        # only the target implied it had been met; both strata that declare a
+        # minimum can silently fall short when the pool lacks enough
+        # Indonesian/mixed sentences, and the manifest is what gets cited.
+        "min_local_lang_share_target": MIN_LOCAL_LANG_SHARE,
+        "local_lang_share_achieved": {
+            str(st): round(float(grp["is_indonesian_sentence"].mean()), 4)
+            for st, grp in sample.groupby("stratum")},
         "borderline_share": BORDERLINE_SHARE,
         "by_stratum": sample["stratum"].value_counts().to_dict(),
         "by_posting_language": sample["posting_language"].value_counts().to_dict(),
@@ -178,6 +200,17 @@ def _write(sample: pd.DataFrame, split: str) -> None:
         print(f"  WARNING: borderline_count={manifest['borderline_count']} far below "
               f"target ~{target_border}; low-relevance calibration examples are thin "
               f"(check RELEVANCE_FLOOR vs the relevance scorer).", flush=True)
+    # The local-language minimum had no warning at all, so an unmet quota was
+    # invisible while the manifest still carried the target.
+    for st, target in MIN_LOCAL_LANG_SHARE.items():
+        if target <= 0:
+            continue
+        got = manifest["local_lang_share_achieved"].get(str(st))
+        if got is not None and got + 1e-9 < target:
+            print(f"  WARNING: stratum '{st}' local-language share {got:.2f} is BELOW "
+                  f"the configured minimum {target:.2f} — the pool does not hold "
+                  f"enough Indonesian/mixed sentences for it. Cite the achieved "
+                  f"share, not the target.", flush=True)
     print(f"{split}: {len(sample)} sentences, {manifest['distinct_postings']} postings", flush=True)
     print(json.dumps({k: manifest[k] for k in (
         "by_stratum", "by_posting_language", "indonesian_sentence_count",

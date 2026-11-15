@@ -120,6 +120,7 @@ def main() -> None:
     query_log: list[dict] = []
     zero_streak = 0
     transient_fail_streak = 0
+    detail_block_streak = 0
     jobstreet_cache: dict = {}  # job detail fetched once per run across all terms
     for i, (stratum, country, term) in enumerate(queries, 1):
         df, log = _dispatch(sites, term, country, stratum, defaults, hours_old, jobstreet_cache)
@@ -158,6 +159,22 @@ def main() -> None:
         if zero_streak == 3:
             print("WARNING: 3 consecutive zero-row queries — possible network/endpoint "
                   "outage; affected queries may need a supplementary batch.", flush=True)
+        # Detail-page ban: the search endpoint can keep returning rows while every
+        # detail fetch is 403'd, so the zero-row breaker below never sees it. Those
+        # rows arrive without descriptions (they fail Tabel 3.9 anyway), and we
+        # would go on hammering a platform that is already blocking us. Stop after
+        # two consecutive queries whose details were blocked.
+        if log.get("detail_blocked", 0) >= 5:
+            detail_block_streak += 1
+            if detail_block_streak >= 2:
+                print("ABORTING remaining queries: detail pages are being blocked "
+                      "(403/429) although search still returns rows. Re-run the "
+                      "missing terms as a supplementary batch after a cooldown.",
+                      flush=True)
+                break
+        else:
+            detail_block_streak = 0
+
         # Circuit breaker: a 403/429 streak means the platform has rate-banned us.
         # Continuing extends the ban; stop and write what we have (batch-002e lesson:
         # Jobstreet WAF banned after ~33 heavy terms / ~2,000 detail fetches).

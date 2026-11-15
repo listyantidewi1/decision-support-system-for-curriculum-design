@@ -50,18 +50,30 @@ _GLYPH_BULLET_RE = re.compile(r"[\u25CF\u25CB\u25AA\u25B8\u2023\u2043\u25E6\u25A
 # Line-start bullet markers (markdown '*'/ '\u2022'/'\u00B7') -> a boundary the splitter
 # understands. Done BEFORE stripping '*', so list bullets survive while inline
 # emphasis '*' and sentence-fusing '.*' residue are removed.
-_MD_BULLET_LINE_RE = re.compile(r"(?m)^[ \t]*[\*\u2022\u00B7]\s+")
+_MD_BULLET_LINE_RE = re.compile(r"(?m)^[ \t]*[\*\u2022\u00B7\+\-]\s+")
+# Numbered / lettered list markers at line start ('1.', '2)', 'a.', 'iv)'), which
+# no other rule handled: without this a numbered requirements list arrives as one
+# fused sentence, or the marker attaches to the end of the previous sentence.
+_NUM_BULLET_LINE_RE = re.compile(r"(?m)^[ \t]*(?:\d{1,2}|[a-zA-Z]|[ivxIVX]{1,4})[.)]\s+")
 
 
 def _html_to_text(text: str) -> str:
     if not isinstance(text, str):
         return ""
-    t = _BLOCK_TAG_RE.sub("\n", text)
+    # Unescape BEFORE stripping tags, and twice: postings commonly arrive with
+    # single- and double-escaped HTML (&lt;p&gt; / &amp;lt;p&amp;gt;). Unescaping
+    # only after the tag pass left those entities in the text the annotators read
+    # and index offsets into. Re-run the tag strip after unescaping so entities
+    # that decode INTO tags are removed too.
+    t = text
+    for _ in range(2):
+        t = _htmllib.unescape(t)
+    t = _BLOCK_TAG_RE.sub("\n", t)
     t = _TAG_RE.sub(" ", t)
-    t = _htmllib.unescape(t)
     for _ in range(2):                      # resolve single- and double-escaped md
         t = _MD_ESCAPE_RE.sub(r"\1", t)
     t = _MD_BULLET_LINE_RE.sub("\n\u2022 ", t)
+    t = _NUM_BULLET_LINE_RE.sub("\n\u2022 ", t)
     t = _GLYPH_BULLET_RE.sub("\n\u2022 ", t)
     return t.replace("`", "").replace("*", "")  # strip emphasis + fused-sentence '*'
 # A light Indonesian-token probe: common function words that rarely appear in
@@ -95,7 +107,16 @@ def _normalize_sentence(text: str) -> str:
 # no terminal punctuation. Re-split it on secondary delimiters; any piece still over
 # the cap is dropped from the sample downstream (not an annotatable unit).
 MAX_SENT_CHARS = 300
-_HARD_SPLIT_RE = re.compile(r"(?<=[.!?;:])\s+|\s{2,}|\t|[•·●○]")
+# NOTE on delimiters: `\s{2,}` and `\t` were dead here — _normalize_sentence runs
+# first and has already collapsed every whitespace run to a single space, so the
+# run-on case this function exists for never saw them. The usable secondary
+# delimiters on already-normalized text are terminal punctuation, bullet glyphs,
+# and the conjunction/separator patterns typical of fused requirement lists.
+_HARD_SPLIT_RE = re.compile(
+    r"(?<=[.!?;:])\s+"            # terminal/clausal punctuation
+    r"|\s*[•·●○▪◦]\s*"   # bullet glyphs
+    r"|\s+[-–—]\s+"     # spaced hyphen / en- / em-dash separators
+)
 
 
 def _resplit_long(sent: str) -> list[str]:

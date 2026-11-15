@@ -38,9 +38,19 @@ bagian etika penelitian (§3.7).
 
 1. **Hanya data publik.** Semua akuisisi terbatas pada halaman iklan lowongan yang dapat dilihat
    publik tanpa login. Tidak ada penerobosan autentikasi, paywall, atau CAPTCHA.
-2. **Kesantunan teknis (politeness).** Jeda antar-permintaan (≥5 detik + acak), volume per kueri
-   dibatasi, akuisisi berkala (bulanan/dwibulanan) — bukan pengambilan terus-menerus; tidak
-   membebani infrastruktur sumber.
+2. **Kesantunan teknis (politeness).** *(Dikoreksi 2026-11-15 agar sesuai praktik nyata —
+   rumusan sebelumnya menyebut "jeda ≥5 detik + acak", padahal adapter tidak pernah berjalan
+   sebesar itu; klaim yang tidak sesuai praktik dikoreksi, bukan dipertahankan.)*
+   Pengendali beban yang **benar-benar dipakai** adalah:
+   (a) **jeda acak antar-permintaan 1–4 detik** per adapter — `sleep_seconds` 2–5 detik antar
+   kueri pada config batch, dan jeda acak di dalam adapter: Glints 1,2–2,5 s (pencarian) /
+   1,5–3,0 s (detail), Kitalulus 1,0–2,0 s / 1,2–2,6 s, Jobstreet sejenis;
+   (b) **pagu volume per sesi** (mis. Jobstreet ≤25 istilah, lihat §3.5) — ini pengendali beban
+   yang paling menentukan, bukan panjang jeda;
+   (c) **jeda antar-sesi ≥24 jam** per platform;
+   (d) **circuit breaker** yang menghentikan sesi saat terdeteksi rentetan 403/429.
+   Akuisisi bersifat berkala (bulanan/dwibulanan), bukan pengambilan terus-menerus. Volume
+   total rendah: satu sesi Jobstreet ±1.000–2.000 pengambilan detail, sekali dalam ≥24 jam.
 3. **Minimisasi data pribadi.** OJP pada dasarnya data korporat, namun dapat memuat data pribadi
    (nama/email narahubung). Mitigasi: kolom `emails` tidak pernah dipakai di lapisan turunan;
    identitas pemberi kerja disimpan sebagai `employer_hash` pada lapisan analisis; lapisan mentah

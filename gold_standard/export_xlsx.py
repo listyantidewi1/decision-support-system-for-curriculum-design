@@ -128,7 +128,14 @@ def _panduan(ws, code: str) -> None:
 
 
 _WRAP_COLS = {COL["previous_sentence"], COL["sentence_text"], COL["next_sentence"]}
-_MAXROW = 5000   # whole-column validation range, covers any rows annotators insert
+# Validation range must cover the WHOLE sheet plus inserted rows. A fixed 5000
+# silently left most of the main-1,200 workbook (1 + 1200*15 = 18,001 rows)
+# without dropdowns, so 72% of the sample had no locked pick-lists.
+_VALIDATION_HEADROOM = 2000
+
+
+def _maxrow(n_sentences: int) -> int:
+    return 1 + n_sentences * (SPAN_ROWS_PER_SENTENCE + 1) + _VALIDATION_HEADROOM
 
 
 def _anotasi(ws, sample: pd.DataFrame) -> None:
@@ -146,9 +153,11 @@ def _anotasi(ws, sample: pd.DataFrame) -> None:
     ws.freeze_panes = "A2"
 
     # Whole-column data validations so any inserted row inherits the pick-list too.
+    maxrow = _maxrow(len(sample))
+
     def _col_range(name: str) -> str:
         L = get_column_letter(COL[name])
-        return f"{L}2:{L}{_MAXROW}"
+        return f"{L}2:{L}{maxrow}"
 
     for name, options in (("relevance", RELEVANCE), ("has_5tag", HAS_5TAG),
                           ("label", list(TAGS)), ("flag", list(FLAGS)),
@@ -176,7 +185,10 @@ def _anotasi(ws, sample: pd.DataFrame) -> None:
             ws.cell(row, COL["row_type"], "SPAN")
             ws.cell(row, COL["sentence_id"], rec.sentence_id)
             ws.cell(row, COL["span_no"], i)
-            ws.cell(row, COL["occurrence_no"], 1)   # default to the 1st match
+            # occurrence_no is left BLANK on purpose. Pre-filling it with 1 meant
+            # the field never looked unanswered, so a span intended for a later
+            # occurrence of a repeated text silently resolved to the wrong
+            # characters. Blank + >1 occurrence is now flagged as ambiguous at load.
             for c in range(1, len(HEADERS) + 1):
                 cc = ws.cell(row, c)
                 cc.fill, cc.border = _SPAN_FILL, _BORDER
