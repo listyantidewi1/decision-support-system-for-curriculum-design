@@ -62,10 +62,22 @@ OUT_DIR = GS_DIR / "iaa"
 TAG_SET = list(TAGS)                       # ["SH","SS","KN","TT","WB"]
 TOKEN_LABELS = ["O"] + TAG_SET
 _TOKEN_RE = re.compile(r"\S+")             # same tokenizer the annotator UI uses
+# Deterministic last-resort tie-break for token labelling: alphabetically first
+# tag wins (negated so the max() comparison in _token_labels picks it), so the
+# result never depends on the order an annotator entered two identical spans.
+_NEG_TAG_ORDER = {t: -i for i, t in enumerate(sorted(TAG_SET))}
 
-# Landis & Koch (1977) bands for reporting kappa/alpha interpretability.
-_LK_BANDS = [(0.0, "poor / none"), (0.2, "slight"), (0.4, "fair"),
-             (0.6, "moderate"), (0.8, "substantial"), (1.01, "almost perfect")]
+# Per-file load problems (unresolvable / incomplete / duplicated rows), keyed by
+# file name. Surfaced in the JSON + markdown report so a span that could not be
+# read is visible to the researcher instead of looking like an annotator who
+# simply marked nothing.
+LOAD_PROBLEMS: dict[str, list[dict]] = {}
+
+# Landis & Koch (1977) bands, INCLUSIVE upper bounds: <=.20 slight, <=.40 fair,
+# <=.60 moderate, <=.80 substantial, else almost perfect. (A strict `<` test put
+# every exact boundary value — .20/.40/.60/.80 — one band too high.)
+_LK_BANDS = [(0.20, "slight"), (0.40, "fair"), (0.60, "moderate"),
+             (0.80, "substantial")]
 
 
 def interpret(k: float) -> str:
@@ -74,7 +86,7 @@ def interpret(k: float) -> str:
     if k < 0:
         return "worse than chance"
     for hi, label in _LK_BANDS:
-        if k < hi:
+        if k <= hi:
             return label
     return "almost perfect"
 
@@ -148,123 +160,196 @@ def load_form_a1_csv(path: Path) -> dict[str, SentAnn]:
                 and str(r.get("start_char", "")).strip() != ""]
         spans = _spans_from_records(recs)
         relevance = str(first.get("relevance", "")).strip()
-        if not relevance and not spans:
+        has_5tag = str(first.get("has_5tag", "")).strip()
+        # "Judged" includes a has_5tag-only answer: ignoring it dropped sentences
+        # the JSON loader keeps, which is the very parity F6 set out to achieve.
+        if not relevance and not spans and not has_5tag:
             continue                                 # unjudged filler row — skip
         out[str(sid)] = SentAnn(
             relevance=relevance,
-            has_5tag=str(first.get("has_5tag", "")).strip(),
+            has_5tag=has_5tag,
             spans=spans,
         )
     return out
 
 
-def _nth_occurrence(text: str, needle: str, n: int) -> tuple[int, int] | None:
-    """Char offsets of the n-th (1-based) occurrence of `needle` in `text`."""
-    if not needle:
-        return None
-    start = -1
-    for _ in range(max(n, 1)):
-        start = text.find(needle, start + 1)
-        if start == -1:
-            return None
-    return start, start + len(needle)
+# Mirrors trim_span() in gold_standard/app.py, which cannot be imported here
+# because that module imports streamlit. Keep the two in sync: a mismatch makes
+# the same human judgement score differently via the app and via the workbook.
+_TRIM_LEADING = " \t\r\n,;:*•·"
+_TRIM_TRAILING = " \t\r\n,;:.*•·"
 
 
-def _flex_find(text: str, needle: str, occ: int, ignore_case: bool) -> tuple[int, int] | None:
-    """Offsets of the occ-th (1-based) match of `needle` in `text`, tolerating
-    differences in internal whitespace runs. Offsets index the ORIGINAL text."""
-    if not needle:
-        return None
-    pat = r"\s+".join(re.escape(tok) for tok in needle.split())
-    flags = re.IGNORECASE if ignore_case else 0
-    matches = list(re.finditer(pat, text, flags))
-    if len(matches) >= occ:
-        m = matches[occ - 1]
-        return m.start(), m.end()
-    return None
+def _trim_offsets(text: str, start: int, end: int) -> tuple[int, int]:
+    while start < end and text[start] in _TRIM_LEADING:
+        start += 1
+    while end > start and text[end - 1] in _TRIM_TRAILING:
+        end -= 1
+    return start, end
+
+
+def _norm_ws(s: str) -> str:
+    return " ".join((s or "").split()).casefold()
+
+
+def _find_candidates(text: str, needle: str) -> list[tuple[int, int]]:
+    """Every match of `needle` in `text`, in position order.
+
+    ONE permissive match set — whitespace-run- and case-insensitive — rather than
+    a cascade of per-tier searches. The cascade counted `occurrence_no` against a
+    different set at each tier, so occurrence 1 could silently bind to a later
+    location than the one the annotator counted.
+
+    Word-boundary lookarounds (applied only where the needle itself starts/ends
+    with a word character, so '.NET' still matches) stop a short needle binding
+    inside a longer word — matching 'API' inside 'APIs' produced wrong offsets
+    that were still reported as successfully resolved."""
+    toks = (needle or "").split()
+    if not toks:
+        return []
+    core = r"\s+".join(re.escape(t) for t in toks)
+    lead = r"(?<!\w)" if re.match(r"\w", needle) else ""
+    trail = r"(?!\w)" if re.search(r"\w\Z", needle) else ""
+    return [(m.start(), m.end())
+            for m in re.finditer(lead + core + trail, text, re.IGNORECASE)]
 
 
 def _resolve_span(text: str, txt: str, occ: int, start_char, end_char, lab: str):
-    """Locate a typed span, returning (Span|None, resolved?). Tries, in order:
-    exact nth-occurrence, whitespace-flexible, case-insensitive flexible, then the
-    researcher-supplied start/end cells, before giving up (so a case/whitespace
-    typo does not silently erase a span)."""
-    off = _nth_occurrence(text, txt, occ)
-    if not off:
-        off = _flex_find(text, txt, occ, ignore_case=False)
-    if not off:
-        off = _flex_find(text, txt, occ, ignore_case=True)
-    if off:
-        return Span(off[0], off[1], lab), True
-    try:                                             # researcher-supplied offsets
+    """Locate a typed span. Returns (Span|None, ok, reason).
+
+    Offsets are trimmed with the UI's punctuation rule so a workbook span and the
+    same span captured in the app agree exactly. The researcher-supplied
+    start/end cells are a last resort and are ACCEPTED ONLY IF the text they
+    point at actually equals the typed span_text — a bounds check alone let a
+    stale or mistyped offset pair fabricate a span over unrelated characters."""
+    cands = _find_candidates(text, txt)
+    if cands:
+        if occ < 1:
+            occ = 1
+        if occ <= len(cands):
+            s, e = cands[occ - 1]
+            s, e = _trim_offsets(text, s, e)
+            if e > s:
+                return Span(s, e, lab), True, "matched"
+        else:
+            return None, False, (f"occurrence_no={occ} but only {len(cands)} "
+                                 f"occurrence(s) of this text exist")
+    try:
         s, e = int(float(start_char)), int(float(end_char))
-        if 0 <= s < e <= len(text):
-            return Span(s, e, lab), True
     except (TypeError, ValueError):
         pass
-    return None, False
+    else:
+        if 0 <= s < e <= len(text) and _norm_ws(text[s:e]) == _norm_ws(txt):
+            s, e = _trim_offsets(text, s, e)
+            if e > s:
+                return Span(s, e, lab), True, "researcher_offsets"
+        return None, False, "start/end cells do not contain the typed span_text"
+    return None, False, "text not found in sentence"
 
 
-def _anns_from_anotasi_df(df: pd.DataFrame) -> tuple[dict[str, SentAnn], list[tuple[str, str]]]:
+def _anns_from_anotasi_df(df: pd.DataFrame) -> tuple[dict[str, SentAnn], list[dict]]:
     """Parse a Form A-1 'Anotasi' sheet in ROW ORDER into judged-sentence anns.
+
     Rows are grouped into blocks by their SENTENCE marker so annotator-inserted
     overflow SPAN rows (blank row_type/sentence_id, as Excel 'Insert Row' leaves
-    them) still attach to the current sentence. Returns (anns, unresolved) where
-    unresolved lists (sentence_id, span_text) that could not be located."""
+    them) still attach to the current sentence.
+
+    A row only opens a new sentence block if it is explicitly marked SENTENCE, or
+    carries BOTH a sentence_id and sentence_text. Treating "any row with text in
+    the sentence_text column" as a new sentence meant one stray autofilled or
+    pasted cell opened a bogus block with an empty id, which then stole every
+    following SPAN row from the real sentence.
+
+    Returns (anns, problems); each problem is a dict with sentence_id, span_text
+    and reason, so a dropped span is reported rather than silently lost."""
     df = df.fillna("")
     out: dict[str, SentAnn] = {}
-    unresolved: list[tuple[str, str]] = []
-    cur = None                                       # current block dict
+    problems: list[dict] = []
+    blocks: list[dict] = []
+    cur = None
 
-    def flush(block):
-        if block is None:
-            return
-        if not block["relevance"] and not block["spans"]:
-            return                                   # unjudged — skip (JSON parity)
-        out[block["sid"]] = SentAnn(block["relevance"], block["has_5tag"], block["spans"])
+    def start_block(sid, stext, rel, tag, row_no):
+        nonlocal cur
+        cur = {"sid": sid, "text": stext, "spans": [], "relevance": rel,
+               "has_5tag": tag, "row": row_no}
+        blocks.append(cur)
 
-    for _, r in df.iterrows():
+    for row_no, (_, r) in enumerate(df.iterrows(), start=2):
         rtype = str(r.get("row_type", "")).strip().upper()
         sid = str(r.get("sentence_id", "")).strip()
         stext = str(r.get("sentence_text", ""))
-        is_sentence = rtype == "SENTENCE" or (rtype == "" and stext.strip() != "")
-        if is_sentence:
-            flush(cur)
-            cur = {"sid": sid, "text": stext, "spans": [],
-                   "relevance": str(r.get("relevance", "")).strip(),
-                   "has_5tag": str(r.get("has_5tag", "")).strip()}
-            continue
         lab = str(r.get("label", "")).strip()
         txt = str(r.get("span_text", "")).strip()
-        is_span = rtype == "SPAN" or (rtype == "" and (txt or lab))
-        if not is_span or cur is None or lab not in TAGS or not txt:
+
+        if rtype == "SENTENCE" or (rtype == "" and sid and stext.strip()):
+            start_block(sid, stext, str(r.get("relevance", "")).strip(),
+                        str(r.get("has_5tag", "")).strip(), row_no)
+            continue
+        if rtype != "SPAN" and not (txt or lab):
+            continue                                  # blank spacer row
+        if cur is None:
+            problems.append({"sentence_id": "", "span_text": txt,
+                             "reason": f"row {row_no}: span row before any SENTENCE row"})
+            continue
+        # A half-filled span row is a real annotator mistake, not a blank: report it.
+        if not txt or lab not in TAGS:
+            if txt or lab:
+                problems.append({
+                    "sentence_id": cur["sid"], "span_text": txt,
+                    "reason": f"row {row_no}: incomplete span row "
+                              f"(span_text={txt!r}, label={lab!r})"})
             continue
         try:
             occ = int(float(r.get("occurrence_no") or 1))
-        except ValueError:
+        except (TypeError, ValueError):
             occ = 1
-        span, ok = _resolve_span(cur["text"], txt, occ, r.get("start_char"),
-                                 r.get("end_char"), lab)
+        span, ok, reason = _resolve_span(cur["text"], txt, occ, r.get("start_char"),
+                                         r.get("end_char"), lab)
         if ok:
             cur["spans"].append(span)
         else:
-            unresolved.append((cur["sid"], txt))
-    flush(cur)
-    return out, unresolved
+            problems.append({"sentence_id": cur["sid"], "span_text": txt,
+                             "reason": f"row {row_no}: {reason}"})
+
+    # Merge blocks that share a sentence_id instead of letting the later one
+    # overwrite the earlier (which silently discarded the earlier block's spans).
+    for b in blocks:
+        if not b["sid"]:
+            if b["spans"] or b["relevance"]:
+                problems.append({"sentence_id": "", "span_text": "",
+                                 "reason": f"row {b['row']}: sentence block with no "
+                                           "sentence_id — dropped"})
+            continue
+        if not b["relevance"] and not b["spans"] and not b["has_5tag"]:
+            continue                                  # unjudged — skip (JSON parity)
+        prev = out.get(b["sid"])
+        if prev is None:
+            out[b["sid"]] = SentAnn(b["relevance"], b["has_5tag"], list(b["spans"]))
+        else:
+            merged = list(prev.spans)
+            for s in b["spans"]:
+                if s not in merged:
+                    merged.append(s)
+            out[b["sid"]] = SentAnn(prev.relevance or b["relevance"],
+                                    prev.has_5tag or b["has_5tag"], merged)
+            problems.append({"sentence_id": b["sid"], "span_text": "",
+                             "reason": f"row {b['row']}: duplicate SENTENCE block for "
+                                       "this sentence_id — blocks merged"})
+    return out, problems
 
 
 def load_xlsx(path: Path) -> dict[str, SentAnn]:
     """Form A-1 workbook: derive span offsets from span_text (+ occurrence_no),
     taking sentence_text from the SENTENCE row. Captures annotator-inserted
-    overflow SPAN rows, and prints a completeness warning for any span whose text
-    could not be located (the README's promised 'validate completeness' step)."""
+    overflow SPAN rows, and reports every span it could not resolve."""
     df = pd.read_excel(path, sheet_name="Anotasi", dtype=str)
-    anns, unresolved = _anns_from_anotasi_df(df)
-    if unresolved:
-        shown = ", ".join(f"{sid}:«{txt}»" for sid, txt in unresolved[:8])
-        print(f"WARNING: load_xlsx {Path(path).name}: {len(unresolved)} span(s) "
-              f"not locatable in sentence_text and dropped — {shown}"
-              + (" …" if len(unresolved) > 8 else ""), flush=True)
+    anns, problems = _anns_from_anotasi_df(df)
+    LOAD_PROBLEMS[Path(path).name] = problems
+    if problems:
+        shown = "; ".join(f"{p['sentence_id']}:«{p['span_text']}» {p['reason']}"
+                          for p in problems[:8])
+        print(f"WARNING: load_xlsx {Path(path).name}: {len(problems)} span row(s) "
+              f"not usable — {shown}" + (" …" if len(problems) > 8 else ""), flush=True)
     return anns
 
 
@@ -300,7 +385,11 @@ def fleiss_kappa(table: np.ndarray) -> float:
     p_j = table.sum(axis=0) / (N * n)
     P_e = np.square(p_j).sum()
     if np.isclose(P_e, 1.0):
-        return 1.0 if np.isclose(P_bar, 1.0) else float("nan")
+        # Zero marginal variance (every rating in one category): kappa is 0/0,
+        # i.e. UNDEFINED, not 1.0. Returning 1.0 here would publish a perfect
+        # chance-corrected agreement for data that carries no information about
+        # whether the raters can discriminate. Report observed agreement instead.
+        return float("nan")
     return float((P_bar - P_e) / (1 - P_e))
 
 
@@ -333,19 +422,29 @@ def krippendorff_alpha(units: list[list[str]]) -> float:
     off = coincidence.sum() - np.trace(coincidence)          # sum_{c!=c'} o_cc'
     exp = float(np.sum(np.outer(n_c, n_c)) - np.sum(n_c * n_c))  # sum_{c!=c'} n_c n_c'
     if exp == 0:
-        return 1.0 if off == 0 else float("nan")
+        # Single observed category -> expected disagreement 0 -> alpha undefined.
+        return float("nan")
     return float(1 - (n - 1) * off / exp)
 
 
 def cohen_kappa(a: list[str], b: list[str]) -> float:
-    """Pairwise Cohen's kappa over paired labels (same length, no missing)."""
+    """Pairwise Cohen's kappa over paired labels. NaN where kappa is undefined.
+
+    Deliberately does NOT short-circuit constant vectors to 1.0: with zero
+    marginal variance kappa is undefined, and scikit-learn's own NaN is the
+    correct answer. Overriding it to 1.0 reports perfect chance-corrected
+    agreement for data that cannot demonstrate any."""
+    import warnings
+
     from sklearn.metrics import cohen_kappa_score
-    if not a or len(set(a)) == len(set(b)) == 1 and set(a) == set(b):
-        return 1.0 if a == b else float("nan")
-    try:
-        return float(cohen_kappa_score(a, b))
-    except Exception:
+    if not a or not b or len(a) != len(b):
         return float("nan")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        try:
+            return float(cohen_kappa_score(a, b))
+        except Exception:
+            return float("nan")
 
 
 # ----------------------------------------------------------------- sentence level
@@ -430,18 +529,24 @@ def _greedy_match(a: list[Span], b: list[Span], label_sensitive: bool,
     (exact offsets, or IoU>=0.5, and same label when label_sensitive) — NOT a
     highest-score-first greedy, which under-counts when an annotator has
     overlapping/nested spans. Solved with linear_sum_assignment on a cost matrix
-    where each eligible edge costs -(1+IoU): the leading -1 maximises the number
-    of eligible pairs chosen, and the +IoU only breaks ties toward tighter
-    overlaps; ineligible pairs cost 0 so they are never preferred to an edge."""
+    where each eligible edge costs -(1 + EPS*IoU) and ineligible pairs cost 0.
+
+    The IoU term MUST be infinitesimal relative to the unit cardinality term. An
+    earlier version used -(1+IoU), where IoU in [0.5,1] is the same order of
+    magnitude as the count: four tight pairs (-2 each = -8) then beat five loose
+    pairs (-1.5 each = -7.5), so the optimiser traded away a true positive and
+    span agreement was under-reported. With EPS*IoU <= EPS*4096 << 1, cardinality
+    strictly dominates and IoU only orders ties."""
     if not a or not b:
         return 0
+    EPS = 1e-6
     cost = np.zeros((len(a), len(b)))
     eligible = np.zeros((len(a), len(b)), dtype=bool)
     for i, sa in enumerate(a):
         for j, sb in enumerate(b):
             e = _eligible(sa, sb, label_sensitive, exact)
             if e is not None:
-                cost[i, j] = -(1.0 + e)
+                cost[i, j] = -(1.0 + EPS * e)
                 eligible[i, j] = True
     ri, cj = linear_sum_assignment(cost)
     return int(sum(1 for i, j in zip(ri, cj) if eligible[i, j]))
@@ -495,8 +600,17 @@ def span_level_iaa(annset: AnnSet) -> dict:
             pairwise[f"{a}-{b}"] = pr
             agg_tp += pr["tp"]; agg_na += pr["n_a"]; agg_nb += pr["n_b"]
         micro = _prf(agg_tp, agg_na, agg_nb)
-        macro_f1 = float(np.mean([pw["f1"] for pw in pairwise.values()])) if pairwise else float("nan")
-        result["modes"][mode] = {"pairwise": pairwise, "micro": micro, "macro_f1": macro_f1}
+        # nanmean, not mean: a pair where BOTH annotators produced no span has an
+        # undefined F1, and np.mean would propagate that NaN and erase the valid
+        # F1s of the other pairs. n_pairs_defined makes the omission visible
+        # instead of silently averaging over fewer pairs than the reader assumes.
+        f1s = np.array([pw["f1"] for pw in pairwise.values()], dtype=float)
+        defined = f1s[~np.isnan(f1s)]
+        macro_f1 = float(defined.mean()) if defined.size else float("nan")
+        result["modes"][mode] = {
+            "pairwise": pairwise, "micro": micro, "macro_f1": macro_f1,
+            "n_pairs_defined": int(defined.size), "n_pairs_total": int(f1s.size),
+        }
 
     # per-tag overlap-F1 (micro across pairs)
     per_tag = {}
@@ -516,9 +630,17 @@ def _token_labels(text: str, spans: list[Span]) -> list[str]:
     """Label per token by maximum character overlap with a span (matching the
     annotator UI's any-overlap token coverage), else 'O'. This keeps a token that
     a span covers only partially — e.g. the 'C' in the token 'C,' when the stored
-    span is [0,1) — which a midpoint rule would silently drop. Ties are broken
-    toward the smallest (most specific) span, then the earliest start, preserving
-    smallest-span-wins for overlapping OP spans."""
+    span is [0,1) — which a midpoint rule would silently drop.
+
+    Assignment rule, stated precisely: the span with the greatest character
+    overlap on that token wins; ties go to the NARROWER span, then the earlier
+    start, then the alphabetically first tag. Note this is NOT a general
+    "smallest span wins" rule — for nested OP spans the narrower span only wins
+    where the overlap is equal, which is the nested case that matters (the inner
+    span lies wholly inside the token); where a wider span covers strictly more
+    of the token, it wins. The final tag tie-break keeps the result independent
+    of the order the annotator happened to enter two spans at identical
+    offsets."""
     toks = [(m.start(), m.end()) for m in _TOKEN_RE.finditer(text or "")]
     labels = []
     for a, b in toks:
@@ -527,7 +649,9 @@ def _token_labels(text: str, spans: list[Span]) -> list[str]:
             overlap = min(b, s.end) - max(a, s.start)
             if overlap <= 0:
                 continue
-            key = (overlap, -(s.end - s.start), -s.start)   # max overlap, then smallest, earliest
+            # maximise overlap, then narrower span, then earlier start, then tag
+            key = (overlap, -(s.end - s.start), -s.start,
+                   _NEG_TAG_ORDER.get(s.label, 0))
             if best_key is None or key > best_key:
                 best_key, best_label = key, s.label
         labels.append(best_label)
@@ -535,17 +659,32 @@ def _token_labels(text: str, spans: list[Span]) -> list[str]:
 
 
 def token_level_iaa(annset: AnnSet, text_by_sid: dict[str, str]) -> dict:
+    """Chance-corrected span agreement at token granularity.
+
+    Inclusion requires an IN-SCHEMA relevance from every coder (not merely a
+    non-empty cell), so the token level and the sentence level describe the same
+    set of sentences; `_categorical_iaa` discards out-of-schema values the same
+    way. A sentence carrying spans but no relevance is reported under
+    `n_sentences_excluded_no_relevance` rather than silently vanishing while its
+    spans still count toward span-level F1."""
     coders = list(annset)
-    # Only sentences every coder judged (relevance set) AND we have text for.
-    sids = [s for s in text_by_sid
-            if all(annset[c].get(s) and annset[c][s].relevance for c in coders)]
+    have_text = [s for s in text_by_sid]
+    sids, excluded_no_rel = [], 0
+    for s in have_text:
+        recs = [annset[c].get(s) for c in coders]
+        if all(r is not None and r.relevance in RELEVANCE for r in recs):
+            sids.append(s)
+        elif any(r is not None and r.spans for r in recs):
+            excluded_no_rel += 1
+
     units, table_rows = [], []
-    n_tokens = 0
+    n_tokens, n_sentences_used = 0, 0
     for sid in sids:
         per_coder = {c: _token_labels(text_by_sid[sid], annset[c][sid].spans) for c in coders}
         length = len(next(iter(per_coder.values())))
         if length == 0 or any(len(v) != length for v in per_coder.values()):
             continue
+        n_sentences_used += 1
         for t in range(length):
             vals = [per_coder[c][t] for c in coders]
             units.append(vals)
@@ -554,35 +693,55 @@ def token_level_iaa(annset: AnnSet, text_by_sid: dict[str, str]) -> dict:
                 row[TOKEN_LABELS.index(v)] += 1
             table_rows.append(row)
             n_tokens += 1
+
     table = np.asarray(table_rows, dtype=float) if table_rows else np.zeros((0, len(TOKEN_LABELS)))
+    # A corpus where NO annotator recorded any span makes every token 'O': the
+    # marginal has zero variance, so kappa/alpha are undefined. fleiss_kappa and
+    # krippendorff_alpha now return NaN there, but guard explicitly so the
+    # degenerate case is reported as such rather than inferred from a NaN.
+    # Distinguish "nobody tagged anything" from "no sentence text was available":
+    # both yield zero usable tokens, but only the first is a statement about the
+    # annotators.
+    any_tag = (n_tokens > 0) and any(v != "O" for u in units for v in u)
+    no_tokens_at_all = n_tokens == 0
     kappa = fleiss_kappa(table) if n_tokens else float("nan")
     alpha = krippendorff_alpha(units) if units else float("nan")
-    # agreement excluding all-'O' tokens (the easy majority) — the honest view.
-    nz_units = [u for u in units if any(v != "O" for v in u)]
-    alpha_nz = krippendorff_alpha(nz_units) if nz_units else float("nan")
-    return {
-        "n_sentences": len(sids),
+    out = {
+        "n_sentences_used": n_sentences_used,
+        "n_sentences_excluded_no_relevance": excluded_no_rel,
         "n_tokens": n_tokens,
+        "no_spans_anywhere": (not any_tag) and not no_tokens_at_all,
+        "no_tokens_available": no_tokens_at_all,
         "fleiss_kappa": kappa,
         "fleiss_interpretation": interpret(kappa),
         "krippendorff_alpha": alpha,
-        "krippendorff_alpha_excl_all_O": alpha_nz,
-        "note": "tokens labeled by covering span; 'O' = no tag. alpha_excl_all_O drops "
-                "tokens every annotator left untagged (removes the trivial-O inflation).",
+        "note": "Tokens are labelled by the covering span ('O' = untagged). Because "
+                "untagged tokens dominate, these coefficients are chance-corrected "
+                "against a marginal in which 'O' is the overwhelming category; read "
+                "them together with the per-tag span-F1, not instead of it.",
     }
+    if no_tokens_at_all:
+        out["note"] += (" No sentence text was available for the annotated sentence "
+                        "ids, so no tokens could be scored — this says nothing about "
+                        "the annotators.")
+    elif not any_tag:
+        out["note"] += (" NO annotator recorded any span, so the token marginal has "
+                        "zero variance and both coefficients are undefined.")
+    return out
 
 
 # --------------------------------------------------------------------- adjudication
-def _cluster_spans(annset: AnnSet, sid: str):
-    """Group overlapping spans (any coder) into clusters for reconciliation.
-    Single-link by IoU>=0.5: clustering only GROUPS candidates that might refer to
-    the same entity; whether a cluster is genuine agreement is decided separately
-    (build_adjudication requires exact boundary+label identity), so a transitively
-    linked cluster is never mistaken for agreement."""
-    items = [(c, s) for c in annset for s in (annset[c].get(sid).spans
-             if annset[c].get(sid) else [])]
+def _cluster_leftovers(leftovers: dict[str, list[Span]]):
+    """Group disputed spans for readable reconciliation.
+
+    Clustering is PRESENTATION ONLY — gold spans are decided by exact
+    (start,end,label) unanimity in build_adjudication, never by cluster shape, so
+    a transitively-linked or nested cluster can no longer destroy or fabricate a
+    gold span. Single-link at IoU>=0.5 just keeps related offsets on one row of
+    the adjudication worksheet."""
+    items = [(c, s) for c, spans in leftovers.items() for s in spans]
     clusters: list[list[tuple[str, Span]]] = []
-    for c, s in sorted(items, key=lambda cs: (cs[1].start, cs[1].end)):
+    for c, s in sorted(items, key=lambda cs: (cs[1].start, cs[1].end, cs[0])):
         placed = False
         for cl in clusters:
             if any(s.iou(t) >= 0.5 for _cc, t in cl):
@@ -593,73 +752,124 @@ def _cluster_spans(annset: AnnSet, sid: str):
 
 
 def build_adjudication(annset: AnnSet, text_by_sid: dict[str, str]) -> dict:
-    """Provisional gold + adjudication queue, faithful to AG-RPL-LIMA-v3.0:
-      * FULL_AGREEMENT ('unanimous') requires ALL coders to agree on relevance,
-        has_5tag, AND — for every span cluster — the SAME label at IDENTICAL char
-        boundaries. Only then is the item auto-accepted and kept out of the queue.
-      * Anything less is queued. A same-label cluster with differing offsets is a
-        BOUND(ary) dispute; differing labels a LABEL dispute; a span not marked by
-        all coders a PRESENCE dispute — a no gold span is ever synthesized wider
-        than what every coder marked.
-      * Provisional gold relevance/has_5tag follow a 2-of-3 majority, and the
-        guideline's hard rule NON_RELEVANT => has_5tag=TIDAK (Bagian 3.2) is
-        enforced over any raw vote."""
+    """Provisional gold + adjudication queue, faithful to AG-RPL-LIMA-v3.0.
+
+    FULL_AGREEMENT ('unanimous', auto-accepted and kept out of the queue) requires
+    ALL of: every coder gave an in-schema relevance and they match; every coder
+    ANSWERED has_5tag and they match; every span is endorsed by every coder at
+    identical (start, end, label); and no guideline conflict was detected.
+
+    Gold spans are the exact (start,end,label) groups all coders endorsed. Spans
+    outside such a group are queued as typed disputes — LABEL (coders disagree on
+    the tag), BOUND (same tag, different boundaries), PRESENCE (not everyone
+    marked it) — and no gold span is ever synthesised from boundaries nobody wrote.
+
+    Provisional relevance/has_5tag follow a 2-of-3 majority. Guideline Bagian 3.2
+    (NON_RELEVANT => has_5tag=TIDAK and no spans) is enforced, but any override it
+    performs is RECORDED in `guideline_conflicts` and forces the item into the
+    queue, so an illegal combination the annotators agreed on is surfaced to them
+    rather than silently corrected."""
     coders = list(annset)
     all_sids = sorted({s for d in annset.values() for s in d} | set(text_by_sid))
     queue, gold = [], {}
     for sid in all_sids:
         anns = {c: annset[c].get(sid) for c in coders}
-        judged = {c: a for c, a in anns.items() if a and a.relevance}
-        if not judged:
+        # A record counts as present if it carries an in-schema relevance OR any
+        # span. Keying solely on relevance dropped sentences where every coder
+        # marked spans but left the relevance cell blank — they vanished from both
+        # gold and the queue while their spans still drove span-level F1.
+        present = {c: a for c, a in anns.items() if a and (a.relevance or a.spans)}
+        if not present:
             continue
-        rel_counts = Counter(a.relevance for a in judged.values())
-        rel_top, rel_n = rel_counts.most_common(1)[0]
-        rel_unanimous = len(rel_counts) == 1 and len(judged) == len(coders)
+        # Validate against the schema, exactly as _categorical_iaa does, so an
+        # out-of-schema string cannot masquerade as a judgement or win a majority.
+        rel_votes = {c: a.relevance for c, a in present.items() if a.relevance in RELEVANCE}
+        tag_votes = {c: a.has_5tag for c, a in present.items() if a.has_5tag in HAS_5TAG}
+        off_schema = sorted(
+            [f"{c}:relevance={a.relevance!r}" for c, a in present.items()
+             if a.relevance and a.relevance not in RELEVANCE]
+            + [f"{c}:has_5tag={a.has_5tag!r}" for c, a in present.items()
+               if a.has_5tag and a.has_5tag not in HAS_5TAG])
+
+        rel_counts = Counter(rel_votes.values())
+        rel_top, rel_n = rel_counts.most_common(1)[0] if rel_counts else ("", 0)
+        rel_unanimous = len(rel_counts) == 1 and len(rel_votes) == len(coders)
         rel_majority = rel_n >= 2
 
-        tag_counts = Counter(a.has_5tag for a in judged.values() if a.has_5tag)
-        tag_unanimous = len(tag_counts) == 1 and len(judged) == len(coders)
-        tag_top = tag_counts.most_common(1)[0] if tag_counts else ("", 0)
+        tag_counts = Counter(tag_votes.values())
+        tag_top, tag_n = tag_counts.most_common(1)[0] if tag_counts else ("", 0)
+        # Unanimity requires every coder to have ANSWERED has_5tag. Counting
+        # `present` here instead of the has_5tag respondents let a blank answer
+        # pass as agreement, so an item only 2-of-3 answered was auto-accepted.
+        tag_unanimous = len(tag_counts) == 1 and len(tag_votes) == len(coders)
+        tag_majority = tag_n >= 2
 
-        # span clusters -> exact-agreement gold spans vs typed disputes
-        span_disputes, gold_spans = [], []
-        for cl in _cluster_spans(annset, sid):
+        # --- spans ---------------------------------------------------------
+        # Gold spans come from EXACT (start,end,label) groups endorsed by every
+        # coder, computed independently of clustering. Deriving them from whole
+        # overlap-clusters destroyed genuinely unanimous spans whenever one coder
+        # added a nested/overlapping extra span (the guideline's own nested SH/TT
+        # + OP pattern), because the cluster then held more than one offset.
+        exact_groups: dict[tuple[int, int, str], set[str]] = {}
+        for c, a in present.items():
+            for s in a.spans:
+                exact_groups.setdefault((s.start, s.end, s.label), set()).add(c)
+        unanimous_keys = {k for k, cs in exact_groups.items() if len(cs) == len(coders)}
+        gold_spans = [{"start": st, "end": en, "label": lab}
+                      for (st, en, lab) in sorted(unanimous_keys)]
+
+        # Everything not in a unanimous exact group is reconciled as a dispute,
+        # grouped by overlap purely for readability.
+        leftovers = {c: [s for s in a.spans
+                         if (s.start, s.end, s.label) not in unanimous_keys]
+                     for c, a in present.items()}
+        span_disputes = []
+        for cl in _cluster_leftovers(leftovers):
             labels = Counter(s.label for _c, s in cl)
             offsets = {(s.start, s.end) for _c, s in cl}
             coders_in = {c for c, _s in cl}
-            full = (len(coders_in) == len(coders) and len(labels) == 1
-                    and len(offsets) == 1)
-            if full:
-                (st, en), = offsets
-                gold_spans.append({"start": st, "end": en,
-                                   "label": next(iter(labels))})
-            else:
-                dtype = ("LABEL" if len(labels) > 1
-                         else "PRESENCE" if len(coders_in) < len(coders)
-                         else "BOUND")
-                span_disputes.append({
-                    "type": dtype,
-                    "coders": sorted(coders_in),
-                    "labels": dict(labels),
-                    "spans": [{"coder": c, "start": s.start, "end": s.end,
-                               "label": s.label} for c, s in cl],
-                })
+            dtype = ("LABEL" if len(labels) > 1
+                     else "PRESENCE" if len(coders_in) < len(coders)
+                     else "BOUND" if len(offsets) > 1 else "PRESENCE")
+            span_disputes.append({
+                "type": dtype,
+                "coders": sorted(coders_in),
+                "labels": dict(labels),
+                "spans": [{"coder": c, "start": s.start, "end": s.end,
+                           "label": s.label} for c, s in cl],
+            })
 
-        fully_unanimous = rel_unanimous and tag_unanimous and not span_disputes
-
-        # provisional gold (NON_RELEVANT forces has_5tag=TIDAK per Bagian 3.2)
+        # --- provisional gold ----------------------------------------------
         gold_rel = rel_top if rel_majority else ""
+        gold_tag = tag_top if tag_majority else ""
+        # Guideline Bagian 3.2: NON_RELEVANT implies has_5tag=TIDAK and no spans.
+        # Record the override rather than applying it silently — if the coders
+        # actually agreed on NON_RELEVANT+YA, or left spans on a NON_RELEVANT
+        # sentence, that is a guideline breach they must be told about.
+        guideline_conflicts = []
         if gold_rel == "NON_RELEVANT":
+            if gold_tag and gold_tag != "TIDAK":
+                guideline_conflicts.append(
+                    f"relevance=NON_RELEVANT but has_5tag vote was {gold_tag} "
+                    "(Bagian 3.2 forces TIDAK)")
             gold_tag = "TIDAK"
-        elif tag_top[1] >= 2:
-            gold_tag = tag_top[0]
-        else:
-            gold_tag = ""
+            if gold_spans or span_disputes:
+                guideline_conflicts.append(
+                    "relevance=NON_RELEVANT but spans were marked "
+                    "(Bagian 3.2: a non-relevant sentence carries no tag)")
+                gold_spans = []
+        if off_schema:
+            guideline_conflicts.append("out-of-schema value(s): " + "; ".join(off_schema))
+
+        fully_unanimous = (rel_unanimous and tag_unanimous and not span_disputes
+                           and not guideline_conflicts)
         resolution = ("unanimous" if fully_unanimous
-                      else "majority" if (rel_majority and not span_disputes
-                                          and tag_top[1] >= 2) else "DISPUTE")
+                      else "majority" if (rel_majority and tag_majority
+                                          and not span_disputes
+                                          and not guideline_conflicts) else "DISPUTE")
         gold[sid] = {"relevance": gold_rel, "has_5tag": gold_tag,
-                     "spans": gold_spans, "resolution": resolution}
+                     "spans": gold_spans, "resolution": resolution,
+                     "guideline_conflicts": guideline_conflicts}
 
         if fully_unanimous:
             continue
@@ -671,9 +881,10 @@ def build_adjudication(annset: AnnSet, text_by_sid: dict[str, str]) -> dict:
                                    else ("majority" if rel_majority else "none"),
             "has_5tag_by_coder": {c: (a.has_5tag if a else "") for c, a in anns.items()},
             "has_5tag_agreement": "unanimous" if tag_unanimous
-                                  else ("majority" if tag_top[1] >= 2 else "none"),
+                                  else ("majority" if tag_majority else "none"),
             "n_span_disputes": len(span_disputes),
             "span_disputes": span_disputes,
+            "guideline_conflicts": guideline_conflicts,
         })
     return {"queue": queue, "provisional_gold": gold,
             "n_sentences": len(gold), "n_disputed": len(queue)}
@@ -725,31 +936,68 @@ def to_markdown(report: dict, adj: dict, split: str, stamp: str) -> str:
 
     sp = report["span_level"]
     L += ["", "## 2. Span level (F1)", "",
-          f"Spans per annotator: {sp['n_spans_per_annotator']}", "",
-          "| Match rule | micro P | micro R | micro F1 | macro F1 |", "|---|--:|--:|--:|--:|"]
+          f"Spans recorded per annotator (all saved sentences): "
+          f"{sp['n_spans_per_annotator']}", "",
+          "Only F1 is reported: this is a symmetric agreement comparison, so "
+          "precision and recall merely depend on which annotator is arbitrarily "
+          "called the reference and are not interpretable here. Matched-pair counts "
+          "below are summed over the three annotator pairs and restricted to "
+          "sentences each pair both judged, so they do not equal the per-annotator "
+          "totals above.", "",
+          "| Match rule | micro F1 | macro F1 | pairs used | matched / spans A / spans B |",
+          "|---|--:|--:|--:|--:|"]
     for mode, m in sp["modes"].items():
         mi = m["micro"]
-        L.append(f"| {mode} | {_fmt(mi['precision'])} | {_fmt(mi['recall'])} | "
-                 f"{_fmt(mi['f1'])} | {_fmt(m['macro_f1'])} |")
+        pairs = f"{m.get('n_pairs_defined', '?')}/{m.get('n_pairs_total', '?')}"
+        L.append(f"| {mode} | {_fmt(mi['f1'])} | {_fmt(m['macro_f1'])} | {pairs} | "
+                 f"{mi['tp']} / {mi['n_a']} / {mi['n_b']} |")
     L += ["", "exact→overlap gap = boundary disagreement; overlap→boundary_only gap = "
           "label confusion.", "", "Per-tag overlap-F1:", ""]
     for tag, pr in sp["per_tag_overlap_f1"].items():
         L.append(f"- {tag} ({TAGS[tag]}): F1={_fmt(pr['f1'])} "
-                 f"(tp={pr['tp']}, refs={pr['n_a']}, hyps={pr['n_b']})")
+                 f"(matched={pr['tp']}, spans={pr['n_a']}/{pr['n_b']})")
 
     tl = report["token_level"]
     L += ["", "## 3. Token level (chance-corrected span agreement)", ""]
     if "skipped" in tl:
         L.append(f"_skipped: {tl['skipped']}_")
     else:
-        L += [f"- tokens: {tl['n_tokens']} over {tl['n_sentences']} sentences",
+        L += [f"- tokens: {tl['n_tokens']} over {tl['n_sentences_used']} sentences",
               f"- Fleiss κ: {_fmt(tl['fleiss_kappa'])} ({tl['fleiss_interpretation']})",
-              f"- Krippendorff α: {_fmt(tl['krippendorff_alpha'])}",
-              f"- Krippendorff α (excl. all-O tokens): {_fmt(tl['krippendorff_alpha_excl_all_O'])}"]
+              f"- Krippendorff α: {_fmt(tl['krippendorff_alpha'])}"]
+        if tl.get("n_sentences_excluded_no_relevance"):
+            L.append(f"- EXCLUDED: {tl['n_sentences_excluded_no_relevance']} sentence(s) "
+                     "carry spans but no in-schema relevance from every coder "
+                     "(their spans still count at span level — reconcile before reporting)")
+        if tl.get("no_tokens_available"):
+            L.append("- **NOT SCORED**: no sentence text was available for the "
+                     "annotated sentence ids (is the sample parquet present and do "
+                     "the ids match?) — this is not a statement about the annotators.")
+        elif tl.get("no_spans_anywhere"):
+            L.append("- **UNDEFINED**: no annotator recorded any span, so the token "
+                     "marginal has zero variance and both coefficients are undefined.")
+        L.append(f"- _{tl['note']}_")
     L += ["", "## 4. Adjudication", "",
           f"- sentences resolved: {adj['n_sentences']}",
-          f"- queued for adjudication (not unanimous): {adj['n_disputed']}",
-          "", "See the adjudication CSV + provisional-gold JSON beside this report."]
+          f"- queued for adjudication (not unanimous): {adj['n_disputed']}"]
+    n_conf = sum(1 for g in adj["provisional_gold"].values() if g.get("guideline_conflicts"))
+    if n_conf:
+        L.append(f"- **{n_conf} sentence(s) carry a guideline conflict** "
+                 "(e.g. NON_RELEVANT combined with has_5tag=YA or with spans) — see "
+                 "the `guideline_conflicts` column")
+    L += ["", "See the adjudication CSV + provisional-gold JSON beside this report."]
+
+    total_problems = sum(len(v) for v in LOAD_PROBLEMS.values())
+    if total_problems:
+        L += ["", "## 5. Load problems (spans that could NOT be read)", "",
+              f"**{total_problems} span row(s) were unusable and are absent from every "
+              "statistic above.** Resolve these before reporting any figure — a span "
+              "lost here is indistinguishable from an annotator who marked nothing.", ""]
+        for fname, probs in LOAD_PROBLEMS.items():
+            for p in probs[:20]:
+                L.append(f"- `{fname}` {p['sentence_id']}: «{p['span_text']}» — {p['reason']}")
+            if len(probs) > 20:
+                L.append(f"- `{fname}`: … and {len(probs) - 20} more")
     return "\n".join(L)
 
 
@@ -783,7 +1031,11 @@ def main() -> None:
     report_full = {"created_utc": stamp, "split": args.split, "format": args.format,
                    "guideline": "AG-RPL-LIMA-v3.0", **report,
                    "adjudication_summary": {"n_sentences": adj["n_sentences"],
-                                            "n_disputed": adj["n_disputed"]}}
+                                            "n_disputed": adj["n_disputed"]},
+                   # the full queue, not just counts: a has_5tag-only or
+                   # guideline-conflict dispute is otherwise recorded nowhere
+                   "adjudication_queue": adj["queue"],
+                   "load_problems": LOAD_PROBLEMS}
     (OUT_DIR / f"iaa_{args.split}_{stamp}.json").write_text(
         json.dumps(report_full, indent=2, ensure_ascii=False), encoding="utf-8")
     md = to_markdown(report, adj, args.split, stamp)
@@ -796,7 +1048,14 @@ def main() -> None:
             "sentence_id": q["sentence_id"],
             "relevance_agreement": q["relevance_agreement"],
             **{f"rel_{c}": q["relevance_by_coder"].get(c, "") for c in ANNOTATORS},
+            # has_5tag columns: without them a sentence queued ONLY for a has_5tag
+            # dispute reached the adjudicator with no visible reason for being there
+            "has_5tag_agreement": q.get("has_5tag_agreement", ""),
+            **{f"tag_{c}": q.get("has_5tag_by_coder", {}).get(c, "") for c in ANNOTATORS},
+            "guideline_conflicts": "; ".join(q.get("guideline_conflicts", [])),
             "n_span_disputes": q["n_span_disputes"],
+            "span_dispute_types": ",".join(
+                sorted({d["type"] for d in q["span_disputes"]})),
             "sentence_text": q["sentence_text"],
             "span_disputes": json.dumps(q["span_disputes"], ensure_ascii=False),
         })

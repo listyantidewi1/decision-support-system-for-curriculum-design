@@ -193,18 +193,22 @@ st.session_state.setdefault("pills_nonce", 0)
 def persist_sid(psid: str) -> None:
     """Save sentence-level answers for `psid`, reading the keyed widget state.
     Writes a record ONLY if the sentence was actually judged (relevance set), so
-    navigating past an untouched sentence never fabricates a label."""
+    navigating past an untouched sentence never fabricates a label.
+
+    has_5tag is stored EXACTLY as the annotator answered it — never derived from
+    the spans, never defaulted. It used to be forced to 'YA' whenever a span
+    existed, forced to 'TIDAK' for NON_RELEVANT, and defaulted to 'TIDAK' when
+    the radio was untouched. That made the has_5tag agreement statistic largely an
+    artefact of this UI rather than three independent expert judgements, so no
+    reliability figure could be claimed for it. An unanswered radio is now stored
+    blank, and the IAA step treats blank as 'not answered' (it cannot count as
+    agreement) and routes the sentence to adjudication."""
     r = st.session_state.get(f"rel::{code}::{psid}")
     if not r:
         return
     rec = ann.setdefault(psid, {})
     rec["relevance"] = r
-    if rec.get("spans"):
-        rec["has_5tag"] = "YA"                       # a labeled span => >=1 tag
-    elif r == "NON_RELEVANT":
-        rec["has_5tag"] = "TIDAK"                     # guideline Bagian 3.2
-    else:
-        rec["has_5tag"] = st.session_state.get(f"has5::{code}::{psid}") or "TIDAK"
+    rec["has_5tag"] = st.session_state.get(f"has5::{code}::{psid}") or ""
     sflag = st.session_state.get(f"sflag::{code}::{psid}", "")
     rec["flag"] = sflag
     rec["note"] = (st.session_state.get(f"snote::{code}::{psid}") or "").strip()
@@ -282,8 +286,18 @@ sc1.selectbox("Penanda kalimat (opsional)", list(FLAGS),
               format_func=lambda c: FLAGS[c], key=f"sflag::{code}::{sid}")
 sc2.text_input("Catatan kalimat (mis. OUT_OF_SCHEMA: pendidikan/pengalaman/sertifikasi)",
                value=cur.get("note", ""), key=f"snote::{code}::{sid}")
-if has5 == "YA" and not cur.get("spans"):
+# Consistency prompts: the app no longer rewrites has_5tag, so any contradiction
+# is shown to the annotator to resolve themselves (their answer is the datum).
+if has5 is None:
+    st.warning("has_5tag belum dijawab. Jawaban Anda sendiri yang dicatat — "
+               "kolom ini tidak lagi diisi otomatis oleh sistem.")
+elif has5 == "YA" and not cur.get("spans"):
     st.caption("has_5tag=YA berarti kalimat memuat ≥1 tag — tandai span-nya di bawah.")
+elif has5 == "TIDAK" and cur.get("spans"):
+    st.warning("Anda menjawab has_5tag=TIDAK tetapi sudah menandai span pada "
+               "kalimat ini. Perbaiki salah satunya agar konsisten.")
+if rel == "NON_RELEVANT" and has5 == "YA":
+    st.warning("Pedoman Bagian 3.2: kalimat NON_RELEVANT seharusnya has_5tag=TIDAK.")
 
 # --- span capture (only for RELEVANT sentences) ---------------------------------
 st.markdown("#### Tandai span")
@@ -332,7 +346,11 @@ if st.button("➕ Tambah span", disabled=add_disabled, type="primary"):
          "label": label, "confidence": conf, "flag": flag,
          "parent_span_id": parent, "note": note.strip()})
     cur["relevance"] = "RELEVANT"
-    cur["has_5tag"] = "YA"                   # a labeled span means >=1 tag
+    # has_5tag is NOT inferred from the presence of a span — it stays the
+    # annotator's own answer so the agreement statistic measures their judgement
+    # rather than this UI's bookkeeping. A contradiction (span present but
+    # has_5tag=TIDAK) is surfaced below for the annotator to resolve themselves.
+    cur["has_5tag"] = st.session_state.get(f"has5::{code}::{sid}") or ""
     cur["flag"] = st.session_state.get(f"sflag::{code}::{sid}", "")
     cur["note"] = (st.session_state.get(f"snote::{code}::{sid}") or "").strip()
     ann[sid] = cur
