@@ -19,6 +19,10 @@ GOLD_STANDARD_VERSION = "0.1.0"
 SEED = 42
 PILOT_N = 100
 MAIN_N = 1200
+# Throwaway warm-up split, drawn disjoint from the pilot. Annotators practise the
+# UI here so their first clicks never land in the gold standard (an interface
+# trial once left 8 judged sentences in AV's pilot file).
+PRACTICE_N = 10
 
 # Five tags (Bagian 4). code -> full label.
 TAGS = {

@@ -206,20 +206,42 @@ st.set_page_config(page_title="Anotasi Gold Standard", layout="wide")
 st.markdown(
     "<style>[data-testid='stToolbar'],#MainMenu,footer{visibility:hidden}"
     "mark{padding:0 1px}</style>", unsafe_allow_html=True)
-split = "pilot_100"
-
-# Annotator identity: locked to the ?annotator= link so one annotator cannot open
-# another's file (independence, Bagian 10.1). Free selection only without a param.
-qp = st.query_params.get("annotator", "")
-with st.sidebar:
-    st.header("Anotator")
-    if qp in ANNOTATORS:
-        code = qp
+# Identity and split. In API mode BOTH come from the server-side token: the
+# client never names itself, so passing ?annotator=AI cannot open another
+# annotator workspace, and a practice token loads the practice split instead of
+# the pilot. In local mode (no API configured) the old ?annotator= link applies.
+if api_enabled():
+    try:
+        _who = api_whoami()
+    except Exception as exc:                        # noqa: BLE001
+        st.error("Tautan tidak valid atau server anotasi tidak dapat dihubungi. "
+                 "Mintalah tautan baru kepada peneliti.")
+        st.caption(f"({type(exc).__name__})")
+        st.stop()
+    code, split = _who.get("annotator", ""), _who.get("split", "")
+    if code not in ANNOTATORS or not split:
+        st.error("Token tidak terhubung ke anotator/split yang sah.")
+        st.stop()
+    with st.sidebar:
+        st.header("Anotator")
         st.markdown(f"**{code} — {ANNOTATORS[code]}**")
-    else:
-        code = st.selectbox("Kode", list(ANNOTATORS),
-                            format_func=lambda c: f"{c} — {ANNOTATORS[c]}")
-    st.caption(f"Pedoman AG-RPL-LIMA · data: {split}")
+        if split != "pilot_100":
+            st.warning(f"MODE LATIHAN ({split}). Anotasi di sini TIDAK dipakai "
+                       "dalam data acuan — gunakan tautan resmi untuk anotasi "
+                       "sebenarnya.")
+        st.caption(f"Pedoman AG-RPL-LIMA · data: {split} · tersimpan di server")
+else:
+    split = os.environ.get("GS_SPLIT", "pilot_100")
+    qp = st.query_params.get("annotator", "")
+    with st.sidebar:
+        st.header("Anotator")
+        if qp in ANNOTATORS:
+            code = qp
+            st.markdown(f"**{code} — {ANNOTATORS[code]}**")
+        else:
+            code = st.selectbox("Kode", list(ANNOTATORS),
+                                format_func=lambda c: f"{c} — {ANNOTATORS[c]}")
+        st.caption(f"Pedoman AG-RPL-LIMA · data: {split} · tersimpan lokal")
 
 try:
     sample = load_sample(split)

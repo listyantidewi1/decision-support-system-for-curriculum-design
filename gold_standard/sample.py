@@ -25,7 +25,8 @@ import pandas as pd
 
 from governance.ladder import REPO_ROOT
 from . import (ANNOTATOR_LANGUAGES, BORDERLINE_SHARE, GOLD_STANDARD_VERSION,
-               GUIDELINE_CODE, MAIN_N, MIN_LOCAL_LANG_SHARE, PILOT_N, SEED,
+               GUIDELINE_CODE, MAIN_N, MIN_LOCAL_LANG_SHARE, PILOT_N,
+               PRACTICE_N, SEED,
                STRATUM_QUOTA)
 
 GS_DIR = REPO_ROOT / "DATA" / "gold_standard"
@@ -222,15 +223,26 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--main", action="store_true",
                     help="also draw the main 1,200 sample, disjoint from the pilot")
+    ap.add_argument("--practice", type=int, default=PRACTICE_N, metavar="N",
+                    help="size of the throwaway practice split (0 to skip)")
     args = ap.parse_args()
 
     pilot = draw_sample(PILOT_N)
     _write(pilot, "pilot_100")
+    used = set(pilot["posting_id"])
+
+    # A WARM-UP split, drawn disjoint from the pilot so practice clicks can never
+    # contaminate the gold standard. This is the data side of the practice token:
+    # without it a practice link would silently load pilot sentences. Driven by a
+    # real incident — an interface trial left 8 judged sentences in AV's pilot file.
+    if args.practice:
+        practice = draw_sample(args.practice, exclude_ids=used)
+        _write(practice, f"practice_{args.practice}")
+        used |= set(practice["posting_id"])
 
     if args.main:
-        pilot_postings = set(pilot["posting_id"])
-        main = draw_sample(MAIN_N, exclude_ids=pilot_postings)
-        _write(main, "main_1200")
+        main_sample = draw_sample(MAIN_N, exclude_ids=used)
+        _write(main_sample, "main_1200")
 
 
 if __name__ == "__main__":
