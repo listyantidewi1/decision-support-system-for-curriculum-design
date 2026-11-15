@@ -1,0 +1,46 @@
+{
+  "batch_id": "batch-002t",
+  "query_plan_version": "qp-remaining-2026-11",
+  "notes": "DEFERRED — do NOT run until >=24h after batch-002n (ran 2026-11-08 ~19:00, so runnable after ~2026-11-09 19:00) to respect the Jobstreet ~2,000-detail/session Cloudflare cooldown. Probe first (python -m acquisition.probe_jobstreet). These are the 24 remaining Jobstreet families not covered by core (002n) or data/game/ui/qa (002f/002f2): language-specific (JS/Go/.NET/Node/React/Laravel/Kotlin/WordPress), web remainder, mobile (iOS/Flutter/React Native), data analyst, database, devops/cloud, system analyst. rw 200 x 24 terms within the guardrail; circuit breaker backstops.",
+  "defaults": {
+    "sites": ["jobstreet"],
+    "hours_old": null,
+    "sleep_seconds": 4,
+    "fetch_description": true
+  },
+  "strata": [
+    {
+      "name": "indonesia",
+      "results_wanted": 200,
+      "countries": [
+        {"iso": "ID", "location": "Indonesia", "country_indeed": "Indonesia"}
+      ],
+      "terms": [
+        {"term": "javascript developer", "family": "language_specific"},
+        {"term": "golang developer", "family": "language_specific"},
+        {"term": ".net developer", "family": "language_specific"},
+        {"term": "node js developer", "family": "language_specific"},
+        {"term": "react developer", "family": "language_specific"},
+        {"term": "laravel developer", "family": "language_specific"},
+        {"term": "kotlin developer", "family": "language_specific"},
+        {"term": "wordpress developer", "family": "language_specific"},
+        {"term": "web programmer", "family": "web_developer"},
+        {"term": "programmer web", "family": "web_developer"},
+        {"term": "ios developer", "family": "mobile_developer"},
+        {"term": "flutter developer", "family": "mobile_developer"},
+        {"term": "react native developer", "family": "mobile_developer"},
+        {"term": "pengembang aplikasi mobile", "family": "mobile_developer"},
+        {"term": "data analyst", "family": "data_ai"},
+        {"term": "database administrator", "family": "database"},
+        {"term": "database engineer", "family": "database"},
+        {"term": "sql developer", "family": "database"},
+        {"term": "basis data", "family": "database"},
+        {"term": "devops engineer", "family": "devops_cloud"},
+        {"term": "cloud engineer", "family": "devops_cloud"},
+        {"term": "site reliability engineer", "family": "devops_cloud"},
+        {"term": "system analyst", "family": "system_analysis"},
+        {"term": "analis sistem", "family": "system_analysis"}
+      ]
+    }
+  ]
+}
