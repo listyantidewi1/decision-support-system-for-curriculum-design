@@ -494,6 +494,53 @@ def test_has_5tag_only_judgement_kept_by_csv_loader(tmp_path=None):
     assert set(load_form_a1_csv(p)) == {"s1"}   # JSON loader keeps it, so must this
 
 
+# ------------------------------------------- uncertainty / prevalence reporting
+def test_pabak_formula():
+    from gold_standard.iaa import pabak
+    assert pabak(1.0, 2) == 1.0                  # perfect observed agreement
+    assert pabak(0.5, 2) == 0.0                  # chance for 2 categories
+    assert pabak(1.0, 3) == 1.0
+    assert abs(pabak(2 / 3, 3) - 0.5) < 1e-9
+    assert math.isnan(pabak(float("nan"), 2))
+
+
+def test_bootstrap_ci_is_tight_for_clear_agreement():
+    from gold_standard.iaa import bootstrap_fleiss_ci
+    # 60 items, 3 raters, perfect agreement split across two categories
+    table = np.array([[3, 0]] * 30 + [[0, 3]] * 30, dtype=float)
+    lo, hi, n = bootstrap_fleiss_ci(table, iters=400, seed=1)
+    assert n > 300
+    assert lo > 0.9 and hi <= 1.0
+
+
+def test_bootstrap_ci_is_wide_for_small_noisy_samples():
+    from gold_standard.iaa import CI_WIDTH_CLAIMABLE, bootstrap_fleiss_ci
+    rng = np.random.default_rng(0)
+    rows = []
+    for _ in range(12):                          # tiny, noisy -> must be unclaimable
+        r = [0, 0]
+        for _ in range(3):
+            r[rng.integers(0, 2)] += 1
+        rows.append(r)
+    lo, hi, _ = bootstrap_fleiss_ci(np.array(rows, dtype=float), iters=400, seed=2)
+    assert (hi - lo) > CI_WIDTH_CLAIMABLE
+
+
+def test_sentence_level_reports_ci_and_claimability():
+    annset = {c: {f"s{i}": SentAnn("RELEVANT" if i % 2 else "NON_RELEVANT",
+                                   "YA" if i % 2 else "TIDAK", [])
+                  for i in range(8)} for c in ("AV", "AI", "AD")}
+    rep = compute_iaa(annset, {})["sentence_level"]["relevance"]
+    assert "fleiss_ci95" in rep and "pabak" in rep and "claimable" in rep
+    assert rep["marginal_share"]                 # marginal visible beside kappa
+
+
+def test_span_f1_ci_needs_at_least_two_sentences():
+    from gold_standard.iaa import _bootstrap_span_f1_ci
+    lo, hi, n = _bootstrap_span_f1_ci({"s1": (1, 1, 1)})
+    assert math.isnan(lo) and math.isnan(hi) and n == 0
+
+
 def _run_standalone() -> int:
     """Plain-python runner (the repo has no pytest). Pytest-compatible too: under
     pytest these same test_* functions are collected normally."""

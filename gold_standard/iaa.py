@@ -465,6 +465,59 @@ def krippendorff_alpha(units: list[list[str]]) -> float:
     return float(1 - (n - 1) * off / exp)
 
 
+BOOTSTRAP_ITERS = 2000
+BOOTSTRAP_SEED = 42
+# A chance-corrected coefficient whose 95% CI is wider than this spans more than
+# one Landis & Koch band, so it cannot support a point reliability claim — it is
+# calibration-grade evidence only. At n=100 with 3 raters the expected width is
+# ~0.28 at this study's prevalence, versus ~0.07 at n=1200.
+CI_WIDTH_CLAIMABLE = 0.20
+
+
+def _percentile_ci(samples) -> tuple[float, float, int]:
+    vals = np.asarray([s for s in samples if s == s], dtype=float)
+    if vals.size < 20:                      # too few non-degenerate resamples
+        return float("nan"), float("nan"), int(vals.size)
+    return (float(np.percentile(vals, 2.5)), float(np.percentile(vals, 97.5)),
+            int(vals.size))
+
+
+def bootstrap_fleiss_ci(table, iters: int = BOOTSTRAP_ITERS,
+                        seed: int = BOOTSTRAP_SEED) -> tuple[float, float, int]:
+    """Non-parametric 95% CI for Fleiss' kappa, resampling ITEMS with replacement."""
+    table = np.asarray(table, dtype=float)
+    if table.shape[0] < 2:
+        return float("nan"), float("nan"), 0
+    rng = np.random.default_rng(seed)
+    n = table.shape[0]
+    return _percentile_ci(fleiss_kappa(table[rng.integers(0, n, n)]) for _ in range(iters))
+
+
+def bootstrap_alpha_ci(units: list[list[str]], iters: int = BOOTSTRAP_ITERS,
+                       seed: int = BOOTSTRAP_SEED) -> tuple[float, float, int]:
+    """Non-parametric 95% CI for Krippendorff's alpha, resampling UNITS."""
+    if len(units) < 2:
+        return float("nan"), float("nan"), 0
+    rng = np.random.default_rng(seed)
+    m = len(units)
+    return _percentile_ci(
+        krippendorff_alpha([units[i] for i in rng.integers(0, m, m)])
+        for _ in range(iters))
+
+
+def pabak(p_observed: float, k_categories: int) -> float:
+    """Prevalence-adjusted bias-adjusted kappa: (k*Po - 1)/(k - 1).
+
+    Reported ALONGSIDE kappa because kappa is prevalence-sensitive: at fixed rater
+    accuracy, simulation of this study's design shows kappa falling 0.91 -> 0.60 as
+    the dominant category goes 50% -> 95%, while observed agreement stays ~0.94.
+    This sample is deliberately skewed (BORDERLINE_SHARE = 0.15), so a depressed
+    kappa must be interpretable as skew rather than as rater disagreement."""
+    if k_categories < 2 or p_observed != p_observed:
+        return float("nan")
+    return float((k_categories * p_observed - 1) / (k_categories - 1))
+
+
 def cohen_kappa(a: list[str], b: list[str]) -> float:
     """Pairwise Cohen's kappa over paired labels. NaN where kappa is undefined.
 
@@ -535,14 +588,30 @@ def _categorical_iaa(annset: AnnSet, field_name: str, categories: list[str]) -> 
             if v:
                 dist[c][v] += 1
 
+    k_lo, k_hi, k_n = bootstrap_fleiss_ci(table) if complete else (float("nan"),) * 2 + (0,)
+    a_lo, a_hi, a_n = bootstrap_alpha_ci(units) if units else (float("nan"),) * 2 + (0,)
+    width = (k_hi - k_lo) if (k_hi == k_hi and k_lo == k_lo) else float("nan")
+    # Marginal distribution pooled over coders: makes a zero/low-variance field
+    # visible next to the coefficient instead of only inside per-coder counts.
+    pooled = Counter()
+    for c in coders:
+        pooled.update(dist[c])
+    total_marks = sum(pooled.values())
     return {
         "field": field_name,
         "n_sentences_any": len(units),
         "n_complete_cases": len(complete),
         "fleiss_kappa": kappa,
         "fleiss_interpretation": interpret(kappa),
+        "fleiss_ci95": [k_lo, k_hi],
+        "fleiss_ci95_width": width,
         "krippendorff_alpha": alpha,
+        "krippendorff_alpha_ci95": [a_lo, a_hi],
         "observed_agreement": observed,
+        "pabak": pabak(observed, len(categories)),
+        "claimable": bool(width == width and width <= CI_WIDTH_CLAIMABLE),
+        "marginal_share": {k: round(v / total_marks, 4) for k, v in pooled.items()}
+                          if total_marks else {},
         "pairwise": pairwise,
         "distribution": {c: dict(dist[c]) for c in coders},
     }
@@ -603,15 +672,43 @@ def _prf(tp: int, n_a: int, n_b: int) -> dict:
     return {"tp": tp, "n_a": n_a, "n_b": n_b, "precision": prec, "recall": rec, "f1": f1}
 
 
+def _span_pair_per_sentence(a_by_sid, b_by_sid, label_sensitive, exact) -> dict:
+    """Per-sentence (tp, n_a, n_b) for every sentence both annotators judged.
+    Kept separate from the aggregate so a CI can be bootstrapped over sentences —
+    the unit of resampling must be the sentence, not the span."""
+    out = {}
+    for sid in set(a_by_sid) & set(b_by_sid):
+        a, b = a_by_sid[sid], b_by_sid[sid]
+        out[sid] = (_greedy_match(a, b, label_sensitive, exact), len(a), len(b))
+    return out
+
+
 def _span_pair(a_by_sid, b_by_sid, label_sensitive, exact) -> dict:
     """Micro-averaged P/R/F1 over all sentences both annotators share."""
-    sids = set(a_by_sid) & set(b_by_sid)
-    tp = na = nb = 0
-    for sid in sids:
-        a, b = a_by_sid[sid], b_by_sid[sid]
-        tp += _greedy_match(a, b, label_sensitive, exact)
-        na += len(a); nb += len(b)
+    per = _span_pair_per_sentence(a_by_sid, b_by_sid, label_sensitive, exact)
+    tp = sum(v[0] for v in per.values())
+    na = sum(v[1] for v in per.values())
+    nb = sum(v[2] for v in per.values())
     return _prf(tp, na, nb)
+
+
+def _bootstrap_span_f1_ci(contribs: dict, iters: int = BOOTSTRAP_ITERS,
+                          seed: int = BOOTSTRAP_SEED) -> tuple[float, float, int]:
+    """95% CI for micro span-F1, resampling SENTENCES with replacement.
+    `contribs` maps sentence -> summed (tp, n_a, n_b) across annotator pairs."""
+    sids = list(contribs)
+    if len(sids) < 2:
+        return float("nan"), float("nan"), 0
+    rng = np.random.default_rng(seed)
+    n = len(sids)
+    vals = []
+    for _ in range(iters):
+        tp = na = nb = 0
+        for i in rng.integers(0, n, n):
+            t, a, b = contribs[sids[i]]
+            tp += t; na += a; nb += b
+        vals.append(_prf(tp, na, nb)["f1"])
+    return _percentile_ci(vals)
 
 
 def _spans_by_sid(annset: AnnSet, code: str, only_label: str | None = None):
@@ -633,11 +730,20 @@ def span_level_iaa(annset: AnnSet) -> dict:
     for mode, opts in modes.items():
         pairwise = {}
         agg_tp = agg_na = agg_nb = 0
+        contribs: dict[str, tuple[int, int, int]] = {}
         for a, b in combinations(coders, 2):
-            pr = _span_pair(_spans_by_sid(annset, a), _spans_by_sid(annset, b), **opts)
+            per = _span_pair_per_sentence(_spans_by_sid(annset, a),
+                                          _spans_by_sid(annset, b), **opts)
+            for sid, (t, na_, nb_) in per.items():
+                p = contribs.get(sid, (0, 0, 0))
+                contribs[sid] = (p[0] + t, p[1] + na_, p[2] + nb_)
+            pr = _prf(sum(v[0] for v in per.values()),
+                      sum(v[1] for v in per.values()),
+                      sum(v[2] for v in per.values()))
             pairwise[f"{a}-{b}"] = pr
             agg_tp += pr["tp"]; agg_na += pr["n_a"]; agg_nb += pr["n_b"]
         micro = _prf(agg_tp, agg_na, agg_nb)
+        f1_lo, f1_hi, _ = _bootstrap_span_f1_ci(contribs)
         # nanmean, not mean: a pair where BOTH annotators produced no span has an
         # undefined F1, and np.mean would propagate that NaN and erase the valid
         # F1s of the other pairs. n_pairs_defined makes the omission visible
@@ -647,6 +753,9 @@ def span_level_iaa(annset: AnnSet) -> dict:
         macro_f1 = float(defined.mean()) if defined.size else float("nan")
         result["modes"][mode] = {
             "pairwise": pairwise, "micro": micro, "macro_f1": macro_f1,
+            "micro_f1_ci95": [f1_lo, f1_hi],
+            "micro_f1_ci95_width": (f1_hi - f1_lo) if f1_hi == f1_hi else float("nan"),
+            "n_sentences": len(contribs),
             "n_pairs_defined": int(defined.size), "n_pairs_total": int(f1s.size),
         }
 
@@ -959,13 +1068,28 @@ def to_markdown(report: dict, adj: dict, split: str, stamp: str) -> str:
          "Guideline AG-RPL-LIMA-v3.0 · Fleiss κ (complete cases) + Krippendorff α "
          "(all ≥2-rater items). Bands: Landis & Koch 1977.", "",
          "## 1. Sentence level", "",
-         "| Field | complete | Fleiss κ | (band) | Krippendorff α | observed |",
-         "|---|--:|--:|---|--:|--:|"]
+         "| Field | complete | Fleiss κ | 95% CI | (band) | α | observed | PABAK |",
+         "|---|--:|--:|--:|---|--:|--:|--:|"]
     for f in ("relevance", "has_5tag"):
         s = report["sentence_level"][f]
+        lo, hi = s.get("fleiss_ci95", [float("nan")] * 2)
         L.append(f"| {f} | {s['n_complete_cases']} | {_fmt(s['fleiss_kappa'])} | "
-                 f"{s['fleiss_interpretation']} | {_fmt(s['krippendorff_alpha'])} | "
-                 f"{_fmt(s['observed_agreement'])} |")
+                 f"[{_fmt(lo)}, {_fmt(hi)}] | {s['fleiss_interpretation']} | "
+                 f"{_fmt(s['krippendorff_alpha'])} | {_fmt(s['observed_agreement'])} | "
+                 f"{_fmt(s.get('pabak'))} |")
+    L += ["", "**Claimability.** A 95% CI wider than "
+          f"{CI_WIDTH_CLAIMABLE:.2f} spans more than one Landis & Koch band, so the "
+          "point estimate cannot support a reliability claim — it is calibration "
+          "evidence only. PABAK is shown because κ is prevalence-sensitive and this "
+          "sample is deliberately skewed; read κ, PABAK and the marginal share "
+          "together, never κ alone.", ""]
+    for f in ("relevance", "has_5tag"):
+        s = report["sentence_level"][f]
+        w = s.get("fleiss_ci95_width")
+        verdict = ("CLAIMABLE" if s.get("claimable")
+                   else "CALIBRATION ONLY — do not quote as a reliability figure")
+        L.append(f"- {f}: CI width {_fmt(w)} -> **{verdict}** "
+                 f"(marginal share {s.get('marginal_share')})")
     L += ["", "Pairwise (Cohen κ / % agree):"]
     for f in ("relevance", "has_5tag"):
         for pair, pw in report["sentence_level"][f]["pairwise"].items():
@@ -982,12 +1106,14 @@ def to_markdown(report: dict, adj: dict, split: str, stamp: str) -> str:
           "below are summed over the three annotator pairs and restricted to "
           "sentences each pair both judged, so they do not equal the per-annotator "
           "totals above.", "",
-          "| Match rule | micro F1 | macro F1 | pairs used | matched / spans A / spans B |",
-          "|---|--:|--:|--:|--:|"]
+          "| Match rule | micro F1 | 95% CI | macro F1 | pairs | matched / spans A / B |",
+          "|---|--:|--:|--:|--:|--:|"]
     for mode, m in sp["modes"].items():
         mi = m["micro"]
         pairs = f"{m.get('n_pairs_defined', '?')}/{m.get('n_pairs_total', '?')}"
-        L.append(f"| {mode} | {_fmt(mi['f1'])} | {_fmt(m['macro_f1'])} | {pairs} | "
+        clo, chi = m.get("micro_f1_ci95", [float("nan")] * 2)
+        L.append(f"| {mode} | {_fmt(mi['f1'])} | [{_fmt(clo)}, {_fmt(chi)}] | "
+                 f"{_fmt(m['macro_f1'])} | {pairs} | "
                  f"{mi['tp']} / {mi['n_a']} / {mi['n_b']} |")
     L += ["", "exact→overlap gap = boundary disagreement; overlap→boundary_only gap = "
           "label confusion.", "", "Per-tag overlap-F1:", ""]
