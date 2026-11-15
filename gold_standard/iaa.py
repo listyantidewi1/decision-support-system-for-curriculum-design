@@ -721,7 +721,13 @@ def _spans_by_sid(annset: AnnSet, code: str, only_label: str | None = None):
 
 def span_level_iaa(annset: AnnSet) -> dict:
     coders = list(annset)
+    # exact_boundary_any_label is the SKILLSPAN-COMPARABLE measure: Zhang et al.
+    # (NAACL 2022) define their SPAN level as "the agreement between annotators on
+    # the exact span match over the surface string, REGARDLESS of the type", and
+    # report Fleiss kappa 0.70-0.75 on it with three annotators over two labels.
+    # Without this mode our figures were not comparable to any published number.
     modes = {"exact": dict(label_sensitive=True, exact=True),
+             "exact_boundary_any_label": dict(label_sensitive=False, exact=True),
              "overlap_iou50": dict(label_sensitive=True, exact=False),
              "boundary_only_iou50": dict(label_sensitive=False, exact=False)}
     result = {"n_spans_per_annotator":
@@ -851,6 +857,17 @@ def token_level_iaa(annset: AnnSet, text_by_sid: dict[str, str]) -> dict:
     # annotators.
     any_tag = (n_tokens > 0) and any(v != "O" for u in units for v in u)
     no_tokens_at_all = n_tokens == 0
+    # Type-agnostic "is this token inside ANY span" agreement. This is the kappa
+    # counterpart to SkillSpan's type-blind SPAN level, so it can be cited beside
+    # their 0.70-0.75; the type-aware figure above is their TOKEN level, which
+    # they compute "on each token (including non-entities)".
+    bin_units = [["I" if v != "O" else "O" for v in u] for u in units]
+    bin_table = np.zeros((len(bin_units), 2), dtype=float)
+    for i, u in enumerate(bin_units):
+        for v in u:
+            bin_table[i, 0 if v == "O" else 1] += 1
+    kappa_bin = fleiss_kappa(bin_table) if bin_units else float("nan")
+    alpha_bin = krippendorff_alpha(bin_units) if bin_units else float("nan")
     kappa = fleiss_kappa(table) if n_tokens else float("nan")
     alpha = krippendorff_alpha(units) if units else float("nan")
     out = {
@@ -862,6 +879,12 @@ def token_level_iaa(annset: AnnSet, text_by_sid: dict[str, str]) -> dict:
         "fleiss_kappa": kappa,
         "fleiss_interpretation": interpret(kappa),
         "krippendorff_alpha": alpha,
+        "fleiss_kappa_any_span": kappa_bin,
+        "krippendorff_alpha_any_span": alpha_bin,
+        "skillspan_reference": "Zhang et al. NAACL 2022 report Fleiss kappa 0.70-0.75 "
+                               "(3 annotators, 2 labels, English) at both their TOKEN and "
+                               "type-blind SPAN levels, up from 0.59/0.62 before calibration "
+                               "rounds. Expect LOWER here: this scheme has 5 tags.",
         "note": "Tokens are labelled by the covering span ('O' = untagged). Because "
                 "untagged tokens dominate, these coefficients are chance-corrected "
                 "against a marginal in which 'O' is the overwhelming category; read "
@@ -1128,7 +1151,11 @@ def to_markdown(report: dict, adj: dict, split: str, stamp: str) -> str:
     else:
         L += [f"- tokens: {tl['n_tokens']} over {tl['n_sentences_used']} sentences",
               f"- Fleiss κ: {_fmt(tl['fleiss_kappa'])} ({tl['fleiss_interpretation']})",
-              f"- Krippendorff α: {_fmt(tl['krippendorff_alpha'])}"]
+              f"- Krippendorff α: {_fmt(tl['krippendorff_alpha'])}",
+              f"- Fleiss κ, type-blind (any-span): {_fmt(tl.get('fleiss_kappa_any_span'))} "
+              f"· α {_fmt(tl.get('krippendorff_alpha_any_span'))}"]
+        if tl.get("skillspan_reference"):
+            L.append(f"- _Benchmark: {tl['skillspan_reference']}_")
         if tl.get("n_sentences_excluded_no_relevance"):
             L.append(f"- EXCLUDED: {tl['n_sentences_excluded_no_relevance']} sentence(s) "
                      "carry spans but no in-schema relevance from every coder "
