@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import html as _html
 import json
+import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -86,12 +87,56 @@ def ann_path(split: str, code: str) -> Path:
     return ANN_DIR / f"{split}_{code}.json"
 
 
+# --------------------------------------------------------------- persistence
+# Two backends, same API. Local files for solo/offline work; the collector
+# service when GS_API_URL is set, which is required for any hosted deployment
+# because every free host has an EPHEMERAL filesystem — local autosaves there
+# are silently lost on restart. The collector also scopes each annotator to
+# their own token, replacing the guessable ?annotator= parameter.
+API_URL = os.environ.get("GS_API_URL", "").rstrip("/")
+
+
+def _api_token() -> str:
+    return st.query_params.get("token", "") or os.environ.get("GS_API_TOKEN", "")
+
+
+def api_enabled() -> bool:
+    return bool(API_URL and _api_token())
+
+
+def _api(method: str, path: str, **kw):
+    import requests
+    r = requests.request(method, f"{API_URL}{path}", timeout=20,
+                         headers={"Authorization": f"Bearer {_api_token()}"}, **kw)
+    r.raise_for_status()
+    return r.json()
+
+
+def api_whoami() -> dict:
+    """Resolve the token to (annotator, split) server-side. The client never
+    chooses its own identity, so one annotator cannot open another's workspace."""
+    return _api("GET", "/me")
+
+
 def load_ann(split: str, code: str) -> dict:
+    if api_enabled():
+        return _api("GET", "/annotations")
     p = ann_path(split, code)
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 
 def save_ann(split: str, code: str, data: dict) -> None:
+    """Local mode writes the whole file; API mode upserts only the sentences that
+    changed, so a refresh or a second tab cannot clobber earlier work."""
+    if api_enabled():
+        for sid, rec in data.items():
+            if sid == "_meta" or not isinstance(rec, dict):
+                continue
+            if st.session_state.get("_synced", {}).get(sid) != rec:
+                _api("PUT", f"/annotations/{sid}", json=rec)
+                st.session_state.setdefault("_synced", {})[sid] = json.loads(
+                    json.dumps(rec))          # deep copy for later comparison
+        return
     ANN_DIR.mkdir(parents=True, exist_ok=True)
     data["_meta"] = {"annotator": code, "split": split,
                      "saved_utc": datetime.now(timezone.utc).isoformat()}

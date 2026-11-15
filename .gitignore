@@ -243,3 +243,11 @@ DATA/corpus_benchmark/
 # Gold-standard sentence pool, samples, worksheets, annotations (reproducible from
 # the gold_standard/ code + the raw corpus; the pool alone is ~124 MB)
 DATA/gold_standard/
+
+# Annotation collector database — contains real annotator judgements (and the
+# WAL/SHM sidecars SQLite creates). The DB is the deliverable, not source.
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+data/annotations.sqlite*
+annotation_server/data/
