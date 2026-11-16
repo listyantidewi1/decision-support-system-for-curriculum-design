@@ -251,3 +251,27 @@ DATA/gold_standard/
 *.sqlite-shm
 data/annotations.sqlite*
 annotation_server/data/
+
+# Purged from git history 2026-11-17 (second pass) — LOCAL ONLY.
+# Pipeline run outputs and label files that embed resolvable Indeed job ids
+# (in-<16hex>, which resolve to indeed.com/viewjob?jk=<id>) or lifted posting
+# phrases. Re-identifiable, so not publishable as-is. A de-identified release
+# (hashed job_id, no verbatim spans) can be published later as its own decision.
+results/
+results_run1/
+results_run3/
+results_run4/
+results_aggregated/
+DATA/skillspan_ours/
+DATA/labels/gold_knowledge.csv
+DATA/labels/gold_knowledge_merged.csv
+DATA/labels/gold_skills.csv
+DATA/labels/gold_skills_merged.csv
+feedback_store/human_verified_skills.csv
+selected_skill_samples_display_json_only.html
+selected_skill_samples_full_records.html
+skill_llm_input_n1k_upstream_repair.jsonl
+DATA/samples/jobs_sample.csv
+skill_llm_extractions.jsonl
+skill_llm_input_n1k.jsonl
+DATA/preprocessing/
