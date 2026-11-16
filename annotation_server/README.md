@@ -56,6 +56,56 @@ The one requirement that is not negotiable: **the collector database must sit on
 storage that survives a restart.** If it does not, use the local-file mode
 instead and collect the three JSON files by hand.
 
+## Local dry run (do this before every deploy)
+
+Runs the whole chain on one machine so a problem surfaces here instead of with
+three experts waiting. Verified working 2026-11-17.
+
+**The two halves need DIFFERENT venvs.** The collector needs `.venv` (fastapi,
+no streamlit); the UI needs `.venv-ml` (streamlit, no fastapi). Running either
+under the other's venv fails with `No module named ...`.
+
+```bash
+# 1. tokens, once. Writes to a gitignored file; NEVER paste tokens into chat.
+#    (make_tokens refuses to overwrite an existing file -- move it aside first.)
+.venv/Scripts/python.exe -m annotation_server.make_tokens     --base-url http://localhost:8501 --split pilot_100     --practice-split practice_10 --out api_keys/dryrun_tokens.json     > api_keys/DRYRUN_LINKS.txt
+
+# 2. collector, on :8000. GS_DB_PATH somewhere disposable, NOT in DATA/.
+GS_DB_PATH=/tmp/annotations_dryrun.sqlite GS_TOKENS_FILE=api_keys/dryrun_tokens.json GS_SAMPLES_DIR=DATA/gold_standard   .venv/Scripts/python.exe -m uvicorn annotation_server.api:app       --host 127.0.0.1 --port 8000 --log-level warning
+
+# 3. UI, on :8501, in a second terminal
+GS_API_URL=http://127.0.0.1:8000   .venv-ml/Scripts/python.exe -m streamlit run gold_standard/app.py       --server.port 8501 --server.headless true
+```
+
+Then open a link from `api_keys/DRYRUN_LINKS.txt` (start with a *practice* one).
+Check: `curl http://127.0.0.1:8000/health` -> `{"ok":true}`.
+
+### What the dry run must prove
+
+Not just "it loads". Four things, in order:
+
+1. `/sentences` is **token-scoped** -- a pilot token sees 100 rows, a practice
+   token sees 10, and neither sees the other's.
+2. **Sentence ids survive the round trip.** Every real id looks like
+   `u-1e3f720f8c7fc360#007`. The `#` must be percent-encoded in the PUT path
+   (`gold_standard/app.py` does this via `quote(sid, safe="")`). Unencoded, the
+   server receives only the posting id, the two sentences drawn from one posting
+   overwrite each other, and every saved id loses its suffix -- i.e. **every
+   save is corrupted**, silently, and you find out at IAA time.
+3. The admin zip export yields `<split>_{AV,AI,AD}.json` + `events.csv` +
+   `progress.json`, which is exactly what `gold_standard.iaa --ann-dir` reads.
+4. `gold_standard.iaa` runs on it and produces a token-level kappa. If kappa comes
+   back `n/a` with "no sentence text was available", the usual cause is an
+   out-of-schema `relevance` value: it must be one of
+   `RELEVANT / NON_RELEVANT / UNCERTAIN`. `YA / TIDAK` is the `has_5tag`
+   vocabulary, not relevance -- mixing them up silently empties the token level.
+
+### Afterwards
+
+`gold_standard.iaa` writes into `DATA/gold_standard/iaa/`. Move or delete the
+dry-run artefacts so synthetic numbers can never be mistaken for real
+reliability evidence, and delete the dry-run tokens before minting live ones.
+
 ## Deploy
 
 Prerequisites: a Fly.io account with `flyctl` installed, and this repo pushed to
