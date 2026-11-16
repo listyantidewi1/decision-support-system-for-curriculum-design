@@ -95,8 +95,14 @@ Two virtualenvs, **both inside the working tree**:
 
 | Env | Use | Invoke |
 |---|---|---|
-| `.venv-ml/` | all ML / pipeline / gold-standard code (CPU torch, scipy, pandas) | `.\run.ps1` wrapper, or `.venv-ml\Scripts\python.exe` |
+| `.venv-ml/` | all ML / pipeline / gold-standard code, **including the Streamlit annotator UI** `gold_standard/app.py` (CPU torch, scipy, pandas, streamlit) | `.\run.ps1` wrapper, or `.venv-ml\Scripts\python.exe` |
 | `.venv/` | the annotation collector only (fastapi, uvicorn) | `.venv\Scripts\python.exe` |
+
+The two halves of the annotation stack need **different** venvs: the collector
+(`annotation_server.api`, uvicorn) runs under `.venv`, which has fastapi and no
+streamlit; the UI (`gold_standard/app.py`) runs under `.venv-ml`, which has
+streamlit and no fastapi. Running either under the other's venv fails with
+`No module named …`.
 
 System Python on `C:` has **no** ML packages (since the 2026-05-12 migration).
 
