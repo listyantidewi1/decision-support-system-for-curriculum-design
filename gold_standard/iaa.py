@@ -672,6 +672,19 @@ def _prf(tp: int, n_a: int, n_b: int) -> dict:
     return {"tp": tp, "n_a": n_a, "n_b": n_b, "precision": prec, "recall": rec, "f1": f1}
 
 
+# ---- cross-module API (do not change the SEMANTICS of these four names) ------
+# `gold_standard.seal.score_on_test` computes the published model score with the
+# SAME matcher, the same P/R/F1 convention and the same percentile CI that the
+# IAA ceiling is measured with — two incompatible span-F1s in one repo would
+# make the ceiling and the score non-comparable, and the ceiling is what the
+# score is read against. These public aliases say so out loud; in particular
+# `_prf`'s NaN-on-both-empty convention and `_greedy_match`'s EPS cardinality
+# dominance are now load-bearing for every published test number.
+prf = _prf
+greedy_match = _greedy_match
+percentile_ci = _percentile_ci
+
+
 def _span_pair_per_sentence(a_by_sid, b_by_sid, label_sensitive, exact) -> dict:
     """Per-sentence (tp, n_a, n_b) for every sentence both annotators judged.
     Kept separate from the aggregate so a CI can be bootstrapped over sentences —

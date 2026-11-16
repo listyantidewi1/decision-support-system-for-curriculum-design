@@ -1,0 +1,91 @@
+{
+  "registry_version": "1.0.0",
+  "note": "Pre-registered split configurations. gold_standard.split refuses a config that is absent here, whose recomputed content_sha256 differs from the registered one, or whose body is marked runnable:false. PROP:1431 requires the enlargement rule to be fixed before the final benchmark and recorded in a version log; this file plus DATA/gold_standard/splits/version_log.jsonl are that record.",
+  "configs": {
+    "CONFIG_A": {
+      "registered_utc": "2026-11-16T02:38:22+00:00",
+      "registered_git_commit": "40fa42971f7533f012611b53e9169082e23384f6",
+      "frozen": true,
+      "content_sha256": "3f3b60393bdfbdb9e57babc85ec91a88957e2ed4fb8dee1a7f73c76a554b5d08",
+      "body": {
+        "primary": true,
+        "runnable": true,
+        "targets": {
+          "train": 720,
+          "dev": 240,
+          "test": 240
+        },
+        "origin": "proposal-origin, verbatim (PROP:1431): 'dibagi secara group-aware menjadi 60% training set (720 kalimat), 20% development set (240 kalimat), dan 20% held-out test set (240 kalimat)'",
+        "rationale": "The proposal IS the pre-registration. CONFIG_A2 is measurably better on CI width but editing a verbatim pre-registered number for an unmeasurable gain is the worse liability, so A2 is registered and not run."
+      }
+    },
+    "CONFIG_A2": {
+      "registered_utc": "2026-11-16T02:38:22+00:00",
+      "registered_git_commit": "40fa42971f7533f012611b53e9169082e23384f6",
+      "frozen": true,
+      "content_sha256": "cc3afb34cd753675c9c73ffe7939a6bfc2f1a618b776009a79e0729d7cf0ab09",
+      "body": {
+        "primary": false,
+        "runnable": false,
+        "targets": {
+          "train": 600,
+          "dev": 240,
+          "test": 360
+        },
+        "origin": "code-origin optimisation, registered UN-RUN so the record shows it was computed before the data was opened and deliberately not taken",
+        "rationale": "Local slope of the measured learning curve (0.468-0.424)/720 = 6.1e-5 F1/sentence, so moving 120 sentences out of train costs 0.0073 F1, four times inside the 0.030 seed spread, while the test CI at F1=0.5 narrows from 0.109 to 0.089. Rejected as primary because it edits a verbatim pre-registered number (PROP:1431)."
+      }
+    },
+    "CONFIG_B": {
+      "registered_utc": "2026-11-16T02:38:22+00:00",
+      "registered_git_commit": "40fa42971f7533f012611b53e9169082e23384f6",
+      "frozen": true,
+      "content_sha256": "3b55c61817deb32c69904e04b6f61ab549ad6622bccd3030c5a51b8a8cfded78",
+      "body": {
+        "primary": false,
+        "runnable": false,
+        "targets": {
+          "train": 1440,
+          "dev": 480,
+          "test": 480
+        },
+        "origin": "code-origin; the enlarged configuration ENLARGE_R2 allocates to",
+        "nested": true,
+        "rationale": "Measured curve gives +0.045 F1 from 720->1440 and +0.0035 from 1440->2880, the latter inside the 0.030 seed spread, so one doubling of the train split is the largest defensible enlargement. Nested: Config B's test must be a strict superset of Config A's test, so an enlargement can only add evidence and can never re-draw a luckier test set.",
+        "requires": "ENLARGE_R1 trigger on train+dev adjudicated gold; test never opened"
+      }
+    },
+    "ENLARGE_R1": {
+      "registered_utc": "2026-11-16T02:38:22+00:00",
+      "registered_git_commit": "40fa42971f7533f012611b53e9169082e23384f6",
+      "frozen": true,
+      "content_sha256": "63517f6e59741a5373fb56588df19fd1788c9adc3a2d5ae1ed5bd7b48e1bbba3",
+      "body": {
+        "primary": false,
+        "runnable": false,
+        "rule_type": "trigger",
+        "origin": "trigger is proposal-origin (PROP:1431: a five-tag label with support too small to evaluate meaningfully on the held-out test set, enlarged BEFORE the test set is frozen, under a rule fixed before the final benchmark and logged in the version log); the NUMBER is code-origin",
+        "trigger": "any of SH/SS/KN/TT/WB with projected test span support < 120, projected from the adjudicated TRAIN+DEV gold only, test never opened",
+        "min_test_support_spans_per_tag": 120,
+        "derivation": "gold_standard.iaa.CI_WIDTH_CLAIMABLE=0.20 -> N >= 4*1.96^2*0.25/0.04 = 96.04 spans at worst-case p=0.5, x DEFF 1.18 = 113.3 -> 120",
+        "caveat": "no numeric support threshold exists in the proposal or in Paket B v3, which assigns it to the researcher (B3:32)"
+      }
+    },
+    "ENLARGE_R2": {
+      "registered_utc": "2026-11-16T02:38:22+00:00",
+      "registered_git_commit": "40fa42971f7533f012611b53e9169082e23384f6",
+      "frozen": true,
+      "content_sha256": "a040de229975769f6bf604b1c274cb66f9447956899312756d4e843f205e9c7d",
+      "body": {
+        "primary": false,
+        "runnable": false,
+        "rule_type": "allocation",
+        "origin": "code-origin",
+        "allocation": "additional sentences split 60/20/20",
+        "max_total_gold_n": 2400,
+        "nested": true,
+        "rationale": "Cap at 2,400 (1,440/480/480) because the measured learning curve's 1440->2880 gain (+0.0035) is inside the 0.030 seed spread. Enlargement must be NESTED: extend_split asserts by row-level sha that no base sentence changed part."
+      }
+    }
+  }
+}

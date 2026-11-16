@@ -13,11 +13,22 @@ Pipeline (all researcher-side, "catatan peneliti" per B-0 step 2-3):
      token signal) to drive the stratified sample.
 
 Run:  .venv-ml\\Scripts\\python.exe -m gold_standard.build_pool
-Output: DATA/gold_standard/sentence_pool.parquet
+Output: DATA/gold_standard/sentence_pool.parquet          (sentence rows)
+        DATA/gold_standard/posting_shingles.parquet       (template signatures)
+
+NOTE on the two provenance columns: `employer_hash` and `query_family` are
+carried through from the raw batches because the group-aware split (Subbab
+3.3.3) cannot enforce "postings from the same employer or template never
+straddle train and test" without them. The pool on disk predates this change,
+so a pool REBUILD is required before `gold_standard.split` can run on real
+data; until then `gold_standard.posting_keys` reconstructs the same keys from
+the raw batches as a sidecar, which leaves `sentence_pool.parquet` (and the
+`pool_sha1_16` that `pilot_100_manifest.json` pins) byte-identical.
 """
 from __future__ import annotations
 
 import html as _htmllib
+import json
 import re
 from pathlib import Path
 
@@ -25,7 +36,9 @@ import pandas as pd
 
 from governance.ladder import REPO_ROOT, load_all_batches
 from preprocess_jobs_pipeline import score_sentence_for_relevance_rescue, split_sentences
-from . import SEED
+from . import SEED, SHINGLE_WORDS
+from . import textsig
+from .textsig import shingles_from_clean_text, signature_fingerprint
 
 FLAGS_DIR = REPO_ROOT / "results" / "corpus_audits"
 OUT_DIR = REPO_ROOT / "DATA" / "gold_standard"
@@ -162,8 +175,14 @@ def build_pool() -> pd.DataFrame:
     raw = load_all_batches()
     raw = (raw.sort_values(["acquisition_timestamp", "source_record_id"], kind="stable")
               .drop_duplicates("source_record_id"))   # deterministic first sighting
+    # employer_hash + query_family are already in governance.ladder.LOAD_COLUMNS,
+    # but the ladder's flags_out drops them and this projection used to drop them
+    # too, so the split layer had no grouping key at all. They are carried here
+    # (from the RAW batches, where add_provenance wrote them) because the
+    # employer/template non-straddling rule (Subbab 3.3.3) is enforceable only
+    # with them. query_family is the only occupation signal the corpus records.
     raw = raw[["source_record_id", "batch_id", "title", "description",
-               "date_posted"]]
+               "date_posted", "employer_hash", "query_family"]]
 
     df = elig.merge(raw, on="source_record_id", how="inner")
     print(f"  eligible postings with text: {len(df):,}", flush=True)
@@ -178,9 +197,23 @@ def build_pool() -> pd.DataFrame:
     print(f"  postings after stratum cap: {len(df):,}", flush=True)
 
     rows = []
+    shingle_rows = []
     for rec in df.itertuples(index=False):
+        clean = _html_to_text(rec.description)
+        # Template signature, computed HERE because this is the only stage that
+        # still holds the description text: the pool deliberately carries no
+        # description (662k sentence rows x a posting body is unusable), so the
+        # split layer would otherwise have to re-read all 25 raw batches. Written
+        # to a sidecar, not into the pool, so the pool's row size is unchanged.
+        sh = shingles_from_clean_text(clean)
+        shingle_rows.append({
+            "posting_id": rec.source_record_id,
+            "n_shingles": int(sh.size),
+            "shingles": sh.tolist(),
+            "shingle_sha1_16": signature_fingerprint(sh),
+        })
         sents = []
-        for seg in split_sentences(_html_to_text(rec.description)):
+        for seg in split_sentences(clean):
             for piece in _resplit_long(_normalize_sentence(seg)):
                 piece = _normalize_sentence(piece)   # re-strip markers on split pieces
                 if len(piece) >= 15:        # drop degenerate fragments
@@ -194,6 +227,8 @@ def build_pool() -> pd.DataFrame:
                 "sentence_id": f"{rec.source_record_id}#{i:03d}",
                 "posting_id": rec.source_record_id,
                 "batch_id": rec.batch_id,
+                "employer_hash": rec.employer_hash if isinstance(rec.employer_hash, str) else "",
+                "query_family": rec.query_family if isinstance(rec.query_family, str) else "",
                 "stratum": rec.stratum,
                 "country_iso": rec.country_iso,
                 "site": rec.site,
@@ -221,10 +256,38 @@ def build_pool() -> pd.DataFrame:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     out = OUT_DIR / "sentence_pool.parquet"
     pool.to_parquet(out, index=False)
+
+    shingles = pd.DataFrame(shingle_rows)
+    sh_out = OUT_DIR / "posting_shingles.parquet"
+    shingles.to_parquet(sh_out, index=False)
+    # The signature PARAMETERS come from textsig itself. Four of them used to be
+    # restated here, and `shingle_max_chars: 2500` had become a LIE the moment
+    # the leakage window was removed: `shingles_from_clean_text(clean)` above is
+    # called with no max_chars, so these signatures cover the FULL cleaned text.
+    # A manifest that misdescribes the artifact beside it is worse than no
+    # manifest, because the consumer trusts it.
+    #
+    # The `signature_cache` block is the FINGERPRINT `groups._try_sidecar`
+    # demands before it will reuse this sidecar instead of re-shingling all 25
+    # raw batches (~60 s). It is built from the `shingle_sha1_16` column that is
+    # already computed above, so it costs nothing here.
+    (OUT_DIR / "posting_shingles_manifest.json").write_text(json.dumps({
+        "source": "gold_standard.build_pool",
+        "pool_file": out.name,
+        "flags_file": flags_path.name,
+        "n_postings": int(len(shingles)),
+        **textsig.signature_params(),
+        "n_empty_signatures": int((shingles["n_shingles"] == 0).sum()),
+        "signature_cache": textsig.cache_fingerprint(dict(zip(
+            shingles["posting_id"].astype(str), shingles["shingle_sha1_16"]))),
+    }, indent=2), encoding="utf-8")
+
     print(f"\nsentence pool: {len(pool):,} sentences from {df['source_record_id'].nunique():,} postings", flush=True)
     print("by stratum:\n", pool["stratum"].value_counts().to_string(), flush=True)
     print("indonesian-signal sentences:", int(pool["is_indonesian_sentence"].sum()), flush=True)
-    print(f"-> {out}", flush=True)
+    print("employer_hash missing on", int((pool["employer_hash"] == "").sum()),
+          "sentences (the employer rule is UNVERIFIABLE for those postings)", flush=True)
+    print(f"-> {out}\n-> {sh_out}", flush=True)
     return pool
 
 

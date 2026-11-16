@@ -25,8 +25,8 @@ import pandas as pd
 
 from governance.ladder import REPO_ROOT
 from . import (ANNOTATOR_LANGUAGES, BORDERLINE_SHARE, GOLD_STANDARD_VERSION,
-               GUIDELINE_CODE, MAIN_N, MIN_LOCAL_LANG_SHARE, PILOT_N,
-               PRACTICE_N, SEED,
+               GUIDELINE_CODE, MAIN_N, MAX_SENT_PER_GROUP,
+               MIN_LOCAL_LANG_SHARE, PILOT_N, PRACTICE_N, SEED,
                STRATUM_QUOTA)
 
 GS_DIR = REPO_ROOT / "DATA" / "gold_standard"
@@ -59,6 +59,33 @@ def _cap_per_posting(df: pd.DataFrame, cap: int, seed: int) -> pd.DataFrame:
               .head(cap))
 
 
+def _cap_per_group(df: pd.DataFrame, cap: int | None, seed: int) -> pd.DataFrame:
+    """Keep at most `cap` sentences per LEAKAGE GROUP (employer u template).
+
+    One level above `_cap_per_posting`, and it does two jobs at once: it bounds
+    how much of the sample any one employer/template family can occupy, and it
+    makes every group weigh 1 or 2 sentences, which is the precondition of the
+    parity proof that lets `gold_standard.split` hit 720/240/240 exactly while
+    keeping groups atomic. It also lowers within-split clustering, hence the
+    design effect, hence the test CI.
+    """
+    if not cap or "group_id" not in df.columns:
+        return df
+    return (df.sample(frac=1.0, random_state=seed)
+              .groupby("group_id", sort=False)
+              .head(cap))
+
+
+def _load_group_map() -> dict[str, str]:
+    path = GS_DIR / "leakage_groups.parquet"
+    if not path.exists():
+        raise FileNotFoundError(
+            f"{path} is missing: a group-capped draw needs the leakage group map. "
+            f"Run gold_standard.posting_keys then gold_standard.groups first.")
+    frame = pd.read_parquet(path, columns=["posting_id", "group_id"])
+    return dict(zip(frame["posting_id"].astype(str), frame["group_id"].astype(str)))
+
+
 def _spread_sample(df: pd.DataFrame, k: int, seed: int,
                    strata=("site", "length_band")) -> pd.DataFrame:
     """Sample k rows spread proportionally across the given strata, then trimmed."""
@@ -79,10 +106,16 @@ def _spread_sample(df: pd.DataFrame, k: int, seed: int,
     return out
 
 
-def _take_stratum(df: pd.DataFrame, k: int, local_frac: float, seed: int) -> pd.DataFrame:
+def _take_stratum(df: pd.DataFrame, k: int, local_frac: float, seed: int,
+                  group_cap: int | None = None) -> pd.DataFrame:
     """Select k sentences from one stratum's candidate pool honoring the local-
-    language minimum and the borderline minority, capped per posting."""
+    language minimum and the borderline minority, capped per posting (and, for
+    the main draw, per leakage group)."""
     df = _cap_per_posting(df, MAX_PER_POSTING, seed)
+    # Applied BEFORE the content/borderline split so every downstream pick AND
+    # the top-up path draw from an already-capped frame: the cap then holds by
+    # construction rather than being re-checked afterwards.
+    df = _cap_per_group(df, group_cap, seed)
     content = df[df["relevance_score"] >= RELEVANCE_FLOOR]
     borderline = df[df["relevance_score"] < RELEVANCE_FLOOR]
 
@@ -109,9 +142,28 @@ def _take_stratum(df: pd.DataFrame, k: int, local_frac: float, seed: int) -> pd.
 
 
 def draw_sample(n: int, exclude_ids: set[str] | None = None,
-                seed: int = SEED) -> pd.DataFrame:
+                seed: int = SEED, group_cap: int | None = None,
+                exclude_groups: set[str] | None = None) -> pd.DataFrame:
+    """Draw n sentences. `group_cap` / `exclude_groups` are used by the MAIN draw
+    only; with both left None the pilot and practice draws are byte-identical to
+    what the annotators already hold (regression-pinned by tests/test_split.py)."""
     pool = pd.read_parquet(POOL_PATH)
     pool = pool.sort_values("sentence_id").drop_duplicates("sentence_text", keep="first")
+    if group_cap or exclude_groups:
+        gmap = _load_group_map()
+        pool = pool.assign(group_id=pool["posting_id"].astype(str).map(gmap))
+        ungrouped = int(pool["group_id"].isna().sum())
+        if ungrouped:
+            raise RuntimeError(
+                f"{ungrouped} pool sentences have no leakage group — the group map "
+                f"is stale relative to {POOL_PATH.name}. Rerun "
+                f"gold_standard.posting_keys and gold_standard.groups.")
+        if exclude_groups:
+            pool = pool[~pool["group_id"].isin(set(exclude_groups))]
+        # Cap GLOBALLY as well as per stratum: leakage groups cross strata (781
+        # employers appear in more than one), and the rounding top-up below draws
+        # straight from `pool`, which would otherwise be an uncapped back door.
+        pool = _cap_per_group(pool, group_cap, seed)
     # Restrict to languages the human annotators can read (English + Indonesian).
     pool = pool[pool["posting_language"].isin(ANNOTATOR_LANGUAGES)]
     # Keep sentences within an annotatable length band.
@@ -124,7 +176,8 @@ def draw_sample(n: int, exclude_ids: set[str] | None = None,
     for stratum, frac in STRATUM_QUOTA.items():
         k = round(n * frac)
         cand = pool[pool["stratum"] == stratum]
-        parts.append(_take_stratum(cand, k, MIN_LOCAL_LANG_SHARE.get(stratum, 0.0), seed))
+        parts.append(_take_stratum(cand, k, MIN_LOCAL_LANG_SHARE.get(stratum, 0.0),
+                                   seed, group_cap=group_cap))
     sample = pd.concat(parts, ignore_index=True)
 
     # Correct rounding drift to land exactly on n. _spread_sample can itself
@@ -151,11 +204,18 @@ def draw_sample(n: int, exclude_ids: set[str] | None = None,
                   "the filtered pool is exhausted. Report the achieved n.", flush=True)
 
     sample = sample.sample(frac=1.0, random_state=seed).reset_index(drop=True)
+    if group_cap:
+        worst = int(sample["group_id"].value_counts().max()) if len(sample) else 0
+        if worst > group_cap:
+            raise RuntimeError(
+                f"group cap violated: {worst} sentences from one leakage group "
+                f"(cap {group_cap}). The parity proof in gold_standard.split "
+                f"depends on this, so the draw is refused rather than written.")
     sample.insert(0, "sample_order", range(1, len(sample) + 1))
     return sample[["sample_order", *SAMPLE_COLUMNS]]
 
 
-def _write(sample: pd.DataFrame, split: str) -> None:
+def _write(sample: pd.DataFrame, split: str, extra: dict | None = None) -> None:
     GS_DIR.mkdir(parents=True, exist_ok=True)
     pq = GS_DIR / f"{split}.parquet"
     csv = GS_DIR / f"{split}.csv"
@@ -194,6 +254,8 @@ def _write(sample: pd.DataFrame, split: str) -> None:
         "borderline_count": int((sample["relevance_score"] < RELEVANCE_FLOOR).sum()),
         "distinct_postings": int(sample["posting_id"].nunique()),
     }
+    if extra:
+        manifest.update(extra)
     (GS_DIR / f"{split}_manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
     target_border = round(len(sample) * BORDERLINE_SHARE)
@@ -241,8 +303,34 @@ def main() -> None:
         used |= set(practice["posting_id"])
 
     if args.main:
-        main_sample = draw_sample(MAIN_N, exclude_ids=used)
-        _write(main_sample, "main_1200")
+        # The MAIN draw is group-aware: at most MAX_SENT_PER_GROUP sentences per
+        # leakage group, and every group that touches a pilot or practice posting
+        # is excluded outright. Group-level, not posting-level: the pilot is
+        # pre-registered calibration-only and never trains anything (PROP:1430),
+        # so anything the employer/template map ties to it stays out.
+        gmap = _load_group_map()
+        quarantined = {gmap[p] for p in used if p in gmap}
+        main_sample = draw_sample(MAIN_N, exclude_ids=used,
+                                  group_cap=MAX_SENT_PER_GROUP,
+                                  exclude_groups=quarantined)
+        groups = main_sample["posting_id"].astype(str).map(gmap)
+        sizes = groups.value_counts()
+        pool_meta = pd.read_parquet(POOL_PATH, columns=["posting_id", "stratum"])
+        pool_meta["group_id"] = pool_meta["posting_id"].astype(str).map(gmap)
+        cost = {str(st): int(g.loc[g["group_id"].isin(quarantined), "posting_id"].nunique())
+                for st, g in pool_meta.groupby("stratum", sort=True)}
+        _write(main_sample, "main_1200", extra={
+            "group_cap": MAX_SENT_PER_GROUP,
+            "max_sent_per_group": int(sizes.max()) if len(sizes) else 0,
+            "n_groups": int(len(sizes)),
+            "n_weight1_groups": int((sizes == 1).sum()),
+            "n_weight2_groups": int((sizes == 2).sum()),
+            "n_quarantined_groups": len(quarantined),
+            "quarantine_cost_postings_by_stratum": cost,
+            "quarantine_note": "groups touching pilot_100 / practice_10 are excluded "
+                               "from the main draw (PROP:1430: pilot data are never "
+                               "the held-out test set)",
+        })
 
 
 if __name__ == "__main__":
