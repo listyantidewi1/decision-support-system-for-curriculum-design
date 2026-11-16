@@ -175,6 +175,164 @@ def test_admin_progress_reports_per_annotator_counts():
         assert by["AV"] == 3 and by["AI"] == 1      # started-vs-empty is visible
 
 
+# --------------------------------------------------------------- sentences
+# The hosted UI is deployed from the repo, where DATA/gold_standard is
+# gitignored, so it has NO sentence data and must fetch the sample from the
+# collector under the annotator's own token.
+_SAMPLE_HEADER = ("sample_order,sentence_id,posting_id,country_iso,site,"
+                  "posting_language,quarter,previous_sentence,sentence_text,"
+                  "next_sentence")
+
+_PILOT_CSV = "\n".join([
+    _SAMPLE_HEADER,
+    # Deliberately out of order on disk, to prove the endpoint sorts.
+    "2,s-002,p-1,ID,jobstreet,id,2026Q3,,Menguasai Python dan SQL.,",
+    "1,s-001,p-1,ID,jobstreet,id,2026Q3,,Mampu bekerja dalam tim.,",
+]) + "\n"
+
+_PRACTICE_CSV = "\n".join([
+    _SAMPLE_HEADER,
+    "1,pr-001,p-9,ID,glints,id,2026Q2,,Kalimat latihan.,",
+]) + "\n"
+
+
+def _write_samples(d: Path) -> Path:
+    sd = d / "samples"
+    sd.mkdir(parents=True, exist_ok=True)
+    (sd / "pilot_100.csv").write_text(_PILOT_CSV, encoding="utf-8")
+    (sd / "practice_10.csv").write_text(_PRACTICE_CSV, encoding="utf-8")
+    os.environ["GS_SAMPLES_DIR"] = str(sd)
+    return sd
+
+
+def test_sentences_are_scoped_to_the_token_split():
+    with tempfile.TemporaryDirectory() as d:
+        _write_samples(Path(d))
+        c = _client(Path(d))
+        pilot = c.get("/sentences", headers={"Authorization": f"Bearer {AV_TOK}"})
+        practice = c.get("/sentences",
+                         headers={"Authorization": "Bearer tok-av-practice"})
+        assert pilot.status_code == 200, pilot.text
+        assert practice.status_code == 200, practice.text
+        assert pilot.json()["split"] == "pilot_100"
+        assert pilot.json()["n"] == 2
+        # The SAME annotator on a practice token must receive practice
+        # sentences, never the pilot ones - this is what stops warm-up clicks
+        # from landing on gold-standard material.
+        assert practice.json()["split"] == "practice_10"
+        assert [r["sentence_id"] for r in practice.json()["rows"]] == ["pr-001"]
+
+
+def test_sentences_require_a_token():
+    with tempfile.TemporaryDirectory() as d:
+        _write_samples(Path(d))
+        c = _client(Path(d))
+        assert c.get("/sentences").status_code == 401
+
+
+def test_sentences_are_ordered_by_sample_order():
+    with tempfile.TemporaryDirectory() as d:
+        _write_samples(Path(d))
+        c = _client(Path(d))
+        rows = c.get("/sentences",
+                     headers={"Authorization": f"Bearer {AV_TOK}"}).json()["rows"]
+        # On-disk order is 2 then 1; the annotator must see 1 then 2, because
+        # sample_order IS the presentation order the sampling design fixed.
+        assert [r["sample_order"] for r in rows] == ["1", "2"]
+        assert rows[0]["sentence_id"] == "s-001"
+
+
+def test_sentences_carry_the_columns_the_ui_renders():
+    with tempfile.TemporaryDirectory() as d:
+        _write_samples(Path(d))
+        c = _client(Path(d))
+        row = c.get("/sentences",
+                    headers={"Authorization": f"Bearer {AV_TOK}"}).json()["rows"][0]
+        for col in ("sentence_id", "posting_id", "country_iso", "site",
+                    "posting_language", "quarter", "sentence_text"):
+            assert col in row, f"UI reads {col} but the endpoint does not serve it"
+
+
+def test_missing_sample_is_a_deployment_error_not_a_client_error():
+    with tempfile.TemporaryDirectory() as d:
+        sd = _write_samples(Path(d))
+        (sd / "pilot_100.csv").unlink()
+        c = _client(Path(d))
+        r = c.get("/sentences", headers={"Authorization": f"Bearer {AV_TOK}"})
+        # 503, not 404: the token is valid, the DEPLOYMENT is incomplete. A 404
+        # would send the annotator hunting for a bad link.
+        assert r.status_code == 503, r.status_code
+        assert "gold_standard.sample" in r.json()["detail"]
+
+
+def test_empty_sample_file_is_refused():
+    with tempfile.TemporaryDirectory() as d:
+        sd = _write_samples(Path(d))
+        (sd / "pilot_100.csv").write_text(_SAMPLE_HEADER + "\n", encoding="utf-8")
+        c = _client(Path(d))
+        r = c.get("/sentences", headers={"Authorization": f"Bearer {AV_TOK}"})
+        assert r.status_code == 503, r.status_code
+
+
+def test_split_name_cannot_escape_the_samples_directory():
+    from annotation_server.samples import SampleUnavailable, load_rows
+    with tempfile.TemporaryDirectory() as d:
+        _write_samples(Path(d))
+        # Token files are hand-edited, so a stray traversal must be refused
+        # rather than reading an arbitrary CSV off the container filesystem.
+        for bad in ("../pilot_100", "a/b", "..", ".hidden", ""):
+            try:
+                load_rows(bad)
+            except (SampleUnavailable, FileNotFoundError):
+                continue
+            raise AssertionError(f"traversal not refused: {bad!r}")
+
+
+def test_real_sentence_ids_containing_a_hash_round_trip():
+    """Every real sentence_id is "<posting_id>#<nnn>".
+
+    An unescaped "#" in a URL starts a FRAGMENT, so a client that interpolates
+    the raw id into the path sends only the posting_id and the server stores the
+    wrong key - silently, and identically for every sentence drawn from the same
+    posting, so they overwrite each other. This was a live bug in the UI
+    (gold_standard/app.py), missed because earlier fixtures used ids like "s1".
+    The client must percent-encode; the server must decode back to the full id.
+    """
+    from urllib.parse import quote
+    sid = "u-510a0282f82fa429#001"
+    sid2 = "u-510a0282f82fa429#002"            # same posting, different sentence
+    with tempfile.TemporaryDirectory() as d:
+        _write_samples(Path(d))
+        c = _client(Path(d))
+        h = {"Authorization": f"Bearer {AV_TOK}"}
+        for i, x in enumerate((sid, sid2), 1):
+            r = c.put(f"/annotations/{quote(x, safe='')}", headers=h,
+                      json={"relevance": "RELEVANT", "has_5tag": "YA",
+                            "spans": [{"start": 0, "end": i, "label": "TT"}]})
+            assert r.status_code == 200, r.text
+            assert r.json()["saved"] == x, f"id mangled: {r.json()['saved']!r}"
+        back = c.get("/annotations", headers=h).json()
+        # Both survive as DISTINCT records with their suffixes intact.
+        assert set(back) == {sid, sid2}, sorted(back)
+        assert back[sid]["spans"][0]["end"] == 1
+        assert back[sid2]["spans"][0]["end"] == 2
+
+
+def test_unencoded_hash_would_lose_the_suffix():
+    """Pin the failure mode, so nobody 'simplifies' the quote() call away."""
+    with tempfile.TemporaryDirectory() as d:
+        _write_samples(Path(d))
+        c = _client(Path(d))
+        h = {"Authorization": f"Bearer {AV_TOK}"}
+        c.put("/annotations/u-deadbeef#007", headers=h,
+              json={"relevance": "RELEVANT"})
+        back = c.get("/annotations", headers=h).json()
+        # The "#007" never reaches the server: this is the corruption the
+        # encoding prevents, asserted so the regression is visible.
+        assert "u-deadbeef#007" not in back
+        assert "u-deadbeef" in back, sorted(back)
+
+
 def _run_standalone() -> int:
     fns = {n: f for n, f in sorted(globals().items())
            if n.startswith("test_") and callable(f)}

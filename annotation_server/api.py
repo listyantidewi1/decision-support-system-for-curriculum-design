@@ -8,6 +8,7 @@ them from one place instead of chasing three people for files.
 Endpoints
   GET  /health                     liveness, no auth
   GET  /me                         who this token is (annotator + split)
+  GET  /sentences                  the caller's own split's sentences to annotate
   GET  /annotations                caller's own saved work, for resume
   PUT  /annotations/{sentence_id}  upsert one sentence (idempotent)
   GET  /admin/progress             per-annotator counts + first/last save
@@ -31,6 +32,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from .auth import Principal, resolve
+from .samples import SampleUnavailable, load_rows
 from .store import Store
 
 DEFAULT_DB_PATH = "data/annotations.sqlite"
@@ -79,6 +81,26 @@ def health() -> dict:
 @app.get("/me")
 def me(p: Principal = Depends(principal)) -> dict:
     return {"annotator": p.annotator, "split": p.split, "admin": p.admin}
+
+
+@app.get("/sentences")
+def sentences(p: Principal = Depends(principal)) -> dict:
+    """The sentences THIS token is entitled to annotate.
+
+    The hosted UI is deployed from the repo, where DATA/gold_standard is
+    gitignored, so it has no sentence data of its own. Serving the sample here
+    means the UI stores nothing, and sentence delivery is gated by the same
+    token as writing — a practice token gets practice sentences, and the pilot
+    sentences are not readable from the public UI URL without a token.
+    """
+    try:
+        rows = load_rows(p.split)
+    except SampleUnavailable as exc:
+        # 503, not 404: the split is valid (it came from a trusted token), the
+        # DEPLOYMENT is incomplete. A 404 would send the annotator looking for a
+        # bad link when the researcher needs to redeploy.
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    return {"split": p.split, "n": len(rows), "rows": rows}
 
 
 @app.get("/annotations")

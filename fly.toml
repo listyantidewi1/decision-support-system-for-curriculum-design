@@ -1,0 +1,42 @@
+# Fly.io deployment for the ANNOTATION COLLECTOR only (annotation_server/).
+# The annotator UI is deployed separately on Streamlit Community Cloud.
+#
+# Run `fly launch --no-deploy` once to create the app and claim the name, then
+# `fly volumes create gs_data --region sin --size 1`, then `fly deploy`.
+app = "rpl-annotation-collector"
+primary_region = "sin"            # Singapore: nearest Fly region to Indonesia
+
+[build]
+  dockerfile = "annotation_server/Dockerfile"
+
+[env]
+  GS_DB_PATH = "/data/annotations.sqlite"
+  GS_SAMPLES_DIR = "/app/samples"
+
+# The whole point of this service: annotations live on a disk that survives a
+# restart. Without this mount the SQLite file sits on the ephemeral container
+# filesystem and every redeploy silently destroys the pilot.
+[[mounts]]
+  source = "gs_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  # SQLite on a single volume means EXACTLY ONE machine. Two machines would each
+  # mount their own volume and the three annotators would be split across two
+  # databases with no error — so never `fly scale count 2` on this app.
+  min_machines_running = 1
+  auto_stop_machines = false
+  auto_start_machines = true
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

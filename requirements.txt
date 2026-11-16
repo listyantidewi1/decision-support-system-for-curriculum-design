@@ -1,0 +1,17 @@
+# Deployment manifest for the ANNOTATOR UI only (gold_standard/app.py), which is
+# what Streamlit Community Cloud installs when it deploys this repo.
+#
+# This is deliberately NOT the project's full research environment: model
+# training, the corpus pipeline and the dashboards run from .venv-ml locally and
+# are never deployed. Keeping this file minimal keeps the hosted UI small and
+# means a broken ML dependency cannot take the annotators offline mid-pilot.
+#
+# The UI stores nothing: sentences come from the collector's /sentences endpoint
+# and annotations go to its /annotations endpoint, both under the annotator's
+# own token. See annotation_server/README.md.
+streamlit>=1.40
+pandas>=2.2
+requests>=2.32
+# Only needed for LOCAL (no GS_API_URL) runs, which read the sample parquet
+# directly. Harmless on the hosted UI, which never touches it.
+pyarrow>=16

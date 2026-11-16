@@ -33,13 +33,24 @@ It also closes two problems found during the build:
   **two** links — a `practice_10` one for warm-up and a `pilot_100` one for the
   real thing. Practice writes cannot land in the pilot split.
 
-## Recommended hosting
+## Hosting (decided)
 
-| | Recommendation |
-|---|---|
-| **Annotator UI** | **Streamlit Community Cloud** — free, deploys from this repo, gives a stable public URL. Set `GS_API_URL` and nothing else; the UI keeps no state. |
-| **Collector** | Any host with a **persistent disk**: Fly.io volume, Render disk, Railway volume, or a university VM. Mount it and point `GS_DB_PATH` at it. |
-| **Alternative** | If you would rather not run a second service, run the collector on your own machine behind a Cloudflare Tunnel. Simplest, but your machine must be reachable while the annotators work — over a multi-day pilot that is the weak point, which is why a hosted disk is the recommendation. |
+| | Where | Notes |
+|---|---|---|
+| **Annotator UI** | **Streamlit Community Cloud** | Free, deploys from this GitHub repo, stable public URL. Set `GS_API_URL` and nothing else. |
+| **Collector** | **Fly.io**, Singapore (`sin`), 1 GB volume | `fly.toml` at the repo root is ready. ~$2-5/month. Nearest Fly region to Indonesia. |
+
+**The UI holds no research data.** `DATA/gold_standard/` is gitignored, so a UI
+deployed from GitHub has no sentences on disk — it fetches them from
+`GET /sentences` under the annotator's own token. Two things follow, both
+wanted: no corpus text is published to GitHub, and the pilot sentences are not
+readable from the public UI URL without a token. The sample CSVs are baked into
+the *collector* image instead (~50 KB; never the 128 MB sentence pool).
+
+**One machine only.** SQLite on one volume means `fly scale count 2` would give
+each machine its own volume and split the three annotators across two databases
+with no error. `fly.toml` pins `min_machines_running = 1` and
+`auto_stop_machines = false`.
 
 The one requirement that is not negotiable: **the collector database must sit on
 storage that survives a restart.** If it does not, use the local-file mode
@@ -47,26 +58,38 @@ instead and collect the three JSON files by hand.
 
 ## Deploy
 
+Prerequisites: a Fly.io account with `flyctl` installed, and this repo pushed to
+GitHub (Streamlit Cloud deploys from GitHub, so unpushed commits are not
+deployed).
+
 ```bash
-# 1. mint tokens (writes a gitignored file, prints the links to send)
-.venv-ml\Scripts\python.exe -m annotation_server.make_tokens \
-    --base-url https://YOUR-STREAMLIT-URL --out api_keys/annotation_tokens.json
+# 1. COLLECTOR, on Fly.io. Creates the app, the persistent volume, then deploys.
+fly launch --no-deploy --copy-config --name rpl-annotation-collector
+fly volumes create gs_data --region sin --size 1
+fly deploy                      # builds annotation_server/Dockerfile
+fly status                      # note the hostname, e.g. rpl-annotation-collector.fly.dev
+curl https://rpl-annotation-collector.fly.dev/health      # -> {"ok":true}
 
-# 2. run the collector (locally, or in the container)
-pip install -r annotation_server/requirements.txt
-GS_TOKENS_FILE=api_keys/annotation_tokens.json \
-GS_DB_PATH=/data/annotations.sqlite \
-uvicorn annotation_server.api:app --host 0.0.0.0 --port 8000
+# 2. UI, on Streamlit Community Cloud (share.streamlit.io):
+#    repo = this repo, branch = main, main file = gold_standard/app.py
+#    then under Settings -> Secrets / environment:
+#      GS_API_URL = "https://rpl-annotation-collector.fly.dev"
+#    Root requirements.txt already pins exactly what the UI needs.
 
-# 3. point the Streamlit app at it
-GS_API_URL=https://YOUR-COLLECTOR-URL streamlit run gold_standard/app.py
+# 3. TOKENS. Mint them AFTER the UI URL exists - the URL is baked into each link.
+.venv\Scripts\python.exe -m annotation_server.make_tokens --base-url https://YOUR-STREAMLIT-URL --out api_keys/annotation_tokens.json
+
+# 4. Give the collector the tokens, as a secret (never in the image or git).
+fly secrets set GS_TOKENS="$(cat api_keys/annotation_tokens.json)"
 ```
 
-`docker build -f annotation_server/Dockerfile .` builds the collector image.
+Step 3 prints six links: a `practice_10` and a `pilot_100` link for each of
+AV / AI / AD. Send each annotator **only their own two**, and keep the admin
+token to yourself.
 
-**Secrets.** Tokens are never committed. Supply them as `GS_TOKENS` (a JSON
-object) or `GS_TOKENS_FILE` (a path under the gitignored `api_keys/`). Send each
-annotator only their own two links; keep the admin link to yourself.
+To re-deploy after re-drawing a sample (`python -m gold_standard.sample`), run
+`fly deploy` again so the new CSVs are baked in. Annotations are unaffected:
+they live on the volume, not in the image.
 
 ## Collecting the results
 
@@ -92,6 +115,7 @@ can see at a glance who has started and who has not.
 |---|---|---|---|
 | GET | `/health` | open | liveness |
 | GET | `/me` | annotator | resolve token to (annotator, split) |
+| GET | `/sentences` | annotator | the caller's own split's sentences to annotate |
 | GET | `/annotations` | annotator | own saved work, for resume |
 | PUT | `/annotations/{sentence_id}` | annotator | upsert one sentence (idempotent) |
 | GET | `/admin/progress` | admin | per-annotator counts |

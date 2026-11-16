@@ -1,0 +1,11 @@
+# Build context for annotation_server/Dockerfile. The collector needs its own
+# package plus the sample CSVs; nothing else. Without this file `fly deploy`
+# would upload the 128 MB sentence pool and both virtualenvs on every deploy.
+*
+!annotation_server/
+!DATA/gold_standard/*.csv
+# Never ship credentials or annotator work, even though the sample CSVs come
+# from the same tree.
+api_keys/
+**/api_keys.json
+DATA/gold_standard/annotations/

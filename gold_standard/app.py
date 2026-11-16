@@ -24,6 +24,7 @@ import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import quote
 
 import pandas as pd
 import streamlit as st
@@ -112,6 +113,24 @@ def _api(method: str, path: str, **kw):
     return r.json()
 
 
+@st.cache_data(show_spinner=False)
+def sentences_from_api(api_url: str, token: str) -> pd.DataFrame:
+    """Fetch this token's sentences from the collector.
+
+    The hosted UI is deployed from the repo, where DATA/gold_standard is
+    gitignored, so there is no parquet on disk and the local loader would raise
+    FileNotFoundError on first page load. Cached on (url, token) rather than on
+    the split so nothing is read from st.query_params inside a cached function;
+    two annotators on the same split still each get one fetch, which is cheap.
+    """
+    import requests
+    r = requests.get(f"{api_url}/sentences", timeout=30,
+                     headers={"Authorization": f"Bearer {token}"})
+    r.raise_for_status()
+    rows = r.json().get("rows") or []
+    return pd.DataFrame(rows)
+
+
 def api_whoami() -> dict:
     """Resolve the token to (annotator, split) server-side. The client never
     chooses its own identity, so one annotator cannot open another's workspace."""
@@ -133,7 +152,14 @@ def save_ann(split: str, code: str, data: dict) -> None:
             if sid == "_meta" or not isinstance(rec, dict):
                 continue
             if st.session_state.get("_synced", {}).get(sid) != rec:
-                _api("PUT", f"/annotations/{sid}", json=rec)
+                # quote(): EVERY real sentence_id contains "#" (format
+                # "<posting_id>#<nnn>"), and an unescaped "#" in a URL
+                # starts a FRAGMENT — the server would receive only the
+                # posting_id, so the 2 sentences drawn from one posting
+                # would silently overwrite each other and every saved id
+                # would lose its suffix. safe="" so the "#" and "/" are
+                # both encoded.
+                _api("PUT", f"/annotations/{quote(sid, safe='')}", json=rec)
                 st.session_state.setdefault("_synced", {})[sid] = json.loads(
                     json.dumps(rec))          # deep copy for later comparison
         return
@@ -244,9 +270,21 @@ else:
         st.caption(f"Pedoman AG-RPL-LIMA · data: {split} · tersimpan lokal")
 
 try:
-    sample = load_sample(split)
+    sample = (sentences_from_api(API_URL, _api_token()) if api_enabled()
+              else load_sample(split))
 except FileNotFoundError:
     st.error(f"Sample {split} belum dibuat. Jalankan: python -m gold_standard.sample")
+    st.stop()
+except Exception as exc:                            # noqa: BLE001
+    # In API mode this is a DEPLOYMENT fault (collector down, or its sample CSV
+    # missing), not something the annotator can fix by retrying — so say so
+    # plainly instead of showing a stack trace to a domain expert.
+    st.error("Kalimat tidak dapat dimuat dari server anotasi. Hubungi peneliti; "
+             "anotasi yang sudah tersimpan tidak hilang.")
+    st.caption(f"({type(exc).__name__})")
+    st.stop()
+if sample.empty:
+    st.error(f"Sample {split} kosong.")
     st.stop()
 
 if "ann" not in st.session_state or st.session_state.get("ann_code") != code:
