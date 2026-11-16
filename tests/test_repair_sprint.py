@@ -1,4 +1,13 @@
+import sys
 from pathlib import Path
+
+# Python puts the SCRIPT's directory (tests/) on sys.path, not the cwd, so the
+# project modules below are unimportable when this file is run standalone --
+# which is the only way it CAN be run here, since neither venv has pytest.
+# Every other suite in tests/ already does this; this one was missed.
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from competency_evidence_repair import EvidenceRepairConfig, repair_competencies
 from competency_repair import (
