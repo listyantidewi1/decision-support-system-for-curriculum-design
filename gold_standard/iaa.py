@@ -29,12 +29,30 @@ adjudication queue of every item that was not unanimous, laid out for the lead t
 resolve. Nothing here finalizes gold — it prepares the adjudicator's worksheet.
 
 Run:  .venv-ml\\Scripts\\python.exe -m gold_standard.iaa [--split pilot_100]
-          [--format json|csv|xlsx] [--ann-dir DIR]
+          [--format json|csv|xlsx] [--ann-dir DIR] [--out-dir DIR]
+          [--allow-foreign-ids]
 Reads   DATA/gold_standard/annotations/<split>_<AV|AI|AD>.json   (default; app format)
         or worksheets/<split>_<code>.xlsx  or a dir of Form A-1 CSVs.
 Writes  DATA/gold_standard/iaa/iaa_<split>_<stamp>.{json,md}
         DATA/gold_standard/iaa/adjudication_<split>_<stamp>.csv
         DATA/gold_standard/iaa/provisional_gold_<split>_<stamp>.json   (all gitignored)
+
+Two provenance gates stand between a test run and the evidence directory, both
+added 2026-11-17 after four reports from a four-sentence fixture were found
+sitting in DATA/gold_standard/iaa/ labelled `split: pilot_100` with a
+"substantial" Fleiss kappa (see DATA/gold_standard/_synthetic/):
+
+  1. Every annotated sentence id must be in the split's sample, or the run is
+     refused. `--allow-foreign-ids` lifts that, but then `--out-dir` must point
+     outside the evidence directory — so a test run cannot be mistaken for
+     reliability evidence rather than merely being discouraged from it.
+  2. Input under a `_synthetic/` directory, or under one holding a
+     SYNTHETIC_DO_NOT_CITE.md, cannot write to the evidence directory at all.
+
+Each report records which directory it read and whether its ids were verified,
+under `provenance`. `--ann-dir` used to redirect input only, which is how
+synthetic numbers reached the real directory in the first place.
+tests/test_iaa_provenance.py enforces all of this, with a negative control.
 """
 from __future__ import annotations
 
@@ -1074,6 +1092,28 @@ def build_adjudication(annset: AnnSet, text_by_sid: dict[str, str]) -> dict:
 
 
 # --------------------------------------------------------------------------- orchestrate
+QUARANTINE_MARKER = "SYNTHETIC_DO_NOT_CITE.md"
+QUARANTINE_DIRNAME = "_synthetic"
+
+
+def _quarantine_marker(path: Path) -> str | None:
+    """Why `path` counts as quarantined synthetic data, or None.
+
+    Checks the directory and every ancestor up to the repo root, so marking one
+    directory covers everything beneath it. A directory named `_synthetic` is
+    equivalent to a marker file, so the quarantine survives someone deleting the
+    README.
+    """
+    for d in [path, *path.parents]:
+        if d.name == QUARANTINE_DIRNAME:
+            return f"{d} is a {QUARANTINE_DIRNAME}/ directory"
+        if (d / QUARANTINE_MARKER).is_file():
+            return str(d / QUARANTINE_MARKER)
+        if d == REPO_ROOT:
+            break
+    return None
+
+
 def _text_by_sid(split: str) -> dict[str, str]:
     p = GS_DIR / f"{split}.parquet"
     if not p.exists():
@@ -1213,9 +1253,39 @@ def main() -> None:
     ap.add_argument("--split", default="pilot_100")
     ap.add_argument("--format", choices=["json", "csv", "xlsx"], default="json")
     ap.add_argument("--ann-dir", default=None)
+    ap.add_argument("--out-dir", default=None,
+                    help="where to write the report (default: DATA/gold_standard/iaa). "
+                         "Required when the input is quarantined or carries ids that "
+                         "are not in the split's sample.")
+    ap.add_argument("--allow-foreign-ids", action="store_true",
+                    help="permit annotated sentence ids that are absent from the "
+                         "split's sample. Requires --out-dir outside the real "
+                         "evidence directory, so a test run cannot be mistaken "
+                         "for reliability evidence.")
     args = ap.parse_args()
 
     ann_dir = Path(args.ann_dir) if args.ann_dir else None
+    # Resolve BOTH sides: comparing a resolved path against an unresolved one
+    # would make writes_to_evidence_dir False on the default path, which is
+    # exactly the case the gates below exist to catch.
+    out_dir = Path(args.out_dir).resolve() if args.out_dir else OUT_DIR.resolve()
+    writes_to_evidence_dir = out_dir == OUT_DIR.resolve()
+
+    # --- provenance gate 1: quarantined input must not write into the evidence
+    # directory. `--ann-dir` used to redirect INPUT only, so every dry run wrote
+    # synthetic numbers into DATA/gold_standard/iaa/ by design; four such reports
+    # labelled split=pilot_100 with a "substantial" kappa from a 4-sentence
+    # fixture were found there on 2026-11-17 (see
+    # DATA/gold_standard/_synthetic/SYNTHETIC_DO_NOT_CITE.md).
+    resolved_in = (ann_dir or ANN_DIR).resolve()
+    quarantined = _quarantine_marker(resolved_in)
+    if quarantined and writes_to_evidence_dir:
+        raise SystemExit(
+            f"refusing: the input {resolved_in} is quarantined as synthetic "
+            f"({quarantined}), so its numbers must not be written to the real "
+            f"evidence directory {OUT_DIR}.\n"
+            f"Re-run with --out-dir pointing somewhere else.")
+
     # load the sample text first so the workbook loader can verify that the
     # sentence_text the annotator saw (and offsets resolve against) is unedited
     text_by_sid = _text_by_sid(args.split)
@@ -1229,23 +1299,67 @@ def main() -> None:
         print(f"WARNING: only {sorted(annset)} present; IAA computed on this subset.",
               flush=True)
 
+    # --- provenance gate 2: every annotated sentence id must belong to the
+    # split's sample. Without this, a fixture whose ids exist nowhere in
+    # pilot_100.parquet still produced a full per-tag F1 table and a confident
+    # interpretation string; the only honest signal was one buried line saying
+    # the token level had been skipped. Fail closed, in the style of the
+    # splitter's own invariants.
+    annotated = {sid for per_sid in annset.values() for sid in per_sid}
+    if not text_by_sid:
+        foreign = sorted(annotated)
+        why = (f"the sample {GS_DIR / (args.split + '.parquet')} is missing, so no "
+               f"sentence id can be verified and the token level is unscoreable")
+    else:
+        foreign = sorted(annotated - set(text_by_sid))
+        why = (f"{len(foreign)} of {len(annotated)} annotated sentence ids are not "
+               f"in the {args.split} sample, e.g. {foreign[:5]}")
+    ids_verified = not foreign
+    if foreign:
+        if not args.allow_foreign_ids:
+            raise SystemExit(
+                f"refusing: {why}.\n"
+                f"These numbers would not describe {args.split}. If this is a test "
+                f"run, re-run with --allow-foreign-ids AND --out-dir pointing "
+                f"outside {OUT_DIR}.")
+        if writes_to_evidence_dir:
+            raise SystemExit(
+                f"refusing: --allow-foreign-ids requires --out-dir outside "
+                f"{OUT_DIR}, so a run on unverifiable ids cannot be mistaken for "
+                f"reliability evidence. ({why})")
+        print(f"WARNING: {why}; --allow-foreign-ids given, writing to {out_dir}.",
+              flush=True)
+
     report = compute_iaa(annset, text_by_sid)
     adj = build_adjudication(annset, text_by_sid)
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    # Provenance, recorded IN the report. Until 2026-11-17 a report named
+    # neither the directory it had read nor whether its ids were verifiable, so
+    # a run on a fixture was indistinguishable from a run on the real pilot.
+    provenance = {
+        "ann_dir": str(resolved_in),
+        "out_dir": str(out_dir),
+        "input_quarantined": quarantined,
+        "ids_verified_against_sample": ids_verified,
+        "n_annotated_sentences": len(annotated),
+        "n_ids_not_in_sample": len(foreign),
+        "ids_not_in_sample": foreign[:20],
+        "sample": str(GS_DIR / f"{args.split}.parquet"),
+    }
     report_full = {"created_utc": stamp, "split": args.split, "format": args.format,
-                   "guideline": "AG-RPL-LIMA-v3.0", **report,
+                   "guideline": "AG-RPL-LIMA-v3.0", "provenance": provenance, **report,
                    "adjudication_summary": {"n_sentences": adj["n_sentences"],
                                             "n_disputed": adj["n_disputed"]},
                    # the full queue, not just counts: a has_5tag-only or
                    # guideline-conflict dispute is otherwise recorded nowhere
                    "adjudication_queue": adj["queue"],
                    "load_problems": LOAD_PROBLEMS}
-    (OUT_DIR / f"iaa_{args.split}_{stamp}.json").write_text(
+    (out_dir / f"iaa_{args.split}_{stamp}.json").write_text(
         json.dumps(report_full, indent=2, ensure_ascii=False), encoding="utf-8")
     md = to_markdown(report, adj, args.split, stamp)
-    (OUT_DIR / f"iaa_{args.split}_{stamp}.md").write_text(md, encoding="utf-8")
+    (out_dir / f"iaa_{args.split}_{stamp}.md").write_text(md, encoding="utf-8")
 
     # adjudication worksheet (flat CSV) + provisional gold
     qrows = []
@@ -1266,12 +1380,12 @@ def main() -> None:
             "span_disputes": json.dumps(q["span_disputes"], ensure_ascii=False),
         })
     pd.DataFrame(qrows).to_csv(
-        OUT_DIR / f"adjudication_{args.split}_{stamp}.csv", index=False)
-    (OUT_DIR / f"provisional_gold_{args.split}_{stamp}.json").write_text(
+        out_dir / f"adjudication_{args.split}_{stamp}.csv", index=False)
+    (out_dir / f"provisional_gold_{args.split}_{stamp}.json").write_text(
         json.dumps(adj["provisional_gold"], indent=2, ensure_ascii=False), encoding="utf-8")
 
     print(md, flush=True)
-    print(f"\n-> {OUT_DIR}", flush=True)
+    print(f"\n-> {out_dir}", flush=True)
 
 
 if __name__ == "__main__":

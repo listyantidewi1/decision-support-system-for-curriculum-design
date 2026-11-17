@@ -144,6 +144,7 @@ Current, passing, and the part of the repo you can trust:
 | `test_split_logic` | 23 | `.venv-ml` |
 | `test_split_keys` | 13 | `.venv-ml` |
 | `test_iaa` | 49 | `.venv-ml` |
+| `test_iaa_provenance` | 8 | `.venv-ml` |
 | `test_gold_standard_pipeline` | 11 | `.venv-ml` |
 | `test_annotation_server` | 23 | **`.venv`** |
 
@@ -223,6 +224,22 @@ already (`annotation_server/auth.py:7-8`). The app now refuses when a collector
 is configured but no token is present; offline/local mode (no `GS_API_URL`) is
 unchanged. Never set `GS_API_TOKEN` on the service: it makes every annotator
 authenticate as one identity and UPSERT over each other, with no error anywhere.
+
+**Synthetic IAA numbers reached the real evidence directory once, and the route
+was structural.** `gold_standard/iaa.py` took `--ann-dir` for *input* while
+hardcoding its *output* directory, so every dry run wrote into
+`DATA/gold_standard/iaa/`; and it never checked that an annotated sentence id
+belonged to the split's sample. Four reports from a four-sentence fixture
+(ids `s1`,`s3`,`s4`) therefore sat there labelled `split: pilot_100`, annotators
+AV/AI/AD, Fleiss κ 0.657 "substantial" — indistinguishable from a real pilot
+result. They are now in `DATA/gold_standard/_synthetic/` with a
+`SYNTHETIC_DO_NOT_CITE.md` explaining the measurements that identify them.
+`iaa.py` gained `--out-dir`, a fail-closed id-membership invariant, a refusal to
+read quarantined input without redirecting output, and a `provenance` block in
+every report. `tests/test_iaa_provenance.py` enforces it, including a test that
+fails if any report in the evidence directory has unverified ids — so a fifth
+fake set cannot sit there quietly. **Never hand-place a file in
+`DATA/gold_standard/iaa/` or `DATA/gold_standard/annotations/`.**
 
 **`plot_aggregated.bat` is broken and is not the pattern.** Still tracked at the
 repo root (mtime 2026-03-05), it calls bare `python` — no ML packages since the

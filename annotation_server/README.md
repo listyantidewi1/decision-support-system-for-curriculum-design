@@ -102,9 +102,21 @@ Not just "it loads". Four things, in order:
 
 ### Afterwards
 
-`gold_standard.iaa` writes into `DATA/gold_standard/iaa/`. Move or delete the
-dry-run artefacts so synthetic numbers can never be mistaken for real
-reliability evidence, and delete the dry-run tokens before minting live ones.
+Delete the dry-run tokens before minting live ones.
+
+You no longer have to remember to move the dry-run IAA output: since 2026-11-17
+`gold_standard.iaa` **refuses** to write into `DATA/gold_standard/iaa/` when the
+annotated sentence ids are not in the split's sample, or when the input sits
+under a `_synthetic/` directory. For a rehearsal, point it somewhere else:
+
+```bash
+.venv-ml\Scripts\python.exe -m gold_standard.iaa --split practice_10 \
+    --ann-dir <unzipped> --out-dir <somewhere disposable>
+```
+
+Every report now records, under `provenance`, which directory it read and
+whether its ids were verified against the sample. The four synthetic reports
+that prompted this are in `DATA/gold_standard/_synthetic/iaa/`.
 
 ## Surviving a reboot
 
