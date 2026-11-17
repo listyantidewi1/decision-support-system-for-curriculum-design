@@ -236,6 +236,19 @@ st.markdown(
 # client never names itself, so passing ?annotator=AI cannot open another
 # annotator workspace, and a practice token loads the practice split instead of
 # the pilot. In local mode (no API configured) the old ?annotator= link applies.
+if API_URL and not _api_token():
+    # A collector IS configured but this visit carries no token, so it is a bad
+    # link — not a request for local mode. Falling through to the local branch
+    # would render a fully working annotator UI whose judgements go to
+    # DATA/gold_standard/annotations/<split>_<code>.json instead of the
+    # collector, where gold_standard/iaa.py would later read them as if they
+    # were real pilot work. That contamination has already happened once in this
+    # study (see annotation_server/auth.py). Refuse instead.
+    st.error("Tautan ini tidak memuat token. Mintalah tautan baru kepada "
+             "peneliti — jangan gunakan bookmark atau URL tanpa token.")
+    st.caption("(no ?token= in the URL while a collector is configured)")
+    st.stop()
+
 if api_enabled():
     try:
         _who = api_whoami()

@@ -201,6 +201,36 @@ it one level up at a path that does not exist. `INTEGRATION.md:157` says this
 content is "kept local, not committed". Fix by moving the adapter to the path
 `config.py` expects and extending `.gitignore` — not by deleting it.
 
+**The annotation stack auto-starts from Windows Task Scheduler, which is not in
+git.** `run_annotation_stack.ps1` (repo root) is LIVE and supervises the pilot
+collector + annotator UI; it is registered as two per-user logon tasks,
+`\GoldStandard\collector-8000` and `\GoldStandard\annotator-ui-8501`. Nothing
+imports it and no committed file invokes it, so it reads like an orphan — it is
+not. Confirm with `Get-ScheduledTask -TaskPath '\GoldStandard\'`, and read
+`annotation_server/README.md` §"Surviving a reboot" before changing it. Its
+mutable state lives **outside the tree** at `D:\Projects\_skill-extraction-ops\`
+(logs, backups, and the synthetic dry-run DB); the real pilot DB is
+`DATA/gold_standard/collector/pilot_100.sqlite`. `-Mode pilot|dryrun` is a
+contamination boundary enforced by using different files, not by convention.
+
+**`gold_standard/app.py` silently falls back to writing local JSON.** `app.py`
+needs *both* `GS_API_URL` and a `?token=` in the URL to use the collector
+(`api_enabled()`). Until 2026-11-17 a token-less visit rendered a fully working
+annotator UI that wrote to `DATA/gold_standard/annotations/<split>_<code>.json`
+— which is exactly where `gold_standard/iaa.py` reads from, so the work merged
+into the reliability evidence unannounced. That contamination has happened once
+already (`annotation_server/auth.py:7-8`). The app now refuses when a collector
+is configured but no token is present; offline/local mode (no `GS_API_URL`) is
+unchanged. Never set `GS_API_TOKEN` on the service: it makes every annotator
+authenticate as one identity and UPSERT over each other, with no error anywhere.
+
+**`plot_aggregated.bat` is broken and is not the pattern.** Still tracked at the
+repo root (mtime 2026-03-05), it calls bare `python` — no ML packages since the
+2026-05-12 venv migration — and `aggregate_results.py`, which now lives in
+`legacy/`. It was missed when its two siblings were quarantined. Its presence
+next to `run.ps1` misreads as evidence that bare-`python` root launchers are
+current. They are not: `run.ps1` is the model.
+
 **No CI exists.** No `.github/`, no Makefile. Nothing is "run by CI", so that
 can never be the reason a file is live.
 

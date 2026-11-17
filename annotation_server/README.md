@@ -106,6 +106,129 @@ Not just "it loads". Four things, in order:
 dry-run artefacts so synthetic numbers can never be mistaken for real
 reliability evidence, and delete the dry-run tokens before minting live ones.
 
+## Surviving a reboot
+
+`run_annotation_stack.ps1` (repo root) supervises both halves and registers them
+to start again at logon. Run everything from `d:\Projects\skill-extraction`.
+
+```powershell
+.\run_annotation_stack.ps1 status                  # what is actually running
+.\run_annotation_stack.ps1 start   -Mode dryrun    # or -Mode pilot
+.\run_annotation_stack.ps1 stop
+.\run_annotation_stack.ps1 install -Mode dryrun    # auto-start at logon
+.\run_annotation_stack.ps1 uninstall
+.\run_annotation_stack.ps1 backup  -Mode pilot     # daily during the pilot
+```
+
+It supersedes the two manual commands in the dry-run section above; those still
+work, but they leave the database in a disposable directory and nothing restarts
+them.
+
+**`-Mode` is the contamination boundary, and it is a different file, not a
+convention:**
+
+| Mode | Database | Tokens |
+|---|---|---|
+| `pilot` | `DATA\gold_standard\collector\pilot_100.sqlite` | `api_keys\annotation_tokens.json` |
+| `dryrun` | `D:\Projects\_skill-extraction-ops\dryrun\annotations_dryrun.sqlite` | `api_keys\dryrun_tokens.json` |
+
+The dry-run database sits **outside the repository** so synthetic rows cannot
+reach the tree that feeds the reliability evidence, which is what line 73 above
+requires. `pilot` mode refuses to start against a tokens file whose name
+contains `dryrun`. A bare `restart` will not cross the boundary: it reads the
+mode the running stack recorded and refuses if you name a different one.
+
+Logs and backups also live outside the tree, at
+`D:\Projects\_skill-extraction-ops\`. `.gitignore` covers `logs/*.log` but not
+`logs/*.log.1`, so an in-repo log would become a tracked file on a public repo
+at the first rotation. `--log-level warning` on uvicorn is load-bearing for the
+same reason: at `info` the access log writes every annotator's `?token=…`.
+
+### Switching from the dry run to the real pilot
+
+```powershell
+.\run_annotation_stack.ps1 stop
+.\run_annotation_stack.ps1 uninstall
+# delete the dry-run tokens, then mint live ones (make_tokens will not overwrite)
+Remove-Item api_keys\dryrun_tokens.json, api_keys\DRYRUN_LINKS.txt
+.venv\Scripts\python.exe -m annotation_server.make_tokens --base-url <UI-URL> `
+    --split pilot_100 --practice-split practice_10 `
+    --out api_keys\annotation_tokens.json > api_keys\LINKS.txt
+.\run_annotation_stack.ps1 start   -Mode pilot -Init     # -Init creates the DB
+.\run_annotation_stack.ps1 install -Mode pilot
+.\run_annotation_stack.ps1 status  -Mode pilot
+```
+
+`-Init` is required exactly once. Without it a missing database is **fatal**,
+because `api.py:50` + `store.py:51` would otherwise create a valid empty one at
+a mistyped path and the annotators would simply see no saved work. `start -Init`
+prints the empty database's sha256 — keep it; it is the evidence the pilot
+started from an empty file.
+
+### What the reboot setup must prove
+
+In order, and none of them is `/health`:
+
+1. **The tasks exist and are healthy.** `status` shows both as `Running` with
+   `result=267009`. That constant means "still running"; a `0` means the action
+   already exited, i.e. the supervisor died.
+2. **The right database is in use.** `status` prints the path each supervisor
+   actually resolved, read from the runtime-state file it wrote at startup —
+   a running process's environment cannot be read from outside, so without that
+   file this would be a guess.
+3. **Authentication works.** `/admin/progress` returns 200 with the expected
+   annotators. A 401 here beside a 200 from `/health` means the token table is
+   empty (`auth.py:39-42`) and all three annotators are locked out.
+4. **Rows advance.** The `db rows` line and the file's `last written` time move
+   as annotators work. `/health` returns a hardcoded `{"ok":true}` without
+   touching the database, the tokens or the samples, so it proves only that a
+   process is answering.
+5. **No work bypassed the collector.** `status` goes red if any `*.json` sits
+   directly in `DATA/gold_standard/annotations/`. Those are judgements written
+   by the UI's local-file fallback, and `gold_standard/iaa.py` reads that exact
+   directory. The stack now refuses to start while any are present.
+
+### Verified 2026-11-17, and what was not
+
+Measured: the tasks register without elevation and the XML carries the intended
+settings (`Delay PT20S`/`PT50S`, `ExecutionTimeLimit PT0S`,
+`DisallowStartIfOnBatteries false`, `StopIfGoingOnBatteries false`,
+`RestartOnFailure 3 × PT1M`, `MultipleInstancesPolicy IgnoreNew`); starting the
+stack **through the scheduled tasks** binds both ports and serves the durable
+database; `/admin/progress` returns all three annotators and 30 rows; a write
+through the API reaches the durable file (idempotent re-save held `annotations`
+at 30 and took `events` 60 → 61, with the `#` in the sentence id intact);
+`backup` produced a snapshot with matching counts; all 297 tests still pass.
+
+**An actual reboot was not performed.** The logon trigger is registered and
+verified only by starting the tasks by hand. Confirm it after the next real
+restart with `status`.
+
+Five things this does **not** cover, all measured on this machine:
+
+1. **A reboot nobody signs in after.** There is no autologon, and Windows Update
+   active hours are 09:00→01:00, so an unattended restart can land between
+   01:00 and 09:00 and leave the stack down until someone signs in. Sign in and
+   run `status` before each annotation day. (True no-logon survival needs an
+   `-AtStartup` task registered from an elevated shell, running as SYSTEM.)
+2. **Battery.** The active power scheme never sleeps on mains but sleeps after
+   180 s on battery, and this machine's only sleep state disconnects the
+   network — so an unplugged laptop goes unreachable while the processes stay
+   perfectly healthy. Keep it on mains.
+3. **LAN reachability of `:8501`.** The firewall rule that matches today is
+   scoped to `C:\Python313\python.exe` on the *Public* profile. Rebuilding a
+   venv, or joining a network Windows classifies as Private, breaks it — and a
+   hidden scheduled task has no desktop on which to show the firewall prompt.
+   Test from a second device, not from the host.
+4. **A hung-but-listening process.** Nothing here detects one; `status` would
+   show everything green. The in-script supervisor restarts a child that
+   *exits*, and gives up after five fast exits so a broken config fails visibly
+   instead of flapping.
+5. **Disk failure.** `D:` and `C:` are partitions of one physical NVMe. This
+   survives a reboot, not a dead disk, and the database sits in a gitignored
+   directory — which is exactly what `git clean -xdf` removes. Run `backup`
+   daily during the pilot.
+
 ## Deploy
 
 Prerequisites: a Fly.io account with `flyctl` installed, and this repo pushed to

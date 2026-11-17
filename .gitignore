@@ -176,6 +176,14 @@ data/schools/
 *.bak
 *.orig
 
+# Whole directory, not just *.log. The extension glob above leaves
+# logs/foo.log.1, logs/foo.log.2026-11-17, logs/foo.out and logs/.gitkeep
+# TRACKABLE on a public repo, so the first rotation would commit a log file.
+# Service logs are deliberately written outside the tree
+# (D:\Projects\_skill-extraction-ops\logs\, see run_annotation_stack.ps1);
+# this rule is the belt-and-braces for anything that lands here anyway.
+logs/
+
 # ============================================================
 # Project-specific files
 # ============================================================
