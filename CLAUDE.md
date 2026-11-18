@@ -30,8 +30,20 @@ pipeline**. It is history, not requirements:
 |---|---|
 | `README.md`, `PIPELINE.md` | 2026-05 |
 | `SCIENTIFIC_METHODOLOGY.md`, `CALCULATIONS.md`, `RESEARCH_QUESTIONS.md` | 2026-05 |
-| `docs/KAJIAN_AKADEMIK.md`, `docs/DOCUMENTATION_INDEX.md` | 2026-05 |
-| `docs/proposal/PROMPT_*.md`, `docs/PROMPT_REVISI_*.md` | 2026-06 |
+| `docs/proposal/archive/KAJIAN_AKADEMIK.md`, `docs/proposal/archive/DOCUMENTATION_INDEX.md` | 2026-05 |
+| `docs/proposal/archive/PROMPT_*.md` (incl. `PROMPT_REVISI_*`) | 2026-06 |
+
+`docs/proposal/archive/` is where the researcher moved superseded documents on
+2026-11-18: 19 pre-approval `.md` files plus old instrument drafts (v1.0/v2.0
+`.docx`, gitignored). Nothing live reads it. Six files were deliberately left
+OUT of the archive because something live depends on their path:
+`docs/IMPLEMENTATION_PLAN.md`, `docs/PHASE_2_1_DESIGN.md`,
+`docs/PHASE_2_2_DESIGN.md`, `docs/EXPERT_REVIEW_RUBRIC.md`,
+`docs/EXTRACTOR_DECISION.md` and
+`docs/proposal/PROMPT_INSTRUMEN_VALIDASI_AHLI_26062026.md` (the plan names it).
+The validated instruments are the v3.0 set in
+`docs/proposal/PDF/proposal_coworking/instruments/`; the annotation guideline is
+`B_Paket_Design_Korpus_dan_Anotasi_v3.0.docx` (code: `AG-RPL-LIMA-v3.0`).
 
 **The tell that proves they are stale:** they instruct you to use
 `kkni_labeler.py`, which **does not exist**. The real module is
@@ -145,6 +157,8 @@ Current, passing, and the part of the repo you can trust:
 | `test_split_keys` | 13 | `.venv-ml` |
 | `test_iaa` | 49 | `.venv-ml` |
 | `test_iaa_provenance` | 8 | `.venv-ml` |
+| `test_metrics` | 25 | `.venv-ml` |
+| `test_labeling` | 48 | `.venv-ml` |
 | `test_gold_standard_pipeline` | 11 | `.venv-ml` |
 | `test_annotation_server` | 23 | **`.venv`** |
 
@@ -262,6 +276,7 @@ Authoritative detail is in `docs/IMPLEMENTATION_PLAN.md` §0. Orientation only:
 | 0 — acquisition | `acquisition/` (adapters, batch store, cadence), `job_scraping/` | NEW / ADAPT |
 | 1 — corpus governance | `preprocess_jobs_pipeline.py`, `scripts/audit_corpus_lineage.py`, `governance/` (`rules.py`, `ladder.py`), `it_relevance_filter.py` | ADAPT / NEW |
 | 2 — gold standard | **`gold_standard/`** (pool, sampling, splits, IAA, seal), `annotation_server/`, `gold_labeling_ui/` | **current work** |
+| 2b — silver labels | `labeling/` (verifier, alignment, consensus — the deterministic half of the multi-LLM ensemble; no model runner yet), `gold_standard/metrics.py` (the one shared evaluation engine) | NEW, **current work** |
 | 3 — extraction | `baseline_versions/` (E0–E6 benchmarks), `extraction_typing.py`, `llm_client_router.py` | ADAPT / NEW |
 | 4–5 — competency | `clustering/`, `competency_generator_v2.py`, `competency_evidence_repair.py`, `pipeline_scientific_audits.py` | REUSE / ADAPT |
 | 6 — labels & refs | `competency_kkni_labeller.py`, `occupation_mapper.py`, `kkni.py`, `DATA/skema_okupasi_*`, `DATA/spektrum_keahlian/` | ADAPT |

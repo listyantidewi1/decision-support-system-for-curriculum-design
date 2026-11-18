@@ -70,10 +70,10 @@ un-vetted competencies reach users. Target deadline: 2026-06-08.
 
 ### Onboarding for contributors
 
-- **[docs/RINGKASAN_KONTRIBUTOR.md](docs/RINGKASAN_KONTRIBUTOR.md)** —
+- **[docs/proposal/archive/RINGKASAN_KONTRIBUTOR.md](docs/proposal/archive/RINGKASAN_KONTRIBUTOR.md)** —
   Indonesian onboarding doc, 8 sections, written for a developer joining the
   project. Read this first if you're new.
-- **[docs/PIPELINE_DIAGRAM.md](docs/PIPELINE_DIAGRAM.md)** —
+- **[docs/proposal/archive/PIPELINE_DIAGRAM.md](docs/proposal/archive/PIPELINE_DIAGRAM.md)** —
   the planned v2 architecture as Mermaid (renders inline on GitHub) plus an
   AI-image-generator prompt for slides / paper figures.
 
@@ -85,18 +85,18 @@ un-vetted competencies reach users. Target deadline: 2026-06-08.
 |----------|---------|
 | **README.md** (this file) | Overview, quick start, high-level workflow |
 | **[PIPELINE.md](PIPELINE.md)** | Detailed pipeline documentation: phases, data flow, file dependencies, troubleshooting |
-| **[docs/PIPELINE_DIAGRAM.md](docs/PIPELINE_DIAGRAM.md)** | Planned v2 architecture diagram (Mermaid + AI-image prompt) |
-| **[docs/RINGKASAN_KONTRIBUTOR.md](docs/RINGKASAN_KONTRIBUTOR.md)** | Indonesian contributor onboarding (project goal, architecture, entry points, conventions) |
-| **[docs/PENJELASAN_UMUM.md](docs/PENJELASAN_UMUM.md)** | Indonesian general-public explainer (non-technical, for educators / policymakers) |
-| **[docs/KAJIAN_AKADEMIK.md](docs/KAJIAN_AKADEMIK.md)** | Indonesian academic reflection for promotor discussion |
-| **[docs/PUBLIC_UI.md](docs/PUBLIC_UI.md)** | Public-surface architecture (audiences, URL map, publish flow, caching) |
+| **[docs/proposal/archive/PIPELINE_DIAGRAM.md](docs/proposal/archive/PIPELINE_DIAGRAM.md)** | Planned v2 architecture diagram (Mermaid + AI-image prompt) |
+| **[docs/proposal/archive/RINGKASAN_KONTRIBUTOR.md](docs/proposal/archive/RINGKASAN_KONTRIBUTOR.md)** | Indonesian contributor onboarding (project goal, architecture, entry points, conventions) |
+| **[docs/proposal/archive/PENJELASAN_UMUM.md](docs/proposal/archive/PENJELASAN_UMUM.md)** | Indonesian general-public explainer (non-technical, for educators / policymakers) |
+| **[docs/proposal/archive/KAJIAN_AKADEMIK.md](docs/proposal/archive/KAJIAN_AKADEMIK.md)** | Indonesian academic reflection for promotor discussion |
+| **[docs/proposal/archive/PUBLIC_UI.md](docs/proposal/archive/PUBLIC_UI.md)** | Public-surface architecture (audiences, URL map, publish flow, caching) |
 | **[CALCULATIONS.md](CALCULATIONS.md)** | Scientific formulas: ranking, voting, weighting, priority scores, FDR, evaluation metrics |
 | **[SCIENTIFIC_METHODOLOGY.md](SCIENTIFIC_METHODOLOGY.md)** | **Full scientific documentation**: all statistical methods, formulas, and worked examples (binomial test, effect sizes, Kappa, power analysis, FDR, normalization, etc.) |
 | **[RESEARCH_QUESTIONS.md](RESEARCH_QUESTIONS.md)** | Research questions (RQ1–RQ5), evaluation metrics, gold set design, ablation study |
 | **[baseline_versions/jjzha_replicate/REPLICATION_REPORT.md](baseline_versions/jjzha_replicate/REPLICATION_REPORT.md)** | Phase 1.4 close-out: F1 matrix, why we pivot to Skill-LLM |
 | **[baseline_versions/skill_llm/README.md](baseline_versions/skill_llm/README.md)** | Phase 1.5: LoRA fine-tune setup, run book, expectations |
 | **[baseline_versions/api_zero_shot/README.md](baseline_versions/api_zero_shot/README.md)** | Phase 1.5b: OpenRouter zero-shot baseline (no GPU), decision rubric vs Skill-LLM |
-| **[docs/DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md)** | Central index of all documentation |
+| **[docs/proposal/archive/DOCUMENTATION_INDEX.md](docs/proposal/archive/DOCUMENTATION_INDEX.md)** | Central index of all documentation |
 
 ---
 
@@ -287,7 +287,7 @@ uvicorn dashboard.app:app --reload
 - Public site: `http://127.0.0.1:8000/`
 - Admin login: `http://127.0.0.1:8000/dashboard/login` — default admin: `admin@local` / `admin123`
 
-See **[docs/PUBLIC_UI.md](docs/PUBLIC_UI.md)** for the full URL map and publish flow.
+See **[docs/proposal/archive/PUBLIC_UI.md](docs/proposal/archive/PUBLIC_UI.md)** for the full URL map and publish flow.
 
 ---
 
@@ -563,7 +563,7 @@ This output can be directly used in a **curriculum redesign document** or **expe
 
 # 📝 Pipeline Diagrams
 
-The planned v2 architecture is in **[docs/PIPELINE_DIAGRAM.md](docs/PIPELINE_DIAGRAM.md)**
+The planned v2 architecture is in **[docs/proposal/archive/PIPELINE_DIAGRAM.md](docs/proposal/archive/PIPELINE_DIAGRAM.md)**
 in two formats:
 
 * **Mermaid source** — renders inline on GitHub / Notion / draw.io. Use when

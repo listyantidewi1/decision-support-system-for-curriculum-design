@@ -7,7 +7,7 @@ FastAPI app exposing two surfaces:
 
 The legacy `/dashboard/school/*` routes are retained for accounts created before the 2026 reframe but no new school accounts can be created.
 
-For the full URL map, data flow, and publish architecture see **[../docs/PUBLIC_UI.md](../docs/PUBLIC_UI.md)**.
+For the full URL map, data flow, and publish architecture see **[../docs/proposal/archive/PUBLIC_UI.md](../docs/proposal/archive/PUBLIC_UI.md)**.
 
 ---
 

@@ -241,6 +241,12 @@ docs/articles/
 docs/**/*.pptx
 docs/**/*.xlsx
 docs/proposal/Prof*.txt
+# The two rules above and docs/PROPOSAL_REVISION_BRIEF.md are anchored to one
+# directory, so moving those files (e.g. into docs/proposal/archive/ on
+# 2026-11-18) silently un-ignored them on a public repo. Match them anywhere
+# under docs/ instead.
+docs/**/Prof*.txt
+docs/**/PROPOSAL_REVISION_BRIEF.md
 
 # Raw immutable OJP corpus batches (large data, never versioned)
 DATA/corpus_raw/

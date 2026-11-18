@@ -144,7 +144,7 @@ These do not block the decision but should be tracked:
 2. **Integrate Skill-LLM into `pipeline.py`** as the active Layer-1 extractor. Replace the current `--extraction-mode hybrid` BERT path with a Skill-LLM-backed extractor. Estimate: 2–3 days.
 3. **Stability experiment** (RQ2b): determine N\* across N ∈ {500, 1000, 2500, 5000, 10000} with 3 seeds. Estimate: 2–3 days wall-clock + 0.5 day analysis. Output figure: Jaccard top-20 vs N with ±std bars.
 4. **Update v2 spec Req 3** to reflect the realized gate (total F1 ≥ 0.55 + verb-preservation + parse-failures), and to name Skill-LLM as the chosen Layer 1 (with API zero-shot retained as ablation comparison). _Done in this commit._
-5. **Update `docs/PIPELINE_DIAGRAM.md`** to confirm Skill-LLM as the BERT-path label (already correct in current draft, but worth verifying). _Done in this commit._
+5. **Update `docs/proposal/archive/PIPELINE_DIAGRAM.md`** to confirm Skill-LLM as the BERT-path label (already correct in current draft, but worth verifying). _Done in this commit._
 
 ---
 

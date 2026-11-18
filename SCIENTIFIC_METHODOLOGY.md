@@ -1000,7 +1000,7 @@ The pipeline generates **scientific plots** that visualize the quantitative anal
 
 Run: `python plot_scientific_analysis.py` (invoked by run.bat step 17).
 
-**Interpretations:** See [docs/FIGURE_INTERPRETATIONS.md](docs/FIGURE_INTERPRETATIONS.md) for detailed explanations of each figure.
+**Interpretations:** See [docs/proposal/archive/FIGURE_INTERPRETATIONS.md](docs/proposal/archive/FIGURE_INTERPRETATIONS.md) for detailed explanations of each figure.
 
 ---
 
