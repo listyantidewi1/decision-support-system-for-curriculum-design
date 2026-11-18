@@ -159,6 +159,8 @@ Current, passing, and the part of the repo you can trust:
 | `test_iaa_provenance` | 8 | `.venv-ml` |
 | `test_metrics` | 25 | `.venv-ml` |
 | `test_labeling` | 48 | `.venv-ml` |
+| `test_labeling_run` | 18 | `.venv-ml` |
+| `test_labeling_conformance` | 28 | `.venv-ml` |
 | `test_gold_standard_pipeline` | 11 | `.venv-ml` |
 | `test_annotation_server` | 23 | **`.venv`** |
 
@@ -276,7 +278,7 @@ Authoritative detail is in `docs/IMPLEMENTATION_PLAN.md` §0. Orientation only:
 | 0 — acquisition | `acquisition/` (adapters, batch store, cadence), `job_scraping/` | NEW / ADAPT |
 | 1 — corpus governance | `preprocess_jobs_pipeline.py`, `scripts/audit_corpus_lineage.py`, `governance/` (`rules.py`, `ladder.py`), `it_relevance_filter.py` | ADAPT / NEW |
 | 2 — gold standard | **`gold_standard/`** (pool, sampling, splits, IAA, seal), `annotation_server/`, `gold_labeling_ui/` | **current work** |
-| 2b — silver labels | `labeling/` (verifier, alignment, consensus — the deterministic half of the multi-LLM ensemble; no model runner yet), `gold_standard/metrics.py` (the one shared evaluation engine) | NEW, **current work** |
+| 2b — silver labels | `labeling/` (verifier, alignment, consensus, guideline-only prompt pack, OpenRouter runner with a hard spending cap, a SYNTHETIC guideline-conformance set and a SkillSpan probe for measuring prompt changes; output goes to the gitignored `DATA/labeling/`, never under `DATA/gold_standard/`), `gold_standard/metrics.py` (the one shared evaluation engine) | NEW, **current work** |
 | 3 — extraction | `baseline_versions/` (E0–E6 benchmarks), `extraction_typing.py`, `llm_client_router.py` | ADAPT / NEW |
 | 4–5 — competency | `clustering/`, `competency_generator_v2.py`, `competency_evidence_repair.py`, `pipeline_scientific_audits.py` | REUSE / ADAPT |
 | 6 — labels & refs | `competency_kkni_labeller.py`, `occupation_mapper.py`, `kkni.py`, `DATA/skema_okupasi_*`, `DATA/spektrum_keahlian/` | ADAPT |

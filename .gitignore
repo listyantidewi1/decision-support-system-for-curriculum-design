@@ -258,6 +258,11 @@ DATA/corpus_benchmark/
 # the gold_standard/ code + the raw corpus; the pool alone is ~124 MB)
 DATA/gold_standard/
 
+# Multi-LLM ensemble runs: raw model responses and consensus output. They embed
+# corpus sentences verbatim (LOCAL ONLY, CLAUDE.md section 6), and they must
+# stay out of DATA/gold_standard/ so annotators remain blind to LLM output.
+DATA/labeling/
+
 # Annotation collector database — contains real annotator judgements (and the
 # WAL/SHM sidecars SQLite creates). The DB is the deliverable, not source.
 *.sqlite
