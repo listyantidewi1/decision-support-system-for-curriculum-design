@@ -282,7 +282,12 @@ def materialise_labels(split_id: str, adjudicated_gold: pd.DataFrame,
 # non-comparable, and the IAA ceiling is the number the model score is read
 # against.
 from .iaa import Span as _Span                                      # noqa: E402
-from .iaa import _greedy_match, _percentile_ci, _prf                # noqa: E402
+# The PUBLIC names: these three are the cross-module API (see iaa.py and
+# gold_standard/metrics.py). They are the same objects as the underscored
+# ones — tests/test_metrics.py pins the identity.
+from .iaa import greedy_match as _greedy_match                      # noqa: E402
+from .iaa import percentile_ci as _percentile_ci                    # noqa: E402
+from .iaa import prf as _prf                                        # noqa: E402
 
 MATCH_MODE = dict(label_sensitive=True, exact=True)
 MATCH_RULE_TEXT = ("exact span + type match, micro-averaged over ALL sealed test "
