@@ -303,3 +303,11 @@ DATA/samples/jobs_sample.csv
 skill_llm_extractions.jsonl
 skill_llm_input_n1k.jsonl
 DATA/preprocessing/
+
+# Competency-layer runs (competency/): evidence tables and evidence packages
+# quote corpus sentences verbatim (LOCAL ONLY).
+DATA/competency/
+
+# Raw taxonomy downloads (O*NET, ESCO). The word lists derived from them live
+# in fivetag/lexicons/ with their attribution; the raw files stay local.
+DATA/taxonomies/
