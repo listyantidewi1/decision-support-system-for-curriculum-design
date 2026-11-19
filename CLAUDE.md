@@ -162,6 +162,10 @@ Current, passing, and the part of the repo you can trust:
 | `test_labeling_run` | 18 | `.venv-ml` |
 | `test_labeling_conformance` | 28 | `.venv-ml` |
 | `test_gold_standard_pipeline` | 11 | `.venv-ml` |
+| `test_after_annotation` | 20 | `.venv-ml` |
+| `test_gold_to_models` | 10 | `.venv-ml` |
+| `test_fivetag` | 62 | `.venv-ml` |
+| `test_acquisition_monthly` | 11 | `.venv-ml` |
 | `test_annotation_server` | 23 | **`.venv`** |
 
 **Five suites silently do not run at all** — they are pytest-style with no
@@ -257,6 +261,39 @@ fails if any report in the evidence directory has unverified ids — so a fifth
 fake set cannot sit there quietly. **Never hand-place a file in
 `DATA/gold_standard/iaa/` or `DATA/gold_standard/annotations/`.**
 
+**`gold_standard.sample` re-draws the pilot every time it runs.** Each run draws
+`pilot_100` and `practice_10` again before anything else, including before
+`--main`. The draw is seeded, so it is identical while the sentence pool is
+unchanged — but the pool is rebuilt after corpus rounds, and the same command
+would then have replaced the pilot sentences while the experts' annotations
+still referred to the old ones. Since 2026-11-19 it refuses to overwrite a
+sample whose sentences differ unless the split is named with `--redraw`. Never
+redraw a sample that people have annotated.
+
+**The pilot go/no-go rule is registered and must not change once pilot data
+exist.** `docs/experiments/PREREG_pilot_gate.md` and `gold_standard/gate.py`
+carry the same thresholds (a test keeps them identical). The researcher
+approved it on 2026-11-19, before any annotation. Rehearsing it on synthetic
+data is fine; editing the thresholds after a real pilot annotation is not.
+
+**Nothing `fivetag/` has printed so far is a result.** No gold standard exists
+yet (2026-11-19). The models were exercised on three things, none of which is
+evidence: template-generated sentences (`fivetag.synthetic`), the guideline
+conformance set, and SkillSpan sentences annotated under the guideline. The E0
+lexicon was written with the last two in view, so E0's score on them is
+optimistic by construction. The E1 numbers come from a tiny randomly-initialised
+model (`fivetag.tiny`) that exists to prove the training loop runs. The router's
+thresholds (`RouterConfig`) are starting values and must be fixed on the dev
+split before the test split is opened. `labeling.versus_gold` and
+`gold_standard.materialise` both refuse sealed test sentences; keep it that way.
+
+**`python -m acquisition.monthly run --go` really collects.** Without `--go` it
+is a preview and touches no network. It adds a schedule on top of
+`acquisition.run_batch` and no fetching code of its own (a test checks this). Do
+not run it with `--go` as a side effect of something else, and do not raise the
+limits in `configs/monthly_roster.json` (25 queries per session and 24 h rest
+for detail-fetch platforms): they are the standing constraints of §6.
+
 **`plot_aggregated.bat` is broken and is not the pattern.** Still tracked at the
 repo root (mtime 2026-03-05), it calls bare `python` — no ML packages since the
 2026-05-12 venv migration — and `aggregate_results.py`, which now lives in
@@ -275,11 +312,11 @@ Authoritative detail is in `docs/IMPLEMENTATION_PLAN.md` §0. Orientation only:
 
 | Layer | Modules | Status |
 |---|---|---|
-| 0 — acquisition | `acquisition/` (adapters, batch store, cadence), `job_scraping/` | NEW / ADAPT |
+| 0 — acquisition | `acquisition/` (adapters, batch store, cadence; `monthly` = the monthly round as one command, driven by `configs/monthly_roster.json`), `job_scraping/` | NEW / ADAPT |
 | 1 — corpus governance | `preprocess_jobs_pipeline.py`, `scripts/audit_corpus_lineage.py`, `governance/` (`rules.py`, `ladder.py`), `it_relevance_filter.py` | ADAPT / NEW |
-| 2 — gold standard | **`gold_standard/`** (pool, sampling, splits, IAA, seal), `annotation_server/`, `gold_labeling_ui/` | **current work** |
+| 2 — gold standard | **`gold_standard/`** (pool, sampling, splits, IAA, seal; and the post-annotation kit: `after_annotation` = one command, `gate`, `calibration`, `adjudicate`, and `materialise` = seal the test labels and export train/dev for the models — see `docs/RUNBOOK_after_annotation.md`), `annotation_server/`, `gold_labeling_ui/` | **current work** |
 | 2b — silver labels | `labeling/` (verifier, alignment, consensus, guideline-only prompt pack, OpenRouter runner with a hard spending cap, a SYNTHETIC guideline-conformance set and a SkillSpan probe for measuring prompt changes; output goes to the gitignored `DATA/labeling/`, never under `DATA/gold_standard/`), `gold_standard/metrics.py` (the one shared evaluation engine) | NEW, **current work** |
-| 3 — extraction | `baseline_versions/` (E0–E6 benchmarks), `extraction_typing.py`, `llm_client_router.py` | ADAPT / NEW |
+| 3 — extraction | **`fivetag/`** (every condition of proposal §3.3.1–3.3.3 behind one interface: E0 rules + versioned lexicon, E1/E2 encoder with layered BIO and the DAPT script, E3 GLiNER adapter, E4/E5 LLM with retrieval, E6 router, D1–D3 classifiers, `benchmark`; see `fivetag/README.md`), `baseline_versions/` (pre-approval benchmark material), `extraction_typing.py` (v1 classifier, still feeds the v1 competency stages), `llm_client_router.py` | NEW, **current work** / ADAPT |
 | 4–5 — competency | `clustering/`, `competency_generator_v2.py`, `competency_evidence_repair.py`, `pipeline_scientific_audits.py` | REUSE / ADAPT |
 | 6 — labels & refs | `competency_kkni_labeller.py`, `occupation_mapper.py`, `kkni.py`, `DATA/skema_okupasi_*`, `DATA/spektrum_keahlian/` | ADAPT |
 | 7 — trends | `skill_time_trend_analysis.py`, `future_weight_mapping.py`, `future_domains.csv` | ADAPT |
@@ -298,6 +335,8 @@ The scraped job-posting corpus was **purged from all git history on 2026-11-17**
 and force-pushed. The repo is **public**. Never commit:
 
 - `DATA/preprocessing/`, `DATA/skillspan_ours/`, `DATA/samples/jobs_sample.csv`
+- `DATA/fivetag/` (train/dev rows exported from the gold standard, LLM benchmark
+  runs, checkpoints) and `DATA/labeling/` (ensemble runs)
 - `results/`, `results_run1|3|4/`, `results_aggregated/`
 - `skill_llm_*.jsonl`, `selected_skill_samples_*.html`
 - `DATA/labels/gold_{skills,knowledge}*.csv`,
@@ -342,6 +381,11 @@ deliberately under the plan — not to import it.
 
 ## 8. Conventions
 
+- `TODO.md` at the repo root is the researcher's running to-do list for the whole
+  study (local, gitignored). When a task is finished, added or changed, update
+  that file: tick the box, move finished items to "Done", and change the "Last
+  updated" date. Keep its wording plain; the reader is the researcher, not a
+  developer.
 - Commit messages: conventional prefixes (`feat(scope):`, `fix:`, `chore:`,
   `docs:`). Say *why*, and state what was verified rather than asserting it
   works.
