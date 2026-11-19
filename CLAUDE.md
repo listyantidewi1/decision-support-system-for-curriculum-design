@@ -1,5 +1,9 @@
 # CLAUDE.md — read this before changing anything
 
+> **Picking this work up?** After this file, read `docs/HANDOFF.md` (where every
+> part stands, what is decided, what was in progress) and
+> `docs/experiments/EXPERIMENT_LOG.md` (every run, with its numbers).
+
 Doctoral research codebase: analysing online job postings (OJP) to inform
 Indonesian SMK software-engineering (RPL) curriculum design.
 
@@ -169,7 +173,8 @@ Current, passing, and the part of the repo you can trust:
 | `test_after_annotation` | 20 | `.venv-ml` |
 | `test_gold_to_models` | 10 | `.venv-ml` |
 | `test_fivetag` | 73 | `.venv-ml` |
-| `test_competency` | 20 | `.venv-ml` |
+| `test_competency` | 39 | `.venv-ml` |
+| `test_dashboard_v3` | 6 | `.venv-ml` |
 | `test_acquisition_monthly` | 11 | `.venv-ml` |
 | `test_annotation_server` | 23 | **`.venv`** |
 
@@ -304,6 +309,18 @@ ditelaah formal" is unreachable without three facts set by a person
 (`contract.StudyFacts`). Lexicon `v2` (v1 + O*NET-derived technology names) is
 what this pipeline uses; `fivetag`'s default is still `v1`.
 
+**If you are new here, read `docs/HANDOFF.md` first.** It says where every part
+stands, what is decided, what is open and what was in progress when the last
+session ended. `docs/experiments/EXPERIMENT_LOG.md` has every run with its
+numbers. Keep both current: they are what lets the next person, or the next
+assistant, continue without the conversation that produced the code.
+
+**The dashboards in `dashboard_v3/` must stay unable to collect, pay or touch
+the gold standard.** A test reads their source for it. Publishing a profile is
+a draft unless a person ticks "sah untuk dirilis"; never make that the default.
+`dashboard/` and `dashboard_v2/` are the pre-approval dashboards: `dashboard/`
+still imports `pipeline_orchestrator` (see the first trap of this section).
+
 **`python -m acquisition.monthly run --go` really collects.** Without `--go` it
 is a preview and touches no network. It adds a schedule on top of
 `acquisition.run_batch` and no fetching code of its own (a test checks this). Do
@@ -334,10 +351,10 @@ Authoritative detail is in `docs/IMPLEMENTATION_PLAN.md` §0. Orientation only:
 | 2 — gold standard | **`gold_standard/`** (pool, sampling, splits, IAA, seal; and the post-annotation kit: `after_annotation` = one command, `gate`, `calibration`, `adjudicate`, and `materialise` = seal the test labels and export train/dev for the models — see `docs/RUNBOOK_after_annotation.md`), `annotation_server/`, `gold_labeling_ui/` | **current work** |
 | 2b — silver labels | `labeling/` (verifier, alignment, consensus, guideline-only prompt pack, OpenRouter runner with a hard spending cap, a SYNTHETIC guideline-conformance set and a SkillSpan probe for measuring prompt changes; output goes to the gitignored `DATA/labeling/`, never under `DATA/gold_standard/`), `gold_standard/metrics.py` (the one shared evaluation engine) | NEW, **current work** |
 | 3 — extraction | **`fivetag/`** (every condition of proposal §3.3.1–3.3.3 behind one interface: E0 rules + versioned lexicon, E1/E2 encoder with layered BIO and the DAPT script, E3 GLiNER adapter, E4/E5 LLM with retrieval, E6 router, D1–D3 classifiers, `benchmark`; see `fivetag/README.md`), `baseline_versions/` (pre-approval benchmark material), `extraction_typing.py` (v1 classifier, still feeds the v1 competency stages), `llm_client_router.py` | NEW, **current work** / ADAPT |
-| 4–5 — competency | **`competency/`** (five-tag evidence table → groups with the six validity statuses → grounded statement → KKNI / okupasi → status contract; one command, `python -m competency.pipeline`; see `competency/README.md`). It REUSES `clustering/`, `pipeline_scientific_audits.py`, `competency_kkni_labeller.py`, `occupation_mapper.py`. `competency_generator_v2.py` and `competency_evidence_repair.py` are the pre-approval chain, still driven by `scripts/run_full_v2_pipeline.py` for the old dashboard | NEW, **current work** / REUSE |
+| 4–5 — competency | **`competency/`** (five-tag evidence table → groups with the six validity statuses → grounded statement → KKNI / okupasi → status contract; one command, `python -m competency.pipeline`; plus `temporal` (windows, trend, volatility, persistence), `coverage` (four statuses against SKKNI or an uploaded curriculum), `delta` (five recommendation kinds), `endtoend` (P1–P3 and the two ablations); see `competency/README.md`). It REUSES `clustering/`, `pipeline_scientific_audits.py`, `competency_kkni_labeller.py`, `occupation_mapper.py`. `competency_generator_v2.py` and `competency_evidence_repair.py` are the pre-approval chain, still driven by `scripts/run_full_v2_pipeline.py` for the old dashboard | NEW, **current work** / REUSE |
 | 6 — labels & refs | `competency_kkni_labeller.py`, `occupation_mapper.py`, `kkni.py`, `DATA/skema_okupasi_*`, `DATA/spektrum_keahlian/` | ADAPT |
 | 7 — trends | `skill_time_trend_analysis.py`, `future_weight_mapping.py`, `future_domains.csv` | ADAPT |
-| 8 — delivery | `scripts/build_*_package.py`, `dashboard_v2/app.py`, `dashboard/`, `expert_review.py` | ADAPT |
+| 8 — delivery | **`dashboard_v3/`** (`public.py` reads a published profile and audits an uploaded curriculum; `admin.py` shows runs, works the two human review queues and publishes profiles; both read-only towards collection, paid models and the gold standard), `competency/profile.py` (versioned profile), `competency/figures.py` (every chart, from the output files). Pre-approval and still wired to the old chain: `scripts/build_*_package.py`, `dashboard_v2/app.py`, `dashboard/`, `expert_review.py` | NEW, **current work** / ADAPT |
 | chassis | `scripts/run_full_v2_pipeline.py` | ADAPT |
 
 `gold_standard/` is the most current and best-tested part of the repo

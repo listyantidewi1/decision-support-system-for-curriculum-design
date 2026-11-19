@@ -115,7 +115,21 @@ rules in `build_lexicon_v2.py`, and `ONET_DERIVATION.tsv` traces every entry to
 its source. Measured effect: no change on the reviewed development sentences,
 and 175 more technology mentions found on 20,000 corpus sentences (5,353 to
 5,528, about 3%). The default is still version 1; the competency pipeline uses
-version 2. ESCO is still to be added.
+version 2.
+
+**Dictionary version 3 adds ESCO (19 November, evening).** The ICT branch of
+ESCO (295 concepts) was read through ESCO's official public API, which needs no
+account. ESCO mixes named products with fields of knowledge, and the guideline
+tags them differently, so `build_lexicon_v3.py` sorts each concept: 232 became
+technology names, 150 became knowledge terms. `ESCO_DERIVATION.tsv` traces every
+entry; `ESCO_ICT.tsv` keeps each concept's parent group, which the time
+analysis uses. The sorting rule is mechanical and has not been reviewed by an
+expert. A first build let through bad matches ("ML", which in ESCO is a
+programming language and in postings means machine learning; "Computer
+Science", which in postings is usually a degree); those were excluded. Measured
+effect: no change on the reviewed development sentences, about 2.6% more
+technology and knowledge mentions on 20,000 corpus sentences. Version 3 is not
+used by default anywhere yet.
 
 Also yours: the word lists themselves. They are plain text files in
 `lexicons/v1/`, one entry per line; you can read and correct them. Once real

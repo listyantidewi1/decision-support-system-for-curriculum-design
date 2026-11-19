@@ -1,0 +1,19 @@
+{
+  "_about": "EXP-015. The outputs of the three Kaggle training runs, as printed by fivetag.skillspan_rehearsal and pasted back by the researcher on 2026-11-19. Kaggle sessions are not kept, so this file is the only stored copy. REHEARSAL on SkillSpan; not a study result.",
+  "runs": [
+    {"id": "a", "model": "xlm-roberta-base", "epochs": 6, "minutes": 11.9,
+     "dev": {"p": 0.503, "r": 0.608, "f1": 0.551, "ci": [0.525, 0.577], "partial_f1": 0.665, "skill": 0.524, "knowledge": 0.576},
+     "test": {"p": 0.526, "r": 0.592, "f1": 0.557, "ci": [0.533, 0.583], "partial_f1": 0.687, "skill": 0.483, "knowledge": 0.622}},
+    {"id": "b", "model": "bert-base-cased", "epochs": 6, "minutes": 10.6,
+     "dev": {"p": 0.452, "r": 0.556, "f1": 0.499, "ci": [0.472, 0.526], "partial_f1": 0.635, "skill": 0.460, "knowledge": 0.535},
+     "test": {"p": 0.479, "r": 0.545, "f1": 0.510, "ci": [0.486, 0.535], "partial_f1": 0.651, "skill": 0.421, "knowledge": 0.589}},
+    {"id": "c", "model": "xlm-roberta-base", "epochs": 20, "minutes": 40.1,
+     "dev": {"p": 0.531, "r": 0.642, "f1": 0.582, "ci": [0.556, 0.606], "partial_f1": 0.683, "skill": 0.554, "knowledge": 0.607},
+     "test": {"p": 0.551, "r": 0.637, "f1": 0.591, "ci": [0.566, 0.616], "partial_f1": 0.708, "skill": 0.533, "knowledge": 0.642},
+     "dev_strict_f1_by_epoch": [0.251, 0.415, 0.513, 0.539, 0.534, 0.546, 0.544, 0.562, 0.564, 0.561, 0.560, 0.574, 0.579, 0.563, 0.574, 0.582, 0.580, 0.581, 0.578, 0.575],
+     "train_loss_by_epoch": [0.2476, 0.0449, 0.0329, 0.0235, 0.0160, 0.0116, 0.0083, 0.0071, 0.0056, 0.0039, 0.0030, 0.0023, 0.0019, 0.0014, 0.0014, 0.0010, 0.0008, 0.0007, 0.0006, 0.0005]}
+  ],
+  "published": {"source": "Zhang et al. (2022), SkillSpan, Table 5 and Section 6; mean of five seeds",
+                "dev_combined_bert_base": 0.5935, "test_combined_best": 0.5973,
+                "test_skill_best": 0.5664, "test_knowledge_best": 0.6388}
+}

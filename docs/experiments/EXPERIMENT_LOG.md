@@ -433,6 +433,157 @@ Qwen 14, p = 0.115. Three comparisons, uncorrected.
   confirmed on real conflicts with expert tags once the pilot gold exists.
 - **Files:** `DATA/fivetag/adjudicator_eval/` (`result.json`, raw answers).
 
+## EXP-021 — Dictionary version 3: the ICT branch of ESCO
+
+- **Date / status:** 2026-11-19 · DEVELOPMENT
+- **Source:** ESCO (European Commission), read through its public API
+  (`ec.europa.eu/esco/api`), no account. Branch ISCED-F 061, "information and
+  communication technologies": 295 concepts (148 under software and applications
+  development and analysis, 104 under database and network design and
+  administration, 41 under computer use, 2 in a residual group). About 300
+  requests with a pause between them; cached locally.
+- **Method:** `fivetag/build_lexicon_v3.py` sorts each concept by a mechanical
+  rule (does the name contain a proper-name token?) into technology names or
+  knowledge terms. E0 was then run with v2 and with v3.
+- **Result:** 232 technology entries and 150 knowledge terms added. On the three
+  development sets nothing changes (same spans found, same items passed). On
+  20,000 pool sentences (seed 7), technology plus knowledge spans go from 6,536
+  to 6,703 (+167, 2.6%).
+- **A first build was wrong and was corrected the same day:** it added 295
+  technology entries and raised the pool count to 7,110, mostly through two bad
+  matches: "Computer Science" (205 hits; in postings it is almost always a
+  degree field) and "ML" (113 hits; in ESCO it is a programming language, in
+  postings it means machine learning). On the development sets that build made
+  three more items fail. Those names and a few like them were excluded, and
+  phrases ending in a generic head word ("... software", "... systems") were
+  moved from technology to knowledge.
+- **Limits:** the sorting rule and the exclusions were chosen by the developer
+  after reading the hits; no expert has reviewed `ESCO_DERIVATION.tsv`. No
+  precision estimate. v3 is not the default anywhere.
+
+## EXP-022 — Why the verifier removed two correct spans (follow-up to EXP-012)
+
+- **Date / status:** 2026-11-19 · DEVELOPMENT. Free: re-reads stored answers.
+- **Finding:** both lost spans, for all three models, were technology names that
+  occur more than once in their sentence. The model returned the text without
+  saying which occurrence, and the verifier rejects that as
+  `UNSUPPORTED_AMBIGUOUS_TEXT` instead of guessing.
+- **How often:** on the 100 pilot sentences (EXP-007): GPT 3 rejected against
+  298 kept, Haiku 2 against 221, Qwen 4 against 240 — about 1% of spans.
+- **Decision:** none; the verifier is unchanged. It is working as designed, at a
+  known cost of about 1% of spans. Whether a repeated phrase should instead be
+  accepted at every occurrence is a choice about the silver labels and is the
+  researcher's.
+
+## EXP-023 — Time analysis over the whole sentence pool
+
+- **Date / status:** 2026-11-19 · ENGINEERING
+- **Data:** every posting of the pool with a readable date: 18,667 postings.
+- **Method:** `competency.temporal` (`temporal-v1`): E0 with lexicon v2 over all
+  sentences; half-year calendar windows; a window needs at least 200 postings;
+  an item needs at least 20 postings. Windows kept: 2025-01..06 (354 postings),
+  2025-07..12 (4,336), 2026-01..06 (6,911), 2026-07..12 (6,919). Five earlier
+  windows (1 to 139 postings) were left out.
+
+| Tag | Items analysed | Volatility low / medium / high | Top-50 turnover between windows | Trend detected |
+|---|---|---|---|---|
+| Technology | 281 | 119 / 98 / 64 | 0.21, 0.18, 0.31 | none |
+| Knowledge | 141 | 21 / 34 / 86 | 0.39, 0.21, 0.31 | none |
+| Soft skill | 90 | 12 / 19 / 59 | 0.31, 0.31, 0.46 | none |
+| Work behaviour | 39 | 12 / 13 / 14 | 0, 0, 0 (fewer than 50 items) | none |
+
+- **Reading:** the machinery works on real dates. No trend passes the test, and
+  none could: with four windows a slope has two degrees of freedom. "Not
+  detected" here means "cannot tell".
+- **Limits, which are serious:** the first window has 354 postings against
+  about 7,000 in the last two, so its shares are noisy; the mix of platforms and
+  countries differs between windows, so a change in share may be a change in
+  what was collected; the counts come from the rule extractor. The persistence
+  weight uses an unvalidated formula.
+- **Abstraction laddering** found nothing to move in the first run, because the
+  ESCO parent table (EXP-021) was built after it started. The run was repeated
+  the same evening as `pool_all_20261119b`, with identical counts in the table
+  above. Of the 281 technologies only 36 have a node in the ESCO ICT branch; 4
+  of those are highly volatile and were moved up to their parent group (COBOL,
+  Drupal, Groovy, MATLAB), 32 stay specific. The other 245 have no ESCO anchor,
+  so the laddering cannot act on them: the ESCO ICT branch covers too little of
+  what postings name.
+- **Files:** `DATA/competency/temporal/pool_all_20261119/` and
+  `pool_all_20261119b/` (JSON, CSV, figures).
+
+## EXP-024 — Competency chain with time analysis, coverage and the repaired KKNI step
+
+- **Date / status:** 2026-11-19 · ENGINEERING. Supersedes the output of EXP-017
+  (same sample, same evidence; the statements and statuses are unchanged).
+- **Data and method:** as EXP-017, plus: `kkni-nearest-descriptor-v1`,
+  `coverage-v1` against the 156 SKKNI unit titles, `temporal-v1` inside the
+  run's own 581 postings. 158 seconds.
+- **KKNI:** every one of the 445 statements now has a proposed level (level 3:
+  121, level 4: 186, level 5: 104, level 6: 11, level 7: 23). **Only 1 is
+  marked confident** (similarity at or above 0.45). The step no longer stays
+  silent, but its proposals are weak: short statements are not close to any
+  level descriptor. This needs another method or expert placement.
+- **Coverage by SKKNI (proposed, not validated):** tercakup jelas 27, tercakup
+  sebagian 259, belum tercakup 86, masukan pembaruan 73.
+- **Time analysis inside the run:** exploratory, as it should be: only two
+  windows reach 200 postings (220 and 206).
+- **D1/D2 conflicts:** unchanged from EXP-018 (130; 26 high risk).
+- **A draft profile** was published from this run:
+  `DATA/competency/profiles/drafts/2026-0-draf1/`. It is marked DRAFT.
+- **Limits:** as EXP-017.
+
+## EXP-025 — Rehearsal of the end-to-end comparison P1, P2, P3 and two ablations
+
+- **Date / status:** 2026-11-19 · REHEARSAL
+- **Question:** does the comparison harness run all five pipelines on the same
+  postings and produce the table the proposal asks for?
+- **Data:** 12 postings drawn from the pool with seed 11:
+  418 sentences. The same sentences for every pipeline.
+- **Method:** `competency.endtoend`. P1: E0 (lexicon v2), D1/D2 conflicts left
+  out, rule statements. P2: `qwen/qwen3.8-flash` on
+  every sentence with three retrieved examples and the verifier, statements by
+  `openai/gpt-5.4-mini`, checked. P3: E0 first, the same LLM only for
+  sentences where a router trigger fires (`router-v1`, untuned), conflicts
+  adjudicated by the LLM, statements as P2. Two ablations of P3: no
+  deterministic verifier (LLM spans as returned, statements unchecked), and no
+  persistence module (order by postings). Contract with at least 3 postings.
+  **The retrieval pool is a stand-in:** the reviewed development sentences, not
+  a gold training split.
+
+| Pipeline | Evidence | Groups | Statements | Kandidat tinjauan | Sentences sent to the LLM | LLM statements rejected by the checks | Would have been rejected (kept) | Below the grounding threshold | D1/D2 conflicts |
+|---|---|---|---|---|---|---|---|---|---|
+| P1 | 343 | 10 | 6 | 6 | 0 | 0 | 0 | 0 | 4 |
+| P2 | 656 | 32 | 21 | 19 | 418 | 10 | 0 | 0 | – |
+| P3 | 566 | 25 | 15 | 13 | 305 | 9 | 0 | 0 | 35 |
+| P3-tanpa-verifier | 569 | 24 | 15 | 11 | 305 | 0 | 6 | 2 | 36 |
+| P3-tanpa-persistensi | 566 | 24 | 14 | 11 | 305 | 7 | 0 | 0 | 35 |
+
+- **Overlap of the top-20 lists** (competencies matched by the phrases they are
+  made of): P1 and P2 0.04; P1 and P3 0.00;
+  P2 and P3 0.35.
+- **Cost:** the first run charged $0.1542, almost all
+  of it P2's extraction of every sentence; the P3 variants reused those answers.
+  A second run, made the same evening after a counting slip in the report was
+  fixed, reused the cached extraction and charged $0.0303.
+  The table above is from the second run.
+- **What the rehearsal shows about the harness:** it runs; the ablation without
+  the verifier lets through statements the checks stop, which is what that
+  ablation is for; the router sent 73% of the sentences
+  to the LLM, so with untuned thresholds P3 is not yet cheaper than P2 by much.
+- **Repeated calls are not identical.** The two runs asked the adjudicator and
+  the statement writer again (those answers are not cached between runs) at
+  temperature 0. Differences between the first and the second run:
+  P3-tanpa-verifier: evidence 570 then 569, statements 15 then 15; P3-tanpa-persistensi: evidence 565 then 566, statements 15 then 14.
+  Within the first run, the three P3 variants, which ask the adjudicator the
+  same questions, also differed by one adjudicated span. So a real measurement
+  of stability between runs is needed, as the proposal requires.
+- **Limits:** 12 postings; groups are tiny and most are one posting's wording;
+  extractors unmeasured; retrieval pool a stand-in; no expert judgement; no
+  temporal stability. The numbers compare nothing yet.
+- **Files:** `DATA/competency/runs/endtoend_rehearsal_20261119/`
+  (`comparison.json`, `comparison_first_run.json`, one folder per pipeline,
+  figures).
+
 ---
 
 ## Spending on paid model calls
@@ -443,7 +594,8 @@ Qwen 14, p = 0.115. Three comparisons, uncorrected.
 | EXP-018 (adjudicator trial) | $0.0040 |
 | EXP-019 (statement writer trial) | $0.0261 |
 | EXP-020 (adjudicator comparison) | $0.0678 |
-| **Total recorded** | **$2.1711** |
+| EXP-025 (end-to-end rehearsal, two runs) | $0.1845 |
+| **Total recorded** | **$2.3556** |
 
 "Charged" is an upper estimate (see the shared settings). The provider's own
 balance is the authority.
