@@ -80,9 +80,9 @@ CONFLICT.
 
 ## Design choices
 
-Confirmed by the researcher on 19 November 2026: choices 1 and 2 as built, and
-choice 4 answered "yes, add the ESCO and O*NET lists". Choice 3 is still open.
-All four are still to be mentioned to the promotor.
+Confirmed by the researcher on 19 November 2026: choices 1 and 2 as built,
+choice 3 answered "a risk rule", and choice 4 answered "yes, add the ESCO and
+O*NET lists". All four are still to be mentioned to the promotor.
 
 1. **One tagging layer per tag (E1/E2).** The guideline lets a technology sit
    inside an action phrase ("Configure Kubernetes clusters", rule 6.9). Ordinary
@@ -94,12 +94,28 @@ All four are still to be mentioned to the promotor.
    embedding-based search is the alternative.
 3. **Where a D3 conflict goes.** The proposal says to the LLM or to a human
    "according to its risk level". The risk rule is not defined anywhere yet, so
-   the code reports the conflict and does not choose. **Open.**
+   the code reports the conflict and does not choose. **Decided: a risk rule**,
+   registered in `docs/experiments/PREREG_d3_conflict_routing.md` and built in
+   `conflict_routing.py`. The LLM decides every conflict first; a human reviews
+   those under a competency about to be recommended, plus a random sample of
+   150 of the rest to measure how often the LLM is right. First rehearsal: 130
+   conflicts in 14,451 evidence units (0.9%), 26 of them high risk.
 4. **What counts as the taxonomy for D2.** Today it is the word lists in
    `lexicons/v1/`. The plan also names ESCO and O*NET lists. **Decided: add
    them.** Not done yet: the lists are not on this computer. They will go into a
    new lexicon version (`v2`) as extra anchor sources for D2 and extra
    dictionary entries for E0, so `v1` results stay reproducible.
+
+**Dictionary version 2 exists (19 November).** `lexicons/v2/` is version 1
+plus 165 technology names derived from the O*NET 30.2 "Technology Skills" list
+(software occupations, hot or in-demand technologies; CC BY 4.0, attribution in
+`lexicons/v2/SOURCES.md`). O*NET's names are written differently from postings
+("Atlassian JIRA", "Cascading style sheets CSS"), so they were rewritten by the
+rules in `build_lexicon_v2.py`, and `ONET_DERIVATION.tsv` traces every entry to
+its source. Measured effect: no change on the reviewed development sentences,
+and 175 more technology mentions found on 20,000 corpus sentences (5,353 to
+5,528, about 3%). The default is still version 1; the competency pipeline uses
+version 2. ESCO is still to be added.
 
 Also yours: the word lists themselves. They are plain text files in
 `lexicons/v1/`, one entry per line; you can read and correct them. Once real

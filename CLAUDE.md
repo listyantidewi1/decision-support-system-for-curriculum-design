@@ -60,7 +60,11 @@ Subordinate scope docs the plan itself spawned (all post-approval, all
 trustworthy): `docs/corpus/SOURCE_AUDIT.md`,
 `docs/corpus/ACQUISITION_CADENCE.md`, `docs/experiments/split_spec_v1.md`,
 `docs/experiments/PREREG_gold_standard_size.md`,
-`docs/experiments/PREREG_test_scoring_rule.md`.
+`docs/experiments/PREREG_test_scoring_rule.md`,
+`docs/experiments/PREREG_pilot_gate.md`,
+`docs/experiments/PREREG_d3_conflict_routing.md` (where a D1/D2 conflict goes:
+the risk rule the researcher chose on 2026-11-19; a test keeps it identical to
+`fivetag/conflict_routing.py`).
 
 ### Rule 2 — never date a file from `git log`
 
@@ -164,7 +168,8 @@ Current, passing, and the part of the repo you can trust:
 | `test_gold_standard_pipeline` | 11 | `.venv-ml` |
 | `test_after_annotation` | 20 | `.venv-ml` |
 | `test_gold_to_models` | 10 | `.venv-ml` |
-| `test_fivetag` | 62 | `.venv-ml` |
+| `test_fivetag` | 73 | `.venv-ml` |
+| `test_competency` | 20 | `.venv-ml` |
 | `test_acquisition_monthly` | 11 | `.venv-ml` |
 | `test_annotation_server` | 23 | **`.venv`** |
 
@@ -287,6 +292,18 @@ thresholds (`RouterConfig`) are starting values and must be fixed on the dev
 split before the test split is opened. `labeling.versus_gold` and
 `gold_standard.materialise` both refuse sealed test sentences; keep it that way.
 
+**A `competency.pipeline` run is an engineering run until the extractor behind it
+has been measured.** The first one (2026-11-19, E0 evidence, 581 postings) gave
+445 statements; they are not findings and the output says so. Three things to
+know before changing it: the clusterer's own "phrase seen in ≥ 2 postings"
+filter is switched off on purpose (five-tag action phrases are long and mostly
+unique; it discarded two thirds of the evidence), rarity is judged per group
+instead; the KKNI labeller assigns almost nothing on this path (17 of 445)
+because it was built to correct an LLM's suggestion; and the status "siap
+ditelaah formal" is unreachable without three facts set by a person
+(`contract.StudyFacts`). Lexicon `v2` (v1 + O*NET-derived technology names) is
+what this pipeline uses; `fivetag`'s default is still `v1`.
+
 **`python -m acquisition.monthly run --go` really collects.** Without `--go` it
 is a preview and touches no network. It adds a schedule on top of
 `acquisition.run_batch` and no fetching code of its own (a test checks this). Do
@@ -317,7 +334,7 @@ Authoritative detail is in `docs/IMPLEMENTATION_PLAN.md` §0. Orientation only:
 | 2 — gold standard | **`gold_standard/`** (pool, sampling, splits, IAA, seal; and the post-annotation kit: `after_annotation` = one command, `gate`, `calibration`, `adjudicate`, and `materialise` = seal the test labels and export train/dev for the models — see `docs/RUNBOOK_after_annotation.md`), `annotation_server/`, `gold_labeling_ui/` | **current work** |
 | 2b — silver labels | `labeling/` (verifier, alignment, consensus, guideline-only prompt pack, OpenRouter runner with a hard spending cap, a SYNTHETIC guideline-conformance set and a SkillSpan probe for measuring prompt changes; output goes to the gitignored `DATA/labeling/`, never under `DATA/gold_standard/`), `gold_standard/metrics.py` (the one shared evaluation engine) | NEW, **current work** |
 | 3 — extraction | **`fivetag/`** (every condition of proposal §3.3.1–3.3.3 behind one interface: E0 rules + versioned lexicon, E1/E2 encoder with layered BIO and the DAPT script, E3 GLiNER adapter, E4/E5 LLM with retrieval, E6 router, D1–D3 classifiers, `benchmark`; see `fivetag/README.md`), `baseline_versions/` (pre-approval benchmark material), `extraction_typing.py` (v1 classifier, still feeds the v1 competency stages), `llm_client_router.py` | NEW, **current work** / ADAPT |
-| 4–5 — competency | `clustering/`, `competency_generator_v2.py`, `competency_evidence_repair.py`, `pipeline_scientific_audits.py` | REUSE / ADAPT |
+| 4–5 — competency | **`competency/`** (five-tag evidence table → groups with the six validity statuses → grounded statement → KKNI / okupasi → status contract; one command, `python -m competency.pipeline`; see `competency/README.md`). It REUSES `clustering/`, `pipeline_scientific_audits.py`, `competency_kkni_labeller.py`, `occupation_mapper.py`. `competency_generator_v2.py` and `competency_evidence_repair.py` are the pre-approval chain, still driven by `scripts/run_full_v2_pipeline.py` for the old dashboard | NEW, **current work** / REUSE |
 | 6 — labels & refs | `competency_kkni_labeller.py`, `occupation_mapper.py`, `kkni.py`, `DATA/skema_okupasi_*`, `DATA/spektrum_keahlian/` | ADAPT |
 | 7 — trends | `skill_time_trend_analysis.py`, `future_weight_mapping.py`, `future_domains.csv` | ADAPT |
 | 8 — delivery | `scripts/build_*_package.py`, `dashboard_v2/app.py`, `dashboard/`, `expert_review.py` | ADAPT |
@@ -336,7 +353,8 @@ and force-pushed. The repo is **public**. Never commit:
 
 - `DATA/preprocessing/`, `DATA/skillspan_ours/`, `DATA/samples/jobs_sample.csv`
 - `DATA/fivetag/` (train/dev rows exported from the gold standard, LLM benchmark
-  runs, checkpoints) and `DATA/labeling/` (ensemble runs)
+  runs, checkpoints), `DATA/labeling/` (ensemble runs), `DATA/competency/`
+  (evidence packages) and `DATA/taxonomies/` (raw O*NET / ESCO downloads)
 - `results/`, `results_run1|3|4/`, `results_aggregated/`
 - `skill_llm_*.jsonl`, `selected_skill_samples_*.html`
 - `DATA/labels/gold_{skills,knowledge}*.csv`,
@@ -394,5 +412,14 @@ deliberately under the plan — not to import it.
   registration before results exist.
 - Adversarial review findings go in `docs/experiments/*_findings.md` with a
   resolution log. Findings that stay open are listed as open.
+- **Every experiment gets an entry in `docs/experiments/EXPERIMENT_LOG.md` on
+  the day it is run** (researcher's instruction, 2026-11-19: she writes the
+  dissertation from it). An experiment is anything that produces a number
+  someone might quote: a model run, a prompt comparison, a rehearsal, a trial
+  that cost credit. The entry gives the question, data, settings and versions,
+  the numbers copied from the output files, the cost, the file paths, the
+  status (DEVELOPMENT / REHEARSAL / ENGINEERING / CONFIRMATORY) and the limits.
+  Never renumber or delete an entry. A run that is not in the log should be
+  treated as not having happened.
 - Report measured numbers, not expectations. If a suite fails, say so with the
   output.
