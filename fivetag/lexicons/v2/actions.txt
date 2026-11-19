@@ -1,0 +1,93 @@
+# Action lexicon v1 (guideline 4.1): technical work actions.
+#
+# [verbs]            every form on a line belongs to one verb. A span that STARTS
+#                    with one and has an object is a SKILL_HARD candidate
+#                    (rule 6.2: keep the verb).
+# [activity-nouns]   nouns that themselves name a technical action: SKILL_HARD
+#                    without a verb (rules 7.4, 7.13; confirmed by the researcher
+#                    on 2026-11-18).
+# [activity-suffix]  "<something> development" style activity nouns.
+# [soft-verbs]       verbs that open a SKILL_SOFT phrase (guideline 4.2, section 5).
+[verbs]
+develop developing develops
+design designing designs
+build building builds
+write writing writes
+implement implementing implements
+test testing tests
+deploy deploying deploys
+maintain maintaining maintains
+create creating creates
+configure configuring configures
+debug debugging debugs
+optimize optimizing optimizes optimise optimising optimises
+integrate integrating integrates
+automate automating automates
+analyse analysing analyses analyze analyzing analyzes
+perform performing performs
+train training trains
+migrate migrating migrates
+refactor refactoring refactors
+document documenting documents
+monitor monitoring monitors
+troubleshoot troubleshooting troubleshoots
+architect architecting architects
+profile profiling profiles
+research researching researches
+deliver delivering delivers
+apply applying applies
+facilitate facilitating facilitates
+support supporting supports
+operate operating operates
+define defining defines
+review reviewing reviews
+evaluate evaluating evaluates
+improve improving improves
+release releasing releases
+scale scaling scales
+secure securing secures
+mengembangkan
+merancang
+membangun
+menulis
+mengimplementasikan
+menguji
+melakukan
+membuat
+memelihara
+mengintegrasikan
+mengotomatisasi
+menganalisis
+mendokumentasikan
+memperbaiki
+mengonfigurasi
+[activity-nouns]
+automated testing
+unit testing
+integration testing
+regression testing
+manual testing
+debugging
+code review
+code reviews
+pair programming
+shell scripting
+programming
+refactoring
+pengujian otomatis
+pemrograman
+[activity-suffix]
+development
+[soft-verbs]
+communicate communicating communicates
+collaborate collaborating collaborates
+coordinate coordinating coordinates
+present presenting presents
+lead leading leads
+mentor mentoring mentors
+coach coaching coaches
+negotiate negotiating negotiates
+berkomunikasi
+berkolaborasi
+berkoordinasi
+memimpin

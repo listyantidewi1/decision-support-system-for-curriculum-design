@@ -1,0 +1,264 @@
+onet_example	onet_commodity_title	entry	rule	status
+AJAX	Web platform development software	AJAX !cs	name	already in v1
+Adobe Acrobat	Document management software	Adobe Acrobat	name	added
+Adobe Acrobat	Document management software	Acrobat !cs	name, vendor dropped	added
+Adobe After Effects	Video creation and editing software	Adobe After Effects	name	added
+Adobe After Effects	Video creation and editing software	After Effects	name, vendor dropped	added
+Adobe Creative Cloud software	Graphics or photo imaging software	Adobe Creative Cloud	name	added
+Adobe Creative Cloud software	Graphics or photo imaging software	Creative Cloud	name, vendor dropped	added
+Adobe Illustrator	Graphics or photo imaging software	Adobe Illustrator	name	added
+Adobe InDesign	Desktop publishing software	Adobe InDesign	name	added
+Adobe InDesign	Desktop publishing software	InDesign !cs	name, vendor dropped	added
+Adobe Photoshop	Graphics or photo imaging software	Adobe Photoshop	name	added
+Adobe Photoshop	Graphics or photo imaging software	Photoshop !cs	name, vendor dropped	added
+Adobe XD	Graphics or photo imaging software	Adobe XD	name	already in v1
+Alteryx software	Business intelligence and data analysis software	Alteryx !cs	name	added
+Amazon DynamoDB	Data base management system software	Amazon DynamoDB	name	added
+Amazon DynamoDB	Data base management system software	DynamoDB !cs	name, vendor dropped	already in v1
+Amazon Elastic Compute Cloud EC2	Data base user interface and query software	Amazon Elastic Compute Cloud	name without acronym	added
+Amazon Elastic Compute Cloud EC2	Data base user interface and query software	EC2 !cs	acronym	added
+Amazon Elastic Compute Cloud EC2	Data base user interface and query software	Elastic Compute Cloud	name without acronym, vendor dropped	added
+Amazon Redshift	Data base user interface and query software	Amazon Redshift	name	added
+Amazon Redshift	Data base user interface and query software	Redshift !cs	name, vendor dropped	already in v1
+Amazon Web Services AWS CloudFormation	Cloud-based management software	Amazon Web Services AWS CloudFormation	name	added
+Amazon Web Services AWS CloudFormation	Cloud-based management software	AWS CloudFormation	name, vendor dropped	added
+Amazon Web Services AWS SageMaker	Cloud-based management software	Amazon Web Services AWS SageMaker	name	added
+Amazon Web Services AWS SageMaker	Cloud-based management software	AWS SageMaker	name, vendor dropped	added
+Amazon Web Services AWS software	Data base user interface and query software	Amazon Web Services	name without acronym	already in v1
+Amazon Web Services AWS software	Data base user interface and query software	AWS !cs	acronym	already in v1
+Ansible software	Expert system software	Ansible !cs	name	already in v1
+Apache Airflow	Procedure management software	Apache Airflow	name	already in v1
+Apache Airflow	Procedure management software	Airflow !cs	name, vendor dropped	already in v1
+Apache Cassandra	Data base management system software	Apache Cassandra	name	added
+Apache Cassandra	Data base management system software	Cassandra !cs	name, vendor dropped	already in v1
+Apache Hadoop	Data base management system software	Apache Hadoop	name	added
+Apache Hadoop	Data base management system software	Hadoop !cs	name, vendor dropped	already in v1
+Apache Hive	Data base management system software	Apache Hive	name	added
+Apache JMeter	Object or component oriented development software	Apache JMeter	name	added
+Apache JMeter	Object or component oriented development software	JMeter !cs	name, vendor dropped	already in v1
+Apache Kafka	Development environment software	Apache Kafka	name	already in v1
+Apache Kafka	Development environment software	Kafka !cs	name, vendor dropped	already in v1
+Apache Maven	Development environment software	Apache Maven	name	added
+Apache Maven	Development environment software	Maven !cs	name, vendor dropped	already in v1
+Apache Spark	Business intelligence and data analysis software	Apache Spark	name	already in v1
+Apache Subversion SVN	File versioning software	Apache Subversion	name without acronym	added
+Apache Subversion SVN	File versioning software	SVN !cs	acronym	already in v1
+Apache Subversion SVN	File versioning software	Subversion !cs	name without acronym, vendor dropped	added
+Apache Tomcat	Web platform development software	Apache Tomcat	name	added
+Apache Tomcat	Web platform development software	Tomcat !cs	name, vendor dropped	added
+Appium	Program testing software	Appium !cs	name	already in v1
+Apple Safari	Internet browser software	Apple Safari	name	added
+Apple iOS	Operating system software	Apple iOS	name	added
+Apple iOS	Operating system software	iOS !cs	name, vendor dropped	already in v1
+Apple macOS	Operating system software	Apple macOS	name	added
+Apple macOS	Operating system software	macOS !cs	name, vendor dropped	added
+Atlassian Bitbucket	Application server software	Atlassian Bitbucket	name	added
+Atlassian Bitbucket	Application server software	Bitbucket !cs	name, vendor dropped	already in v1
+Atlassian Confluence	Project management software	Atlassian Confluence	name	added
+Atlassian Confluence	Project management software	Confluence !cs	name, vendor dropped	already in v1
+Atlassian JIRA	Content workflow software	Atlassian JIRA	name	added
+Atlassian JIRA	Content workflow software	JIRA !cs	name, vendor dropped	already in v1
+Autodesk AutoCAD	Computer aided design CAD software	Autodesk AutoCAD	name	added
+Autodesk Maya	Graphics or photo imaging software	Autodesk Maya	name	added
+Autodesk Revit	Computer aided design CAD software	Autodesk Revit	name	added
+Bash	Operating system software	Bash !cs	name	already in v1
+Bentley MicroStation	Computer aided design CAD software	Bentley MicroStation	name	added
+Bootstrap	Web platform development software	Bootstrap !cs	name	already in v1
+Border Gateway Protocol BGP	Switch or router software	Border Gateway Protocol	name without acronym	added
+Border Gateway Protocol BGP	Switch or router software	BGP !cs	acronym	already in v1
+C#	Object or component oriented development software	C# !cs	name	already in v1
+C++	Object or component oriented development software	C++ !cs	name	already in v1
+Cascading style sheets CSS	Web platform development software	Cascading style sheets	name without acronym	added
+Cascading style sheets CSS	Web platform development software	CSS !cs	acronym	already in v1
+Cisco Webex	Video conferencing software	Cisco Webex	name	added
+Cisco Webex	Video conferencing software	Webex !cs	name, vendor dropped	added
+Dassault Systemes SolidWorks	Computer aided design CAD software	Dassault Systemes SolidWorks	name	added
+Django	Web platform development software	Django !cs	name	already in v1
+Docker	Application server software	Docker !cs	name	already in v1
+Drupal	Web platform development software	Drupal !cs	name	added
+ESRI ArcGIS ArcPy	Analytical or scientific software	ESRI ArcGIS ArcPy	name	added
+ESRI ArcGIS Survey 123	Analytical or scientific software	ESRI ArcGIS Survey 123	name	added
+ESRI ArcGIS software	Geographic information system	ESRI ArcGIS	name	added
+Eclipse IDE	Development environment software	Eclipse !cs	name	already in v1
+Elasticsearch	Data base management system software	Elasticsearch !cs	name	already in v1
+Epic Systems	Medical software	Epic Systems	name	added
+Extensible markup language XML	Enterprise application integration software	Extensible markup language	name without acronym	added
+Extensible markup language XML	Enterprise application integration software	XML !cs	acronym	already in v1
+Figma	Graphical user interface development software	Figma !cs	name	already in v1
+Git	File versioning software	Git !cs	name	already in v1
+GitHub	Application server software	GitHub !cs	name	already in v1
+GitLab	Application server software	GitLab !cs	name	already in v1
+Google Analytics	Data mining software	Google Analytics	name	added
+Google Android	Operating system software	Google Android	name	added
+Google Android	Operating system software	Android !cs	name, vendor dropped	already in v1
+Google Angular	Web platform development software	Google Angular	name	added
+Google Angular	Web platform development software	Angular !cs	name, vendor dropped	already in v1
+Google Docs	Word processing software	Google Docs	name	added
+Google Sheets	Spreadsheet software	Google Sheets	name	added
+Google Workspace software	Office suite software	Google Workspace	name	added
+Grafana Labs Grafana Cloud	Graphical user interface development software	Grafana Labs Grafana Cloud	name	added
+GraphQL	Data base user interface and query software	GraphQL !cs	name	already in v1
+Hibernate ORM	Object oriented data base management software	Hibernate ORM	name	added
+HubSpot software	Sales and marketing software	HubSpot !cs	name	added
+Hypertext markup language HTML	Web platform development software	Hypertext markup language	name without acronym	added
+Hypertext markup language HTML	Web platform development software	HTML !cs	acronym	already in v1
+IBM DB2	Data base user interface and query software	IBM DB2	name	added
+IBM DB2	Data base user interface and query software	DB2 !cs	name, vendor dropped	added
+IBM SPSS Statistics	Analytical or scientific software	IBM SPSS Statistics	name	added
+IBM SPSS Statistics	Analytical or scientific software	SPSS Statistics	name, vendor dropped	added
+IBM Terraform	Configuration management software	IBM Terraform	name	added
+IBM Terraform	Configuration management software	Terraform !cs	name, vendor dropped	already in v1
+IBM WebSphere MQ	Cloud-based management software	IBM WebSphere MQ	name	added
+IBM WebSphere MQ	Cloud-based management software	WebSphere MQ	name, vendor dropped	added
+InVision software	Process mapping and design software	InVision !cs	name	added
+Informatica software	Metadata management software	Informatica !cs	name	added
+JUnit	Program testing software	JUnit !cs	name	already in v1
+JavaScript	Web platform development software	JavaScript !cs	name	already in v1
+JavaScript Object Notation JSON	Web platform development software	JavaScript Object Notation	name without acronym	added
+JavaScript Object Notation JSON	Web platform development software	JSON !cs	acronym	already in v1
+Jenkins CI	Enterprise application integration software	Jenkins CI	name	added
+Jest	Program testing software	Jest !cs	name	already in v1
+Kali Linux	Program testing software	Kali Linux	name	added
+Kubernetes	Application server software	Kubernetes !cs	name	already in v1
+Linux	Operating system software	Linux !cs	name	already in v1
+MEDITECH software	Medical software	MEDITECH !cs	name	added
+MITRE ATT&CK software	Program testing software	MITRE ATT&CK	name	added
+Magellan Firmware	Operating system software	Magellan Firmware	name	added
+Marketo Marketing Automation	Sales and marketing software	Marketo Marketing Automation	name	added
+Metasploit	Transaction security and virus protection software	Metasploit !cs	name	added
+Microsoft .NET Framework	Development environment software	Microsoft .NET Framework	name	added
+Microsoft .NET Framework	Development environment software	.NET Framework	name, vendor dropped	added
+Microsoft ASP.NET	Web platform development software	Microsoft ASP.NET	name	added
+Microsoft ASP.NET	Web platform development software	ASP.NET !cs	name, vendor dropped	already in v1
+Microsoft Access	Data base user interface and query software	Microsoft Access	name	added
+Microsoft Active Directory	Internet directory services software	Microsoft Active Directory	name	added
+Microsoft Active Directory	Internet directory services software	Active Directory	name, vendor dropped	added
+Microsoft Active Server Pages ASP	Web platform development software	Microsoft Active Server Pages	name without acronym	added
+Microsoft Active Server Pages ASP	Web platform development software	ASP !cs	acronym	added
+Microsoft Active Server Pages ASP	Web platform development software	Active Server Pages	name without acronym, vendor dropped	added
+Microsoft Azure Data Factory	Cloud-based management software	Microsoft Azure Data Factory	name	added
+Microsoft Azure Data Factory	Cloud-based management software	Azure Data Factory	name, vendor dropped	added
+Microsoft Azure DevOps Services	Development environment software	Microsoft Azure DevOps Services	name	added
+Microsoft Azure DevOps Services	Development environment software	Azure DevOps Services	name, vendor dropped	added
+Microsoft Azure software	Development environment software	Microsoft Azure	name	already in v1
+Microsoft Azure software	Development environment software	Azure !cs	name, vendor dropped	already in v1
+Microsoft Excel	Spreadsheet software	Microsoft Excel	name	added
+Microsoft Excel	Spreadsheet software	Excel !cs	name, vendor dropped	already in v1
+Microsoft Internet Information Services (IIS)	Transaction server software	Microsoft Internet Information Services (IIS)	name	added
+Microsoft Internet Information Services (IIS)	Transaction server software	Internet Information Services (IIS)	name, vendor dropped	added
+Microsoft Internet Information Services (IIS) Manager	Transaction server software	Microsoft Internet Information Services (IIS) Manager	name	added
+Microsoft Internet Information Services (IIS) Manager	Transaction server software	Internet Information Services (IIS) Manager	name, vendor dropped	added
+Microsoft Office software	Office suite software	Microsoft Office	name	already in v1
+Microsoft Outlook	Electronic mail software	Microsoft Outlook	name	added
+Microsoft Outlook	Electronic mail software	Outlook !cs	name, vendor dropped	added
+Microsoft Power Automate	Enterprise application integration software	Microsoft Power Automate	name	added
+Microsoft Power Automate	Enterprise application integration software	Power Automate	name, vendor dropped	added
+Microsoft Power BI	Business intelligence and data analysis software	Microsoft Power BI	name	added
+Microsoft Power BI	Business intelligence and data analysis software	Power BI	name, vendor dropped	already in v1
+Microsoft PowerPoint	Presentation software	Microsoft PowerPoint	name	added
+Microsoft PowerPoint	Presentation software	PowerPoint !cs	name, vendor dropped	already in v1
+Microsoft PowerShell	Development environment software	Microsoft PowerShell	name	added
+Microsoft PowerShell	Development environment software	PowerShell !cs	name, vendor dropped	already in v1
+Microsoft Project	Project management software	Microsoft Project	name	added
+Microsoft SQL Server	Data base user interface and query software	Microsoft SQL Server	name	already in v1
+Microsoft SQL Server	Data base user interface and query software	SQL Server	name, vendor dropped	already in v1
+Microsoft SQL Server Integration Services SSIS	Enterprise application integration software	Microsoft SQL Server Integration Services	name without acronym	added
+Microsoft SQL Server Integration Services SSIS	Enterprise application integration software	SSIS !cs	acronym	added
+Microsoft SQL Server Integration Services SSIS	Enterprise application integration software	SQL Server Integration Services	name without acronym, vendor dropped	added
+Microsoft SQL Server Reporting Services SSRS	Data base reporting software	Microsoft SQL Server Reporting Services	name without acronym	added
+Microsoft SQL Server Reporting Services SSRS	Data base reporting software	SSRS !cs	acronym	added
+Microsoft SQL Server Reporting Services SSRS	Data base reporting software	SQL Server Reporting Services	name without acronym, vendor dropped	added
+Microsoft SharePoint	Document management software	Microsoft SharePoint	name	added
+Microsoft SharePoint	Document management software	SharePoint !cs	name, vendor dropped	already in v1
+Microsoft Team Foundation Server	Project management software	Microsoft Team Foundation Server	name	added
+Microsoft Team Foundation Server	Project management software	Team Foundation Server	name, vendor dropped	added
+Microsoft Teams	Project management software	Microsoft Teams	name	added
+Microsoft Visio	Process mapping and design software	Microsoft Visio	name	added
+Microsoft Visio	Process mapping and design software	Visio !cs	name, vendor dropped	added
+Microsoft Visual Basic	Development environment software	Microsoft Visual Basic	name	added
+Microsoft Visual Basic	Development environment software	Visual Basic	name, vendor dropped	added
+Microsoft Visual Basic for Applications VBA	Development environment software	Microsoft Visual Basic for Applications	name without acronym	added
+Microsoft Visual Basic for Applications VBA	Development environment software	VBA !cs	acronym	added
+Microsoft Visual Basic for Applications VBA	Development environment software	Visual Basic for Applications	name without acronym, vendor dropped	added
+Microsoft Visual Studio	Development environment software	Microsoft Visual Studio	name	added
+Microsoft Visual Studio	Development environment software	Visual Studio	name, vendor dropped	already in v1
+Microsoft Windows	Operating system software	Microsoft Windows	name	added
+Microsoft Windows	Operating system software	Windows !cs	name, vendor dropped	added
+Microsoft Windows Server	Operating system software	Microsoft Windows Server	name	added
+Microsoft Windows Server	Operating system software	Windows Server	name, vendor dropped	already in v1
+Microsoft Word	Word processing software	Microsoft Word	name	added
+MongoDB	Data base management system software	MongoDB !cs	name	already in v1
+Mozilla Firefox	Internet browser software	Mozilla Firefox	name	added
+MySQL	Data base management system software	MySQL !cs	name	already in v1
+Nmap	Transaction security and virus protection software	Nmap !cs	name	added
+Node.js	Web platform development software	Node.js !cs	name	already in v1
+Oracle Cloud software	Cloud-based management software	Oracle Cloud	name	added
+Oracle Database	Data base management system software	Oracle Database	name	already in v1
+Oracle Java	Object or component oriented development software	Oracle Java	name	added
+Oracle Java	Object or component oriented development software	Java !cs	name, vendor dropped	already in v1
+Oracle Java 2 Platform Enterprise Edition J2EE	Development environment software	Oracle Java 2 Platform Enterprise Edition	name without acronym	added
+Oracle Java 2 Platform Enterprise Edition J2EE	Development environment software	J2EE !cs	acronym	already in v1
+Oracle Java 2 Platform Enterprise Edition J2EE	Development environment software	Java 2 Platform Enterprise Edition	name without acronym, vendor dropped	added
+Oracle PL/SQL	Data base management system software	Oracle PL/SQL	name	added
+Oracle PL/SQL	Data base management system software	PL/SQL !cs	name, vendor dropped	already in v1
+Oracle PeopleSoft	Enterprise resource planning ERP software	Oracle PeopleSoft	name	added
+Oracle PeopleSoft	Enterprise resource planning ERP software	PeopleSoft !cs	name, vendor dropped	added
+Oracle Primavera Enterprise Project Portfolio Management	Project management software	Oracle Primavera Enterprise Project Portfolio Management	name	added
+Oracle Primavera Enterprise Project Portfolio Management	Project management software	Primavera Enterprise Project Portfolio Management	name, vendor dropped	added
+Oracle SQL Developer	Development environment software	Oracle SQL Developer	name	added
+Oracle SQL Developer	Development environment software	SQL Developer	name, vendor dropped	added
+PHP	Web platform development software	PHP !cs	name	already in v1
+Perl	Object or component oriented development software	Perl !cs	name	already in v1
+Portswigger BurP Suite	Transaction security and virus protection software	Portswigger BurP Suite	name	added
+PostgreSQL	Object oriented data base management software	PostgreSQL !cs	name	already in v1
+Postman	Operating system software	Postman !cs	name	already in v1
+PySpark	Data base user interface and query software	PySpark !cs	name	already in v1
+PyTorch	Data base user interface and query software	PyTorch !cs	name	already in v1
+QGIS	Geographic information system	QGIS !cs	name	added
+Qualys Cloud Platform	Cloud-based protection or security software	Qualys Cloud Platform	name	added
+React	Web platform development software	React !cs	name	already in v1
+React Redux	Web platform development software	React Redux	name	added
+Red Hat Enterprise Linux	Operating system software	Red Hat Enterprise Linux	name	added
+Red Hat Enterprise Linux	Operating system software	Enterprise Linux	name, vendor dropped	added
+Red Hat OpenShift	Application server software	Red Hat OpenShift	name	added
+Red Hat OpenShift	Application server software	OpenShift !cs	name, vendor dropped	already in v1
+Redis	Data base management system software	Redis !cs	name	already in v1
+RockWare ArcMap	Map creation software	RockWare ArcMap	name	added
+SAP ERP	Enterprise resource planning ERP software	SAP ERP	name	added
+SAP software	Enterprise resource planning ERP software	SAP !cs	name	already in v1
+SAS	Analytical or scientific software	SAS !cs	name	added
+Salesforce software	Customer relationship management CRM software	Salesforce !cs	name	already in v1
+Scala	Object or component oriented development software	Scala !cs	name	already in v1
+Scikit-learn	Development environment software	Scikit-learn !cs	name	already in v1
+Selenium	Program testing software	Selenium !cs	name	already in v1
+ServiceNow	Data base user interface and query software	ServiceNow !cs	name	already in v1
+Snowflake	Data mining software	Snowflake !cs	name	already in v1
+Solidity	Development environment software	Solidity !cs	name	already in v1
+Splunk Enterprise	Cloud-based management software	Splunk Enterprise	name	added
+Spring Boot	Application server software	Spring Boot	name	already in v1
+Spring Framework	Web platform development software	Spring Framework	name	added
+Structured query language SQL	Data base user interface and query software	Structured query language	name without acronym	added
+Structured query language SQL	Data base user interface and query software	SQL !cs	acronym	already in v1
+Tableau	Business intelligence and data analysis software	Tableau !cs	name	already in v1
+Tenable Nessus	Transaction security and virus protection software	Tenable Nessus	name	added
+TensorFlow	Analytical or scientific software	TensorFlow !cs	name	already in v1
+Teradata Database	Data base management system software	Teradata Database	name	added
+TestNG	Program testing software	TestNG !cs	name	already in v1
+The MathWorks MATLAB	Analytical or scientific software	The MathWorks MATLAB	name	added
+The MathWorks MATLAB	Analytical or scientific software	MATLAB !cs	name, vendor dropped	already in v1
+Transact-SQL	Data base user interface and query software	Transact-SQL !cs	name	added
+Trimble SketchUp Pro	Graphics or photo imaging software	Trimble SketchUp Pro	name	added
+TypeScript	Object or component oriented development software	TypeScript !cs	name	already in v1
+UNIX	Operating system software	UNIX !cs	name	already in v1
+UNIX Shell	Operating system software	UNIX Shell	name	added
+Unity Technologies Unity	Development environment software	Unity Technologies Unity	name	added
+Unity Technologies Unity	Development environment software	Unity !cs	name, vendor dropped	already in v1
+Unreal Technology Unreal Engine	Development environment software	Unreal Technology Unreal Engine	name	added
+Vue.js	Web platform development software	Vue.js !cs	name	already in v1
+WordPress	Web page creation and editing software	WordPress !cs	name	already in v1
+Workday software	Enterprise resource planning ERP software	Workday !cs	name	added
+Yardi software	Data base user interface and query software	Yardi !cs	name	added
+eClinicalWorks EHR software	Medical software	eClinicalWorks EHR	name	added
+eMASS	Risk management data and analysis software	eMASS !cs	name	added
+jQuery	Object or component oriented development software	jQuery !cs	name	already in v1
+pandas	Data base user interface and query software	pandas !cs	name	already in v1
