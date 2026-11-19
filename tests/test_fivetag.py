@@ -777,6 +777,143 @@ def test_nothing_in_fivetag_imports_legacy_or_writes_under_gold_standard():
     assert "gold_standard" not in str(synthetic.OUT_DIR) and "gold_standard" not in str(L.RUNS_DIR)
 
 
+# ----------------------------------------------------- D3 conflict routing
+from fivetag import conflict_routing as CR                                 # noqa: E402
+
+
+def _ev(i, text, sentence, tag="SH"):
+    from types import SimpleNamespace
+    a = sentence.index(text)
+    return SimpleNamespace(evidence_id=f"e{i}", text=text, sentence_text=sentence, start=a,
+                           end=a + len(text), tag=tag)
+
+
+def _conflicts(n=6):
+    s = "Understanding of unit testing."            # D1: SH (activity noun), D2: KN (context)
+    return CR.find_conflicts([_ev(i, "unit testing", s) for i in range(n)]
+                             + [_ev(99, "Docker", "Experience with Docker.", "TT")])
+
+
+def test_conflicts_are_found_only_where_d1_and_d2_differ():
+    cs = _conflicts(3)
+    assert [c.evidence_id for c in cs] == ["e0", "e1", "e2"]
+    assert {(c.d1, c.d2, c.kind) for c in cs} == {("SH", "KN", "disagree")}
+
+
+def test_risk_rule_high_for_recommended_competencies_and_a_fixed_audit_sample():
+    cs = _conflicts(6)
+    comp = {"e0": ("comp-1", "kandidat_tinjauan"), "e1": ("comp-2", "eksploratif")}
+    cfg = CR.RoutingConfig(audit_sample_n=2)
+    CR.assign_risk(cs, comp, cfg)
+    by = {c.evidence_id: c for c in cs}
+    assert by["e0"].risk == CR.HIGH and by["e0"].human_review
+    assert by["e1"].risk in (CR.AUDIT, CR.LOW)
+    assert sum(c.risk == CR.AUDIT for c in cs) == 2
+    assert sum(c.human_review for c in cs) == 3
+    first = [c.risk for c in cs]
+    CR.assign_risk(list(reversed(cs)), comp, cfg)             # order must not matter
+    assert [c.risk for c in cs] == first
+    s = CR.summarise(cs, n_evidence=60)
+    assert s["n_conflicts"] == 6 and s["conflict_rate"] == 0.1 and s["n_for_human_review"] == 3
+
+
+def test_llm_decides_only_low_risk_conflicts_and_unusable_answers_go_to_a_human():
+    cs = _conflicts(4)
+    CR.assign_risk(cs, {"e0": ("comp-1", "kandidat_tinjauan")}, CR.RoutingConfig(audit_sample_n=0))
+    answers = iter(['{"label": "KN"}', '{"label": "KN"}', "I think knowledge", '{"label": "TT"}'])
+    s = CR.adjudicate_with_llm(cs, lambda messages: next(answers))
+    by = {c.evidence_id: c for c in cs}
+    assert by["e0"].llm_label == "KN" and by["e0"].final_label == ""      # high: human decides
+    assert by["e1"].final_label == "KN" and not by["e1"].human_review     # low: LLM stands
+    assert by["e2"].llm_status == "unusable" and by["e2"].human_review
+    assert by["e3"].human_review and "neither classifier" in " ".join(by["e3"].reasons)
+    assert s["n_llm_unusable"] == 1 and s["n_decided_by_llm_alone"] == 1
+    msg = json.loads(CR.build_messages(cs[0])[1]["content"])
+    assert msg["candidates"] == ["KN", "SH"] and msg["phrase"] == "unit testing"
+
+
+def test_audit_accuracy_uses_only_the_audit_sample():
+    cs = _conflicts(5)
+    CR.assign_risk(cs, {"e0": ("comp-1", "kandidat_tinjauan")}, CR.RoutingConfig(audit_sample_n=2))
+    CR.adjudicate_with_llm(cs, lambda messages: '{"label": "KN"}')
+    audit = [c for c in cs if c.risk == CR.AUDIT]
+    audit[0].final_label, audit[1].final_label = "KN", "SH"
+    next(c for c in cs if c.risk == CR.HIGH).final_label = "SH"
+    a = CR.audit_accuracy(cs)
+    assert (a["n"], a["agree"], a["accuracy"]) == (2, 1, 0.5)
+    with tempfile.TemporaryDirectory() as tmp:
+        sheet = CR.write_worksheet(cs, Path(tmp) / "w.csv").read_text(encoding="utf-8-sig")
+        assert sheet.count("unit testing") >= 3 and "FINAL" in sheet.splitlines()[0]
+
+
+def test_evaluate_adjudicator_scores_all_spans_and_the_conflicts_separately():
+    s1, s2 = "Understanding of unit testing.", "Experience with Docker."
+    items = [TypingItem(s1, s1.index("unit testing"), s1.index("unit testing") + 12, "KN", "a"),
+             TypingItem(s2, s2.index("Docker"), s2.index("Docker") + 6, "TT", "b")]
+    seen = []
+
+    def call(messages):
+        payload = json.loads(messages[1]["content"])
+        seen.append(payload)
+        if payload["phrase"] == "Docker":
+            return "not json"
+        return '{"label": "KN"}' if "candidates" in payload else '{"label": "SH"}'
+    r = CR.evaluate_adjudicator(items, call)
+    assert r["all"] == {"a": False, "b": False} and r["conflicts"] == {"a": True}
+    assert r["unusable"] == {"all": 1, "conflicts": 0}
+    assert ["candidates" in p for p in seen] == [False, True, False]
+    assert CR.parse_label('```json\n{"label": "tt"}\n```') == "TT"
+    assert CR.parse_label('{"label": "FRAMEWORK"}') is None and CR.parse_label(None) is None
+
+
+def test_acceptance_rule_is_judged_on_the_lower_bound_and_matches_its_registration():
+    from gold_standard.metrics import wilson_ci
+
+    def verdict(k, n=150):
+        lo, hi = wilson_ci(k, n)
+        return CR.acceptance({"n": n, "agree": k, "accuracy": k / n, "wilson95": [lo, hi]})["verdict"]
+    assert verdict(130) == CR.ACCEPT and verdict(129) == CR.BORDERLINE
+    assert verdict(112) == CR.BORDERLINE and verdict(111) == CR.REJECT
+    assert verdict(120, 150) == CR.BORDERLINE          # 80% observed is NOT enough
+    assert CR.acceptance({"n": 0, "agree": 0, "accuracy": float("nan"),
+                          "wilson95": [0.0, 1.0]})["verdict"] == "no audit yet"
+    doc = (PROJECT_ROOT / "docs" / "experiments" / "PREREG_d3_conflict_routing.md").read_text(
+        encoding="utf-8")
+    assert f"`{CR.ACCEPTANCE_VERSION}`" in doc
+    for needle in ("at least **0.80**", "at least **0.667**", "**130**", "**112**"):
+        assert needle in doc, needle
+    cs = _conflicts(3)
+    CR.assign_risk(cs, {}, CR.RoutingConfig(audit_sample_n=0))
+    CR.adjudicate_with_llm(cs, lambda messages: '{"label": "KN"}')
+    assert CR.apply_rejection(cs) == 3 and all(c.final_label == "" for c in cs)
+
+
+def test_routing_rule_matches_its_registration():
+    doc = (PROJECT_ROOT / "docs" / "experiments" / "PREREG_d3_conflict_routing.md").read_text(
+        encoding="utf-8")
+    assert f"`{CR.ROUTING_VERSION}`" in doc and "REGISTERED 2026-11-19" in doc
+    assert f"**{CR.AUDIT_SAMPLE_N}**" in doc and f"**{CR.AUDIT_SEED}**" in doc
+    for status in CR.HIGH_RISK_STATUSES:
+        assert f"`{status}`" in doc
+    assert CR.RoutingConfig().audit_sample_n == CR.AUDIT_SAMPLE_N
+
+
+def test_capped_caller_refuses_before_it_spends_past_the_cap():
+    from labeling.run import BudgetError
+    calls: list = []
+    call = L.capped_caller("fam/model", PRICE, max_usd=0.002, max_tokens=100,
+                           client_factory=lambda m: _Client(calls))
+    msgs = [{"role": "user", "content": "Experience with Docker."}]
+    assert json.loads(call(msgs))["spans"] and call.n_calls == 1 and call.spent() > 0
+    try:
+        for _ in range(50):
+            call(msgs)
+    except BudgetError:
+        assert call.spent() <= 0.002 and len(calls) == call.n_calls < 51
+        return
+    raise AssertionError("the cap did not stop the calls")
+
+
 # ---------------------------------------------------------- SkillSpan rehearsal
 def _skillspan_file(folder: Path, name: str, records: list[tuple[str, dict]]) -> None:
     with (folder / f"{name}.jsonl").open("w", encoding="utf-8") as fh:

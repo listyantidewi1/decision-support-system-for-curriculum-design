@@ -316,6 +316,50 @@ def run_llm(sentences: Mapping[str, str], *, condition: str, model: str, prices:
     return {"preds": preds, "info": info}
 
 
+def capped_caller(model: str, prices: dict, max_usd: float, *, max_tokens: int = 300,
+                  reasoning: dict | None = None, log_path: Path | None = None,
+                  client_factory: Callable | None = None):
+    """A `call(messages) -> raw text` for one model with a hard spending cap.
+
+    For the small LLM steps outside extraction (the D3 adjudicator, the
+    competency statement writer). Every call is priced at its worst case BEFORE
+    it is made; when the next call could pass the cap, BudgetError is raised and
+    nothing is sent. `call.spent()` is what was charged; `call.n_calls` how
+    many calls were made. With `log_path`, every answer is appended there.
+    """
+    from labeling.run import (BudgetError, RunConfig, _call_cost, _default_client_factory,
+                              _tokens_upper_bound, call_model)
+    cfg = RunConfig(models=(model,), prices={model: prices}, max_usd=max_usd,
+                    max_tokens=max_tokens, retries=1, reasoning=reasoning)
+    state = {"spent": 0.0, "client": None}
+    if log_path is not None:
+        log_path = Path(log_path).resolve()
+        if (REPO_ROOT / "DATA" / "gold_standard").resolve() in log_path.parents:
+            raise ValueError("model output must not be written under DATA/gold_standard/")
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    def call(messages: list[dict]) -> str | None:
+        worst = ((_tokens_upper_bound(messages) * prices["usd_per_m_in"]
+                  + max_tokens * prices["usd_per_m_out"]) / 1e6) * 2      # one retry
+        if state["spent"] + worst > max_usd:
+            raise BudgetError(f"stopped at ${state['spent']:.4f}: the next call could pass "
+                              f"the cap ${max_usd:.2f}")
+        if state["client"] is None:
+            state["client"] = (client_factory or _default_client_factory)(model)
+        rec = call_model(state["client"], model, messages, cfg)
+        state["spent"] += _call_cost(rec, model, cfg)
+        call.n_calls += 1
+        if log_path is not None:
+            with log_path.open("a", encoding="utf-8", newline="\n") as fh:
+                fh.write(json.dumps({"model": model, "messages": messages, **rec},
+                                    ensure_ascii=False) + "\n")
+        return rec.get("raw") if rec.get("ok") else None
+
+    call.n_calls = 0
+    call.spent = lambda: state["spent"]
+    return call
+
+
 class StoredPredictions:
     """Predictions computed earlier, behind the `Extractor` interface. Lets the
     router use LLM answers that were already paid for, by sentence text."""

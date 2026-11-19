@@ -354,8 +354,8 @@ class D3Consensus:
     two situations can be counted separately. Both abstaining is an ABSTAIN.
 
     Where a conflict goes next (LLM adjudication or human review, "sesuai
-    tingkat risikonya") is NOT decided here: the risk rule is not yet defined in
-    the configuration registry, and this class does not invent one.
+    tingkat risikonya") is NOT decided here. It is decided by the registered
+    risk rule in `fivetag.conflict_routing`.
     """
     name = "D3"
 
