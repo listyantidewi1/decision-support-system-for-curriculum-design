@@ -124,7 +124,7 @@ On kaggle.com:
    ```
    !git clone --depth 1 https://github.com/listyantidewi1/decision-support-system-for-curriculum-design.git repo
    %cd repo
-   !python -m fivetag.skillspan_rehearsal --model xlm-roberta-base --epochs 6 --out /kaggle/working/e1_skillspan
+   !python -u -m fivetag.skillspan_rehearsal --model xlm-roberta-base --epochs 20 --out /kaggle/working/e1_skillspan
    ```
 
 4. When it finishes it prints about ten lines starting with `REHEARSAL`. Copy
@@ -136,6 +136,52 @@ reports a combined span-F1 of about 57–60 for BERT-sized models on its own
 files. The copy in this repository is reformatted, so a score in the same region
 means the pipeline is sound; a much lower one means something is wrong and must
 be found before the real experiment.
+
+**Run on Kaggle on 19 November 2026** (Tesla T4, XLM-RoBERTa base, 6 epochs, one
+seed, no tuning; training took 11.9 minutes):
+
+| | strict P | strict R | strict F1 (95% CI) | partial F1 | skill | knowledge |
+|---|---|---|---|---|---|---|
+| dev | 0.503 | 0.608 | 0.551 (0.525–0.577) | 0.665 | 0.524 | 0.576 |
+| SkillSpan test | 0.526 | 0.592 | 0.557 (0.533–0.583) | 0.687 | 0.483 | 0.622 |
+| dev, **20 epochs** | 0.531 | 0.642 | 0.582 (0.556–0.606) | 0.683 | 0.554 | 0.607 |
+| SkillSpan test, **20 epochs** | 0.551 | 0.637 | 0.591 (0.566–0.616) | 0.708 | 0.533 | 0.642 |
+
+Published, on the original files, mean of five seeds: BERT-base on dev skill
+58.5, knowledge 60.4, combined 59.4; best models on test skill 56.6, knowledge
+63.9, combined 59.7. So this run is about 4 points below on the combined score.
+Knowledge is close (62.2 against 63.9 on test); the gap is in skills, the long
+phrases. The pipeline learns from real annotations and nothing is broken, but
+the cause of the gap is not established. No spans appeared in the three
+untrained layers.
+
+Two causes were then ruled out the same day:
+
+- **Not the multilingual encoder.** The same run with `bert-base-cased` scored
+  lower, not higher: 0.499 on dev and 0.510 on test (skill 0.421, knowledge
+  0.589 on test).
+- **Not the data copy.** Compared sentence by sentence with the original
+  release (`jjzha/skillspan`): same 4,800 / 3,174 / 3,569 sentences, and the
+  span lists differ in 5 sentences out of 11,543 (same-label overlaps, which
+  one tagging layer per label cannot hold).
+
+What remains is how the paper trained, which differs from this run in three
+ways (its Appendix D): **20 epochs** against 6, a **CRF layer** on top of the
+tagger against none, and **5,866 training sentences** against 4,800 — its
+figures include a third source that was never released.
+
+**The epochs carried it.** The same run with 20 epochs (40.1 minutes) reached
+0.582 on dev and 0.591 on test, inside the published range (0.594 and 0.597),
+with no CRF layer and with less training data. Dev strict-F1 by epoch: 0.546 at
+epoch 6, 0.564 at 9, 0.579 at 13, best 0.582 at 16, then flat. The dev figure
+is the best of twenty epochs and so slightly flattering; the test figure was
+not used to choose anything. One seed, against the paper's mean of five.
+
+What this changed in the code: the default number of epochs is now 20, and
+`--patience N` stops a run once dev has not improved for N epochs. For the real
+gold standard (720 training sentences, against 4,800 here) the same number of
+update steps needs several times more epochs; that number has to be chosen on
+the dev split, not assumed.
 
 Checked locally on 19 November: with the real XLM-RoBERTa tokenizer, 2,161 of
 the 2,162 gold spans in the SkillSpan dev file survive the conversion to tags and

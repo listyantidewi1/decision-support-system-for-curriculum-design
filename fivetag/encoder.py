@@ -50,7 +50,14 @@ class EncoderConfig:
     model_name: str = "xlm-roberta-base"
     condition: str = "E1"                 # E1 | E2
     max_length: int = 128
-    epochs: int = 10
+    # 20, not fewer: on the SkillSpan rehearsal (2026-11-19, XLM-R base, 4,800
+    # sentences) dev strict-F1 was 0.546 after 6 epochs and 0.582 at epoch 16,
+    # which closed the gap to the published scores. What matters is the number
+    # of update STEPS: a smaller training set needs more epochs for the same
+    # steps. Set `patience` to stop once dev has stopped improving.
+    epochs: int = 20
+    patience: int = 0                     # 0 = run every epoch; n = stop after n epochs
+                                          # without a better dev strict-F1
     batch_size: int = 16
     lr: float = 3e-5                      # encoder body
     head_lr: float = 1e-3                 # the five BIO heads
@@ -225,7 +232,7 @@ def train(train_rows: Sequence[dict], dev_rows: Sequence[dict], cfg: EncoderConf
     loss_fn = torch.nn.CrossEntropyLoss(ignore_index=IGNORE)
     order = list(train_rows)
     rng = random.Random(cfg.seed)
-    history, best, best_state = [], -1.0, None
+    history, best, best_state, since_best = [], -1.0, None, 0
     t0 = time.perf_counter()
     for epoch in range(1, cfg.epochs + 1):
         model.train()
@@ -245,13 +252,21 @@ def train(train_rows: Sequence[dict], dev_rows: Sequence[dict], cfg: EncoderConf
         f1 = dev.get("strict_f1", float("nan"))
         key = f1 if f1 == f1 else -total            # no dev: keep the last epoch
         if key > best or best_state is None:
-            best, best_state = key, {k: v.detach().cpu().clone()
-                                     for k, v in model.state_dict().items()}
+            best, best_state, since_best = key, {k: v.detach().cpu().clone()
+                                                 for k, v in model.state_dict().items()}, 0
+        else:
+            since_best += 1
         log(f"epoch {epoch:>2}  loss {total / max(n, 1):.4f}  dev strict-F1 {f1:.3f}")
+        if cfg.patience and dev_rows and since_best >= cfg.patience:
+            log(f"stopped: no better dev score for {cfg.patience} epochs")
+            break
     model.load_state_dict(best_state)
     record = {"fivetag_version": FIVETAG_VERSION, "config": asdict(cfg),
               "n_train": len(train_rows), "n_dev": len(dev_rows), "device": device,
               "seconds": time.perf_counter() - t0, "history": history,
+              "epochs_run": len(history),
+              "best_epoch": (max(history, key=lambda h: h.get("strict_f1", -1))["epoch"]
+                             if history and "strict_f1" in history[0] else None),
               "best_dev_strict_f1": best if best >= 0 else None,
               "synthetic_training_data": bool(train_rows) and all(
                   r.get("synthetic") for r in train_rows)}
@@ -319,6 +334,7 @@ def main() -> None:
     tp.add_argument("--model", default=EncoderConfig.model_name)
     tp.add_argument("--condition", choices=["E1", "E2"], default="E1")
     tp.add_argument("--epochs", type=int, default=EncoderConfig.epochs)
+    tp.add_argument("--patience", type=int, default=EncoderConfig.patience)
     tp.add_argument("--batch-size", type=int, default=EncoderConfig.batch_size)
     tp.add_argument("--lr", type=float, default=EncoderConfig.lr)
     tp.add_argument("--seed", type=int, default=EncoderConfig.seed)
@@ -329,6 +345,7 @@ def main() -> None:
     args = ap.parse_args()
     if args.cmd == "train":
         cfg = EncoderConfig(model_name=args.model, condition=args.condition, epochs=args.epochs,
+                            patience=args.patience,
                             batch_size=args.batch_size, lr=args.lr, seed=args.seed)
         result = train(read_jsonl(args.train), read_jsonl(args.dev), cfg, Path(args.out))
         print(f"best dev strict-F1: {result['log']['best_dev_strict_f1']}  ->  {args.out}")

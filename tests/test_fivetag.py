@@ -697,6 +697,21 @@ def test_encoder_training_loop_learns_on_synthetic_sentences():
     assert log["synthetic_training_data"] is True
 
 
+def test_patience_stops_training_early_and_keeps_the_best_epoch():
+    from fivetag.tiny import tiny_encoder, tiny_tokenizer
+    tr, dv = synthetic.generate(200, seed=61), synthetic.generate(80, seed=62)
+    tok = tiny_tokenizer([r["text"] for r in tr + dv])
+    cfg = enc.EncoderConfig(model_name="tiny-random", epochs=60, patience=2, batch_size=32,
+                            lr=3e-3, head_lr=3e-3, seed=0)
+    log = enc.train(tr, dv, cfg, tokenizer=tok, encoder=tiny_encoder(len(tok)),
+                    log=lambda *_: None)["log"]
+    hist = [h["strict_f1"] for h in log["history"]]
+    assert log["epochs_run"] == len(hist) < 60
+    assert log["best_dev_strict_f1"] == max(hist)
+    assert log["best_epoch"] == hist.index(max(hist)) + 1 == len(hist) - 2
+    assert enc.EncoderConfig().epochs == 20 and enc.EncoderConfig().patience == 0
+
+
 def test_encoder_saves_and_loads_to_the_same_predictions():
     t = _trained()
     sents, _ = synthetic.as_reference(t["dev"][:40])
@@ -791,6 +806,9 @@ def test_skillspan_conversion_places_spans_by_context_and_counts_what_it_drops()
                    ("Java", text.rindex("Java"), "KN"), ("Java", text.index("Java"), "KN")}
     assert rows[1]["spans"] == [] and "split" not in rows[0]
     enc.check_rows(rows)
+    # a span is a run of whole tokens: "java" is not found inside "javascript"
+    assert R._locate("javascript and java", "java", "", set()) == 15
+    assert R._locate("javascript only", "java", "", set()) == -1
 
 
 def test_skillspan_rehearsal_says_what_it_is_and_never_calls_itself_a_result():

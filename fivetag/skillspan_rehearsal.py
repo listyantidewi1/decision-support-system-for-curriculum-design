@@ -20,7 +20,7 @@ study's sealed test split, which does not exist yet and which this script never
 touches.
 
     # on Kaggle (GPU), after cloning the repository:
-    python -m fivetag.skillspan_rehearsal --model xlm-roberta-base --epochs 6 --out /kaggle/working/e1_skillspan
+    python -m fivetag.skillspan_rehearsal --model xlm-roberta-base --epochs 20 --out /kaggle/working/e1_skillspan
 
     # on a laptop, to check the wiring in a minute (toy encoder, no download):
     python -m fivetag.skillspan_rehearsal --tiny --limit 600 --epochs 3 --out DATA/fivetag/rehearsal/tiny
@@ -52,17 +52,30 @@ def data_dir() -> Path:
     raise FileNotFoundError(f"SkillSpan files not found in {[str(d) for d in CANDIDATE_DIRS]}")
 
 
+def _find_whole(text: str, span: str, begin: int = 0) -> int:
+    """First occurrence of `span` at or after `begin` that is not glued to other
+    non-space characters. SkillSpan text is space-tokenised and every span is a
+    run of whole tokens, so "java" must not be found inside "javascript"."""
+    start = text.find(span, begin)
+    while start >= 0:
+        end = start + len(span)
+        if (start == 0 or text[start - 1].isspace()) and (end == len(text) or text[end].isspace()):
+            return start
+        start = text.find(span, start + 1)
+    return -1
+
+
 def _locate(text: str, span: str, context: str, taken: set[tuple[int, int]]) -> int:
     """Start offset of `span`, using its context to choose among repeats; -1 if absent."""
     if context and span in context:
         c = text.find(context)
         if c >= 0:
-            start = c + context.find(span)
-            if (start, start + len(span)) not in taken:
-                return start
-    start = text.find(span)
+            inner = _find_whole(context, span)
+            if inner >= 0 and (c + inner, c + inner + len(span)) not in taken:
+                return c + inner
+    start = _find_whole(text, span)
     while start >= 0 and (start, start + len(span)) in taken:
-        start = text.find(span, start + 1)
+        start = _find_whole(text, span, start + 1)
     return start
 
 
@@ -126,9 +139,9 @@ def _score(model, tokenizer, rows, cfg, device) -> dict:
             "seconds": dt, "sentences_per_second": len(rows) / dt if dt else None}
 
 
-def run(out_dir: Path, *, model_name: str = "xlm-roberta-base", epochs: int = 6,
+def run(out_dir: Path, *, model_name: str = "xlm-roberta-base", epochs: int = 20,
         batch_size: int = 16, lr: float = 3e-5, seed: int = 42, limit: int | None = None,
-        tiny: bool = False, log=print) -> dict:
+        tiny: bool = False, patience: int = 0, log=print) -> dict:
     import torch
     parts, conversion = {}, {}
     for name in ("train", "dev", "test"):
@@ -146,7 +159,7 @@ def run(out_dir: Path, *, model_name: str = "xlm-roberta-base", epochs: int = 6,
         encoder = tiny_encoder(len(tokenizer), seed)
         model_name, lr = "tiny-random", 3e-3
     cfg = EncoderConfig(model_name=model_name, condition="E1", epochs=epochs,
-                        batch_size=batch_size, lr=lr, seed=seed)
+                        batch_size=batch_size, lr=lr, seed=seed, patience=patience)
     t0 = time.perf_counter()
     result = train(parts["train"], parts["dev"], cfg, Path(out_dir), tokenizer=tokenizer,
                    encoder=encoder, device=device, log=log)
@@ -174,6 +187,10 @@ def to_text(report: dict) -> str:
                      "wiring. Its scores mean nothing.")
     lines.append(f"model {report['model_name']}, {report['epochs']} epochs on {report['device']}, "
                  f"training took {report['train_seconds'] / 60:.1f} minutes")
+    hist = [h.get("strict_f1") for h in report.get("history", [])]
+    if hist:
+        lines.append("dev strict-F1 after each epoch: " + " ".join(
+            f"{x:.3f}" if isinstance(x, float) and x == x else "-" for x in hist))
     for name, key in (("dev", "dev"), ("SkillSpan test", "skillspan_test")):
         s = report[key]
         ci = s["strict"]["f1_ci95"]
@@ -198,7 +215,9 @@ def main() -> None:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", required=True)
     ap.add_argument("--model", default="xlm-roberta-base")
-    ap.add_argument("--epochs", type=int, default=6)
+    ap.add_argument("--epochs", type=int, default=20)
+    ap.add_argument("--patience", type=int, default=0,
+                    help="stop after this many epochs without a better dev score (0 = never)")
     ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--lr", type=float, default=3e-5)
     ap.add_argument("--seed", type=int, default=42)
@@ -207,7 +226,7 @@ def main() -> None:
     args = ap.parse_args()
     report = run(Path(args.out), model_name=args.model, epochs=args.epochs,
                  batch_size=args.batch_size, lr=args.lr, seed=args.seed, limit=args.limit,
-                 tiny=args.tiny)
+                 tiny=args.tiny, patience=args.patience)
     print()
     print(to_text(report))
     print(f"\nreport: {Path(args.out) / 'skillspan_rehearsal_report.json'}")
