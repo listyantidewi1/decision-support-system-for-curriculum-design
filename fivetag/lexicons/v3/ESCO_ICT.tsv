@@ -1,0 +1,296 @@
+esco_uri	esco_title	name	kind	parent_code	parent_title
+http://data.europa.eu/esco/skill/eb0e5615-1575-4a86-a1a2-7d39595033c5	ABAP	ABAP	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/9a35cb50-8106-45f9-8aba-2df99dd6f913	ABBYY FineReader	ABBYY FineReader	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/0189f448-179e-47cc-9716-c5c3ac4b1aec	Absorb (learning management systems)	Absorb	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/27b913f0-3c52-448b-ad27-fc6ef08fb326	Adobe Illustrator	Adobe Illustrator	technology	0611	computer use
+http://data.europa.eu/esco/skill/14ced458-5f4b-495f-bd3d-9c240614bda0	Adobe Photoshop	Adobe Photoshop	technology	0611	computer use
+http://data.europa.eu/esco/skill/d4ae4774-a81d-4255-8491-cade3580685a	Adobe Photoshop Lightroom	Adobe Photoshop Lightroom	technology	0611	computer use
+http://data.europa.eu/esco/skill/dba46f87-0831-49cd-a1c7-340a653c0221	Agile development	Agile development	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/557e9247-1a2d-4497-aa7f-0cded7768da1	Aircrack (penetration testing tool)	Aircrack	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/b4dc6e4f-dc7d-445f-8ce2-d7b9d225e282	AJAX	AJAX	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/8c88d336-c249-4537-b26e-d679a85c4b9b	Ajax Framework	Ajax Framework	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/54924a2c-daca-40d3-9716-4b38ceb04f38	algorithms	algorithms	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/d8829a1d-dbde-435b-b921-29d6462f35c9	Android (mobile operating systems)	Android	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/6f8a40d6-f9ce-43ec-a72f-d4213a53f3ed	Ansible	Ansible	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/0d168770-4d9c-4096-b048-a6577818d306	Apache Maven	Apache Maven	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/0fb753a1-2ef2-4429-84d2-ecb2b24daf7a	Apache Tomcat	Apache Tomcat	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/58d7a289-dafd-4363-833f-d1dc4140885e	APL	APL	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/c4b626c1-e71c-44ec-9f88-042766f37fcc	application usability	application usability	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/56a7f561-1d55-43c9-9cd7-36a0a9bc6c50	ASP.NET	ASP.NET	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/47b9bbcf-356c-4782-83a4-7f5a1b2b51a3	Assembly (computer programming)	Assembly	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/7f27f1ff-2e17-4b69-990e-c23334478313	assessment of risks and threats	assessment of risks and threats	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/8203b07a-8097-4383-aff6-603b7df7f0f4	ATM systems	ATM systems	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/cae4c053-05d1-413d-8499-f37793aad56e	audio editing software	audio editing software	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/d4789070-2ff7-4bbb-94ca-8bb1739826a9	authoring software	authoring software	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/22225017-a02e-4171-8775-64c3adc87512	automatic meter reading	automatic meter reading	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/58783f72-5098-4807-b1d1-954ec2ae94c4	Backbox (penetration testing tool)	Backbox	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/8a30eb28-eca0-4ab6-8c05-32c47d3e0dd6	BlackArch	BlackArch	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/ba04b19b-0b18-4d5c-b799-4db31a98e58d	BlackBerry	BlackBerry	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/604f62cc-0f04-4903-b9f9-7128f72d4e5a	Brightspace (learning management systems)	Brightspace	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/ccdbd9bb-4faf-403c-a968-e8bf487f8a53	business ICT systems	business ICT systems	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/4c016b68-4116-468c-9dc6-42710c239e4a	C#	C#	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/b633eb55-8f1f-4ae6-ab4c-2022ffe2cb7f	C++	C++	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/c5ed451b-ef39-47a3-aee7-8f5be0aa8431	CA Datacom/DB	CA Datacom/DB	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/a2b5dcf3-5b6a-453d-876c-cff540c0faf1	CAD software	CAD software	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/3a33cec3-4b44-471a-8864-5cc8567a8b1f	CADD software	CADD software	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/82313e12-9d39-47d1-b7c9-78bbd6bb50e2	CAE software	CAE software	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/09cf2c34-6f93-4a19-a9f1-c0d866414bcc	Cain and Abel (penetration testing tool)	Cain and Abel	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/7f1a7abb-9208-48b7-8b84-2c1f283a50a0	call routing	call routing	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/e13b734a-218c-434a-a7cc-febac6d24ef3	call-centre technologies	call-centre technologies	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/27065048-bca8-4b0a-891a-b192b9ceadfd	CAM software	CAM software	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/cfb8d64c-f8d7-4894-a02e-2551ab33f1d0	Canvas (learning management systems)	Canvas	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/0764b28d-04ee-4e80-bf58-b737f02a63e0	captioning software	captioning software	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/ffc1e455-ced2-4e67-bdb3-1c50f9683859	Capture One	Capture One	technology	0611	computer use
+http://data.europa.eu/esco/skill/49f85a99-086c-45b6-a6fa-eb90305af7b1	Chef (tools for software configuration management)	Chef	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/02c71cde-f513-43da-8952-0974763c7568	circuit diagrams	circuit diagrams	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/709ef32a-7435-48e2-8fa2-16e389ecab8a	Cisco	Cisco	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/bd14968e-e409-45af-b362-3495ed7b10e0	cloud technologies	cloud technologies	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/def007fa-5fed-4a5f-91a2-b0d7e3db1be1	COBOL	COBOL	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/55c16653-343c-4d02-a9de-7d8e864a4592	Codenvy	Codenvy	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/993b1e23-f2de-4bd8-b33f-f86dde1c8e9d	CoffeeScript	CoffeeScript	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/0cd6dcf1-5778-42a5-b685-4d01ae4a4871	Common Lisp	Common Lisp	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/77592603-505b-4096-97dd-d0def6bd7601	computational fluid dynamics	computational fluid dynamics	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/9983816d-cc78-4d3f-9e3c-c7baa9ebc77a	computer equipment	computer equipment	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/118a9b27-1c5a-4214-b685-1a4d9e6365ea	computer forensics	computer forensics	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/21d2f96d-35f7-4e3f-9745-c533d2dd6e97	computer programming	computer programming	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/7b5cce4d-c7fe-4119-b48f-70aa05391787	computer science	computer science	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/b3a186be-5f1b-45d3-a468-41183e9780f3	configuration of the tote room hardware	configuration of the tote room hardware	knowledge	0619	information and communication technologies not elsewhere classified
+http://data.europa.eu/esco/skill/fc72d86f-7e69-4bf8-b407-23303a798a0b	control panel components	control panel components	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/e5d1f825-60ed-4bdd-872a-e748c387f777	CSS	CSS	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/9d0d89be-bffa-4393-b6f6-8d05bea49051	data extraction, transformation and loading tools	data extraction, transformation and loading tools	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/25f0ea33-b4a2-4f31-b7b4-7d20e827b180	data mining	data mining	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/9effa3d7-c0c4-4583-ad94-b496ba5e5f2c	data mining methods	data mining methods	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/fecf8a0d-62c4-4e71-9b03-0f4fc2ad7bf5	data models	data models	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/a4346013-a967-4a58-a533-6b32ad1364c5	data protection	data protection	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/a7f0fbe0-c546-4f30-8e41-34a58c64567e	data storage	data storage	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/3ec2e4d6-7000-4905-bf1a-c5b1679416de	data warehouse	data warehouse	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/43ae58b9-5e56-4524-b45a-b422777a0576	database	database	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/9ef0f3a0-9ce2-4ef1-a987-0366b5cb2dbe	database development tools	database development tools	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/ab1e97ed-2319-4293-a8b7-072d2648822f	database management systems	database management systems	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/b5c7e0dc-dda3-4790-a7d1-d6d8023b3089	database quality standards	database quality standards	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/3cee858e-79e8-4a4b-b99f-93c7f735d58b	DB2	DB2	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/3ce1fe19-7f9e-4070-941d-651673a5693b	decision support systems	decision support systems	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/c46cf6f9-8b1e-44b9-a529-f5774c9167dd	desktop publishing	desktop publishing	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/f0de4973-0a70-4644-8fd4-3a97080476f4	DevOps	DevOps	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/897b393f-e7e0-4248-a40d-d77119694e83	distributed computing	distributed computing	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/d1e954cd-d290-4d80-97c0-7969960d2928	distributed directory information services	distributed directory information services	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/6c2dab43-b56a-4879-ae5f-75ae50e193c3	dredging consoles	dredging consoles	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/1de3942b-99d8-41e8-9ef0-fbc9e9f6307b	Drupal	Drupal	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/b1272de4-1f5f-408b-8b26-061f2550fc72	e-commerce systems	e-commerce systems	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/8bc3c77c-30c3-45e6-bd61-069ba433ecfe	e-learning software infrastructure	e-learning software infrastructure	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/6b6a9252-2ed7-4862-a02f-1578f4a532ea	Eclipse (integrated development environment software)	Eclipse	technology	0611	computer use
+http://data.europa.eu/esco/skill/17702c40-e963-4593-847e-a332b1c9357e	Edmodo	Edmodo	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/219dd03d-4168-416a-be40-f4becca55130	Engrade	Engrade	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/034c29fa-c3ba-45ea-b8f3-bf8e3705e386	Erlang	Erlang	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/b8eb2517-37d8-43e6-9856-9c29d5c51fde	Filemaker (database management systems)	Filemaker	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/4f7fa632-15a6-4739-930b-abbac8055a80	firmware	firmware	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/4a466c62-db7d-4905-9a41-f23214810acb	GIMP (graphics editor software)	GIMP	technology	0611	computer use
+http://data.europa.eu/esco/skill/a71577b2-7550-4222-88ee-dcbd2d881516	graphics editor software	graphics editor software	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/52cf3037-ab53-4806-85ed-7fd21ea7f6a1	Groovy	Groovy	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/933efc5f-a797-4581-8a8b-c08956ff7d58	Grovo	Grovo	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/e46291c7-52b9-4174-bd59-178884861038	Hadoop	Hadoop	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/4b51e76e-9e8a-455f-a289-5b48246345c4	hardware components	hardware components	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/bac209e9-d337-4312-9041-17c2e75fa4df	hardware industry	hardware industry	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/61d6ef20-6cc7-40f8-919e-3360db6cf2b3	hardware materials	hardware materials	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/117373c8-f04b-4fff-8683-aebe36edac81	hardware platforms	hardware platforms	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/53456d90-8c0d-4bd2-9f1b-312619b6e2a6	hardware testing methods	hardware testing methods	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/000f1d3d-220f-4789-9c0a-cc742521fb02	Haskell	Haskell	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/2d7bf28a-2487-4443-9115-47478080b1a4	hazard analysis and critical control points	hazard analysis and critical control points	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/9136cbf1-7916-4f1c-bc9a-0318ee1d6016	human-computer interaction	human-computer interaction	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/a2b566b0-1070-47a4-adc8-88839942ce25	hybrid control systems	hybrid control systems	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/67a118f4-8a5f-48f7-8e5f-de34b9ca2c37	Hybrid model	Hybrid model	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/84251cb1-babf-4d17-a3cd-baa642c24c8d	IBM Informix	IBM Informix	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/14fdac88-6d4a-4e47-9df5-02c6d1e86fdd	IBM InfoSphere DataStage	IBM InfoSphere DataStage	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/81b082fb-9a00-4660-976a-10c985979100	IBM InfoSphere Information Server	IBM InfoSphere Information Server	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/a4e31589-3632-4926-91d0-15b889c90b9b	IBM WebSphere	IBM WebSphere	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/3e23db60-0c3d-498a-a6ac-ffbed0ecb033	ICT accessibility standards	ICT accessibility standards	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/c453cf81-6197-428e-84c6-70c773b63f27	ICT architectural frameworks	ICT architectural frameworks	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/6014921e-1d25-4039-adc2-04852d61880e	ICT debugging tools	ICT debugging tools	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/d32db06e-bd06-4415-a7ab-1b0ee68caa9a	ICT encryption	ICT encryption	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/ee02393d-27dd-438a-8879-b8088ce45e79	ICT environmental policies	ICT environmental policies	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/3497ebe1-d417-4105-a68f-f7bbcac7ee5f	ICT hardware specifications	ICT hardware specifications	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/778ca7ad-6c5d-4868-9b96-a7777dca799c	ICT help platforms	ICT help platforms	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/d6e3395b-5ab6-4fba-969a-3df634e904c5	ICT network cable limitations	ICT network cable limitations	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/0da6cab1-0ee9-4391-a299-f71fbf21db56	ICT network routing	ICT network routing	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/2ddb1226-1117-4eb4-ae65-3a2f5a5a3c80	ICT network security risks	ICT network security risks	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/f6424ebb-8401-446b-9f7e-10d7c854da02	ICT network simulation	ICT network simulation	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/f9e788df-d68a-4f92-92c7-80e135fc35ff	ICT networking hardware	ICT networking hardware	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/ed39edd3-44d0-4a16-9796-bfb99f92baf3	ICT performance analysis methods	ICT performance analysis methods	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/f88002a8-6355-4d33-9496-285c166ff375	ICT power consumption	ICT power consumption	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/a3ce2bf7-5562-4639-9b52-fdb4850a3904	ICT problem management techniques	ICT problem management techniques	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/fafe0b9d-dbd9-46bd-b770-26299539ce66	ICT process quality models	ICT process quality models	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/c9e96450-421d-48af-9ee6-d9c50e29afc2	ICT recovery techniques	ICT recovery techniques	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/3ff589b7-68df-4ea5-ae41-b395bdb2378f	ICT security standards	ICT security standards	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/9ce670ec-318c-4a91-9179-03437db728dc	ICT software specifications	ICT software specifications	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/6fa1c2c0-a012-4ca0-9642-e01569ba322c	ICT system integration	ICT system integration	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/b105ec9b-0857-41d6-8d07-a83e58b73d90	ICT system programming	ICT system programming	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/ca73ac82-867a-4afa-9732-834aebe896ff	ICT system user requirements	ICT system user requirements	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/00c04e40-35ea-4ed1-824c-82f936c8f876	Incremental development	Incremental development	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/41ec47dd-08b3-464a-9c45-c706f3e74467	industrial software	industrial software	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/0f00f63f-3ab4-4057-b92f-500584b51757	Informatica PowerCenter	Informatica PowerCenter	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/1bba98a7-92b9-450b-9235-e0c905f8f3c4	information architecture	information architecture	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/a56dec32-05ef-45de-a256-ee6741f356db	information confidentiality	information confidentiality	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/696e3b5b-8b61-45af-ae4c-3ab700f197ec	information extraction	information extraction	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/11eebd42-44ab-401d-8a2c-bdb9fc9beb50	information security strategy	information security strategy	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/03ff0d53-573a-47a0-a0ad-1995815a4339	information structure	information structure	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/925463a7-d51f-4d5b-9f79-4d28cf30acde	integrated development environment software	integrated development environment software	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/5063a99f-975b-4a7c-85e3-69ecb375b4d3	internet governance	internet governance	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/f049d050-12da-4e40-813a-2b5eb6df6b51	Internet of Things	Internet of Things	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/ce26e71f-2d47-474e-89b6-7920931ac4fc	iOS	iOS	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/33d49d4f-31ec-473f-9b8a-b555aa5116bb	Iterative development	Iterative development	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/19a8293b-8e95-4de3-983f-77484079c389	Java (computer programming)	Java	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/3cd569a2-4f88-4c1e-9995-8dce8c5e51a7	JavaScript	JavaScript	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/9b9de2a4-d8af-4a7b-933a-a8334ae60067	JavaScript Framework	JavaScript Framework	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/b16bcbcb-1d3f-42b3-a6a5-b91348a72b70	Jboss	Jboss	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/f47a1998-0beb-43be-9f46-380aa4d183da	Jenkins (tools for software configuration management)	Jenkins	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/7bf4539a-3f2e-4485-876b-1c9306b181af	John The Ripper (penetration testing tool)	John The Ripper	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/d2adb565-a865-424d-aeb5-9fbcbf2afe2a	Joomla	Joomla	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/8785ccda-6f9f-4cf3-9033-fda10653d0be	JSSS	JSSS	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/625b57ee-29d4-425b-bf99-9fd54dd021fe	Kali Linux	Kali Linux	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/013441c1-1f13-47e9-80c4-9a53e8e1bc05	KDevelop	KDevelop	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/06f33d6a-f7a7-4a2b-baa5-8c3c53bd1a9c	keywords in digital content	keywords in digital content	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/54971fec-1c2f-49c0-9396-2f0c9fa5c8c0	LAMS	LAMS	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/a57a54b6-2f2e-43e4-9621-b52f4a63cb08	LDAP	LDAP	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/26fa7a33-a426-4cd5-9792-33bf668612e1	LESS	LESS	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/85f46538-ae70-498a-bfbc-b8ddafe96c7d	levels of software testing	levels of software testing	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/c7d24594-0c11-4b27-9039-fe0bb903da8e	LINQ	LINQ	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/0de61385-de6d-4146-ba32-1cc1bc102220	Lisp	Lisp	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/a87c1c42-8927-4183-97c7-a17554c22b29	Litmos	Litmos	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/32a2c63d-2d13-4784-abb8-678ef2cd8a46	machine translation	machine translation	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/024037ca-96a9-4cb8-ba86-2cd5a209c90a	Maltego	Maltego	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/e819cc1e-09d9-47f2-b418-93972852daef	MarkLogic	MarkLogic	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/c3a03c5a-c260-4c26-9b9a-873abb396f4d	MATLAB	MATLAB	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/1b7c716e-af95-4cda-a42f-6479c8b139f5	MDX	MDX	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/50597e96-9b6a-4736-ac79-dd80f36c0269	Metasploit	Metasploit	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/ff6904ef-36e7-4890-8fb1-8353b299f047	microchip scanners	microchip scanners	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/8a211052-4bec-49c2-9b4e-7914c37d21b4	microprocessors	microprocessors	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/3d03c40c-1b83-4793-8902-2523f40af59e	Microsoft Access	Microsoft Access	technology	0611	computer use
+http://data.europa.eu/esco/skill/86f7126d-97fd-4da5-be96-d1cf6ecd54e6	Microsoft Visio	Microsoft Visio	technology	0611	computer use
+http://data.europa.eu/esco/skill/8369ede5-4200-4a44-be2e-bc60ef959259	Microsoft Visual C++	Microsoft Visual C++	technology	0611	computer use
+http://data.europa.eu/esco/skill/4cdbc76c-75d8-4e12-8653-4820c2d5446f	microsystem test procedures	microsystem test procedures	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/a4d336a6-9ffd-402a-91cc-f359716ba4e0	ML (computer programming)	ML	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/cf532795-a1fd-43bd-8407-6e43f877e6e3	mobile device management	mobile device management	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/b8c01891-e3df-4a4b-948d-95b45e1788f5	mobile device software frameworks	mobile device software frameworks	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/976455eb-5bbe-4493-ae64-ed16c3b009ea	mobile operating systems	mobile operating systems	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/bedd8fa7-5a64-4134-9095-58f5709e25e4	Moodle	Moodle	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/4da171e5-779c-4983-a76f-91c16751e99f	MySQL	MySQL	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/f597f772-24d3-4cec-813c-cf5a7027c794	N1QL	N1QL	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/2891f0dc-4426-4a9a-8fbb-db4fb0a66f91	Nessus	Nessus	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/0ab03c6c-281b-48f4-83e0-10eeb27a1bae	network management system tools	network management system tools	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/f0010b93-5552-45cb-ad26-168c8168f319	Nexpose	Nexpose	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/76ef6ed3-1658-4a1a-9593-204d799c6d0c	NoSQL	NoSQL	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/5be3d306-6cf1-4b49-aa1d-01651dd4ba4c	object-oriented modelling	object-oriented modelling	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/9973a5a2-7822-4161-99e9-95c781eb63f8	Objective-C	Objective-C	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/4959697d-3a24-4f46-af0c-b752318e6c54	ObjectStore	ObjectStore	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/2f04bb71-d476-43b3-a60b-5df1d05f5681	Octopus Deploy	Octopus Deploy	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/cf310cff-0d28-4dbc-9dbb-cc500a3196c2	office software	office software	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/f36fb0bd-21d5-4347-b484-69c735f4e700	OmniPage	OmniPage	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/b0a3bb25-a02f-43ed-ab1f-994fa66a424a	online analytical processing	online analytical processing	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/b16200f4-4f39-4b8b-aa9d-3568054d6bdb	Open source model	Open source model	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/300d432b-f457-4cd3-9cb1-1858c7d14954	OpenEdge Advanced Business Language	OpenEdge Advanced Business Language	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/43ec6db6-33f7-449b-a566-5779a7e8997a	OpenEdge Database	OpenEdge Database	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/12c82224-6394-4c3c-9831-2a8198ed1274	optical character recognition software	optical character recognition software	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/8764d4b1-e069-44f2-8baa-fb1eee1850ec	Oracle Application Development Framework	Oracle Application Development Framework	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/3af687cb-8c7a-46ea-a730-32dbaed040c6	Oracle Data Integrator	Oracle Data Integrator	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/de9f85ba-e77f-48fd-8c66-f5ebaf32d655	Oracle Relational Database	Oracle Relational Database	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/23900e3d-06fa-424c-a5dc-c0ea42edde1e	Oracle Warehouse Builder	Oracle Warehouse Builder	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/70de94f5-9575-4edd-bca7-c797b023b9d6	Oracle WebLogic	Oracle WebLogic	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/63f0aa84-5e4c-4eb6-8e8c-876d9feedf1f	Outsourcing model	Outsourcing model	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/1ce4cddd-4a74-458e-a2d4-152ca939475a	OWASP ZAP	OWASP ZAP	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/afd63e8c-a4e7-42d3-86c9-3b2dd549a353	Parrot Security OS	Parrot Security OS	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/e8b89eb6-51e8-4c3a-babb-88b2e110376b	Pascal (computer programming)	Pascal	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/de586dcf-d7e5-4340-bf5b-d59026f1b436	penetration testing tool	penetration testing tool	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/42c3287f-5e50-4559-a2d1-2000c70e0aab	Pentaho Data Integration	Pentaho Data Integration	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/401eb8d8-6daa-4f8b-90ad-60afc71eb4f8	Perl	Perl	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/4350c38d-0fe9-4ca7-bab9-40ed7f72b04f	PHP	PHP	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/a8d07b5a-c1a1-42c6-9d53-db9c7a2ca996	PostgreSQL	PostgreSQL	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/e465a154-93f7-4973-9ce1-31659fe16dd2	principles of artificial intelligence	principles of artificial intelligence	knowledge	0619	information and communication technologies not elsewhere classified
+http://data.europa.eu/esco/skill/6a2bc03b-e30d-429b-9549-5784cb92ae2f	printed circuit boards	printed circuit boards	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/3e75d405-c3d1-4a66-9963-05a9397d68fb	printed circuit boards testing methods	printed circuit boards testing methods	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/32428b21-514b-42c2-81b5-244a7804ea74	procurement of ICT network equipment	procurement of ICT network equipment	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/2bde42ae-e776-41c1-9ded-b07b30bfe985	Prolog (computer programming)	Prolog	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/ed1d8bd4-cd2a-4c64-b665-56d70651026c	Prototyping development	Prototyping development	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/553e1d2d-abf1-4b37-8ac4-c5c78a8edbc0	proxy servers	proxy servers	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/6417a4cc-6f61-4459-a114-761a7fa0279d	Puppet (tools for software configuration management)	Puppet	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/ccd0a1d9-afda-43d9-b901-96344886e14d	Python (computer programming)	Python	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/97bdd757-29d4-4126-92a6-07608825aa3b	QlikView Expressor	QlikView Expressor	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/9cf681c7-89ec-470c-b651-7fe03786f586	query languages	query languages	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/51586df8-1c46-4b47-8583-773cb63bf00b	R	R	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/96eb286a-58b7-45ff-a916-5578d0b79b8c	Rapid application development	Rapid application development	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/bf6c5ed4-84af-440f-abcc-7fa5ba19c738	real-time computing	real-time computing	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/99207709-d076-4cce-ba38-e90d3bb28806	resource description framework query language	resource description framework query language	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/0ccdfe98-f845-4598-84a1-3dca66e9d9a3	Ruby (computer programming)	Ruby	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/eeca3780-8049-499f-a268-95a7ad26642c	SaaS (service-oriented modelling)	SaaS	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/a9622bbb-3a6f-4819-a3fe-cd6a447a78e9	Sakai	Sakai	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/c7451027-8249-405a-bb1b-342ff0f3fb3b	Salt (tools for software configuration management)	Salt	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/baf1fadb-975a-42be-9744-d8ba02304d09	Samurai Web Testing Framework	Samurai Web Testing Framework	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/02e1ca57-0715-438b-886d-f0f938ac3efc	sand blasting machine parts	sand blasting machine parts	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/f8e3425c-fe44-4ffb-bafe-0e20d91dadf4	SAP Data Services	SAP Data Services	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/bb99af26-71ff-4dca-bde7-1eb1f6194426	SAP R3	SAP R3	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/e5a6e1e0-1b07-4432-83ba-77d593b2cb47	SAS Data Management	SAS Data Management	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/04f1b938-d4d4-4cb1-a863-982af76b9d93	SAS language	SAS language	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/1110c92f-3059-445a-9436-0f4200d365f5	Sass	Sass	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/ffddfc7c-a9dd-449f-9e96-882dc447c8b6	Scala	Scala	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/489b2571-ce18-4944-b452-ed1f54e55b68	Schoology	Schoology	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/cb304338-3a44-4b6f-802b-dfc6c64de109	scientific modelling	scientific modelling	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/d56fc2b5-4b0a-4e7e-9bde-a33736f6ff18	Scratch (computer programming)	Scratch	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/bf3e70b4-b65e-4595-81d4-e3bb846f0672	security panels	security panels	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/83218cac-3599-417e-93d2-26013cdccd98	service-oriented modelling	service-oriented modelling	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/85038d57-1fdd-40de-b908-2c005545a8c3	SketchBook Pro	SketchBook Pro	technology	0611	computer use
+http://data.europa.eu/esco/skill/42ed3bfb-1a01-4c8b-9758-fc6438865734	Smalltalk (computer programming)	Smalltalk	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/438ff259-d086-4004-acda-1ec3e1631bc6	software anomalies	software anomalies	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/2450c3b3-e78e-435b-b84d-e05d984e71dc	software architecture models	software architecture models	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/484df271-bb52-49f1-8f50-f19624bf4df2	software components libraries	software components libraries	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/e6b8f934-7f35-4dc6-9a64-f6c43acdc00b	software components suppliers	software components suppliers	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/8ff015a0-98ea-4d80-a23e-1f68110a919e	software design methodologies	software design methodologies	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/24c200e5-be20-4370-a137-ab53797f3a17	software frameworks	software frameworks	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/de0be6e8-644c-4cc9-9c8d-925dd98dda56	software interaction design	software interaction design	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/fb7aee4d-f6c6-4a87-8e9d-8e542b3771f8	software metrics	software metrics	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/1019423b-3368-4f83-b24f-19e5fa23e816	software UI design patterns	software UI design patterns	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/1d86f05e-e9cc-40ce-99d8-2b21cc71b16b	solution deployment	solution deployment	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/af7ae54f-4649-4c16-87c7-59ba41d4d57f	SPARK	SPARK	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/5da8018b-ae85-4cde-ad93-0394369018f3	SPARQL	SPARQL	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/c31a222b-de0b-490c-82b8-472167cb0ba5	specialised astrology software	specialised astrology software	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/4840338b-ac6c-486a-be1d-9ddfe00b8bdf	Spiral development	Spiral development	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/598de5b0-5b58-4ea7-8058-a4bc4d18c742	SQL	SQL	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/c062bab3-3ea0-4291-9220-a2d8fef4bead	SQL Server	SQL Server	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/6f7512ab-d46d-402a-8c30-a8878d7c1f88	SQL Server Integration Services	SQL Server Integration Services	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/69f0167e-75d9-46cf-847f-72a592880ebb	STAF	STAF	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/dc298fac-7ab4-4feb-9b43-33d947d7703e	standards for web-based e-learning	standards for web-based e-learning	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/c2999f0c-eb37-4cdf-b9b0-82107b628794	style sheet languages	style sheet languages	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/be80acfc-b6f2-4411-9b8d-b19d9cd2556a	Swift (computer programming)	Swift	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/b0ac313d-de44-4344-ada6-76d2177b6d92	Synfig	Synfig	technology	0611	computer use
+http://data.europa.eu/esco/skill/47ca0da1-cae5-4395-ae6b-fd97b9ff48d3	system backup best practice	system backup best practice	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/09f2f811-a3fb-4de3-a70f-6420a6935575	systems development life-cycle	systems development life-cycle	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/cdd8b6b2-2fd9-453c-8d62-8a1dc6efcd49	systems theory	systems theory	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/0f9958d2-f700-4f62-b90b-a5873cb5ae4c	systems thinking	systems thinking	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/d87fe0be-9055-4a76-a444-e98b5bfad9d8	Taleo	Taleo	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/7482a123-e801-48de-9733-262125671410	task algorithmisation	task algorithmisation	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/d9eaf831-9348-4330-a83e-b7c099cdc8f6	Teradata Database	Teradata Database	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/f2c26cd0-f823-4549-a418-f84d23131308	THC Hydra	THC Hydra	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/7557f0f4-b8bc-4ac0-b91e-222ab1ba744f	tools for ICT test automation	tools for ICT test automation	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/9d2e926f-53d9-41f5-98f3-19dfaa687f3f	tools for software configuration management	tools for software configuration management	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/71f81e1a-e2ca-48d6-b7b8-7a34c56c51f8	transmission technology	transmission technology	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/4e6d2538-a48e-48a7-8dad-14b067cfcb8b	TripleStore	TripleStore	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/81f53835-1dfe-4819-8bc1-01d9b647add8	types of storage facilities	types of storage facilities	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/a429bbd6-2952-4bad-b1b7-5a7a89abbed6	types of wire mesh	types of wire mesh	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/867137fb-ff1b-4ca3-99f3-cb6969aa2c68	TypeScript	TypeScript	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/7193cb6d-8334-494f-86e5-21e6d03a47c3	unified modelling language	unified modelling language	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/c5e8abde-d2ba-4e8e-a65e-720b71180666	unstructured data	unstructured data	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/95ee5e38-5c1e-4cd2-a21d-6921390025a9	usability engineering	usability engineering	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/6b3afb82-c4ea-4f14-be54-a757fb762663	Vagrant	Vagrant	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/dcdd5ddf-82a6-4ac3-8edc-d4b23cae9a88	VBScript	VBScript	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/13bdd41a-2a18-441f-96db-41252c519413	Visual Studio .NET	Visual Studio .NET	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/6a876489-7ad8-4a13-b09c-c9b8e97a302e	Waterfall development	Waterfall development	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/1605025e-a179-421f-8f35-5b07d182a6b2	web analytics	web analytics	knowledge	0612	database and network design and administration
+http://data.europa.eu/esco/skill/902fb91c-3113-4004-9b4f-79aa86b638b7	web application security threats	web application security threats	knowledge	0611	computer use
+http://data.europa.eu/esco/skill/69bbd53f-fbb0-4476-b4b2-ef7844464e28	web programming	web programming	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/5c66ce3a-658d-43b1-9d8d-0f39be6c0f2e	WebCMS	WebCMS	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/e79dab00-fe87-48f2-b8cc-f48b68bc7f35	WhiteHat Sentinel	WhiteHat Sentinel	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/968ea96d-42d0-44fe-94b0-f11d84a8234d	Windows Phone	Windows Phone	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/8fa510d0-a8a6-4932-a361-00f8442cfe23	Wireshark	Wireshark	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/085bfce5-70fe-43da-9499-307725e89bbc	WizIQ	WizIQ	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/6d289e8b-2cc1-4eda-ab1f-ad1090ef98f0	WordPress	WordPress	technology	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/8696aff0-18c0-4ba6-a4d0-9a21861b3e5e	World Wide Web Consortium standards	World Wide Web Consortium standards	knowledge	0613	software and applications development and analysis
+http://data.europa.eu/esco/skill/449d119b-2d66-43a9-9230-7d27f16afbb6	Xcode	Xcode	technology	0612	database and network design and administration
+http://data.europa.eu/esco/skill/3f4dab51-572b-4e2c-85ef-3b4c3f7094e1	XQuery	XQuery	technology	0613	software and applications development and analysis

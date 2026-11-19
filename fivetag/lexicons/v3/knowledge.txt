@@ -1,0 +1,208 @@
+# Knowledge lexicon v1 (guideline 4.3): concepts, principles, theories,
+# architectures, methods or domains to be UNDERSTOOD.
+#
+# [heads]        a phrase ENDING in one of these head words is a knowledge phrase:
+#                "relational database concepts".
+# [heads-first]  Indonesian puts the head first: "konsep microservices".
+# [terms]        complete knowledge terms that need no head word.
+# [groups]       generic technology groups - not a specific technology (7.9);
+#                knowledge when the context is understanding.
+[heads]
+principles
+principle
+concepts
+concept
+fundamentals
+basics
+architecture
+theory
+methodology
+methodologies
+paradigms
+[heads-first]
+prinsip
+konsep
+dasar-dasar
+arsitektur
+teori
+metodologi
+[terms]
+data structures
+algorithms
+object-oriented programming
+OOP
+design patterns
+software architecture
+system design
+SDLC
+software development lifecycle
+software development life cycle
+Enterprise Integration Patterns
+struktur data
+algoritma
+desain sistem
+# --- added in v3 to [terms]: derived from ESCO (European Commission), ISCED-F 061 ICT branch, via the
+# public ESCO API. Rewritten by fivetag/build_lexicon_v3.py; see ESCO_DERIVATION.tsv.
+agile development
+ajax Framework
+application usability
+assessment of risks and threats
+aTM systems
+audio editing software
+authoring software
+automatic meter reading
+business ICT systems
+CAD software
+cADD software
+CAE software
+call routing
+call-centre technologies
+cAM software
+captioning software
+circuit diagrams
+cloud technologies
+computational fluid dynamics
+computer equipment
+computer forensics
+computer programming
+configuration of the tote room hardware
+control panel components
+data extraction, transformation and loading tools
+data mining
+data mining methods
+data models
+data protection
+data storage
+data warehouse
+database development tools
+database management systems
+database quality standards
+decision support systems
+desktop publishing
+distributed computing
+distributed directory information services
+dredging consoles
+e-commerce systems
+e-learning software infrastructure
+graphics editor software
+hardware components
+hardware industry
+hardware materials
+hardware platforms
+hardware testing methods
+hazard analysis and critical control points
+human-computer interaction
+hybrid control systems
+hybrid model
+ICT accessibility standards
+ICT architectural frameworks
+ICT debugging tools
+ICT encryption
+ICT environmental policies
+ICT hardware specifications
+ICT help platforms
+ICT network cable limitations
+ICT network routing
+ICT network security risks
+ICT network simulation
+ICT networking hardware
+ICT performance analysis methods
+ICT power consumption
+ICT problem management techniques
+ICT process quality models
+ICT recovery techniques
+ICT security standards
+ICT software specifications
+ICT system integration
+ICT system programming
+ICT system user requirements
+incremental development
+industrial software
+information architecture
+information confidentiality
+information extraction
+information security strategy
+information structure
+integrated development environment software
+internet governance
+iterative development
+javaScript Framework
+keywords in digital content
+levels of software testing
+machine translation
+microchip scanners
+microsystem test procedures
+mobile device management
+mobile device software frameworks
+mobile operating systems
+network management system tools
+object-oriented modelling
+office software
+online analytical processing
+open source model
+openEdge Advanced Business Language
+optical character recognition software
+oracle Application Development Framework
+outsourcing model
+penetration testing tool
+principles of artificial intelligence
+printed circuit boards
+printed circuit boards testing methods
+procurement of ICT network equipment
+prototyping development
+proxy servers
+query languages
+rapid application development
+real-time computing
+resource description framework query language
+samurai Web Testing Framework
+sand blasting machine parts
+sAS language
+scientific modelling
+security panels
+service-oriented modelling
+software anomalies
+software architecture models
+software components libraries
+software components suppliers
+software design methodologies
+software frameworks
+software interaction design
+software metrics
+software UI design patterns
+solution deployment
+specialised astrology software
+spiral development
+standards for web-based e-learning
+style sheet languages
+system backup best practice
+systems development life-cycle
+systems theory
+systems thinking
+task algorithmisation
+tools for ICT test automation
+tools for software configuration management
+transmission technology
+types of storage facilities
+types of wire mesh
+unified modelling language
+unstructured data
+usability engineering
+waterfall development
+web analytics
+web application security threats
+web programming
+world Wide Web Consortium standards
+[groups]
+NoSQL databases
+relational databases
+cloud platforms
+cloud infrastructure
+frontend frameworks
+front-end frameworks
+backend frameworks
+messaging frameworks
+storage systems
+communication protocols
+network routing protocols
+programming languages

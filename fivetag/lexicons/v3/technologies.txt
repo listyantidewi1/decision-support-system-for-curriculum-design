@@ -1,0 +1,670 @@
+# Technology dictionary v1 - names of specific languages, tools, frameworks,
+# libraries, platforms, database systems, cloud services and standards
+# (guideline 4.4). One entry per line. Matching is case-insensitive unless the
+# line ends with " !cs" (case-sensitive: short names that are also ordinary words).
+# Generic groups ("cloud platforms", "frontend frameworks") do NOT belong here (7.9).
+#
+# --- languages
+Python
+Java
+JavaScript
+TypeScript
+C++
+C#
+Go !cs
+Golang
+Rust !cs
+Ruby
+PHP
+Kotlin
+Swift !cs
+Scala
+Perl
+Dart !cs
+Objective-C
+MATLAB
+Bash
+PowerShell
+Groovy
+Elixir
+Haskell
+Lua
+COBOL
+Solidity
+SQL
+PL/SQL
+T-SQL
+HTML
+HTML5
+CSS
+CSS3
+Sass
+SCSS
+XML
+JSON
+YAML
+# --- web / app frameworks
+React
+React.js
+ReactJS
+React Native
+Redux
+react-redux
+Angular
+AngularJS
+angular-ngrx-data
+Vue
+Vue.js
+VueJS
+Nuxt.js
+Next.js
+Svelte
+jQuery
+Bootstrap
+Tailwind CSS
+Node.js
+NodeJS
+Express.js
+NestJS
+Django
+Flask !cs
+FastAPI
+Spring !cs
+Spring Boot
+Spring MVC
+Hibernate
+Laravel
+CodeIgniter
+Symfony
+Ruby on Rails
+Rails !cs
+ASP.NET
+.NET Core
+.NET
+Entity Framework
+Flutter
+Xamarin
+Ionic !cs
+Electron !cs
+Unity !cs
+Unreal Engine
+Webpack
+Babel
+NPM
+Yarn !cs
+Vite !cs
+GraphQL
+gRPC
+AJAX
+WebSocket
+# --- databases
+MySQL
+PostgreSQL
+Postgres
+MariaDB
+SQLite
+Oracle Database
+Oracle !cs
+SQL Server
+Microsoft SQL Server
+MongoDB
+Redis
+Cassandra
+Elasticsearch
+DynamoDB
+Firebase
+Firestore
+Neo4j
+Aurora !cs
+Snowflake !cs
+BigQuery
+Redshift
+# --- cloud / devops
+AWS
+Amazon Web Services
+amazon-web-services
+Azure Data Lake
+Azure Cosmos DB
+Azure
+Microsoft Azure
+GCP
+Google Cloud Platform
+Google Cloud
+Docker
+Kubernetes
+Helm !cs
+Terraform
+Ansible
+Jenkins
+GitLab CI
+GitHub Actions
+CircleCI
+Travis CI
+ArgoCD
+Nginx
+Apache Kafka
+Apache Camel
+Apache ActiveMQ
+Apache Spark
+Apache Airflow
+Apache !cs
+Kafka
+RabbitMQ
+IBM MQ
+JMS
+Linux
+Unix
+Ubuntu
+Windows Server
+Prometheus
+Grafana
+Datadog
+Splunk
+New Relic
+OpenShift
+Heroku
+Vercel
+Netlify
+Cloudflare
+# --- version control / collaboration
+Git !cs
+GitHub
+GitLab
+Bitbucket
+SVN
+Jira
+Confluence
+Trello
+Slack !cs
+Postman
+Swagger
+Figma
+Adobe XD
+Zeplin
+# --- testing
+Selenium
+Cypress !cs
+Jest !cs
+JUnit
+PyTest
+Mocha !cs
+Jasmine !cs
+Playwright
+Appium
+Cucumber !cs
+TestNG
+JMeter
+SonarQube
+# --- data / ML
+TensorFlow
+PyTorch
+Keras
+scikit-learn
+pandas !cs
+NumPy
+Spark !cs
+PySpark
+Hadoop
+Airflow
+Tableau
+Power BI
+Looker
+D3.js
+D3 !cs
+OpenCV
+Hugging Face
+LangChain
+Jupyter
+# --- mobile / desktop
+Android Studio
+Android
+iOS !cs
+Xcode
+SwiftUI
+Jetpack Compose
+# --- enterprise / other
+SAP !cs
+Salesforce
+SharePoint
+ServiceNow
+WordPress
+Magento
+Shopify
+Odoo
+Microsoft Office Suite
+Microsoft Office
+Excel !cs
+PowerPoint
+Visual Studio Code
+Visual Studio
+VS Code
+IntelliJ IDEA
+Eclipse !cs
+Maven
+Gradle
+Java EE
+JEE !cs
+JAVA !cs
+J2EE
+# --- standards / protocols treated as specific technologies (guideline 7.6)
+OAuth 2.0
+OAuth
+OpenID Connect
+SAML
+JWT
+SSL !cs
+TLS !cs
+HTTPS
+HTTP !cs
+TCP/IP
+BGP !cs
+ECMP !cs
+MQTT
+SOAP !cs
+# --- observability / system tools
+vmstat
+iostat
+DTrace
+nmon !cs
+# --- added in v2: derived from O*NET 30.2 "Technology Skills"
+# (USDOL/ETA, CC BY 4.0), SOC 15-12xx, Hot Technology or In Demand.
+# Rewritten by the rules in fivetag/build_lexicon_v2.py; see ONET_DERIVATION.tsv.
+Adobe Acrobat
+Acrobat !cs
+Adobe After Effects
+After Effects
+Adobe Creative Cloud
+Creative Cloud
+Adobe Illustrator
+Adobe InDesign
+InDesign !cs
+Adobe Photoshop
+Photoshop !cs
+Alteryx !cs
+Amazon DynamoDB
+Amazon Elastic Compute Cloud
+EC2 !cs
+Elastic Compute Cloud
+Amazon Redshift
+Amazon Web Services AWS CloudFormation
+AWS CloudFormation
+Amazon Web Services AWS SageMaker
+AWS SageMaker
+Apache Cassandra
+Apache Hadoop
+Apache Hive
+Apache JMeter
+Apache Maven
+Apache Subversion
+Subversion !cs
+Apache Tomcat
+Tomcat !cs
+Apple Safari
+Apple iOS
+Apple macOS
+macOS !cs
+Atlassian Bitbucket
+Atlassian Confluence
+Atlassian JIRA
+Autodesk AutoCAD
+Autodesk Maya
+Autodesk Revit
+Bentley MicroStation
+Border Gateway Protocol
+Cascading style sheets
+Cisco Webex
+Webex !cs
+Dassault Systemes SolidWorks
+Drupal !cs
+ESRI ArcGIS ArcPy
+ESRI ArcGIS Survey 123
+ESRI ArcGIS
+Epic Systems
+Extensible markup language
+Google Analytics
+Google Android
+Google Angular
+Google Docs
+Google Sheets
+Google Workspace
+Grafana Labs Grafana Cloud
+Hibernate ORM
+HubSpot !cs
+Hypertext markup language
+IBM DB2
+DB2 !cs
+IBM SPSS Statistics
+SPSS Statistics
+IBM Terraform
+IBM WebSphere MQ
+WebSphere MQ
+InVision !cs
+Informatica !cs
+JavaScript Object Notation
+Jenkins CI
+Kali Linux
+MEDITECH !cs
+MITRE ATT&CK
+Magellan Firmware
+Marketo Marketing Automation
+Metasploit !cs
+Microsoft .NET Framework
+.NET Framework
+Microsoft ASP.NET
+Microsoft Access
+Microsoft Active Directory
+Active Directory
+Microsoft Active Server Pages
+ASP !cs
+Active Server Pages
+Microsoft Azure Data Factory
+Azure Data Factory
+Microsoft Azure DevOps Services
+Azure DevOps Services
+Microsoft Excel
+Microsoft Internet Information Services (IIS)
+Internet Information Services (IIS)
+Microsoft Internet Information Services (IIS) Manager
+Internet Information Services (IIS) Manager
+Microsoft Outlook
+Outlook !cs
+Microsoft Power Automate
+Power Automate
+Microsoft Power BI
+Microsoft PowerPoint
+Microsoft PowerShell
+Microsoft Project
+Microsoft SQL Server Integration Services
+SSIS !cs
+SQL Server Integration Services
+Microsoft SQL Server Reporting Services
+SSRS !cs
+SQL Server Reporting Services
+Microsoft SharePoint
+Microsoft Team Foundation Server
+Team Foundation Server
+Microsoft Teams
+Microsoft Visio
+Visio !cs
+Microsoft Visual Basic
+Visual Basic
+Microsoft Visual Basic for Applications
+VBA !cs
+Visual Basic for Applications
+Microsoft Visual Studio
+Microsoft Windows
+Windows !cs
+Microsoft Windows Server
+Microsoft Word
+Mozilla Firefox
+Nmap !cs
+Oracle Cloud
+Oracle Java
+Oracle Java 2 Platform Enterprise Edition
+Java 2 Platform Enterprise Edition
+Oracle PL/SQL
+Oracle PeopleSoft
+PeopleSoft !cs
+Oracle Primavera Enterprise Project Portfolio Management
+Primavera Enterprise Project Portfolio Management
+Oracle SQL Developer
+SQL Developer
+Portswigger BurP Suite
+QGIS !cs
+Qualys Cloud Platform
+React Redux
+Red Hat Enterprise Linux
+Enterprise Linux
+Red Hat OpenShift
+RockWare ArcMap
+SAP ERP
+SAS !cs
+Splunk Enterprise
+Spring Framework
+Structured query language
+Tenable Nessus
+Teradata Database
+The MathWorks MATLAB
+Transact-SQL !cs
+Trimble SketchUp Pro
+UNIX Shell
+Unity Technologies Unity
+Unreal Technology Unreal Engine
+Workday !cs
+Yardi !cs
+eClinicalWorks EHR
+eMASS !cs
+# --- added in v3: derived from ESCO (European Commission), ISCED-F 061 ICT branch, via the
+# public ESCO API. Rewritten by fivetag/build_lexicon_v3.py; see ESCO_DERIVATION.tsv.
+ABAP !cs
+ABBYY FineReader
+Adobe Illustrator CS6
+Adobe Illustrator CS4
+Adobe Illustrator CS5
+Adobe Illustrator CS3
+Adobe Illustrator CC
+Adobe Photoshop CC
+Adobe Photoshop CS5
+Adobe Photoshop CS6
+Adobe Photoshop Elements
+Adobe Photoshop CS3
+Adobe Photoshop CS4
+Adobe Photoshop Lightroom
+Aircrack !cs
+APL !cs
+ASP+ !cs
+Aspx !cs
+ASP.NET 3.5
+ASP.NET 2.0
+Backbox !cs
+BlackArch !cs
+BlackBerry !cs
+CrackBerry !cs
+RIM BlackBerry
+Brightspace !cs
+Desire2Learn Brightspace
+D2L Brightspace
+Brightspace Learning Environment
+C Sharp
+CA Datacom/DB
+CA-Datacom/DB !cs
+CA Datacom
+DATACOM/DB !cs
+Cain and Abel
+Capture One
+Codenvy !cs
+CoffeeScript !cs
+Common Lisp
+DB2 Connect
+DB2 for z/OS
+DB2 on Cloud
+DB2 for i
+Eclipse IDE
+Edmodo !cs
+Engrade !cs
+Erlang !cs
+Filemaker !cs
+FileMaker Pro
+FileMaker Go
+GIMP !cs
+Grovo !cs
+IBM Informix
+Informix Dynamic Server
+Informix Enterprise Edition
+Informix Express Edition
+Informix Workgroup Edition
+IBM InfoSphere DataStage
+Cognos Data Manager
+IBM InfoSphere Information Server
+IBM WebSphere
+Informatica PowerCenter
+Informatica Power Center
+PowerCenter Informatica
+iPhone OS
+IPod Touch OS
+Mac OS X
+IPad OS
+AppleiOS !cs
+OS X iPhone
+Java Posse
+JavaScript 1.7
+JavaScript 1.6
+Escript !cs
+CSJS !cs
+Live Script
+Server-side JavaScript
+Client-side JavaScript
+JavaScripts !cs
+Jboss !cs
+John The Ripper
+Joomla !cs
+JSSS !cs
+JavaScript Style Sheets
+KDevelop !cs
+KDevelop 4.0.0
+KDevelop 5.0.0
+KDevelop 4.6.0
+KDevelop 4.7.0
+LAMS !cs
+LDAP !cs
+LDAP 2
+LDAP 3
+LINQ !cs
+Language Integrated Query
+Lisp !cs
+Litmos !cs
+Maltego !cs
+MarkLogic !cs
+MDX !cs
+MultiDimensional eXpressions
+MS Access
+Microsoft Office Access
+Visio 2010
+Office Visio 2003
+MS Visio
+Visio 2016
+Microsoft Office Visio
+Visio 2002
+Visio 2013
+Office Visio 2007
+Visio 2000
+Microsoft Visual C++
+MS Visual C++
+VC++ !cs
+Visual C++
+MSVC !cs
+Moodle !cs
+MySQL Embedded
+MySQL Enterprise Edition
+MySQL Cluster CGE
+MySQL Standard Edition
+MySQL Classic Edition
+N1QL !cs
+Nessus !cs
+Nessus 5.0
+Nessus 6.0
+Nessus 4.0.0
+Nessus Vulnerability Scanner
+Nexpose !cs
+Rapid7 Nexpose
+Smalltalk and C
+Objective-C 2.0
+Objective C++
+Obj-C !cs
+Object-C !cs
+ObjectStore !cs
+ObjectStore Standard Edition
+Ignite ObjectStore
+Octopus Deploy
+OmniPage !cs
+OpenEdge Database
+OpenEdge RDBMS
+Oracle Data Integrator
+ODI !cs
+Oracle Relational Database
+Rdb !cs
+Oracle Rdb
+Oracle Warehouse Builder
+OWB !cs
+Oracle WebLogic
+OWASP ZAP
+OWASP Zed
+Parrot Security OS
+Pascal !cs
+Pentaho Data Integration
+Pentaho Kettle
+PDI !cs
+Ponie !cs
+Perl Camel
+PHP-FPM !cs
+Phtml !cs
+ElePHPant !cs
+Php 5.0
+PHP5-FPM !cs
+Php 6.0
+Php 5.1
+Php 5.2
+Php 5.3
+Php 5.4
+Php5 !cs
+PHP7 !cs
+Php6 !cs
+Php1 !cs
+Php3 !cs
+Php2 !cs
+Prolog !cs
+Python3000 !cs
+Python2 !cs
+Py3K !cs
+Python3 !cs
+Pyston !cs
+QlikView Expressor
+QVE !cs
+QV Expressor
+Ruby-gnome2 !cs
+Sakai !cs
+Sakai Project
+SAP Data Services
+SAP R3
+SAP S/4 HANA
+SAP R/2
+SAP R/1
+SAP R/3
+SAS Data Management
+Syntactically Awesome Stylesheets
+Schoology !cs
+SketchBook Pro
+SketchBook !cs
+Autodesk SketchBook Pro
+Smalltalk !cs
+SPARQL !cs
+Informix 4GL/SQL
+SEQUEL !cs
+Subquery !cs
+SQL Server 2005
+SQL Server 2014
+SQL Server 2012
+Azure SQL Database
+SQL Server 2008
+MS SQL Server
+Microsoft SSIS
+STAF !cs
+Synfig !cs
+Synfig Studio
+Taleo !cs
+Teradata !cs
+THC Hydra
+TripleStore !cs
+Vagrant !cs
+VBScript !cs
+Visual Studio .NET
+WebCMS !cs
+WhiteHat Sentinel
+Windows Phone
+WP !cs
+Wireshark !cs
+WizIQ !cs
+Xcode IDE
+XQuery !cs
+XQuery 3.0
+XQuery 1.0
