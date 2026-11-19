@@ -1,0 +1,41 @@
+{
+  "roster_version": "monthly-roster-v1",
+  "note": "Which sources the monthly collection covers, how often, and which earlier batch config supplies the search terms. Schedule and limits follow docs/corpus/ACQUISITION_CADENCE.md sections 2-3. Edit this file to change the routine; set enabled=false to pause a source. A NEW source does not belong here until it has a Kn decision in docs/corpus/SOURCE_AUDIT.md.",
+  "limits": {
+    "detail_fetch_max_queries_per_session": 25,
+    "detail_fetch_cooldown_hours": 24,
+    "max_hours_old": 2160
+  },
+  "sources": [
+    {"key": "indeed-id", "site": "indeed", "stratum": "indonesia", "cadence_days": 28,
+     "detail_fetch": false, "results_wanted": 200, "sleep_seconds": 5, "enabled": true,
+     "templates": [{"config": "batch-002.json", "stratum": "indonesia"},
+                   {"config": "batch-002o-indeed-id-expanded.json", "stratum": "indonesia"}]},
+    {"key": "glints-id", "site": "glints", "stratum": "indonesia", "cadence_days": 28,
+     "detail_fetch": true, "sleep_seconds": 2, "enabled": true,
+     "templates": [{"config": "batch-002h-glints-id.json", "stratum": "indonesia"},
+                   {"config": "batch-002p-glints-id-expanded.json", "stratum": "indonesia"}]},
+    {"key": "kemnaker-id", "site": "kemnaker", "stratum": "indonesia", "cadence_days": 28,
+     "detail_fetch": false, "sleep_seconds": 1, "enabled": true,
+     "templates": [{"config": "batch-002r-kemnaker-id.json", "stratum": "indonesia"}]},
+    {"key": "kitalulus-id", "site": "kitalulus", "stratum": "indonesia", "cadence_days": 28,
+     "detail_fetch": false, "sleep_seconds": 2, "enabled": true,
+     "templates": [{"config": "batch-002s-kitalulus-id.json", "stratum": "indonesia"}]},
+    {"key": "kalibrr-id", "site": "kalibrr", "stratum": "indonesia", "cadence_days": 84,
+     "detail_fetch": false, "sleep_seconds": 2, "enabled": true,
+     "templates": [{"config": "batch-002g-kalibrr-id.json", "stratum": "indonesia"},
+                   {"config": "batch-002q-kalibrr-id-expanded.json", "stratum": "indonesia"}]},
+    {"key": "jobstreet-id", "site": "jobstreet", "stratum": "indonesia", "cadence_days": 28,
+     "detail_fetch": true, "needs_probe": true, "results_wanted": 200, "sleep_seconds": 4,
+     "enabled": true,
+     "templates": [{"config": "batch-002e-jobstreet-id-full.json", "stratum": "indonesia"},
+                   {"config": "batch-002t-jobstreet-id-remaining.json", "stratum": "indonesia"}]},
+    {"key": "indeed-asean", "site": "indeed", "stratum": "asean", "cadence_days": 56,
+     "detail_fetch": false, "sleep_seconds": 6, "enabled": true,
+     "templates": [{"config": "batch-002.json", "stratum": "asean"}]},
+    {"key": "indeed-oecd", "site": "indeed", "stratum": "oecd", "cadence_days": 56,
+     "detail_fetch": false, "sleep_seconds": 6, "enabled": true,
+     "templates": [{"config": "batch-002.json", "stratum": "oecd"},
+                   {"config": "batch-002l-oecd-noneng.json", "stratum": "oecd"}]}
+  ]
+}
