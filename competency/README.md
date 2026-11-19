@@ -63,10 +63,11 @@ What is visibly weak, and why:
   statement). They come from the rule extractor's mistakes, which pass straight
   through. A better extractor gives better competencies; this layer does not
   repair the layer before it.
-- **KKNI was assigned to only 17 of 445.** The existing KKNI labeller was built
-  to correct a level suggested by an LLM and stays silent unless it is
-  confident; with no suggestion to correct, it mostly says nothing. It needs
-  rework for this path.
+- **KKNI was assigned to only 17 of 445** in the first run, because the existing
+  labeller was built to correct a level suggested by an LLM and stays silent
+  unless it is confident. Repaired the same evening: every statement now gets
+  the nearest level with its similarity and a "confident" flag. A level that is
+  not confident is a starting point for an expert, not a placement.
 - **Almost everything is in English** (433 of 445): only about 4% of the pool's
   sentences are Indonesian.
 
@@ -81,11 +82,28 @@ What is visibly weak, and why:
 4. The verb table that assigns Krathwohl levels (`statement.py`). I wrote it;
    no expert has reviewed it. The version name says so.
 
+## The other modules in this folder (added 19 November, evening)
+
+| Module | What it does | Proposal |
+|---|---|---|
+| `temporal.py` | Share per half-year window, trend with a correction for many tests, volatility, a persistence weight, and moving a volatile item up to its ESCO parent node. `python -m competency.temporal --tag <name> --tags TT KN SS WB` runs it on the whole pool. | §3.3.4 |
+| `coverage.py` | Proposes one of the four coverage statuses against the SKKNI unit titles or an uploaded curriculum, and lists the nearest reference units. Always marked "not validated by an expert". | §3.3.5 |
+| `delta.py` | The five kinds of recommendation on a curriculum document. "Mengurangi penekanan" is capped at eksploratif. The persistence weight orders recommendations inside a status and never changes a status. | §3.3.6 |
+| `profile.py` | Publishes "Profil Kompetensi RPL <versi>" with a change log (naik, turun, masuk, keluar, with reasons). A version is written once. A profile from an engineering run goes to `drafts/` and says so. | §3.3.7 |
+| `endtoend.py` | P1, P2, P3 and the two ablations on the same postings, with one comparison table. `python -m competency.endtoend --tag <name> --n-postings 12 --max-usd 1.20`. | §3.3.3 |
+| `figures.py` | Every chart, drawn from the output files. `python -m competency.figures run <folder>` (also `temporal`, `endtoend`, `experiments`). | |
+
+The dashboards that show all this are in `dashboard_v3/`.
+
+Thresholds that are STARTING VALUES and need an expert or the promotor before
+any release: the time-analysis thresholds and weight formula
+(`TemporalConfig`), the coverage thresholds 0.65 and 0.45 (`CoverageConfig`),
+the contract thresholds, and the verb table.
+
 ## Not built yet
 
-The gap audit against official references, the education-level distribution,
-the rolling time windows (persistence and volatility), the delta
-recommendations, and the versioned profile.
+The education-level distribution (it needs the education field of the postings,
+which the sentence pool does not carry).
 
 ## Reused, not rewritten
 

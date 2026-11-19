@@ -36,6 +36,9 @@ from dataclasses import asdict, dataclass, field
 from .grouping import Group
 
 VERB_TABLE_VERSION = "verbs-v1-unreviewed"
+# A statement that lists every tool of a group is a tool list, not a
+# competency. First trial (EXP-019): several accepted statements named 7 or 8.
+MAX_TECHNOLOGIES_IN_STATEMENT = 3
 GROUNDING_VERSION = "grounding-lexical-v1"
 
 # base form -> Krathwohl cognitive process
@@ -214,7 +217,8 @@ SYSTEM = (
     "operational verb from the allowed list; (2) it must be assessable: an action on an "
     "object, optionally with a context; (3) use ONLY what the evidence shows: do not add "
     "technologies, tools or topics that are not listed; (4) write in the language named in "
-    "the request. Answer with JSON only: "
+    "the request; (5) name at most three technologies, the most frequent ones, or none. "
+    "Answer with JSON only: "
     '{"statement": "...", "verb": "...", "object": "...", "technologies": ["..."]}')
 
 
@@ -255,6 +259,11 @@ def check_llm_statement(raw: str | None, group: Group, language: str,
     foreign = [t for t in techs if t.lower() not in allowed_tech]
     if foreign:
         reasons.append(f"UNSUPPORTED: technologies not in the evidence: {foreign}")
+    named = [t["text"] for t in group.technologies
+             if re.search(r"(?<![A-Za-z0-9])" + re.escape(t["text"]) + r"(?![A-Za-z0-9])", text,
+                          re.I)]
+    if max(len(techs), len(named)) > MAX_TECHNOLOGIES_IN_STATEMENT:
+        reasons.append(f"INVALID: more than {MAX_TECHNOLOGIES_IN_STATEMENT} technologies named")
     score, missing = grounding(text, group)
     if score < min_grounding:
         reasons.append(f"UNSUPPORTED: grounding {score:.2f} < {min_grounding:.2f}; "
@@ -263,6 +272,31 @@ def check_llm_statement(raw: str | None, group: Group, language: str,
         return None, reasons
     return Statement(text, verb, str(obj.get("object") or ""), techs, VERBS[verb], language,
                      "llm", "evidence", score, missing), []
+
+
+def unchecked_llm_statement(group: Group, call) -> Statement:
+    """ABLATION ONLY ("P3 without the deterministic verifier"): the model's
+    statement is used as it comes. Its grounding is still MEASURED, so the
+    ablation can report how many unsupported statements the checks would have
+    stopped, but nothing is rejected."""
+    fallback = deterministic_statement(group)
+    raw = call(build_llm_messages(group, fallback.language))
+    try:
+        obj = json.loads(re.sub(r"^```(?:json)?\s*|\s*```$", "", (raw or "").strip()))
+        text = " ".join(str(obj["statement"]).split())
+    except (ValueError, TypeError, KeyError):
+        fallback.notes.append("LLM answer unusable even without checks: rule statement used")
+        return fallback
+    first = _words(text)[:1]
+    verb = (base_verb(first[0]) if first else None) or fallback.verb
+    st = Statement(text, verb, str(obj.get("object") or ""),
+                   [t for t in obj.get("technologies") or [] if isinstance(t, str)],
+                   VERBS.get(verb, "apply"), fallback.language, "llm-unchecked", "evidence")
+    st.grounding, st.ungrounded = grounding(text, group)
+    _, reasons = check_llm_statement(raw, group, fallback.language, 0.8)
+    if reasons:
+        st.notes.append("would have been rejected: " + "; ".join(reasons))
+    return st
 
 
 def llm_statement(group: Group, call, min_grounding: float = 0.8) -> Statement:

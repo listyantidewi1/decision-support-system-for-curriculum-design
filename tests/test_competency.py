@@ -226,6 +226,45 @@ def test_llm_statement_is_checked_and_falls_back_when_it_adds_things():
     assert "develop" in payload["allowed_verbs"] and "mengembangkan" not in payload["allowed_verbs"]
 
 
+def test_llm_statement_may_name_at_most_three_technologies():
+    g = _group([_m("Develop REST APIs", "SH", 6)], ["Java", "Python", "Docker", "AWS", "Git"])
+    many = json.dumps({"statement": "Develop REST APIs using Java, Python, Docker, AWS and Git",
+                       "technologies": ["Java", "Python", "Docker", "AWS", "Git"]})
+    st = S.llm_statement(g, lambda messages: many)
+    assert st.method == "deterministic-v1" and any("more than 3" in n for n in st.notes)
+    hidden = json.dumps({"statement": "Develop REST APIs using Java, Python, Docker and AWS",
+                         "technologies": ["Java"]})          # under-declared: counted in the text
+    assert S.llm_statement(g, lambda messages: hidden).method == "deterministic-v1"
+    three = json.dumps({"statement": "Develop REST APIs using Java, Python and Docker",
+                        "technologies": ["Java", "Python", "Docker"]})
+    assert S.llm_statement(g, lambda messages: three).method == "llm"
+    assert "at most three technologies" in S.SYSTEM
+
+
+def test_kkni_step_proposes_a_level_for_every_statement_and_flags_confidence():
+    import numpy as np
+    from competency import mapping as MP
+
+    class FakeEmbedder:
+        def encode(self, texts, **kw):
+            # two-dimensional toy space: "design" statements point one way, others the other
+            return np.array([[1.0, 0.0] if "Design" in t else [0.6, 0.8] for t in texts])
+    import competency_kkni_labeller as KL
+    original = KL._get_descriptor_embeddings
+    KL._get_descriptor_embeddings = lambda model, emb, allowed: (
+        [3, 4, 5], np.array([[0.0, 1.0], [0.6, 0.8], [1.0, 0.0]]))
+    try:
+        comps = [{"statement": {"text": "Design database schemas"}, "evidence": {"members": []}},
+                 {"statement": {"text": "Perform unit testing"}, "evidence": {"members": []}}]
+        report = MP.map_kkni(comps, embedder=FakeEmbedder())
+    finally:
+        KL._get_descriptor_embeddings = original
+    assert [c["kkni"]["level"] for c in comps] == [5, 4]
+    assert all(c["kkni"]["confident"] for c in comps) and report["n_confident"] == 2
+    assert report["n_evaluated"] == 2 and set(comps[0]["kkni"]["similarity_by_level"]) == {3, 4, 5}
+    assert comps[0]["kkni"]["source"] == MP.KKNI_STEP_VERSION
+
+
 def test_verb_table_is_versioned_and_marked_unreviewed():
     assert "unreviewed" in S.VERB_TABLE_VERSION
     assert set(S.VERBS.values()) <= {"remember", "understand", "apply", "analyze", "evaluate",
@@ -298,6 +337,398 @@ def test_package_does_not_import_legacy():
     for path in (PROJECT_ROOT / "competency").glob("*.py"):
         src = path.read_text(encoding="utf-8")
         assert "from legacy" not in src and "import legacy" not in src, path.name
+
+
+# -------------------------------------------------------------------- temporal
+from competency import temporal as T                                          # noqa: E402
+
+
+def _months(n_per_window=300, windows=4):
+    """Postings p{w}_{i}, window w covering six months from January 2025."""
+    return {f"p{w}_{i}": 2025 * 12 + 6 * w + (i % 6) for w in range(windows)
+            for i in range(n_per_window)}
+
+
+def _item(share_by_window, n_per_window=300):
+    return {f"p{w}_{i}" for w, s in enumerate(share_by_window)
+            for i in range(int(round(s * n_per_window)))}
+
+
+def test_month_index_and_calendar_windows():
+    assert T.month_index("2026-03-14 10:00:00+00:00") == 2026 * 12 + 2
+    assert T.month_index("") is None and T.month_index("14/03/2026") is None
+    windows = T.make_windows(_months(), T.TemporalConfig())
+    assert [(w["start"], w["end"], w["n_postings"]) for w in windows] == [
+        ("2025-01", "2025-06", 300), ("2025-07", "2025-12", 300),
+        ("2026-01", "2026-06", 300), ("2026-07", "2026-12", 300)]
+    thin = dict(_months())
+    thin.update({f"x{i}": 2024 * 12 + 7 for i in range(10)})
+    w = T.make_windows(thin, T.TemporalConfig())
+    assert w[0]["n_postings"] == 10 and not w[0]["included"] and w[1]["included"]
+
+
+def test_share_slope_volatility_and_direction():
+    items = {"rising": _item([0.10, 0.20, 0.30, 0.40]), "flat": _item([0.30, 0.30, 0.30, 0.30]),
+             "jumpy": _item([0.05, 0.40, 0.05, 0.40]), "rare": {"p0_0", "p1_0"}}
+    r = T.analyse(items, _months(), T.TemporalConfig(top_n=2))
+    by = {x["item"]: x for x in r["items"]}
+    assert "rare" not in by and r["n_items_too_rare"] == 1
+    assert by["rising"]["shares"] == [0.1, 0.2, 0.3, 0.4]
+    assert abs(by["rising"]["slope_per_window"] - 0.10) < 1e-9 and by["rising"]["direction"] == "naik"
+    assert by["flat"]["direction"] == "datar" and by["flat"]["volatility"] == "rendah"
+    assert by["jumpy"]["volatility"] == "tinggi" and by["jumpy"]["top_n_changes"] == 3
+    assert by["rising"]["trend"] == "menaik" and by["flat"]["trend"] == "tidak_terdeteksi"
+    assert r["adequacy"] == "memadai" and len(r["top_n_turnover"]) == 3
+    assert "cannot tell" in r["trend_test_note"]
+
+
+def test_too_few_windows_is_exploratory_and_tests_nothing():
+    r = T.analyse({"a": _item([0.2, 0.4], 300)}, _months(windows=2), T.TemporalConfig())
+    assert r["adequacy"] == "eksploratif"
+    assert r["items"][0]["p_value"] is None and r["items"][0]["trend"] == "tidak_cukup_data"
+
+
+def test_benjamini_hochberg_and_percentile_rank():
+    q = T.benjamini_hochberg([0.01, 0.04, None, 0.03])
+    assert q[2] is None and abs(q[0] - 0.03) < 1e-12 and abs(q[1] - 0.04) < 1e-12
+    assert abs(q[3] - 0.04) < 1e-12
+    assert T._percentile_rank([5, 1, 3]) == [1.0, 0.0, 0.5]
+    assert T._percentile_rank([2, 2]) == [0.5, 0.5]
+
+
+def test_persistence_weight_combines_prevalence_trend_and_prior_and_never_a_status():
+    items = {"python": _item([0.40, 0.42, 0.44, 0.46]), "oldtool": _item([0.30, 0.20, 0.12, 0.08])}
+    prior = {"python": (1.0, "AI & Machine Learning")}
+    r = T.analyse(items, _months(), prior=prior)
+    by = {x["item"]: x for x in r["items"]}
+    assert by["python"]["prior_matched"] and by["oldtool"]["prior"] == 0.5
+    assert by["python"]["persistence_weight"] > by["oldtool"]["persistence_weight"]
+    cfg = T.TemporalConfig()
+    assert abs(cfg.weight_prevalence + cfg.weight_trend + cfg.weight_prior - 1.0) < 1e-12
+    assert "status" not in by["python"] and "starting values" in cfg.thresholds_status
+
+
+def test_a_volatile_item_is_recommended_at_its_parent_node():
+    items = {"flutter": _item([0.05, 0.40, 0.05, 0.40]), "sql": _item([0.3, 0.3, 0.3, 0.3])}
+    parent = {"flutter": ("0613", "software and applications development and analysis"),
+              "sql": ("0612", "database and network design and administration")}
+    by = {x["item"]: x for x in T.analyse(items, _months(), parent=parent)["items"]}
+    assert by["flutter"]["recommend_at"] == {
+        "level": "parent", "node": "software and applications development and analysis",
+        "code": "0613", "example": "flutter"}
+    assert by["sql"]["recommend_at"]["level"] == "specific" and by["sql"]["recommend_at"]["anchored"]
+    agg = T.aggregate([(0.8, 0.1), (0.2, 0.3)])
+    assert agg["max"] == 0.8 and abs(agg["prevalence_weighted_mean"] - 0.35) < 1e-12
+    assert T.aggregate([]) == {"max": None, "prevalence_weighted_mean": None}
+
+
+def test_temporal_output_is_written_outside_the_gold_tree():
+    r = T.analyse({"a": _item([0.2, 0.3, 0.4, 0.5])}, _months())
+    with tempfile.TemporaryDirectory() as tmp:
+        p = T.write(r, Path(tmp))
+        assert json.loads(p.read_text(encoding="utf-8"))["items"][0]["item"] == "a"
+        assert "share 2025-01..2025-06" in (Path(tmp) / "temporal.csv").read_text("utf-8-sig")
+    try:
+        T.write(r, T.GS_DIR / "_temporal_should_not_exist")
+    except ValueError:
+        assert not (T.GS_DIR / "_temporal_should_not_exist").exists()
+        return
+    raise AssertionError("temporal output was allowed under DATA/gold_standard/")
+
+
+# ------------------------------------------- coverage, delta, versioned profile
+from competency import coverage as CV                                         # noqa: E402
+from competency import delta as DL                                            # noqa: E402
+from competency import profile as PF                                          # noqa: E402
+
+
+class _TopicEmbedder:
+    """Toy embedding: one axis per topic word; texts sharing words are similar."""
+    AXES = ["api", "database", "testing", "teamwork", "network"]
+
+    def encode(self, texts, **kw):
+        import numpy as np
+        out = []
+        for t in texts:
+            v = np.array([1.0 if a in t.lower() else 0.0 for a in self.AXES]) + 1e-3
+            out.append(v / np.linalg.norm(v))
+        return np.array(out)
+
+
+def _comp(cid, text, members, status=STATUS_CANDIDATE, n=10, blockers=()):
+    return {"competency_id": cid, "stream": "technical", "n_postings": n,
+            "share_of_postings": n / 100, "n_posting_groups": n,
+            "statement": {"text": text, "language": "en", "krathwohl": "apply"},
+            "contract": {"status": status, "blockers": list(blockers)},
+            "kkni": None, "okupasi": [],
+            "evidence": {"members": [{"text": m, "tag": "SH", "n_postings": n, "n_evidence": n}
+                                     for m in members],
+                         "technologies": [], "knowledge_context": [], "samples": []}}
+
+
+UNITS = [{"ref_id": "U1", "title": "Develop API", "text": "Develop API", "group": "x"},
+         {"ref_id": "U2", "title": "Database and network administration",
+          "text": "database network", "group": "x"}]
+
+
+def test_coverage_proposes_one_of_four_statuses_and_never_validates_itself():
+    comps = [_comp("c1", "Develop REST API", ["develop api"]),
+             _comp("c2", "Design database schemas", ["database design"]),
+             _comp("c3", "Perform unit testing", ["unit testing"]),
+             _comp("c4", "Demonstrate teamwork", ["teamwork"], status=STATUS_EXPLORATORY)]
+    s = CV.audit(comps, UNITS, "SKKNI", embedder=_TopicEmbedder())
+    got = {c["competency_id"]: c["coverage"]["SKKNI"]["proposed"] for c in comps}
+    # c2 shares one of the two topics of unit U2: cosine 0.71, above the 0.65 line
+    assert got == {"c1": CV.COVERED, "c2": CV.COVERED, "c3": CV.UPDATE_INPUT, "c4": CV.MISSING}
+    assert 0.65 <= comps[1]["coverage"]["SKKNI"]["best_similarity"] < 0.75
+    assert sum(s["counts"].values()) == 4 and s["validated_by_expert"] is False
+    for c in comps:
+        cov = c["coverage"]["SKKNI"]
+        assert cov["validated_by_expert"] is False and cov["matches"][0]["ref_id"] in ("U1", "U2")
+    assert set(CV.COVERAGE_STATUSES) == {"tercakup_jelas", "tercakup_sebagian", "belum_tercakup",
+                                         "masukan_pembaruan"}
+    assert "not calibrated" in CV.CoverageConfig().thresholds_status
+
+
+def test_school_curriculum_never_gets_the_update_input_status_and_empty_reference_is_safe():
+    comps = [_comp("c3", "Perform unit testing", ["unit testing"])]
+    CV.audit(comps, UNITS, "kurikulum", embedder=_TopicEmbedder(), official=False)
+    assert comps[0]["coverage"]["kurikulum"]["proposed"] == CV.MISSING
+    s = CV.audit(comps, [], "kosong", embedder=_TopicEmbedder())
+    assert comps[0]["coverage"]["kosong"]["proposed"] == CV.MISSING and s["n_reference_units"] == 0
+    assert CV.load_skkni_units() and CV.load_skkni_units()[0]["title"]
+
+
+def _with_cov(c, proposed, sim=0.5):
+    c["coverage"] = {"K": {"proposed": proposed, "best_similarity": sim,
+                           "validated_by_expert": False}}
+    return c
+
+
+def test_five_delta_types_follow_the_proposal():
+    add = _with_cov(_comp("a", "x", ["a"]), CV.MISSING, 0.2)
+    monitor = _with_cov(_comp("m", "x", ["m"], status=STATUS_EXPLORATORY), CV.MISSING, 0.2)
+    deepen = _with_cov(_comp("d", "x", ["d"]), CV.PARTIAL)
+    keep = _with_cov(_comp("k", "x", ["k"]), CV.COVERED, 0.8)
+    level = _with_cov(_comp("l", "x", ["l"]), CV.COVERED, 0.8)
+    level["kkni"] = {"level": 5, "confident": True}
+    unsure = _with_cov(_comp("u", "x", ["u"]), CV.COVERED, 0.8)
+    unsure["kkni"] = {"level": 5, "confident": False}
+    reduce = _with_cov(_comp("r", "x", ["r"]), CV.COVERED, 0.8)
+    reduce["temporal"] = {"shares": [0.30, 0.22, 0.15, 0.09], "trend": "tidak_terdeteksi"}
+    wobble = _with_cov(_comp("w", "x", ["w"]), CV.COVERED, 0.8)
+    wobble["temporal"] = {"shares": [0.30, 0.22, 0.25, 0.09]}
+    comps = [add, monitor, deepen, keep, level, unsure, reduce, wobble]
+    s = DL.apply(comps, "K", curriculum_kkni_level=2)
+    got = {c["competency_id"]: c["delta"]["type"] for c in comps}
+    assert got == {"a": DL.ADD, "m": DL.MONITOR, "d": DL.DEEPEN, "k": DL.KEEP,
+                   "l": DL.REVIEW_LEVEL, "u": DL.KEEP, "r": DL.REDUCE, "w": DL.KEEP}
+    assert s["counts"][DL.REDUCE] == 1 and set(DL.DELTA_TYPES) <= set(s["counts"])
+    assert not DL.falls_in_every_window([0.3, 0.2]) and DL.falls_in_every_window([0.3, 0.2, 0.1])
+
+
+def test_reducing_emphasis_is_capped_at_exploratory_and_weight_only_orders():
+    reduce = _with_cov(_comp("r", "x", ["r"], status=STATUS_CANDIDATE), CV.COVERED, 0.8)
+    reduce["temporal"] = {"shares": [0.3, 0.2, 0.1], "persistence_weight": 0.99}
+    keep = _with_cov(_comp("k", "x", ["k"], status=STATUS_CANDIDATE), CV.COVERED, 0.8)
+    keep["temporal"] = {"shares": [0.1, 0.2, 0.3], "persistence_weight": 0.10}
+    heavy = _with_cov(_comp("h", "x", ["h"], status=STATUS_EXPLORATORY), CV.PARTIAL)
+    heavy["temporal"] = {"shares": [0.1, 0.2, 0.3], "persistence_weight": 1.0}
+    comps = [heavy, reduce, keep]
+    DL.apply(comps, "K")
+    assert reduce["delta"]["status_cap"] == STATUS_EXPLORATORY
+    assert reduce["delta"]["effective_status"] == STATUS_EXPLORATORY
+    assert reduce["contract"]["status"] == STATUS_CANDIDATE          # the contract is untouched
+    # a higher weight never lifts an exploratory item above a candidate
+    assert [c["competency_id"] for c in DL.priority_order(comps)] == ["k", "h", "r"]
+    try:
+        DL.decide(_comp("z", "x", ["z"]), "K")
+    except KeyError:
+        return
+    raise AssertionError("a delta was produced without a coverage audit")
+
+
+def _run_dir(tmp, comps, name="run1"):
+    d = Path(tmp) / name
+    d.mkdir()
+    (d / "competencies.json").write_text(json.dumps(comps), encoding="utf-8")
+    (d / "report.json").write_text(json.dumps({
+        "evidence_source": "test", "denominators": {"n_postings": 100, "n_sentences": 900},
+        "n_evidence": 50, "n_evidence_by_tag": {"SH": 50},
+        "grouping": {"n_groups": 3, "status_distribution": {"sahih": 3}, "n_evidence_grouped": 50,
+                     "n_evidence_left_ungrouped": 0},
+        "statement_method": "deterministic-v1", "verb_table_version": "v", "grounding_version": "g",
+        "contract": {}}), encoding="utf-8")
+    return d
+
+
+def test_profile_is_written_once_drafts_are_marked_and_the_changelog_names_every_move():
+    with tempfile.TemporaryDirectory() as tmp:
+        v1 = [_comp("c-a", "Develop REST API", ["develop api", "rest api"], STATUS_EXPLORATORY,
+                    blockers=["postings<5"]),
+              _comp("c-b", "Design database schemas", ["database design"], STATUS_CANDIDATE),
+              _comp("c-c", "Perform unit testing", ["unit testing"], STATUS_CANDIDATE)]
+        p1 = PF.build(_run_dir(tmp, v1), "2026-1", profiles_dir=Path(tmp) / "profiles")
+        assert p1["identity"]["kind"] == "drafts" and "DRAFT" in p1["identity"]["notice"]
+        assert p1["changelog"]["previous_version"] is None
+        out1 = Path(p1["out_dir"])
+        assert out1.parent.name == "drafts" and (out1 / "profile.md").read_text("utf-8").startswith(
+            "# Profil Kompetensi RPL 2026-1")
+        try:
+            PF.build(_run_dir(tmp, v1, "again"), "2026-1", profiles_dir=Path(tmp) / "profiles")
+        except PF.ProfileError:
+            pass
+        else:
+            raise AssertionError("an existing profile version was overwritten")
+        v2 = [_comp("x-1", "Develop REST API", ["develop api", "rest api"], STATUS_CANDIDATE),   # rose
+              _comp("x-2", "Design database schemas", ["database design"], STATUS_EXPLORATORY,
+                    blockers=["okupasi_unmapped"]),                                               # fell
+              _comp("x-3", "Deploy containers", ["deploy containers"], STATUS_CANDIDATE)]        # entered
+        p2 = PF.build(_run_dir(tmp, v2, "run2"), "2026-2", previous=out1 / "profile.json",
+                      valid_for_release=True, profiles_dir=Path(tmp) / "profiles")
+        log = p2["changelog"]
+        assert log["previous_version"] == "2026-1" and p2["identity"]["kind"] == "releases"
+        assert [r["statement"] for r in log["naik"]] == ["Develop REST API"]
+        assert "postings<5" in log["naik"][0]["reason"]
+        assert [r["statement"] for r in log["turun"]] == ["Design database schemas"]
+        assert "okupasi_unmapped" in log["turun"][0]["reason"]
+        assert [r["statement"] for r in log["masuk"]] == ["Deploy containers"]
+        assert [r["statement"] for r in log["keluar"]] == ["Perform unit testing"]
+        assert p2["summary"]["by_status"] == {STATUS_CANDIDATE: 2, STATUS_EXPLORATORY: 1}
+        md = (Path(p2["out_dir"]) / "profile.md").read_text(encoding="utf-8")
+        assert "1 naik, 1 turun, 1 masuk, 1 keluar" in md and "DRAFT" not in md
+
+
+# ------------------------------------------------------- end-to-end pipelines
+from competency import endtoend as EE                                         # noqa: E402
+
+
+class _FakeLLM:
+    """One fake model for the three jobs: extraction, adjudication, statements."""
+
+    def __init__(self):
+        self.calls = {"extract": 0, "adjudicate": 0, "statement": 0}
+        self.chat = type("Chat", (), {"completions": self})()
+
+    def create(self, **kw):
+        system, last = kw["messages"][0]["content"], kw["messages"][-1]["content"]
+        if "competency statement" in system:
+            self.calls["statement"] += 1
+            payload = json.loads(last)
+            phrase = payload["phrases_from_postings"][0]["text"]
+            content = json.dumps({"statement": phrase, "technologies": []})
+        elif "decide the tag" in system:
+            self.calls["adjudicate"] += 1
+            content = json.dumps({"label": json.loads(last)["candidates"][0]})
+        else:
+            self.calls["extract"] += 1
+            spans = [{"text": t, "label": tag} for t, tag in (
+                ("Develop REST APIs", "SH"), ("Spring Boot", "TT"), ("Java 17", "TT"),
+                ("data structures", "KN"), ("teamwork", "SS"), ("detail-oriented", "WB"))
+                if t in last]
+            content = json.dumps({"spans": spans})
+        return {"choices": [{"message": {"content": content}, "finish_reason": "stop"}],
+                "model": kw["model"], "usage": {"prompt_tokens": 50, "completion_tokens": 10}}
+
+
+def test_five_pipelines_run_on_the_same_postings_and_differ_as_defined():
+    assert list(EE.SPECS) == ["P1", "P2", "P3", "P3-tanpa-verifier", "P3-tanpa-persistensi"]
+    assert EE.SPECS["P1"].extraction == "rules" and EE.SPECS["P1"].statements == "deterministic"
+    assert EE.SPECS["P3-tanpa-verifier"].verifier is False
+    assert EE.SPECS["P3-tanpa-persistensi"].persistence is False
+    sents = _sentences(6)
+    fake = _FakeLLM()
+    with tempfile.TemporaryDirectory() as tmp:
+        r = EE.run_all(sents, Path(tmp) / "e2e", max_usd=1.0, client_factory=lambda m: fake,
+                       clusterer=_key_clusterer, mapping=False, posting_month=None,
+                       log=lambda *_: None)
+        by = {row["pipeline"]: row for row in r["rows"]}
+        assert set(by) == set(EE.SPECS)
+        assert by["P1"]["new_cost_usd"] == 0 and "n_sentences_sent_to_llm" not in by["P1"]["extraction"]
+        assert by["P2"]["extraction"]["n_sentences_sent_to_llm"] == len(sents)
+        assert by["P3"]["extraction"]["n_sentences_sent_to_llm"] <= len(sents)
+        # answers paid for by P2 are reused by the P3 variants: no sentence is asked twice
+        assert fake.calls["extract"] <= len(sents)
+        assert by["P3"]["new_cost_usd"] <= by["P2"]["new_cost_usd"]
+        assert all(row["n_competencies"] >= 1 for row in r["rows"])
+        assert 0 < r["total_charged_usd"] <= 1.0 and r["notice"].startswith("REHEARSAL")
+        assert (Path(tmp) / "e2e" / "comparison.json").is_file()
+        assert "P1 vs P2" in r["top20_overlap"] and "expert appropriateness" in r["not_measured"]
+        text = EE.to_text(r)
+        assert "pipeline" in text and "P3-tanpa-verifier" in text
+
+
+def test_conflicts_are_left_out_without_an_llm_and_adjudicated_with_one():
+    s = "Understanding of unit testing."
+    sents = {f"u-{p:016x}#000": {"text": s, "posting_id": f"u-{p:016x}"} for p in range(3)}
+    preds = {sid: [make_pred(s, s.index("unit testing"), s.index("unit testing") + 12, "SH")]
+             for sid in sents}
+    ev = E.build_evidence(preds, sents)
+    kept, info = EE.resolve_conflicts(ev, EE.SPECS["P1"])
+    assert kept == [] and info["n_conflicts"] == 3 and "left out" in info["resolution"]
+    kept, info = EE.resolve_conflicts(ev, EE.SPECS["P3"], adjudicate=lambda m: '{"label": "KN"}')
+    assert [e.tag for e in kept] == ["KN"] * 3 and info["n_tag_changed"] == 3
+    assert all(e.evidence_id.endswith(":KN") for e in kept)
+    kept, info = EE.resolve_conflicts(ev, EE.SPECS["P2"])
+    assert len(kept) == 3 and info == {"used": False}
+
+
+def test_unchecked_statement_is_used_but_its_problems_are_recorded():
+    g = _group([_m("Develop REST APIs", "SH", 6)], ["Spring Boot"])
+    raw = json.dumps({"statement": "Develop REST APIs using Kubernetes", "technologies": ["Kubernetes"]})
+    st = S.unchecked_llm_statement(g, lambda messages: raw)
+    assert st.method == "llm-unchecked" and st.text == "Develop REST APIs using Kubernetes"
+    assert st.grounding < 1.0 and any("would have been rejected" in n for n in st.notes)
+    assert S.llm_statement(g, lambda messages: raw).method == "deterministic-v1"
+
+
+# --------------------------------------------------------------------- figures
+def test_figures_are_drawn_from_files_and_carry_their_status_note():
+    from competency import figures as F
+    with tempfile.TemporaryDirectory() as tmp:
+        a = F.hbar(["a", "b"], [3, 1], "t", Path(tmp) / "a.png", "REHEARSAL · not a finding")
+        b = F.lines(["w1", "w2", "w3"], {"x": [0.1, 0.2, 0.3], "y": [0.3, 0.2, 0.1]}, "t",
+                    Path(tmp) / "b.png", "note", subtitle="s")
+        c = F.grouped_bars(["g1", "g2"], {"v0": [1, 2], "v1": [2, 3]}, "t", Path(tmp) / "c.png",
+                           "note", reference=(3, "all"))
+        d = F.interval_dots(["m"], [0.9], [(0.85, 0.94)], "t", Path(tmp) / "d.png", "note")
+        assert all(p.is_file() and p.stat().st_size > 2000 for p in (a, b, c, d))
+        ev, sents = _evidence(6)
+        rep = run(ev, sents, Path(tmp) / "r", evidence_source="test", mapping=False,
+                  clusterer=_key_clusterer, log=lambda *_: None)
+        made = F.figures_for_run(Path(rep["out_dir"]))
+        names = {p.name for p in made}
+        assert {"evidence_by_tag.png", "group_status.png", "contract_status.png"} <= names
+    assert list(F.TAG_COLOR) == ["SH", "SS", "KN", "TT", "WB"] and len(set(F.SERIES)) == 8
+    src = (PROJECT_ROOT / "competency" / "figures.py").read_text(encoding="utf-8")
+    assert "twinx" not in src                                # never two y-scales on one chart
+
+
+# ------------------------------------------------------------------ lexicon v3
+def test_lexicon_v3_adds_traceable_esco_entries_sorted_into_technology_and_knowledge():
+    from fivetag import build_lexicon_v3 as B3
+    from fivetag import lexicon as lex
+    v2, v3 = lex.load("v2"), lex.load("v3")
+    assert v2.words("technologies") < v3.words("technologies")
+    assert v2.words("knowledge", "terms") < v3.words("knowledge", "terms")
+    assert v2.words("knowledge", "groups") == v3.words("knowledge", "groups")
+    assert v2.sha256 != v3.sha256
+    folder = lex.LEXICON_ROOT / "v3"
+    assert "European Commission" in (folder / "SOURCES.md").read_text(encoding="utf-8")
+    assert (folder / "ESCO_DERIVATION.tsv").read_text("utf-8").startswith("esco_uri")
+    assert "parent_code" in (folder / "ESCO_ICT.tsv").read_text("utf-8").splitlines()[0]
+    assert B3.split_title("Python (computer programming)") == ("Python", "computer programming")
+    assert B3.is_name("Oracle Relational Database") and B3.is_name("JavaScript")
+    for generic in ("database quality standards", "ICT network routing", "CAD software",
+                    "computer science", "NoSQL"):
+        assert not B3.is_name(generic), generic
+    row = {"title": "database quality standards", "alt_en": [], "uri": "u", "parent_code": "0612"}
+    assert B3.derive(row) == [("knowledge", "database quality standards",
+                               "title, common-noun phrase")]
+    for noise in ("ml", "saas", "less", "computer science"):
+        assert noise not in v3.words("technologies") and noise not in v3.words("knowledge", "terms")
+    from competency import temporal as TT
+    assert TT.esco_parents("v3")                              # the taxonomy the laddering uses
 
 
 # ------------------------------------------------------------------ lexicon v2

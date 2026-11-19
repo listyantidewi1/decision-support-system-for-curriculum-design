@@ -41,7 +41,7 @@ from .contract import ContractConfig, StudyFacts, decide
 from .evidence import Evidence, by_tag, denominators, from_ensemble_run, from_extractor, profile
 from .grouping import GroupingConfig, group_evidence
 from .statement import (GROUNDING_VERSION, VERB_TABLE_VERSION, deterministic_statement,
-                        llm_statement)
+                        llm_statement, unchecked_llm_statement)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 RUNS_DIR = REPO_ROOT / "DATA" / "competency" / "runs"
@@ -56,7 +56,12 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
         contract_cfg: ContractConfig | None = None, facts: StudyFacts | None = None,
         clusterer: Callable | None = None, mapping: bool = True,
         llm_call: Callable | None = None, statements_for: Sequence[str] = (VALID,),
-        posting_group: dict[str, str] | None = None, log=print) -> dict:
+        posting_group: dict[str, str] | None = None,
+        posting_month: Mapping[str, int] | None = None, temporal_cfg=None,
+        use_persistence: bool = True, coverage: bool = True,
+        curriculum_units: Sequence[dict] | None = None, curriculum_name: str = "kurikulum",
+        curriculum_kkni_level: int | None = None, check_statements: bool = True,
+        pipeline_name: str = "", embedder=None, log=print) -> dict:
     out_dir = Path(out_dir).resolve()
     if GS_DIR.resolve() in out_dir.parents:
         raise ValueError("competency output must not be written under DATA/gold_standard/")
@@ -78,8 +83,12 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
     for g in groups:
         if g.status not in statements_for:
             continue
-        st = (llm_statement(g, llm_call, contract_cfg.min_grounding) if llm_call
-              else deterministic_statement(g))
+        if llm_call and not check_statements:
+            st = unchecked_llm_statement(g, llm_call)      # ablation: no deterministic verifier
+        elif llm_call:
+            st = llm_statement(g, llm_call, contract_cfg.min_grounding)
+        else:
+            st = deterministic_statement(g)
         competencies.append({
             "competency_id": "comp-" + g.group_id, "statement": st.to_dict(),
             "stream": g.stream, "group_status": g.status,
@@ -101,7 +110,47 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
         c["contract"] = decide(group_status=c["group_status"], n_postings=c["n_postings"],
                                grounding=c["statement"]["grounding"], okupasi_mapped=mapped,
                                cfg=contract_cfg, facts=facts)
-    competencies.sort(key=lambda c: (-c["n_postings"], c["competency_id"]))
+    # ---- time analysis of each competency inside this run's own postings
+    temporal_report: dict = {"run": False}
+    if posting_month and competencies:
+        from . import temporal as T
+        by_evidence = {e.evidence_id: e.posting_id for e in evidence}
+        run_postings = {(r.get("posting_id") or s.split("#")[0]) for s, r in sentences.items()}
+        months = {p: m for p, m in posting_month.items() if p in run_postings}
+        items = {c["competency_id"]: {by_evidence[i] for i in c["evidence"]["evidence_ids"]}
+                 for c in competencies}
+        t = T.analyse(items, months, temporal_cfg)
+        rows = {r["item"]: r for r in t["items"]}
+        for c in competencies:
+            r = rows.get(c["competency_id"])
+            c["temporal"] = None if r is None else {
+                k: r[k] for k in ("shares", "current_share", "relative_slope", "direction",
+                                  "trend", "q_value", "volatility", "cv", "persistence_weight")}
+        temporal_report = {"run": True, **{k: t[k] for k in (
+            "adequacy", "adequacy_reason", "trend_test_note", "windows", "n_items_analysed",
+            "n_items_too_rare", "trend_counts", "volatility_counts", "top_n_turnover")},
+            "persistence_module_used_for_order": use_persistence}
+
+    # ---- coverage against the official references, and against a curriculum
+    coverage_report: dict = {"run": False}
+    if coverage and mapping and competencies:
+        from . import coverage as CV
+        from .mapping import shared_embedder
+        emb = embedder or shared_embedder()
+        coverage_report = {"run": True,
+                           "SKKNI": CV.audit(competencies, CV.load_skkni_units(), "SKKNI",
+                                             embedder=emb, official=True)}
+        if curriculum_units is not None:
+            from . import delta as DL
+            coverage_report[curriculum_name] = CV.audit(
+                competencies, curriculum_units, curriculum_name, embedder=emb, official=False)
+            coverage_report["delta"] = DL.apply(competencies, curriculum_name,
+                                                curriculum_kkni_level)
+    from .delta import priority_order
+    if use_persistence:
+        competencies = priority_order(competencies)
+    else:
+        competencies.sort(key=lambda c: (-c["n_postings"], c["competency_id"]))
 
     status_counts: dict[str, int] = {}
     for c in competencies:
@@ -119,10 +168,13 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
         "contract": {"min_postings": contract_cfg.min_postings,
                      "min_grounding": contract_cfg.min_grounding,
                      "thresholds_status": contract_cfg.thresholds_status},
-        "mapping": mapping_report, "seconds": time.perf_counter() - t0,
-        "not_built_yet": ["official-reference gap audit", "education-level distribution",
-                          "rolling time windows (persistence, volatility)",
-                          "delta recommendations", "versioned profile"],
+        "mapping": mapping_report, "temporal": temporal_report, "coverage": coverage_report,
+        "pipeline": pipeline_name, "statements_checked": check_statements,
+        "n_llm_statements_rejected": sum(
+            1 for c in competencies
+            if any(n.startswith("LLM statement rejected") for n in c["statement"]["notes"])),
+        "seconds": time.perf_counter() - t0,
+        "not_built_yet": ["education-level distribution"],
     }
 
     def dump(name, obj):
@@ -138,7 +190,7 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
         w = csv.writer(fh)
         w.writerow(["competency_id", "statement", "language", "krathwohl", "status", "blockers",
                     "n_postings", "n_employer_or_template_groups", "share_of_postings",
-                    "grounding", "kkni_level", "okupasi_top",
+                    "grounding", "kkni_level", "kkni_confident", "okupasi_top",
                     "technologies", "group_status", "stream"])
         for c in competencies:
             ok = (c["okupasi"] or [{}])[0].get("occupation_en", "") if c["okupasi"] else ""
@@ -147,7 +199,8 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
                         " | ".join(c["contract"]["blockers"]), c["n_postings"],
                         c["n_posting_groups"],
                         f"{c['share_of_postings']:.4f}", f"{c['statement']['grounding']:.2f}",
-                        (c["kkni"] or {}).get("level") or "", ok,
+                        (c["kkni"] or {}).get("level") or "",
+                        "yes" if (c["kkni"] or {}).get("confident") else "no", ok,
                         ", ".join(t["text"] for t in c["evidence"]["technologies"]),
                         c["group_status"], c["stream"]])
     for name, tag in (("technology_profile.csv", "TT"), ("work_behaviour_profile.csv", "WB")):
@@ -241,9 +294,11 @@ def main() -> None:
         wanted = {r["posting_id"] for r in sentences.values()}
         lg = lg[lg["posting_id"].isin(wanted)]
         posting_group = dict(zip(lg["posting_id"].astype(str), lg["group_id"].astype(str)))
+    from .temporal import posting_months
     report = run(evidence, sentences, RUNS_DIR / args.tag, evidence_source=source,
                  contract_cfg=ContractConfig(min_postings=args.min_postings),
-                 mapping=not args.no_mapping, posting_group=posting_group)
+                 mapping=not args.no_mapping, posting_group=posting_group,
+                 posting_month=posting_months(), pipeline_name="P1" if args.cmd == "e0" else "")
     competencies = json.loads((Path(report["out_dir"]) / "competencies.json").read_text("utf-8"))
     print()
     print(to_text(report, competencies))
