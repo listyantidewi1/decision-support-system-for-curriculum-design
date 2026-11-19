@@ -1,0 +1,56 @@
+# Knowledge lexicon v1 (guideline 4.3): concepts, principles, theories,
+# architectures, methods or domains to be UNDERSTOOD.
+#
+# [heads]        a phrase ENDING in one of these head words is a knowledge phrase:
+#                "relational database concepts".
+# [heads-first]  Indonesian puts the head first: "konsep microservices".
+# [terms]        complete knowledge terms that need no head word.
+# [groups]       generic technology groups - not a specific technology (7.9);
+#                knowledge when the context is understanding.
+[heads]
+principles
+principle
+concepts
+concept
+fundamentals
+basics
+architecture
+theory
+methodology
+methodologies
+paradigms
+[heads-first]
+prinsip
+konsep
+dasar-dasar
+arsitektur
+teori
+metodologi
+[terms]
+data structures
+algorithms
+object-oriented programming
+OOP
+design patterns
+software architecture
+system design
+SDLC
+software development lifecycle
+software development life cycle
+Enterprise Integration Patterns
+struktur data
+algoritma
+desain sistem
+[groups]
+NoSQL databases
+relational databases
+cloud platforms
+cloud infrastructure
+frontend frameworks
+front-end frameworks
+backend frameworks
+messaging frameworks
+storage systems
+communication protocols
+network routing protocols
+programming languages

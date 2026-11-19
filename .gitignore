@@ -235,6 +235,10 @@ results/dacum_cbc_packages/
 results/figures/
 results/stability_ablation/
 results/validation_packages/
+# The researcher's personal to-do list. Local only: it holds plans, budget and
+# open decisions that do not belong in a public repository.
+/TODO.md
+
 # Machine-specific utility
 relocate-claude-to-D.ps1
 docs/articles/
@@ -262,6 +266,11 @@ DATA/gold_standard/
 # corpus sentences verbatim (LOCAL ONLY, CLAUDE.md section 6), and they must
 # stay out of DATA/gold_standard/ so annotators remain blind to LLM output.
 DATA/labeling/
+
+# Extraction-model inputs and outputs (fivetag/): train/dev rows exported from
+# the gold standard, LLM benchmark runs, synthetic test rows, model checkpoints.
+# The gold exports and the runs embed corpus sentences verbatim (LOCAL ONLY).
+DATA/fivetag/
 
 # Annotation collector database — contains real annotator judgements (and the
 # WAL/SHM sidecars SQLite creates). The DB is the deliverable, not source.

@@ -1,0 +1,156 @@
+# Boundary words v1.
+#
+# Section "lead-ins": generic openers left OUT of a span (guideline 6.3).
+# Section "stops": words that END a verb-led span, because what follows says with
+#   what, for whom or where (guideline 6.8 and example 4.1). The words "to",
+#   "with" and "when" are deliberately NOT stops: the guideline keeps them inside
+#   the span ("Deploy applications to cloud environments", "Collaborate with
+#   product and QA teams", "Apply ... principles when designing applications").
+# Section "function-words": never part of a knowledge phrase's modifiers.
+[lead-ins]
+must
+should
+required to
+able to
+ability to
+experience in
+experience with
+experience
+proficiency in
+familiar with
+familiarity with
+strong knowledge of
+knowledge of
+strong understanding of
+understanding of
+understanding
+good
+strong
+excellent
+proven
+solid
+very good
+extensive
+deep
+basic
+advanced
+mampu
+memiliki kemampuan
+berpengalaman dalam
+menguasai
+memahami
+pengalaman dengan
+[stops]
+using
+for
+in
+via
+through
+by
+menggunakan
+untuk
+pada
+melalui
+that
+which
+who
+including
+such
+yang
+seperti
+termasuk
+[function-words]
+of
+the
+a
+an
+and
+or
+in
+to
+for
+with
+on
+at
+our
+your
+their
+its
+is
+are
+be
+as
+by
+from
+that
+this
+these
+those
+will
+can
+you
+we
+they
+have
+has
+dan
+atau
+yang
+untuk
+dengan
+serta
+di
+ke
+dari
+pada
+dalam
+adalah
+about
+into
+across
+within
+between
+like
+not
+no
+any
+all
+both
+new
+other
+tentang
+mengenai
+[title-heads]
+developer
+developers
+engineer
+engineers
+programmer
+programmers
+architect
+architects
+analyst
+analysts
+administrator
+administrators
+manager
+managers
+designer
+designers
+tester
+testers
+scientist
+scientists
+specialist
+specialists
+consultant
+consultants
+intern
+interns
+officer
+staff
+pengembang
+insinyur
+pemrogram
+analis
+administrator

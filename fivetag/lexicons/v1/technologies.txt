@@ -1,0 +1,268 @@
+# Technology dictionary v1 - names of specific languages, tools, frameworks,
+# libraries, platforms, database systems, cloud services and standards
+# (guideline 4.4). One entry per line. Matching is case-insensitive unless the
+# line ends with " !cs" (case-sensitive: short names that are also ordinary words).
+# Generic groups ("cloud platforms", "frontend frameworks") do NOT belong here (7.9).
+#
+# --- languages
+Python
+Java
+JavaScript
+TypeScript
+C++
+C#
+Go !cs
+Golang
+Rust !cs
+Ruby
+PHP
+Kotlin
+Swift !cs
+Scala
+Perl
+Dart !cs
+Objective-C
+MATLAB
+Bash
+PowerShell
+Groovy
+Elixir
+Haskell
+Lua
+COBOL
+Solidity
+SQL
+PL/SQL
+T-SQL
+HTML
+HTML5
+CSS
+CSS3
+Sass
+SCSS
+XML
+JSON
+YAML
+# --- web / app frameworks
+React
+React.js
+ReactJS
+React Native
+Redux
+react-redux
+Angular
+AngularJS
+angular-ngrx-data
+Vue
+Vue.js
+VueJS
+Nuxt.js
+Next.js
+Svelte
+jQuery
+Bootstrap
+Tailwind CSS
+Node.js
+NodeJS
+Express.js
+NestJS
+Django
+Flask !cs
+FastAPI
+Spring !cs
+Spring Boot
+Spring MVC
+Hibernate
+Laravel
+CodeIgniter
+Symfony
+Ruby on Rails
+Rails !cs
+ASP.NET
+.NET Core
+.NET
+Entity Framework
+Flutter
+Xamarin
+Ionic !cs
+Electron !cs
+Unity !cs
+Unreal Engine
+Webpack
+Babel
+NPM
+Yarn !cs
+Vite !cs
+GraphQL
+gRPC
+AJAX
+WebSocket
+# --- databases
+MySQL
+PostgreSQL
+Postgres
+MariaDB
+SQLite
+Oracle Database
+Oracle !cs
+SQL Server
+Microsoft SQL Server
+MongoDB
+Redis
+Cassandra
+Elasticsearch
+DynamoDB
+Firebase
+Firestore
+Neo4j
+Aurora !cs
+Snowflake !cs
+BigQuery
+Redshift
+# --- cloud / devops
+AWS
+Amazon Web Services
+amazon-web-services
+Azure Data Lake
+Azure Cosmos DB
+Azure
+Microsoft Azure
+GCP
+Google Cloud Platform
+Google Cloud
+Docker
+Kubernetes
+Helm !cs
+Terraform
+Ansible
+Jenkins
+GitLab CI
+GitHub Actions
+CircleCI
+Travis CI
+ArgoCD
+Nginx
+Apache Kafka
+Apache Camel
+Apache ActiveMQ
+Apache Spark
+Apache Airflow
+Apache !cs
+Kafka
+RabbitMQ
+IBM MQ
+JMS
+Linux
+Unix
+Ubuntu
+Windows Server
+Prometheus
+Grafana
+Datadog
+Splunk
+New Relic
+OpenShift
+Heroku
+Vercel
+Netlify
+Cloudflare
+# --- version control / collaboration
+Git !cs
+GitHub
+GitLab
+Bitbucket
+SVN
+Jira
+Confluence
+Trello
+Slack !cs
+Postman
+Swagger
+Figma
+Adobe XD
+Zeplin
+# --- testing
+Selenium
+Cypress !cs
+Jest !cs
+JUnit
+PyTest
+Mocha !cs
+Jasmine !cs
+Playwright
+Appium
+Cucumber !cs
+TestNG
+JMeter
+SonarQube
+# --- data / ML
+TensorFlow
+PyTorch
+Keras
+scikit-learn
+pandas !cs
+NumPy
+Spark !cs
+PySpark
+Hadoop
+Airflow
+Tableau
+Power BI
+Looker
+D3.js
+D3 !cs
+OpenCV
+Hugging Face
+LangChain
+Jupyter
+# --- mobile / desktop
+Android Studio
+Android
+iOS !cs
+Xcode
+SwiftUI
+Jetpack Compose
+# --- enterprise / other
+SAP !cs
+Salesforce
+SharePoint
+ServiceNow
+WordPress
+Magento
+Shopify
+Odoo
+Microsoft Office Suite
+Microsoft Office
+Excel !cs
+PowerPoint
+Visual Studio Code
+Visual Studio
+VS Code
+IntelliJ IDEA
+Eclipse !cs
+Maven
+Gradle
+Java EE
+JEE !cs
+JAVA !cs
+J2EE
+# --- standards / protocols treated as specific technologies (guideline 7.6)
+OAuth 2.0
+OAuth
+OpenID Connect
+SAML
+JWT
+SSL !cs
+TLS !cs
+HTTPS
+HTTP !cs
+TCP/IP
+BGP !cs
+ECMP !cs
+MQTT
+SOAP !cs
+# --- observability / system tools
+vmstat
+iostat
+DTrace
+nmon !cs
