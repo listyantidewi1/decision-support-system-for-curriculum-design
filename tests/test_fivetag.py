@@ -613,7 +613,9 @@ def test_gliner_adapter_maps_labels_and_reports_a_missing_package():
         def predict_entities(self, text, labels, threshold=0.5, flat_ner=False):
             assert set(labels) == set(LABEL_PROMPTS.values())
             return [{"start": 16, "end": 22, "text": "Docker", "label": LABEL_PROMPTS["TT"],
-                     "score": 0.91}]
+                     "score": 0.91},
+                    {"start": 11, "end": 22, "text": "with Docker", "label": LABEL_PROMPTS["TT"],
+                     "score": 0.40}]          # same tag, overlapping, lower score: dropped
     ex = GlinerExtractor(model=Fake())
     (p,) = ex.extract("Experience with Docker.")
     assert (p.text, p.label, p.source) == ("Docker", "TT", "E3") and abs(p.score - 0.91) < 1e-9
@@ -758,6 +760,52 @@ def test_nothing_in_fivetag_imports_legacy_or_writes_under_gold_standard():
         src = path.read_text(encoding="utf-8")
         assert "from legacy" not in src and "import legacy" not in src, path.name
     assert "gold_standard" not in str(synthetic.OUT_DIR) and "gold_standard" not in str(L.RUNS_DIR)
+
+
+# ---------------------------------------------------------- SkillSpan rehearsal
+def _skillspan_file(folder: Path, name: str, records: list[tuple[str, dict]]) -> None:
+    with (folder / f"{name}.jsonl").open("w", encoding="utf-8") as fh:
+        for text, answer in records:
+            fh.write(json.dumps({"messages": [
+                {"role": "system", "content": "x"}, {"role": "user", "content": text},
+                {"role": "assistant", "content": json.dumps(answer)}]}) + "\n")
+
+
+def test_skillspan_conversion_places_spans_by_context_and_counts_what_it_drops():
+    from fivetag import skillspan_rehearsal as R
+    text = "Use Java daily and teach Java to juniors with unit testing skills"
+    answer = {"SKILL": [{"skill_span": "teach Java to juniors", "context": "and teach Java to juniors with"},
+                        {"skill_span": "teach Java", "context": "teach Java to"},      # overlaps: dropped
+                        {"skill_span": "missing phrase", "context": "nowhere"}],
+              "KNOWLEDGE": [{"skill_span": "Java", "context": "teach Java to"},        # the 2nd "Java"
+                            {"skill_span": "Java", "context": "Use Java daily"}]}
+    with tempfile.TemporaryDirectory() as tmp:
+        _skillspan_file(Path(tmp), "train", [(text, answer), ("Nothing here", {"SKILL": [], "KNOWLEDGE": []})])
+        with (Path(tmp) / "train.jsonl").open("a", encoding="utf-8") as fh:
+            fh.write("{not json}\n")
+        rows, stats = R.load_part("train", Path(tmp))
+    assert stats == {"n_sentences": 2, "n_spans": 3, "n_not_found": 1, "n_bad_records": 1,
+                     "n_same_tag_overlap_dropped": 1}
+    got = {(text[s["start"]:s["end"]], s["start"], s["label"]) for s in rows[0]["spans"]}
+    assert got == {("teach Java to juniors", text.index("teach"), "SH"),
+                   ("Java", text.rindex("Java"), "KN"), ("Java", text.index("Java"), "KN")}
+    assert rows[1]["spans"] == [] and "split" not in rows[0]
+    enc.check_rows(rows)
+
+
+def test_skillspan_rehearsal_says_what_it_is_and_never_calls_itself_a_result():
+    from fivetag import skillspan_rehearsal as R
+    assert R.LABEL_MAP == {"SKILL": "SH", "KNOWLEDGE": "KN"}
+    assert "Not a study result" in R.NOTICE
+    fake = {"notice": R.NOTICE, "tiny_toy_model": True, "model_name": "tiny-random", "epochs": 1,
+            "device": "cpu", "train_seconds": 6.0,
+            "conversion": {"train": {"n_spans": 1, "n_not_found": 0,
+                                     "n_same_tag_overlap_dropped": 0}}}
+    part = {"strict": {"precision": 0.5, "recall": 0.5, "f1": 0.5, "f1_ci95": [0.4, 0.6]},
+            "partial": {"f1": 0.6}, "strict_f1_by_label": {"SKILL (SH layer)": 0.5},
+            "spurious_spans_in_untrained_layers": 0}
+    text = R.to_text({**fake, "dev": part, "skillspan_test": part})
+    assert text.startswith("REHEARSAL") and "TOY MODEL" in text and "SkillSpan test" in text
 
 
 def _run_standalone() -> int:

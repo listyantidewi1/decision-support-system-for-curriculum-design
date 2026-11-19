@@ -16,7 +16,7 @@ only shows that the code runs.
 | E0 | Rules and dictionary | `e0_rules.py`, `lexicons/v1/` | works |
 | E1 | Multilingual encoder + BIO | `encoder.py` | training loop works; real training needs a GPU and the gold |
 | E2 | E1 after domain-adaptive pretraining | `dapt.py`, then `encoder.py` | same |
-| E3 | GLiNER open-type extraction | `gliner_adapter.py` | written; **not yet run on the real model** (package not installed) |
+| E3 | GLiNER open-type extraction | `gliner_adapter.py` | works without training on the real model (run 19 November); fine-tuning needs the gold |
 | E4 | Prompted LLM, JSON schema, no retrieval | `llm.py` | works; can be scored from runs already paid for |
 | E5 | LLM + retrieval + deterministic verifier | `llm.py` | works with a fake model; needs gold train sentences to retrieve from |
 | E6 | NLP first, LLM only when a trigger fires | `router.py` | works; thresholds not tuned |
@@ -53,6 +53,8 @@ Expected spans found, on the SkillSpan sentences you reviewed (74 and 120 spans)
 | E4 Claude Haiku 5.5 | 51 | 113 |
 | E4 Qwen 3.8 Flash | 57 | 108 |
 | E6 router, E0 → Haiku | 50 | 115 |
+| E3 GLiNER, no training, threshold 0.5 | 9 | 56 |
+| E3 GLiNER, no training, threshold 0.3 | 13 | 73 |
 
 How to read this:
 
@@ -65,6 +67,12 @@ How to read this:
   and have to be set on the dev split.
 - The LLM outputs were valid JSON almost always (98–100%) and about 1% of
   returned spans were not in the sentence.
+- GLiNER without training is, in effect, a technology tagger: it found 54 of
+  the 76 technology names in batch 2 (62 at the lower threshold) and almost
+  none of the action phrases, soft skills or work behaviours. It was built to
+  find named things, and the five-tag guideline asks for whole phrases with
+  their verb. Whether fine-tuning on the gold changes that is what the real E3
+  condition will measure. It ran at about 5 sentences per second on the CPU.
 
 D1, D2, D3 on the same reference spans: they are right on 96–99% of the spans
 they decide, abstain on 6–30% (phrases not in any list), and D3 flags 1–3% as
@@ -97,6 +105,41 @@ Also yours: the word lists themselves. They are plain text files in
 `lexicons/v1/`, one entry per line; you can read and correct them. Once real
 results exist, a change to the lists should go into a new folder (`v2`) so old
 results stay reproducible.
+
+## Rehearsal before the gold exists: E1 on SkillSpan, on Kaggle
+
+SkillSpan is public, expert-annotated job-posting text that is already in this
+repository. Training E1 on it is a dress rehearsal: real text, the real
+XLM-RoBERTa encoder, a real GPU. It is **not a study result**: SkillSpan is
+English only and has two labels (skill, knowledge) defined by its own
+guideline, so it says nothing about five-tag accuracy on Indonesian postings.
+
+On kaggle.com:
+
+1. Create → New Notebook.
+2. In the right-hand panel, under *Session options*: **Accelerator: GPU T4**,
+   **Internet: On** (Kaggle asks you to verify a phone number once for this).
+3. Paste this into the first cell and run it:
+
+   ```
+   !git clone --depth 1 https://github.com/listyantidewi1/decision-support-system-for-curriculum-design.git repo
+   %cd repo
+   !python -m fivetag.skillspan_rehearsal --model xlm-roberta-base --epochs 6 --out /kaggle/working/e1_skillspan
+   ```
+
+4. When it finishes it prints about ten lines starting with `REHEARSAL`. Copy
+   them, or download `skillspan_rehearsal_report.json` from the notebook's
+   *Output* folder.
+
+What to compare it with: the SkillSpan paper (Zhang et al., 2022, Table 5)
+reports a combined span-F1 of about 57–60 for BERT-sized models on its own
+files. The copy in this repository is reformatted, so a score in the same region
+means the pipeline is sound; a much lower one means something is wrong and must
+be found before the real experiment.
+
+Checked locally on 19 November: with the real XLM-RoBERTa tokenizer, 2,161 of
+the 2,162 gold spans in the SkillSpan dev file survive the conversion to tags and
+back unchanged.
 
 ## When the gold standard exists
 

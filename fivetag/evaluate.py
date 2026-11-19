@@ -17,6 +17,7 @@ CLI (free, no network):
 
     python -m fivetag.evaluate dev              # E0 on every development set
     python -m fivetag.evaluate dev --errors 15  # ... and list what it got wrong
+    python -m fivetag.evaluate dev --extractor e3 --threshold 0.5   # GLiNER, zero-shot
 """
 from __future__ import annotations
 
@@ -141,13 +142,22 @@ def main() -> None:
     ap.add_argument("what", choices=["dev"])
     ap.add_argument("--errors", type=int, default=0, help="list this many failed items per set")
     ap.add_argument("--json", help="also write the full result to this file")
+    ap.add_argument("--extractor", choices=["e0", "e3"], default="e0")
+    ap.add_argument("--threshold", type=float, default=0.5, help="E3 only: GLiNER threshold")
     args = ap.parse_args()
 
-    from .e0_rules import E0Rules
-    result = evaluate_dev(E0Rules())
-    m = result["extractor"]
-    print(f"{m['extractor']}  rules {m['rules_version']}  lexicon {m['lexicon_version']} "
-          f"({m['lexicon_sha256'][:12]})")
+    if args.extractor == "e3":
+        from .gliner_adapter import GlinerExtractor
+        result = evaluate_dev(GlinerExtractor(threshold=args.threshold))
+        m = result["extractor"]
+        print(f"{m['extractor']}  zero-shot  {m['model_name']}  threshold {m['threshold']}  "
+              f"labels {m['labels_version']}")
+    else:
+        from .e0_rules import E0Rules
+        result = evaluate_dev(E0Rules())
+        m = result["extractor"]
+        print(f"{m['extractor']}  rules {m['rules_version']}  lexicon {m['lexicon_version']} "
+              f"({m['lexicon_sha256'][:12]})")
     for name, s in result["sets"].items():
         print(f"\n{name}")
         print(f"  expected spans found : {s['expected_spans_found']}/{s['expected_spans_total']}")

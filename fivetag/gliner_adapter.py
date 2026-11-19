@@ -5,19 +5,30 @@ run with no training (zero-shot) and, later, after fine-tuning on the gold
 training split. The descriptions below are the experiment's only free
 parameter in the zero-shot setting; they are versioned for that reason.
 
-Status (2026-11-19): the `gliner` package is NOT installed in `.venv-ml`, and
-its multilingual checkpoint is a download of several hundred MB. This adapter
-is therefore tested against a stand-in object with the same `predict_entities`
-method, not against the real model. Before the first real run:
+Status (2026-11-19): run against the real model. `gliner` 0.2.30 is installed
+in `.venv-ml` and the multilingual checkpoint (`urchade/gliner_multi-v2.1`,
+about 1.2 GB) is in the Hugging Face cache on drive D. Three things learned on
+the way, all handled or recorded here:
 
-    .venv-ml\\Scripts\\pip install gliner
-    python -c "from fivetag.gliner_adapter import GlinerExtractor; \\
-               print(GlinerExtractor().extract('Experience with Docker.'))"
+  * `GLiNER.from_pretrained` returns an object of a specific subclass; the
+    prediction method lives on that object, not on the `GLiNER` class.
+  * Loading by name downloads EVERY file of the model repository, including a
+    second copy of the weights. On a slow connection that stalled for hours.
+    So a complete local copy is used when there is one (`_local_snapshot`).
+  * Its tokenizer needs `protobuf` >= 7.36.1; with an older one the error
+    message asks for `tiktoken`, which is misleading.
 
-and confirm that the entity dictionaries it returns carry `start`, `end`,
-`label` and `score` — `extract` raises a clear error if they do not.
+With `flat_ner=False` the model returns overlapping spans of the SAME label
+("good teamwork" and "teamwork", both soft skill). The guideline allows one span
+per tag at a place (rule 6.4), so within a tag the higher-scored span is kept.
+Spans of different tags may still overlap (rule 6.9).
+
+The unit tests use a stand-in object so they need no download; `extract` raises
+a clear error if the real model ever returns entities of another shape.
 """
 from __future__ import annotations
+
+from pathlib import Path
 
 from .base import Pred, dedupe, make_pred
 
@@ -34,6 +45,17 @@ LABEL_PROMPTS: dict[str, str] = {
 }
 
 
+def _local_snapshot(model_name: str) -> str | None:
+    """Folder of an already downloaded copy that has its weights, or None."""
+    try:
+        from huggingface_hub import snapshot_download
+        folder = Path(snapshot_download(model_name, local_files_only=True))
+    except Exception:                                          # noqa: BLE001
+        return None
+    has_weights = any((folder / f).is_file() for f in ("model.safetensors", "pytorch_model.bin"))
+    return str(folder) if has_weights and (folder / "gliner_config.json").is_file() else None
+
+
 class GlinerExtractor:
     name = "E3"
 
@@ -48,7 +70,7 @@ class GlinerExtractor:
             except ImportError as exc:
                 raise ImportError("E3 needs the 'gliner' package: "
                                   r".venv-ml\Scripts\pip install gliner") from exc
-            model = GLiNER.from_pretrained(model_name)
+            model = GLiNER.from_pretrained(_local_snapshot(model_name) or model_name)
         self.model = model
 
     def extract(self, sentence: str) -> list[Pred]:
@@ -67,7 +89,11 @@ class GlinerExtractor:
                 out.append(make_pred(sentence, start, end, label,
                                      score=float(e.get("score", 1.0)), source=self.name,
                                      rule="gliner"))
-        return dedupe(out)
+        kept: list[Pred] = []
+        for p in sorted(out, key=lambda p: (-p.score, p.start, p.end, p.label)):
+            if not any(k.label == p.label and k.start < p.end and p.start < k.end for k in kept):
+                kept.append(p)
+        return dedupe(kept)
 
     def manifest(self) -> dict:
         return {"extractor": self.name, "model_name": self.model_name,
