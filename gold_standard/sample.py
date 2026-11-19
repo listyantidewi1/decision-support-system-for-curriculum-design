@@ -215,10 +215,48 @@ def draw_sample(n: int, exclude_ids: set[str] | None = None,
     return sample[["sample_order", *SAMPLE_COLUMNS]]
 
 
+# Splits that `main()` may replace even though a different draw is already on
+# disk. Empty unless the operator names them with --redraw.
+_REDRAW: set[str] = set()
+
+
+def existing_draw_blocks(pq: Path, sample: pd.DataFrame, split: str,
+                         redraw: set[str]) -> str:
+    """Decide what to do when a sample file for `split` already exists.
+
+    Returns "write" (nothing there, or the operator asked for a redraw) or "keep"
+    (the same sentences are already on disk). Raises SystemExit when a DIFFERENT
+    draw is on disk and no redraw was asked for.
+
+    Why this exists: every run of this module re-draws pilot_100 and practice_10
+    before it draws anything else. That is harmless while the sentence pool is
+    unchanged, because the draw is seeded. But the pool is rebuilt after corpus
+    rounds, and then the same command would silently REPLACE the pilot sentences
+    while the experts' annotations still refer to the old ones. A sample that
+    people have annotated must never change under them.
+    """
+    if not pq.exists() or split in redraw:
+        return "write"
+    old = pd.read_parquet(pq, columns=["sentence_id"])["sentence_id"].astype(str).tolist()
+    new = sample["sentence_id"].astype(str).tolist()
+    if old == new:
+        return "keep"
+    raise SystemExit(
+        f"refusing to overwrite {pq.name}: a DIFFERENT draw of {split} is already on "
+        f"disk ({len(set(old) - set(new))} of its {len(old)} sentences would be "
+        f"replaced). The sentence pool has probably been rebuilt since it was drawn.\n"
+        f"If annotators have worked on {split}, do NOT redraw it.\n"
+        f"Only if you really mean to replace it, add:  --redraw {split}")
+
+
 def _write(sample: pd.DataFrame, split: str, extra: dict | None = None) -> None:
     GS_DIR.mkdir(parents=True, exist_ok=True)
     pq = GS_DIR / f"{split}.parquet"
     csv = GS_DIR / f"{split}.csv"
+    if existing_draw_blocks(pq, sample, split, _REDRAW) == "keep":
+        print(f"{split}: the same {len(sample)} sentences are already on disk; kept as is.",
+              flush=True)
+        return
     sample.to_parquet(pq, index=False)
     sample.to_csv(csv, index=False, encoding="utf-8")
 
@@ -287,7 +325,12 @@ def main() -> None:
                     help="also draw the main 1,200 sample, disjoint from the pilot")
     ap.add_argument("--practice", type=int, default=PRACTICE_N, metavar="N",
                     help="size of the throwaway practice split (0 to skip)")
+    ap.add_argument("--redraw", nargs="*", default=[], metavar="SPLIT",
+                    help="splits that may be REPLACED by a different draw, e.g. "
+                         "--redraw main_1200. Without this, a sample already on disk "
+                         "is never changed.")
     args = ap.parse_args()
+    _REDRAW.update(args.redraw)
 
     pilot = draw_sample(PILOT_N)
     _write(pilot, "pilot_100")
