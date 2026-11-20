@@ -45,7 +45,7 @@ Streamlit Community Cloud accounts so the page can go online.
 | Multi-LLM labelling | `labeling/` | Built. Prompt v0 is the default. Ensemble already run on `pilot_100` and stored blind. `labeling.versus_gold` compares it with the gold when that exists. |
 | Extraction models E0–E6, D1–D3 | `fivetag/` | All built; see `fivetag/README.md`. E1 training rehearsed on Kaggle. Router thresholds untuned. |
 | D1/D2 conflicts | `fivetag/conflict_routing.py` | Risk rule and acceptance rule registered (`docs/experiments/PREREG_d3_conflict_routing.md`). Adjudicator model not registered; Qwen 3.8 Flash is provisional. |
-| Competency layers | `competency/` | Built. **Competencies are built from hard skills only; tools, knowledge, soft skills and work behaviours are attached to each one** (researcher's decision, 2026-11-19). Two statement writers: rules (free) and the earlier LLM generator through `competency/v2_generator.py` (EXP-026). Whole-corpus runs: EXP-027, then EXP-028 (current design; run `e0_pool_all_v3`, draft profile `2026-0-draf3`). See `competency/README.md`. |
+| Competency layers | `competency/` | Built. **Competencies are built from hard skills only; tools, knowledge, soft skills and work behaviours are attached to each one** (researcher's decision, 2026-11-19). Two statement writers: rules (free) and the earlier LLM generator through `competency/v2_generator.py` (EXP-026). Whole-corpus runs: EXP-027, EXP-028, then EXP-029 (current design: one competency per cognitive level; run `e0_pool_all_v4`, draft profile `2026-0-draf4`). See `competency/README.md`. |
 | Time analysis | `competency/temporal.py` | Built; run once on the whole pool (experiment log, EXP-023). Thresholds and weight formula are starting values. |
 | Coverage audit, delta recommendations | `competency/coverage.py`, `delta.py` | Built and tested. Coverage against SKKNI run once (EXP-024). Delta needs an uploaded curriculum; none has been used yet. |
 | Versioned profile | `competency/profile.py` | Built. One DRAFT exists locally: `DATA/competency/profiles/drafts/2026-0-draf1/`. No release exists. |
@@ -132,6 +132,10 @@ The account balance can be read (numbers only) through OpenRouter's `/credits`
 endpoint with the key the code already loads; that is how EXP-028 was costed.
 The old generator itself still reports no usage.
 
+- [x] One competency per cognitive level of a family; level filter and relatives in the dashboard — `competency/structure.py`, `dashboard_v3/public.py`, EXP-029
+- [x] Verb table as a sourced file, 203 verbs — `competency/verbs/`, EXP-029
+- [x] Generator descriptions for more families; they describe the family, not one level — EXP-029
+
 Known faults of the attached lists, not yet repaired (EXP-027, "What is visibly
 weak"): lift is not comparable across languages; spelling variants of one soft
 skill are separate lines; a rule statement can be a fragment of one posting.
@@ -170,7 +174,9 @@ say what each layer assumes.
 | Risk rule for D1/D2 conflicts and its acceptance thresholds (promotor agreed) | 2026-11-19 | `docs/experiments/PREREG_d3_conflict_routing.md` |
 | Competencies come from SKILL_HARD. Each competency lists the tools and technology mostly used for it, and the soft skills and work behaviours expected with it | 2026-11-19 | `competency/__init__.py`, `competency/README.md` |
 | A competency is a verb (placed on the taxonomy) plus a knowledge. The statement names no tool: "Perform programming", not "Perform programming using Python, PHP and JavaScript" | 2026-11-20 | `competency/structure.py`, `competency/statement.py` (tests hold both) |
-| The cognitive level of a competency is read from the verbs the postings use (C1–C6), never from a default verb the method supplied | 2026-11-20 | `competency/structure.py` `cognitive_profile` (a test holds it) |
+| The cognitive level of a competency is read from the verbs the postings use (C1–C6), never from a default verb the method supplied | 2026-11-20 | `competency/structure.py` (a test holds it) |
+| A group is a family; each cognitive level in it is a competency of its own, with its own statement and its own number of postings ("apply web programming" and "develop a website" are two competencies). No single level stands for a family | 2026-11-20 | `competency/structure.py` `split_by_level` |
+| The verb-to-level table is a written, sourced file, to be reviewed by the researcher | 2026-11-20 | `competency/verbs/bloom_verbs_v2.tsv`, `SOURCES.md` |
 | KKNI is additional information for the reader; it never enters the status or the order | 2026-11-19 | `competency/contract.py` (a test holds it) |
 | The earlier LLM generator (`competency_generator_v2`) is the statement writer to build on, not the short rule statements | 2026-11-19 | `competency/v2_generator.py`, EXP-026 |
 | Kitalulus and Kemnaker are in the monthly round (promotor agreed) | 2026-11-19 | `docs/corpus/SOURCE_AUDIT.md` K8, K10 |
@@ -180,9 +186,8 @@ say what each layer assumes.
 
 ## 8. Decisions still open (the researcher's)
 
-- Whether one competency may carry several verbs of different taxonomy levels (the statement uses the most frequent on the demanded level; the others are listed).
-- The verb table (`competency/statement.py`, `verbs-v1-unreviewed`): which verb sits on which Bloom level. Every cognitive level shown follows from it and nobody but the developer has reviewed it.
-- Whether the level of a competency is the one most postings ask for (built) or the highest one asked for (shown beside it).
+- The verb table (`competency/verbs/bloom_verbs_v2.tsv`, `verbs-v2-sourced-unreviewed`): the researcher has not reviewed it. The Indonesian rows are the developer's translations; a list her institution uses should replace them.
+- Which cognitive levels suit which kind of institution (SMK, D3, S1). The dashboard only offers a filter; nothing maps a level to an institution.
 - Postings versus employers as the count of demand, the two contract thresholds, the verb table (`competency/README.md`).
 - Whether a generator statement may be judged by the generator's own evidence filter (built that way; `docs/CONFIG_REGISTRY.md`).
 - Which model is the registered adjudicator (provisional: Qwen 3.8 Flash; confirm on pilot gold).

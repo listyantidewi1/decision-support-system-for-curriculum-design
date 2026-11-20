@@ -99,6 +99,10 @@ class Group:
     verbs: list[dict] = field(default_factory=list)
     knowledge_objects: list[dict] = field(default_factory=list)
     cognitive: dict = field(default_factory=dict)       # the level the postings' verbs ask for
+    # set by competency.structure.split_by_level: a group is split into one part
+    # per cognitive level; each part is a competency of its own
+    family_id: str = ""                   # the group this part was split from
+    level: str | None = None              # the cognitive level of this part
     status: str = ""
     status_code: str = ""
     status_flags: list[str] = field(default_factory=list)
@@ -224,6 +228,111 @@ def _audit(groups: list[Group]) -> None:
         g.status_flags = list(row.get("cluster_validity_flags", []))
 
 
+class Describer:
+    """What a set of evidence units says about itself: its phrases, its postings,
+    the tools named in its sentences, and what its postings also ask for.
+
+    Built once from all the evidence; `describe` is then called for a whole
+    group and again for each part of it (one part per cognitive level, see
+    `competency.structure.split_by_level`), so a part is described by exactly
+    the same rules as the group it came from."""
+
+    def __init__(self, evidence: Sequence[Evidence], n_postings: int, cfg: GroupingConfig,
+                 posting_group: dict[str, str] | None = None):
+        self.cfg, self.n_postings, self.posting_group = cfg, n_postings, posting_group or {}
+        self.tech_by_sentence: dict[str, list[Evidence]] = defaultdict(list)
+        self.kn_by_sentence: dict[str, list[Evidence]] = defaultdict(list)
+        # Knowledge is profiled both ways: `knowledge_context` (same sentence, rare
+        # but direct) and `knowledge` (same postings: knowledge is usually asked for
+        # on a line of its own, like soft skills).
+        self.profile_postings: dict[str, dict[str, set]] = {t: defaultdict(set)
+                                                            for t in ("SS", "WB", "KN")}
+        self.profile_forms: dict[str, dict[str, Counter]] = {t: defaultdict(Counter)
+                                                             for t in ("SS", "WB", "KN")}
+        for e in evidence:
+            if e.tag == "TT":
+                self.tech_by_sentence[e.sentence_id].append(e)
+            elif e.tag == "KN":
+                self.kn_by_sentence[e.sentence_id].append(e)
+            if e.tag in self.profile_postings and e.tag not in cfg.competency_tags:
+                self.profile_postings[e.tag][e.key].add(e.posting_id)
+                self.profile_forms[e.tag][e.key][e.text] += 1
+
+    def _posting_profile(self, tag: str, postings: set) -> list[dict]:
+        """What the postings of a group also ask for, with how typical that is."""
+        cfg, rows = self.cfg, []
+        for key, ps in self.profile_postings[tag].items():
+            both = len(ps & postings)
+            if both < cfg.min_profile_postings:
+                continue
+            share = both / len(postings)
+            base = len(ps) / self.n_postings if self.n_postings else 0.0
+            forms = self.profile_forms[tag][key]
+            rows.append({"text": max(sorted(forms), key=lambda s: forms[s]), "n_postings": both,
+                         "share": round(share, 4),
+                         "lift": round(share / base, 2) if base > 0 else None})
+        rows.sort(key=lambda r: (-r["n_postings"], r["text"]))
+        return rows[:cfg.max_profile_items]
+
+    def _context(self, table, sentence_ids: set, ids: set, exclude_members: bool) -> list[dict]:
+        cfg, seen = self.cfg, {}
+        for sid in sentence_ids:
+            for t in table.get(sid, ()):
+                if exclude_members and t.evidence_id in ids:
+                    continue
+                row = seen.setdefault(t.key, {"_postings": set(), "_forms": Counter()})
+                row["_postings"].add(t.posting_id)
+                row["_forms"][t.text] += 1
+        rows = [{"text": max(sorted(r["_forms"]), key=lambda s: r["_forms"][s]),
+                 "n_postings": len(r["_postings"])} for r in seen.values()
+                if len(r["_postings"]) >= cfg.min_technology_postings]
+        return sorted(rows, key=lambda r: (-r["n_postings"], r["text"]))[:cfg.max_technologies]
+
+    def describe(self, ev: Sequence[Evidence], attached_ids: set | frozenset = frozenset()) -> dict:
+        """The fields of a `Group` that are counted from its evidence."""
+        cfg = self.cfg
+        ids = {e.evidence_id for e in ev}
+        postings = {e.posting_id for e in ev}
+        sentence_ids = {e.sentence_id for e in ev}
+        members: dict[tuple[str, str], dict] = {}
+        for e in ev:
+            m = members.setdefault((e.key, e.tag), {"text": e.text, "tag": e.tag, "n_evidence": 0,
+                                                    "_postings": set(), "_forms": Counter(),
+                                                    "_attached": True})
+            m["_attached"] = m["_attached"] and e.evidence_id in attached_ids
+            m["n_evidence"] += 1
+            m["_postings"].add(e.posting_id)
+            m["_forms"][e.text] += 1
+        member_rows = []
+        for m in members.values():
+            member_rows.append({"text": max(sorted(m["_forms"]), key=lambda s: m["_forms"][s]),
+                                "tag": m["tag"], "n_evidence": m["n_evidence"],
+                                "n_postings": len(m["_postings"]),
+                                "attached": bool(m["_attached"])})
+        member_rows.sort(key=lambda r: (r["attached"], -r["n_postings"], -r["n_evidence"],
+                                        r["text"]))
+        samples, used = [], set()
+        for e in sorted(ev, key=lambda e: (e.posting_id, e.sentence_id, e.start)):
+            if e.posting_id in used:
+                continue
+            used.add(e.posting_id)
+            samples.append({"evidence_id": e.evidence_id, "text": e.text, "tag": e.tag,
+                            "sentence_text": e.sentence_text})
+            if len(samples) >= cfg.max_samples:
+                break
+        return dict(
+            members=member_rows, evidence_ids=sorted(ids), n_evidence=len(ev),
+            n_postings=len(postings),
+            share_of_postings=len(postings) / self.n_postings if self.n_postings else 0.0,
+            n_posting_groups=len({self.posting_group.get(p, p) for p in postings}),
+            tag_counts=dict(Counter(e.tag for e in ev)),
+            technologies=self._context(self.tech_by_sentence, sentence_ids, ids, False),
+            knowledge_context=self._context(self.kn_by_sentence, sentence_ids, ids, True),
+            soft_skills=self._posting_profile("SS", postings),
+            work_behaviours=self._posting_profile("WB", postings),
+            knowledge=self._posting_profile("KN", postings), samples=samples)
+
+
 def group_evidence(evidence: Sequence[Evidence], n_postings: int,
                    cfg: GroupingConfig | None = None,
                    clusterer: Callable | None = None,
@@ -257,40 +366,7 @@ def group_evidence(evidence: Sequence[Evidence], n_postings: int,
     if tail and clusters:
         attach_report = attach_tail(clusters, tail, cfg, embed)
 
-    tech_by_sentence: dict[str, list[Evidence]] = defaultdict(list)
-    kn_by_sentence: dict[str, list[Evidence]] = defaultdict(list)
-    # Knowledge is profiled both ways: `knowledge_context` (same sentence, rare
-    # but direct) and `knowledge` (same postings: knowledge is usually asked for
-    # on a line of its own, like soft skills).
-    profile_postings: dict[str, dict[str, set]] = {t: defaultdict(set)
-                                                   for t in ("SS", "WB", "KN")}
-    profile_forms: dict[str, dict[str, Counter]] = {t: defaultdict(Counter)
-                                                    for t in ("SS", "WB", "KN")}
-    for e in evidence:
-        if e.tag == "TT":
-            tech_by_sentence[e.sentence_id].append(e)
-        elif e.tag == "KN":
-            kn_by_sentence[e.sentence_id].append(e)
-        if e.tag in profile_postings and e.tag not in cfg.competency_tags:
-            profile_postings[e.tag][e.key].add(e.posting_id)
-            profile_forms[e.tag][e.key][e.text] += 1
-
-    def posting_profile(tag: str, postings: set) -> list[dict]:
-        """What the postings of a group also ask for, with how typical that is."""
-        rows = []
-        for key, ps in profile_postings[tag].items():
-            both = len(ps & postings)
-            if both < cfg.min_profile_postings:
-                continue
-            share = both / len(postings)
-            base = len(ps) / n_postings if n_postings else 0.0
-            forms = profile_forms[tag][key]
-            rows.append({"text": max(sorted(forms), key=lambda s: forms[s]), "n_postings": both,
-                         "share": round(share, 4),
-                         "lift": round(share / base, 2) if base > 0 else None})
-        rows.sort(key=lambda r: (-r["n_postings"], r["text"]))
-        return rows[:cfg.max_profile_items]
-
+    describer = Describer(evidence, n_postings, cfg, posting_group)
     groups: list[Group] = []
     for c in clusters:
         ev = [by_id[i.evidence_id] for i in c.items]
@@ -298,64 +374,12 @@ def group_evidence(evidence: Sequence[Evidence], n_postings: int,
             continue
         if keep_clusters is not None:            # for the v2 generator bridge
             keep_clusters[str(c.id)] = c
-        ids = {e.evidence_id for e in ev}
         attached_ids = {i.evidence_id for i in c.items if getattr(i, "attached", False)}
-        postings = {e.posting_id for e in ev}
-        sentence_ids = {e.sentence_id for e in ev}
-        members: dict[tuple[str, str], dict] = {}
-        for e in ev:
-            m = members.setdefault((e.key, e.tag), {"text": e.text, "tag": e.tag, "n_evidence": 0,
-                                                    "_postings": set(), "_forms": Counter(),
-                                                    "_attached": True})
-            m["_attached"] = m["_attached"] and e.evidence_id in attached_ids
-            m["n_evidence"] += 1
-            m["_postings"].add(e.posting_id)
-            m["_forms"][e.text] += 1
-        member_rows = []
-        for m in members.values():
-            member_rows.append({"text": max(sorted(m["_forms"]), key=lambda s: m["_forms"][s]),
-                                "tag": m["tag"], "n_evidence": m["n_evidence"],
-                                "n_postings": len(m["_postings"]),
-                                "attached": bool(m["_attached"])})
-        member_rows.sort(key=lambda r: (r["attached"], -r["n_postings"], -r["n_evidence"],
-                                        r["text"]))
-
-        def context(table, exclude_members: bool):
-            seen: dict[str, dict] = {}
-            for sid in sentence_ids:
-                for t in table.get(sid, ()):
-                    if exclude_members and t.evidence_id in ids:
-                        continue
-                    row = seen.setdefault(t.key, {"_postings": set(), "_forms": Counter()})
-                    row["_postings"].add(t.posting_id)
-                    row["_forms"][t.text] += 1
-            rows = [{"text": max(sorted(r["_forms"]), key=lambda s: r["_forms"][s]),
-                     "n_postings": len(r["_postings"])} for r in seen.values()
-                    if len(r["_postings"]) >= cfg.min_technology_postings]
-            return sorted(rows, key=lambda r: (-r["n_postings"], r["text"]))[:cfg.max_technologies]
-
         stream = "soft" if getattr(c, "stream", "") == "soft_skill" else "technical"
-        samples, used = [], set()
-        for e in sorted(ev, key=lambda e: (e.posting_id, e.sentence_id, e.start)):
-            if e.posting_id in used:
-                continue
-            used.add(e.posting_id)
-            samples.append({"evidence_id": e.evidence_id, "text": e.text, "tag": e.tag,
-                            "sentence_text": e.sentence_text})
-            if len(samples) >= cfg.max_samples:
-                break
         groups.append(Group(
             group_id=str(c.id), stream=stream, label=str(c.summary_label),
-            top_terms=list(c.top_terms), members=member_rows,
-            evidence_ids=sorted(ids), n_evidence=len(ev), n_postings=len(postings),
-            share_of_postings=len(postings) / n_postings if n_postings else 0.0,
-            n_posting_groups=len({posting_group.get(p, p) for p in postings}),
-            cohesion=float(c.cohesion_score), tag_counts=dict(Counter(e.tag for e in ev)),
-            technologies=context(tech_by_sentence, False),
-            knowledge_context=context(kn_by_sentence, True),
-            soft_skills=posting_profile("SS", postings),
-            work_behaviours=posting_profile("WB", postings),
-            knowledge=posting_profile("KN", postings), samples=samples))
+            top_terms=list(c.top_terms), cohesion=float(c.cohesion_score),
+            **describer.describe(ev, attached_ids)))
     groups.sort(key=lambda g: (-g.n_postings, g.group_id))
     if groups:
         _audit(groups)

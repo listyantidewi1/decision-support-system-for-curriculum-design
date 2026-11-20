@@ -162,8 +162,9 @@ def collect() -> list[dict]:
         "listed beside a competency as other knowledge, with share and lift", STARTING,
         "competency/__init__.py", "the developer's reading; shown, never part of the statement")
     add(area, "cognitive level of a competency",
-        "read from the verbs the postings use (the level most postings ask for; C1-C6); "
-        "never from a default verb supplied by the method", DECIDED, "competency/structure.py",
+        "read from the verbs the postings use (C1-C6); never from a default verb supplied by "
+        "the method; phrases without a verb form a competency with no level",
+        DECIDED, "competency/structure.py",
         "the researcher's correction, 2026-11-20; a test holds it")
     m = {f.name: f.default for f in dataclasses.fields(termmap.TermMapConfig)}
     add(area, "cluster map of knowledge and technology",
@@ -179,8 +180,16 @@ def collect() -> list[dict]:
     g = {f.name: f.default for f in dataclasses.fields(GroupingConfig)}
     add(area, "grouping settings", g, STARTING, "competency/grouping.py",
         "cohesion floor carried over from the pre-approval clusterer")
-    add(area, "verb table", statement.VERB_TABLE_VERSION, STARTING, "competency/statement.py",
-        "Krathwohl levels assigned by the developer; no expert review yet")
+    add(area, "verb table", statement.VERB_TABLE_VERSION, STARTING,
+        "competency/verbs/bloom_verbs_v2.tsv",
+        f"{len(statement.VERB_INFO)} verbs with their sources in competency/verbs/SOURCES.md; "
+        "no expert review yet")
+    add(area, "verb table hash (sha256)", statement.verb_table_sha256(), DESIGN,
+        "competency/verbs/bloom_verbs_v2.tsv")
+    add(area, "one competency per cognitive level of a group",
+        "a group (family) is split by the level of its verbs; each level is a competency with "
+        "its own statement and its own number of postings", DECIDED, "competency/structure.py",
+        "the researcher, 2026-11-20")
     add(area, "grounding measure", statement.GROUNDING_VERSION, DESIGN, "competency/statement.py")
     add(area, "technologies an LLM statement may name",
         statement.MAX_TECHNOLOGIES_IN_STATEMENT, STARTING, "competency/statement.py",

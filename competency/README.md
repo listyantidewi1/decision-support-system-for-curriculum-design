@@ -36,24 +36,50 @@ How the two parts are read from the postings (`structure.py`):
   with it. A group made mostly of noun phrases ("programming", "unit testing")
   has no verb of its own and gets the default "Perform" / "Melakukan".
 
-**The cognitive level** (the researcher's correction, 2026-11-20). The level
-shown for a competency is the level the POSTINGS ask for, read from their own
-verbs, with its Bloom code: C1 remember, C2 understand, C3 apply, C4 analyze,
-C5 evaluate, C6 create. It is never the level of a verb the method supplied.
-Before the correction a group named by the noun "pemrograman" was shown as
-"apply" because its statement had the default verb "perform", while its
-postings wrote "membangun" and "menulis" (create).
+**One competency per cognitive level** (the researcher, 2026-11-20). "Apply
+web programming" and "develop a website" are two competencies on two levels,
+even when the postings' phrases for them fall into one group of meaning. So a
+group is a FAMILY, and `structure.split_by_level` cuts it by the level of the
+verbs its phrases open with. Nobody should read one level into a whole family,
+and institutions of different levels use the result.
 
-- Each posting counts once for every level its verbs sit on.
-- The level shown is the one most postings ask for (a tie goes to the higher).
-  Beside it: the whole distribution, and the highest level that at least a
-  fifth of the verb-using postings ask for.
-- The statement's verb is chosen on that level when the postings offer one
-  ("Build websites", not "Maintain websites", when most postings say build).
-- A group whose postings use almost no verb has NO level; the page says so.
-- Which verb sits on which level is the verb table in `statement.py`. It is the
-  developer's (`verbs-v1-unreviewed`): it must be reviewed by the researcher,
-  because every level on the page follows from it.
+- The levels are the revised Bloom taxonomy: C1 remember, C2 understand, C3
+  apply, C4 analyze, C5 evaluate, C6 create.
+- Each level of a family that at least 2 postings ask for is a competency of
+  its own: its own statement (a verb of that level + the knowledge the phrases
+  of that level share), its own number of postings, its own tools, soft skills
+  and work behaviours, its own status. Every competency lists its relatives:
+  the other levels of the same family with their postings.
+- A phrase with verbs of two levels ("design and maintain databases") counts
+  for both. The postings of the levels therefore add up to more than the
+  family's.
+- Phrases that open with no verb ("programming", "unit testing") form a
+  competency with NO level: the postings name the work and say nothing about
+  the level. It is shown as "tidak dinyatakan lowongan", with the default verb
+  "Perform" / "Melakukan" in its statement and a note that this verb sets
+  nothing.
+- A level is never taken from a verb the method supplied. (Before this
+  correction a group named by the noun "pemrograman" was shown as "apply"
+  because of its default verb "perform", while its postings wrote "membangun"
+  and "menulis".)
+- The public dashboard has a filter by level, so an institution keeps the
+  levels it teaches to. Which levels suit which kind of institution is NOT
+  decided anywhere in the code.
+
+**The verb table.** Which verb sits on which level is
+`verbs/bloom_verbs_v2.tsv`: 203 verbs, English and Indonesian, each with the
+cognitive process it is read as, the other levels where published lists place
+it, and the basis of the row. `verbs/SOURCES.md` gives the sources (Anderson &
+Krathwohl 2001; Krathwohl 2002; Stanny 2016 on why verb lists disagree) and
+says plainly what is not sourced: software-work verbs such as "deploy" or
+"debug" are the developer's reading, and the Indonesian rows are the
+developer's translations. The table is **unreviewed**; every level on the page
+follows from it.
+
+**The generator's paragraph describes the family.** The earlier LLM generator
+writes one text per group and blends levels on purpose ("Design ... Apply ...
+Evaluate ..."). It is therefore kept as the description of the family, shown
+under each of its competencies, and is not a competency statement of one level.
 
 Why the knowledge is read from the phrase and not from the KNOWLEDGE tag: the
 extractor tags a term KNOWLEDGE when it stands alone ("knowledge of design
@@ -230,10 +256,8 @@ What is visibly weak, and why:
 
 ## Decisions that are yours
 
-1. Whether a competency may carry several verbs. One group often holds
-   "design", "build" and "maintain" for the same knowledge; the statement uses
-   the most frequent one and lists the others. They sit on different levels of
-   the taxonomy, so this matters for the KKNI level and for assessment.
+1. The verb table (`verbs/bloom_verbs_v2.tsv`): review it row by row, or name
+   the list your institution uses for the Indonesian verbs.
 2. **What counts as demand: postings, or employers.** Each competency reports
    both the number of postings and the number of employer/template groups. One
    employer repeating an advertisement inflates the first, not the second.

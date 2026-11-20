@@ -32,47 +32,48 @@ import json
 import re
 from collections import Counter
 from dataclasses import asdict, dataclass, field
+from pathlib import Path
 
 from .grouping import Group
 
-VERB_TABLE_VERSION = "verbs-v1-unreviewed"
+VERB_TABLE_VERSION = "verbs-v2-sourced-unreviewed"
+VERB_TABLE = Path(__file__).resolve().parent / "verbs" / "bloom_verbs_v2.tsv"
 # A statement that lists every tool of a group is a tool list, not a
 # competency. First trial (EXP-019): several accepted statements named 7 or 8.
 MAX_TECHNOLOGIES_IN_STATEMENT = 3
 GROUNDING_VERSION = "grounding-lexical-v1"
+LEVELS = ("remember", "understand", "apply", "analyze", "evaluate", "create")
 
-# base form -> Krathwohl cognitive process
-VERBS: dict[str, str] = {
-    # create
-    "develop": "create", "design": "create", "build": "create", "create": "create",
-    "write": "create", "architect": "create", "refactor": "create",
-    "mengembangkan": "create", "merancang": "create", "membangun": "create",
-    "membuat": "create", "menulis": "create",
-    # evaluate
-    "test": "evaluate", "review": "evaluate", "evaluate": "evaluate", "optimize": "evaluate",
-    "improve": "evaluate", "menguji": "evaluate",
-    # analyze
-    "analyse": "analyze", "analyze": "analyze", "debug": "analyze", "troubleshoot": "analyze",
-    "profile": "analyze", "monitor": "analyze", "research": "analyze", "menganalisis": "analyze",
-    # apply
-    "implement": "apply", "deploy": "apply", "configure": "apply", "maintain": "apply",
-    "integrate": "apply", "automate": "apply", "migrate": "apply", "operate": "apply",
-    "perform": "apply", "support": "apply", "apply": "apply", "release": "apply",
-    "scale": "apply", "secure": "apply", "document": "apply", "train": "apply",
-    "deliver": "apply", "facilitate": "apply", "define": "apply",
-    "mengimplementasikan": "apply", "melakukan": "apply", "memelihara": "apply",
-    "mengintegrasikan": "apply", "mengotomatisasi": "apply", "mengonfigurasi": "apply",
-    "mendokumentasikan": "apply", "memperbaiki": "apply",
-    # interpersonal verbs: Krathwohl's cognitive dimension fits them poorly
-    "communicate": "apply", "collaborate": "apply", "coordinate": "apply", "present": "apply",
-    "lead": "apply", "mentor": "apply", "coach": "apply", "negotiate": "apply",
-    "berkomunikasi": "apply", "berkolaborasi": "apply", "berkoordinasi": "apply",
-    "memimpin": "apply",
-    # defaults used when the evidence itself has no verb
-    "explain": "understand", "menjelaskan": "understand",
-    "demonstrate": "apply", "menunjukkan": "apply",
-}
-INDONESIAN_VERBS = {v for v in VERBS if v.startswith(("me", "ber"))}
+
+def load_verb_table(path: Path = VERB_TABLE) -> dict[str, dict]:
+    """verb -> {lang, level, process, also, basis}. The file and its sources are
+    in `competency/verbs/`; read SOURCES.md before changing a row."""
+    out: dict[str, dict] = {}
+    for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip() or line.startswith("#"):
+            continue
+        cells = line.split("\t")
+        if len(cells) != 6:
+            raise ValueError(f"{path.name} line {n}: 6 tab-separated cells expected, got {len(cells)}")
+        verb, lang, level, process, also, basis = (c.strip() for c in cells)
+        also_levels = [a for a in also.split(",") if a]
+        if (level not in LEVELS or lang not in ("en", "id") or verb in out
+                or any(a not in LEVELS or a == level for a in also_levels)):
+            raise ValueError(f"{path.name} line {n}: bad or repeated row for {verb!r}")
+        out[verb] = {"lang": lang, "level": level, "process": process, "also": also_levels,
+                     "basis": basis}
+    return out
+
+
+def verb_table_sha256(path: Path = VERB_TABLE) -> str:
+    import hashlib
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
+VERB_INFO: dict[str, dict] = load_verb_table()
+# base form -> cognitive process category (Anderson & Krathwohl)
+VERBS: dict[str, str] = {v: row["level"] for v, row in VERB_INFO.items()}
+INDONESIAN_VERBS = {v for v, row in VERB_INFO.items() if row["lang"] == "id"}
 _STOP = {"a", "an", "the", "and", "or", "of", "to", "for", "in", "on", "with", "using", "by",
          "at", "as", "our", "your", "their", "is", "are", "dan", "atau", "yang", "untuk",
          "dengan", "di", "ke", "dari", "pada", "dalam", "menggunakan", "serta", "new"}
@@ -87,8 +88,13 @@ def _forms() -> dict[str, str]:
         for line in lx.lines("actions", section):
             for form in line:
                 out[form] = line[0]
-    for v in VERBS:
+    for v, row in VERB_INFO.items():
         out.setdefault(v, v)
+        if row["lang"] == "en":          # verbs the extractor's lexicon does not inflect
+            stem = v[:-1] if v.endswith("e") else v
+            for form in (v + ("es" if v.endswith(("s", "x", "ch", "sh")) else "s"),
+                         stem + "ing", stem + "ed", v + "d" if v.endswith("e") else v + "ed"):
+                out.setdefault(form, v)
     return out
 
 
@@ -215,13 +221,17 @@ def deterministic_statement(group: Group, max_technologies: int = 0) -> Statemen
     verbs: Counter = Counter()
     objects: dict[str, Counter] = {}
     verb_led_evidence = 0
+    wanted_level = (getattr(group, "cognitive", None) or {}).get("level")
     for m in group.members:
         # only an action or soft-skill phrase can open with a verb: the
         # knowledge term "design patterns" is not the verb "design"
         found, obj = split_verb_object(m["text"]) if m["tag"] in ("SH", "SS") else ([], "")
         if found:
-            verbs[found[0]] += m["n_postings"]
-            objects.setdefault(found[0], Counter())[obj] += m["n_postings"]
+            # in a part cut for one level, the phrase speaks through its verb on
+            # that level ("design and maintain X" is "maintain X" on C3)
+            lead = ([v for v in found if VERBS.get(v) == wanted_level] or found)[0]
+            verbs[lead] += m["n_postings"]
+            objects.setdefault(lead, Counter())[obj] += m["n_postings"]
             verb_led_evidence += m["n_evidence"]
     notes: list[str] = []
     object_source = "phrase"

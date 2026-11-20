@@ -124,7 +124,7 @@ def build(run_dir: Path, version: str, *, previous: Path | None = None,
         recs.append({
             "rank": rank, "competency_id": c["competency_id"], "statement": c["statement"],
             "stream": c["stream"], "contract": c["contract"], "delta": c.get("delta"),
-            "cognitive": c.get("cognitive"),
+            "cognitive": c.get("cognitive"), "family": c.get("family"),
             "coverage": c.get("coverage"), "kkni": c.get("kkni"), "okupasi": c.get("okupasi"),
             "temporal": c.get("temporal"), "n_postings": c["n_postings"],
             "n_posting_groups": c.get("n_posting_groups"),

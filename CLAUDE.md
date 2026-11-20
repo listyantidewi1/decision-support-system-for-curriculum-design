@@ -173,9 +173,9 @@ Current, passing, and the part of the repo you can trust:
 | `test_after_annotation` | 20 | `.venv-ml` |
 | `test_gold_to_models` | 10 | `.venv-ml` |
 | `test_fivetag` | 73 | `.venv-ml` |
-| `test_competency` | 52 | `.venv-ml` |
+| `test_competency` | 54 | `.venv-ml` |
 | `test_config_registry` | 5 | `.venv-ml` |
-| `test_dashboard_v3` | 7 | `.venv-ml` |
+| `test_dashboard_v3` | 8 | `.venv-ml` |
 | `test_acquisition_monthly` | 11 | `.venv-ml` |
 | `test_annotation_server` | 23 | **`.venv`** |
 
@@ -322,8 +322,15 @@ tags a governed noun phrase as part of the hard skill (EXP-028). The cognitive
 level (C1–C6) is read from the verbs the postings use
 (`structure.cognitive_profile`); a default verb such as "perform" is the
 method's wording and must never set the level (her correction of 2026-11-20;
-a test holds it). `--reuse-v2-from <run>` takes over generator statements
-already paid for instead of calling the model again.
+a test holds it). A group is a FAMILY: `structure.split_by_level` makes one
+competency per cognitive level in it, each with its own statement and demand
+("apply web programming" and "develop a website" are two competencies; her
+words). Do not go back to one level per group. The verb-to-level table is the
+file `competency/verbs/bloom_verbs_v2.tsv` with `SOURCES.md`; it is unreviewed,
+and a changed row is a new version. The generator's paragraph blends levels, so
+it is stored as the family's description, never as a competency statement.
+`--reuse-v2-from <run>` takes over descriptions already paid for instead of
+calling the model again.
 
 **Competencies are built from SKILL_HARD only, and KKNI never decides anything.**
 Both are the researcher's decisions of 2026-11-19. Tools and technology are

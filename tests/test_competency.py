@@ -179,7 +179,7 @@ def _group(members, technologies=(), stream="technical", knowledge=()):
                  sum(m["n_evidence"] for m in members), max(m["n_postings"] for m in members),
                  1.0, max(m["n_postings"] for m in members), 0.9, {},
                  [{"text": t, "n_postings": 3} for t in technologies],
-                 [{"text": k, "n_postings": 3} for k in knowledge], VALID)
+                 [{"text": k, "n_postings": 3} for k in knowledge], status=VALID)
 
 
 def _m(text, tag, n=5):
@@ -408,6 +408,7 @@ def test_cognitive_level_is_read_from_the_postings_verbs_never_from_a_default_ve
     assert S.deterministic_statement(g2).text == "Build websites"
 
 
+
 def test_generator_statements_of_an_earlier_run_are_reused_without_a_new_call():
     ev, sents = _evidence(6)
 
@@ -420,26 +421,124 @@ def test_generator_statements_of_an_earlier_run_are_reused_without_a_new_call():
 
     def must_not_be_called(*a, **k):
         raise AssertionError("the generator was called although statements were to be reused")
+    common = dict(evidence_source="test", mapping=False, clusterer=_key_clusterer,
+                  log=lambda *_: None)
     with tempfile.TemporaryDirectory() as tmp:
-        first = run(ev, sents, Path(tmp) / "a", evidence_source="test", mapping=False,
-                    clusterer=_key_clusterer, log=lambda *_: None,
+        first = run(ev, sents, Path(tmp) / "a", **common,
                     v2_generator={"max_groups": 5, "max_usd": 1.0, "generate": fake_generate})
-        again = run(ev, sents, Path(tmp) / "b", evidence_source="test", mapping=False,
-                    clusterer=_key_clusterer, log=lambda *_: None,
+        again = run(ev, sents, Path(tmp) / "b", **common,
                     v2_generator={"reuse_from": first["out_dir"], "generate": must_not_be_called})
         comps = json.loads((Path(again["out_dir"]) / "competencies.json").read_text("utf-8"))
-        assert comps[0]["statement"]["text"] == "Develop REST APIs for internal services."
-        assert comps[0]["v2"]["rationale"] == "r" and comps[0]["cognitive"]["code"] == "C6"
+        assert comps[0]["family"]["description"]["text"] == "Develop REST APIs for internal services."
+        assert comps[0]["cognitive"]["code"] == "C6"
         info = again["v2_generator"]
-        assert info["new_calls"] == 0 and info["n_statements"] == 1 and info["reused_from_run"] == "a"
-        # a group made of other evidence does not inherit a statement
-        fewer = [e for e in ev if e.posting_id != ev[0].posting_id]
-        third = run(fewer, sents, Path(tmp) / "c", evidence_source="test", mapping=False,
-                    clusterer=_key_clusterer, log=lambda *_: None,
+        assert info["new_calls"] == 0 and info["n_reused"] == 1 and info["reused_from_run"] == "a"
+        assert info["model"] == "m"
+        # reuse AND new calls together: the family already described is skipped
+        got = {}
+
+        def second_generate(groups, clusters_by_id, **kw):
+            got.update(skip=set(kw["skip"]))
+            return {"statements": {}, "info": {"n_groups_sent": 0, "n_statements": 0}}
+        both = run(ev, sents, Path(tmp) / "d", **common,
+                   v2_generator={"reuse_from": first["out_dir"], "max_groups": 5, "max_usd": 1.0,
+                                 "generate": second_generate})
+        assert got["skip"] == {comps[0]["family"]["id"]} and both["v2_generator"]["n_reused"] == 1
+        # a run made before families existed (statement stored on the competency) is read too
+        old_style = Path(tmp) / "old"
+        old_style.mkdir()
+        c = dict(comps[0])
+        c["statement"] = {**c["statement"], "method": "v2-generator", "text": "Old paragraph."}
+        c["v2"] = {"rationale": "old"}
+        c["evidence"] = {**c["evidence"], "group_id": c["family"]["id"]}
+        (old_style / "competencies.json").write_text(json.dumps([c]), encoding="utf-8")
+        (old_style / "report.json").write_text(json.dumps({"v2_generator": {"model": "x"}}),
+                                               encoding="utf-8")
+        from_old = run(ev, sents, Path(tmp) / "e", **common,
+                       v2_generator={"reuse_from": str(old_style)})
+        e = json.loads((Path(from_old["out_dir"]) / "competencies.json").read_text("utf-8"))
+        assert e[0]["family"]["description"]["text"] == "Old paragraph."
+        # a family made of other evidence does not inherit a description
+        fewer = [x for x in ev if x.posting_id != ev[0].posting_id]
+        third = run(fewer, sents, Path(tmp) / "c", **common,
                     v2_generator={"reuse_from": first["out_dir"]})
-        assert third["v2_generator"]["n_statements"] == 0
+        assert third["v2_generator"]["n_reused"] == 0
         assert third["v2_generator"]["n_not_reused_because_the_group_changed"] == 1
         assert again["cognitive"]["by_level"] == {"C6": 1}
+
+
+def test_a_group_gives_one_competency_per_cognitive_level_with_its_own_demand():
+    """The researcher's case: "apply web programming" and "develop a website" are
+    two competencies on two levels, even when they are one group of meaning."""
+    from competency import structure as ST
+    sents, preds = {}, {}
+
+    def add(p, text, spans):
+        sid = f"u-{p:016x}#000"
+        sents[sid] = {"text": text, "posting_id": f"u-{p:016x}"}
+        preds[sid] = [make_pred(text, text.index(t), text.index(t) + len(t), tag) for t, tag in spans]
+    for p in range(5):
+        add(p, "Develop websites with React and teamwork.",
+            [("Develop websites", "SH"), ("React", "TT"), ("teamwork", "SS")])
+    for p in range(5, 8):
+        add(p, "Apply web programming using PHP.", [("Apply web programming", "SH"), ("PHP", "TT")])
+    for p in range(8, 10):
+        add(p, "Design and maintain websites.", [("Design and maintain websites", "SH")])
+    for p in range(10, 14):
+        add(p, "Strong web programming.", [("web programming", "SH")])
+    add(14, "Evaluate websites.", [("Evaluate websites", "SH")])          # one posting only
+    ev = E.build_evidence(preds, sents)
+
+    def one_cluster(items, cfg):
+        return [SimpleNamespace(id="cluster_h0000", stream="hard_plus_knowledge", items=list(items),
+                                summary_label="web", top_terms=["web"], cohesion_score=0.9)], {}
+    (family,), _ = group_evidence(ev, 15, clusterer=one_cluster)
+    family.status = VALID
+    parts, rep = ST.split_by_level([family], ev, 15)
+    by = {v.group_id: v for v in parts}
+    assert set(by) == {"cluster_h0000@C6", "cluster_h0000@C3", "cluster_h0000@none"}
+    create, apply_, none = by["cluster_h0000@C6"], by["cluster_h0000@C3"], by["cluster_h0000@none"]
+    # "design and maintain websites" is in BOTH parts, through its verb of each level
+    assert (create.n_postings, apply_.n_postings, none.n_postings) == (7, 5, 4)
+    assert S.deterministic_statement(create).text == "Develop websites"
+    assert S.deterministic_statement(apply_).text == "Apply web programming"
+    assert {v["verb"] for v in apply_.verbs} == {"apply", "maintain"}
+    assert {v["verb"] for v in create.verbs} == {"develop", "design"}
+    st = S.deterministic_statement(none)
+    assert st.text == "Perform web programming" and st.krathwohl == "not stated"
+    # each part is described by its own postings: tools, soft skills
+    assert [t["text"] for t in create.technologies] == ["React"]
+    assert [t["text"] for t in apply_.technologies] == ["PHP"]
+    assert [x["text"] for x in create.soft_skills] == ["teamwork"] and apply_.soft_skills == []
+    assert create.cognitive["share_of_family_postings"] == round(7 / 15, 4)
+    assert create.cognitive["n_family_postings_with_a_verb"] == 11
+    assert all(v.family_id == "cluster_h0000" and v.status == VALID for v in parts)
+    # the level asked for by one posting makes no competency, and is counted
+    assert rep["n_units_on_a_level_too_small_to_stand"] == 1
+    assert rep["by_level"] == {"C6": 1, "C3": 1, "none": 1}
+    assert rep["n_families_with_more_than_one_level"] == 1
+
+
+def test_every_verb_the_extractor_can_open_a_hard_skill_with_has_a_sourced_level():
+    from fivetag.lexicon import load
+    table = S.load_verb_table()
+    for version in ("v1", "v2", "v3"):
+        for line in load(version).lines("actions", "verbs"):
+            assert line[0] in table, f"{line[0]} (lexicon {version}) has no row in the verb table"
+    assert len(table) >= 200 and S.VERB_TABLE_VERSION == "verbs-v2-sourced-unreviewed"
+    assert {r["level"] for r in table.values()} == set(S.LEVELS)
+    assert {r["basis"] for r in table.values()} == {"AK", "LIST", "DEV", "ID", "SOFT", "DEFAULT"}
+    # the framework's own placements
+    assert table["test"]["level"] == "evaluate" and table["test"]["process"] == "checking"
+    assert table["design"]["process"] == "planning" and table["implement"]["level"] == "apply"
+    # a verb that lists place on several levels says so
+    assert "apply" in table["develop"]["also"] and "remember" in table["define"]["also"]
+    assert table["membangun"]["lang"] == "id" and "membangun" in S.INDONESIAN_VERBS
+    # verbs the lexicon does not inflect are still recognised in their common forms
+    assert S.base_verb("validating") == "validate" and S.base_verb("prototyped") == "prototype"
+    sources = (PROJECT_ROOT / "competency" / "verbs" / "SOURCES.md").read_text(encoding="utf-8")
+    assert "Krathwohl" in sources and "Stanny" in sources and "unreviewed" in sources.lower()
+    assert len(S.verb_table_sha256()) == 64
 
 
 def test_shared_object_is_found_across_differently_worded_phrases():
@@ -546,7 +645,7 @@ def test_pipeline_writes_an_evidence_package_and_says_it_is_an_engineering_run()
         out = Path(report["out_dir"])
         assert {p.name for p in out.iterdir()} == {
             "competencies.json", "competencies.csv", "groups.json", "report.json",
-            "evidence.parquet", "term_map.json",
+            "evidence.parquet", "term_map.json", "family_descriptions.json",
             "technology_profile.csv", "work_behaviour_profile.csv"}
         comps = json.loads((out / "competencies.json").read_text(encoding="utf-8"))
         assert report["notice"].startswith("ENGINEERING RUN")
@@ -564,6 +663,14 @@ def test_pipeline_writes_an_evidence_package_and_says_it_is_an_engineering_run()
         assert c["contract"]["status"] == STATUS_EXPLORATORY
         assert c["contract"]["blockers"] == ["okupasi_mapping_not_run"]
         assert len(c["evidence"]["evidence_ids"]) == 12 and c["evidence"]["samples"]
+        # the one group has one level, so it gives one competency of its family
+        assert c["competency_id"] == "comp-cluster_h0001@C6" or c["competency_id"].endswith("@C6")
+        assert c["cognitive"]["code"] == "C6" and c["cognitive"]["share_of_family_postings"] == 1.0
+        assert c["family"]["competencies"] == [{
+            "competency_id": c["competency_id"], "code": "C6", "level": "create",
+            "statement": "Develop REST APIs", "n_postings": 6}]
+        assert c["family"]["description"] is None and report["n_families"] == 1
+        assert report["levels"]["by_level"] == {"C6": 1}
         assert "detail-oriented" in (out / "work_behaviour_profile.csv").read_text("utf-8-sig")
         assert report["not_built_yet"]
 
@@ -707,27 +814,40 @@ def test_v2_bridge_refuses_before_spending_past_the_cap():
     raise AssertionError("the v2 generator bridge did not enforce its cap")
 
 
-def test_pipeline_uses_v2_statements_and_keeps_the_llm_kkni_as_a_suggestion():
+
+def test_the_generator_describes_the_family_and_the_competencies_keep_their_own_statement():
     ev, sents = _evidence(6)
+    seen = {}
 
     def fake_generate(groups, clusters_by_id, **kw):
-        g = next(x for x in groups if x.stream == "technical" and x.label == "develop rest apis")
+        seen.update(only=kw["only"], skip=kw["skip"])
+        g = next(x for x in groups if x.label == "develop rest apis")
         st = S.Statement("Develop REST APIs for internal services. Apply versioning.", "develop",
                          "", [], "create", "en", "v2-generator", "evidence", 0.7)
         return {"statements": {g.group_id: (st, {"kkni_level": 5, "rationale": "r",
-                                                 "kkni_level_source": "llm_suggested"})},
-                "info": {"n_groups_sent": 1, "n_statements": 1}}
+                                                 "tools_named_in_statement": ["Java"]})},
+                "info": {"n_groups_sent": 1, "n_statements": 1, "model": "m"}}
     with tempfile.TemporaryDirectory() as tmp:
         rep = run(ev, sents, Path(tmp) / "r", evidence_source="test", mapping=False,
                   clusterer=_key_clusterer, log=lambda *_: None,
                   v2_generator={"max_groups": 5, "max_usd": 1.0, "generate": fake_generate})
         comps = json.loads((Path(rep["out_dir"]) / "competencies.json").read_text("utf-8"))
-    v2 = next(c for c in comps if c["statement"]["method"] == "v2-generator")
-    assert v2["statement"]["text"].startswith("Develop REST APIs for internal services")
-    assert v2["v2"]["rationale"] == "r"
-    assert v2["kkni"] == {"level": 5, "source": "llm_suggested", "confident": False, "llm_level": 5}
-    assert len(comps) == 1                        # one competency: the hard-skill group
-    assert rep["v2_generator"]["n_statements"] == 1 and "v2 generator" in rep["statement_method"]
+        saved = json.loads((Path(rep["out_dir"]) / "family_descriptions.json").read_text("utf-8"))
+    (c,) = comps
+    # the competency of the level keeps its verb + knowledge statement ...
+    assert c["statement"]["text"] == "Develop REST APIs" and c["statement"]["method"] == \
+        "deterministic-v1"
+    # ... and the generator's paragraph describes the family it belongs to
+    d = c["family"]["description"]
+    assert d["text"].startswith("Develop REST APIs for internal services")
+    assert d["rationale"] == "r" and d["tools_named"] == ["Java"] and "blends" in d["note"]
+    # the model's KKNI proposal is not used (it did not discriminate: EXP-026, EXP-028)
+    assert c["kkni"] is None
+    assert list(saved) == [c["family"]["id"]] and len(saved[c["family"]["id"]]["evidence_ids"]) == 12
+    info = rep["v2_generator"]
+    assert info["n_new"] == 1 and info["n_reused"] == 0 and info["new_calls"] == 1
+    assert rep["n_families_described_by_the_generator"] == 1
+    assert seen == {"only": None, "skip": set()}
 
 
 # ------------------------------------------ two-stage grouping, rank stability

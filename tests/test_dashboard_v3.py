@@ -145,6 +145,36 @@ def test_public_dashboard_draws_the_cluster_map_of_knowledge_and_technology():
     assert hit == [{"Pernyataan kompetensi": "X", "Lowongan": 3, "Istilah kelompok ini": "docker"}]
 
 
+def test_public_dashboard_shows_related_competencies_per_level_and_filters_by_level():
+    root, run = _env()
+    comps = json.loads((run / "competencies.json").read_text(encoding="utf-8"))
+    rel = [{"competency_id": "c1", "code": "C6", "level": "create",
+            "statement": "Develop websites", "n_postings": 12},
+           {"competency_id": "c2", "code": "C3", "level": "apply",
+            "statement": "Apply web programming", "n_postings": 3}]
+    for c, r in zip(comps, rel):
+        c["statement"]["text"] = r["statement"]
+        c["cognitive"] = {"level": r["level"], "code": r["code"], "n_postings": r["n_postings"],
+                          "share_of_family_postings": r["n_postings"] / 14,
+                          "n_family_postings": 14, "n_family_postings_with_a_verb": 14}
+        c["family"] = {"id": "f1", "label": "web", "n_postings": 14, "competencies": rel,
+                       "description": {"text": "A paragraph for the whole family.",
+                                       "method": "v2-generator"}}
+    (run / "competencies.json").write_text(json.dumps(comps), encoding="utf-8")
+    PF.build(run, "2026-1", profiles_dir=root / "profiles")
+    at = AppTest.from_file(PUBLIC).run(timeout=90)
+    _ok(at)
+    text = " ".join(m.value for m in at.markdown)
+    assert "Tingkat kognitif: **C6 mencipta**" in text and "dari 14 lowongan rumpun" in text
+    assert "Kompetensi serumpun, per tingkat kognitif" in text
+    assert "A paragraph for the whole family." in text
+    # an institution keeps only the levels it teaches to
+    at.sidebar.multiselect[2].set_value(["C3"]).run(timeout=90)
+    _ok(at)
+    assert any("1 dari 2 rekomendasi" in c.value for c in at.caption)
+    assert "Tingkat kognitif: **C3 menerapkan**" in " ".join(m.value for m in at.markdown)
+
+
 def test_public_filters_narrow_the_list():
     root, run = _env()
     PF.build(run, "2026-1", profiles_dir=root / "profiles")

@@ -78,52 +78,74 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
                                              posting_group, keep_clusters=clusters_by_id)
     from . import structure as ST
     structure_report = ST.annotate(groups, evidence)
+    # One competency per cognitive level of each group (the group is the family).
+    variants, split_report = ST.split_by_level(groups, evidence, den["n_postings"], grouping_cfg,
+                                               posting_group)
+    # The earlier LLM generator writes ONE description per family: it blends the
+    # levels on purpose, so it describes the family and is not a competency of
+    # one level. Descriptions already paid for are taken over, not bought again.
     v2_statements, v2_info = {}, None
-    if v2_generator and v2_generator.get("reuse_from"):
-        # statements the generator already wrote (and was paid for) in an earlier
-        # run: taken over only for a group made of exactly the same evidence
+    if v2_generator:
+        from . import v2_generator as V2
         from .statement import Statement
         import dataclasses
-        src = Path(v2_generator["reuse_from"])
-        old = json.loads((src / "competencies.json").read_text(encoding="utf-8"))
         by_group = {g.group_id: g for g in groups}
         names = {f.name for f in dataclasses.fields(Statement)}
-        skipped = 0
-        for c in old:
-            if c["statement"].get("method") != "v2-generator":
-                continue
-            g = by_group.get(c["evidence"]["group_id"])
-            if g is None or sorted(g.evidence_ids) != sorted(c["evidence"]["evidence_ids"]):
-                skipped += 1
-                continue
-            v2_statements[g.group_id] = (
-                Statement(**{k: v for k, v in c["statement"].items() if k in names}), c["v2"])
-        old_info = json.loads((src / "report.json").read_text(encoding="utf-8")).get(
-            "v2_generator") or {}
-        v2_info = {**old_info, "reused_from_run": src.name, "n_statements": len(v2_statements),
-                   "n_not_reused_because_the_group_changed": skipped, "new_calls": 0}
-        log(f"v2 statements reused from {src.name}: {len(v2_statements)} (not reused: {skipped})")
-    elif v2_generator:
-        from . import v2_generator as V2
-        soft = [r["text"] for r in profile(evidence, "SS", den["n_postings"], top=30)]
-        produced = (v2_generator.get("generate") or V2.generate)(
-            groups, clusters_by_id, max_groups=v2_generator["max_groups"],
-            max_usd=v2_generator["max_usd"], soft_skills=soft, log=log)
-        v2_statements, v2_info = produced["statements"], produced["info"]
+        reused = skipped = 0
+        old_info: dict = {}
+        if v2_generator.get("reuse_from"):
+            src = Path(v2_generator["reuse_from"])
+            if (src / "family_descriptions.json").is_file():
+                rows = [(k, r["statement"], r["v2"], r["evidence_ids"]) for k, r in json.loads(
+                    (src / "family_descriptions.json").read_text(encoding="utf-8")).items()]
+            else:                            # runs made before families existed
+                rows = [(c["evidence"]["group_id"], c["statement"], c["v2"],
+                         c["evidence"]["evidence_ids"])
+                        for c in json.loads((src / "competencies.json").read_text(encoding="utf-8"))
+                        if c["statement"].get("method") == "v2-generator"]
+            for gid, st_dict, extras, evidence_ids in rows:
+                g = by_group.get(gid)
+                # only for a family made of exactly the same evidence
+                if g is None or sorted(g.evidence_ids) != sorted(evidence_ids):
+                    skipped += 1
+                    continue
+                v2_statements[gid] = (Statement(**{k: v for k, v in st_dict.items() if k in names}),
+                                      extras)
+                reused += 1
+            old_info = json.loads((src / "report.json").read_text(encoding="utf-8")).get(
+                "v2_generator") or {}
+            log(f"family descriptions reused from {src.name}: {reused} (not reused: {skipped})")
+        new_info: dict = {}
+        if v2_generator.get("max_groups"):
+            soft = [r["text"] for r in profile(evidence, "SS", den["n_postings"], top=30)]
+            produced = (v2_generator.get("generate") or V2.generate)(
+                groups, clusters_by_id, max_groups=v2_generator["max_groups"],
+                max_usd=v2_generator["max_usd"], soft_skills=soft, log=log,
+                only=v2_generator.get("only"), skip=set(v2_statements))
+            v2_statements.update(produced["statements"])
+            new_info = produced["info"]
+        v2_info = {**{k: v for k, v in old_info.items() if k in ("model", "generator_version",
+                                                                 "bridge_version")},
+                   **new_info,
+                   "reused_from_run": (Path(v2_generator["reuse_from"]).name
+                                       if v2_generator.get("reuse_from") else None),
+                   "n_reused": reused, "n_not_reused_because_the_group_changed": skipped,
+                   "n_new": len(new_info and produced["statements"] or {}),
+                   "new_calls": new_info.get("n_groups_sent", 0),
+                   "n_statements": len(v2_statements)}
     den["n_posting_groups"] = (len({posting_group.get(r.get("posting_id") or s.split("#")[0],
                                                       r.get("posting_id") or s.split("#")[0])
                                     for s, r in sentences.items()})
                                if posting_group else None)
     log(f"{len(groups)} groups: {grouping_report['status_distribution']}")
 
+    family_of = {g.group_id: g for g in groups}
     competencies = []
-    for g in groups:
+    for g in variants:
         if g.status not in statements_for:
             continue
         extras = None
-        if g.group_id in v2_statements:
-            st, extras = v2_statements[g.group_id]
-        elif llm_call and not check_statements:
+        if llm_call and not check_statements:
             st = unchecked_llm_statement(g, llm_call)      # ablation: no deterministic verifier
         elif llm_call:
             st = llm_statement(g, llm_call, contract_cfg.min_grounding)
@@ -136,6 +158,8 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
             "n_posting_groups": g.n_posting_groups,
             "n_evidence": g.n_evidence, "kkni": None, "okupasi": None, "v2": extras,
             "cognitive": g.cognitive,
+            "family": {"id": g.family_id, "label": family_of[g.family_id].label,
+                       "n_postings": family_of[g.family_id].n_postings},
             "evidence": {"group_id": g.group_id, "label": g.label, "members": g.members,
                          "technologies": g.technologies,
                          "knowledge_context": g.knowledge_context,
@@ -144,6 +168,23 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
                          "verbs": g.verbs, "knowledge_objects": g.knowledge_objects,
                          "tag_counts": g.tag_counts, "cohesion": g.cohesion,
                          "evidence_ids": g.evidence_ids, "samples": g.samples}})
+    # every competency names its relatives: the other levels of the same family
+    relatives: dict[str, list[dict]] = {}
+    for c in competencies:
+        relatives.setdefault(c["family"]["id"], []).append(
+            {"competency_id": c["competency_id"], "code": c["cognitive"]["code"],
+             "level": c["cognitive"]["level"], "statement": c["statement"]["text"],
+             "n_postings": c["n_postings"]})
+    for c in competencies:
+        fam = c["family"]
+        fam["competencies"] = relatives[fam["id"]]
+        described = v2_statements.get(fam["id"])
+        fam["description"] = None if described is None else {
+            "text": described[0].text, "method": "v2-generator",
+            "rationale": (described[1] or {}).get("rationale"),
+            "tools_named": (described[1] or {}).get("tools_named_in_statement", []),
+            "note": "written by the earlier LLM generator for the whole family; it blends "
+                    "the levels and is not a competency of one level"}
     mapping_report: dict = {"run": bool(mapping and competencies)}
     if mapping and competencies:
         from .mapping import map_kkni, map_okupasi
@@ -225,7 +266,10 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
         "statement_method": ("v2 generator for the most frequent groups, rule statements for "
                              "the rest" if v2_generator else
                              "llm with deterministic fallback" if llm_call else "deterministic-v1"),
-        "v2_generator": v2_info, "structure": structure_report,
+        "v2_generator": v2_info, "structure": structure_report, "levels": split_report,
+        "n_families": len(groups),
+        "n_families_described_by_the_generator": len(
+            {c["family"]["id"] for c in competencies if c["family"]["description"]}),
         "cognitive": {
             "n_with_a_level_read_from_the_postings": sum(
                 1 for c in competencies if (c["cognitive"] or {}).get("level")),
@@ -259,12 +303,16 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
     pd.DataFrame([e.to_dict() for e in evidence]).to_parquet(out_dir / "evidence.parquet",
                                                              index=False)
     dump("competencies.json", competencies)
+    dump("family_descriptions.json", {
+        gid: {"statement": st.to_dict(), "v2": extras,
+              "evidence_ids": sorted(family_of[gid].evidence_ids)}
+        for gid, (st, extras) in v2_statements.items() if gid in family_of})
     dump("groups.json", [g.to_dict() for g in groups])
     dump("report.json", report)
     with (out_dir / "competencies.csv").open("w", encoding="utf-8-sig", newline="") as fh:
         w = csv.writer(fh)
-        w.writerow(["competency_id", "statement", "language", "cognitive_level",
-                    "cognitive_level_share", "highest_level", "postings_with_a_verb",
+        w.writerow(["competency_id", "statement", "language", "cognitive_level", "family",
+                    "postings_of_family", "share_of_family_postings", "levels_in_family",
                     "status", "blockers",
                     "n_postings", "n_employer_or_template_groups", "share_of_postings",
                     "grounding", "kkni_level", "kkni_confident", "okupasi_top",
@@ -273,11 +321,12 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
         for c in competencies:
             ok = (c["okupasi"] or [{}])[0].get("occupation_en", "") if c["okupasi"] else ""
             w.writerow([c["competency_id"], c["statement"]["text"], c["statement"]["language"],
-                        " ".join(filter(None, [(c["cognitive"] or {}).get("code"),
-                                               (c["cognitive"] or {}).get("level")])),
-                        (c["cognitive"] or {}).get("share") or "",
-                        ((c["cognitive"] or {}).get("highest") or {}).get("code") or "",
-                        (c["cognitive"] or {}).get("n_postings_with_a_verb", ""),
+                        " ".join(filter(None, [c["cognitive"]["code"], c["cognitive"]["level"]]))
+                        or "not stated by the postings",
+                        c["family"]["id"], c["family"]["n_postings"],
+                        c["cognitive"]["share_of_family_postings"],
+                        "; ".join(f"{r['code'] or 'none'} {r['n_postings']}"
+                                  for r in c["family"]["competencies"]),
                         c["contract"]["status"],
                         " | ".join(c["contract"]["blockers"]), c["n_postings"],
                         c["n_posting_groups"],
@@ -321,6 +370,20 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
     dump("report.json", report)
     report["out_dir"] = str(out_dir)
     return report
+
+
+def _v2_options(args) -> dict | None:
+    if args.statements != "v2":
+        return None
+    out: dict = {"reuse_from": args.reuse_v2_from}
+    if args.max_usd > 0:                       # no cap given = no new call
+        out.update(max_groups=args.v2_max_groups, max_usd=args.max_usd)
+    if args.v2_families_from:
+        comps = json.loads((Path(args.v2_families_from) / "competencies.json").read_text(
+            encoding="utf-8"))
+        out["only"] = {(c.get("family") or {}).get("id") or c["evidence"]["group_id"]
+                       for c in comps if c["contract"]["status"] == "kandidat_tinjauan"}
+    return out
 
 
 def pool_sentences(n: int | None, seed: int = 7, indonesian_only: bool = False,
@@ -395,6 +458,9 @@ def main() -> None:
         p.add_argument("--v2-max-groups", type=int, default=20)
         p.add_argument("--reuse-v2-from", default=None,
                        help="run folder whose generator statements are taken over (no new call)")
+        p.add_argument("--v2-families-from", default=None,
+                       help="run folder: new descriptions only for families that have a "
+                            "'kandidat tinjauan' competency there")
         p.add_argument("--max-usd", type=float, default=0.0)
         p.add_argument("--tag", required=True)
         p.add_argument("--no-mapping", action="store_true")
@@ -434,9 +500,7 @@ def main() -> None:
                  contract_cfg=ContractConfig(min_postings=args.min_postings),
                  grouping_cfg=grouping_cfg,
                  mapping=not args.no_mapping, posting_group=posting_group,
-                 v2_generator=({"reuse_from": args.reuse_v2_from} if args.reuse_v2_from else
-                               {"max_groups": args.v2_max_groups, "max_usd": args.max_usd}
-                               if args.statements == "v2" else None),
+                 v2_generator=_v2_options(args),
                  posting_month=posting_months(), pipeline_name="P1" if args.cmd == "e0" else "")
     competencies = json.loads((Path(report["out_dir"]) / "competencies.json").read_text("utf-8"))
     print()

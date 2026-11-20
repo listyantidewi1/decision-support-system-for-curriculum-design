@@ -978,6 +978,136 @@ the developer has read its statements.
 - **Files:** `DATA/competency/runs/e0_pool_all_v3/` (final), `e0_pool_all_v2gen/`
   (the paid run), `e0_pool_all/` (EXP-027, the "before").
 
+## EXP-029 — One competency per cognitive level of a family; the verb table written down; more family descriptions
+
+- **Date / status:** 2026-11-20 · ENGINEERING
+- **Why:** the researcher's review of the dashboard. (1) She does not want one
+  level, highest or lowest, to stand for a group: "maybe generate several
+  related competency with different cognitive levels and give informations of
+  how many they demand each one ... I do not want to mislead anyone using the
+  recommendation. Also, there are different levels of educational institutions
+  that might use this recommendation." And: "'apply web programming' and
+  'develop a website' are two different competencies and two different
+  cognitive levels." (2) The verb table should be written down, "as detailed as
+  we need and as many as it need be", with research on Bloom's verbs. (3) More
+  statements from the earlier generator.
+- **Data:** the whole sentence pool, 662,248 sentences from
+  18,667 postings; evidence from E0, lexicon v2 (470,280 units).
+  Same grouping as EXP-027 and EXP-028: 684 groups, now called families.
+- **Run:** `e0_pool_all_v4` (21 minutes). Command:
+  `competency.pipeline e0 --all --statements v2 --reuse-v2-from …_v2gen
+  --v2-families-from …_v3 --v2-max-groups 110 --max-usd 5.00`.
+
+### 1. Method
+
+- **Split by level** (`structure.split_by_level`). Every hard-skill phrase of a
+  family is read for the verbs it opens with; each verb is placed on a Bloom
+  level by the verb table; the family is cut into one part per level. A phrase
+  with verbs of two levels is in both parts. Phrases that open with no verb
+  form a part without a level. A level that fewer than 2 postings ask for
+  makes no part. Each part is described like a group (its own postings, tools,
+  soft skills, work behaviours), gets its own statement (a verb of that level
+  plus the knowledge the phrases of that level share) and its own status.
+- **Verb table v2** (`competency/verbs/bloom_verbs_v2.tsv`, version
+  `verbs-v2-sourced-unreviewed`): 203 verbs against 69 in version 1, each with the
+  Anderson–Krathwohl process it is read as, the other levels where published
+  lists place it, and the basis of the row. Sources and what is not sourced:
+  `competency/verbs/SOURCES.md`. Two verbs the extractor uses changed level
+  against version 1: "monitor" (analyze → evaluate) and "define" (apply →
+  create). The rule extractor can open a hard-skill phrase with 52 verbs only,
+  so the longer table changes little today; it is there for the extractors
+  that will follow.
+
+### 2. Numbers (from `report.json`, `competencies.json`)
+
+| | |
+|---|---|
+| Families (groups of phrases with one meaning) | 684 |
+| Parts made, all families | 1,743 |
+| Competencies (parts of valid families) | 1,677 |
+| Families with more than one level | 433 |
+| Hard-skill units on a level too small to stand | 124 |
+| Families by number of competencies | 1: 198, 2: 193, 3: 104, 4: 90, 5: 71, 6: 11 |
+| Status | kandidat_tinjauan 1,100, eksploratif 577 |
+| Held back by | okupasi_unmapped 376, postings<5 234 |
+| Rule statements whose verb is on another level than the competency | 0 (EXP-028: 46) |
+
+| Level | Competencies | kandidat tinjauan | eksploratif | Median postings |
+|---|---|---|---|---|
+| C6 create | 449 | 306 | 143 | 34 |
+| C5 evaluate | 282 | 164 | 118 | 20 |
+| C4 analyze | 128 | 71 | 57 | 11 |
+| C3 apply | 510 | 347 | 163 | 32 |
+| C2 understand | 12 | 3 | 9 | 2 |
+| C1 remember | 2 | 0 | 2 | 4 |
+| no level (no verb) | 294 | 209 | 85 | 17 |
+
+Examples of one family cut by level (statement, postings):
+  - family of 852 postings — C6: "Develop web applications" (594); C3: "Maintain websites" (347); C5: "Optimize pages" (98); no level: "Perform WordPress development" (79); C4: "Troubleshoot website" (26)
+  - family of 578 postings — C3: "Maintain databases" (323); C6: "Design databases" (266); C5: "Monitor database performance" (179); no level: "Perform database development" (87); C4: "Troubleshoot issues" (32)
+  - family of 621 postings — C6: "Develop models" (254); C3: "Implement models" (222); C5: "Optimize models" (178); C4: "Analyse data" (109); no level: "Perform Model based development" (21); C2: "Interpret complex datasets" (7)
+  - family of 5,365 postings — no level: "Perform programming" (5,283); C6: "Develop applications" (88); C3: "Maintain applications" (62); C5: "Review code" (25); C4: "Analyse Java code" (8)
+
+The last example shows what the split makes visible: of the 5,365 postings of
+that family almost all name programming as a noun, with no verb. For them no
+cognitive level can be read from the posting at all, and the page now says so
+instead of showing "apply".
+
+Rank stability between consecutive half-year windows (950 competencies with
+enough postings): rank correlation 0.60, 0.85, 0.65
+(EXP-028 and EXP-027, on whole families: 0.75, 0.91, 0.76). Finer units are
+less stable; the same caution applies as before (ranking of a fixed list).
+
+### 3. Family descriptions from the earlier generator
+
+Because the generator writes one paragraph per group and blends levels on
+purpose, its text is now kept as the DESCRIPTION OF THE FAMILY and shown under
+each competency of that family. It is no longer a competency statement and no
+longer decides a status.
+
+| | |
+|---|---|
+| Descriptions taken over from EXP-028 (no new call) | 29 |
+| Families sent to the model in this run (the most frequent ones that had a "kandidat tinjauan" competency in EXP-028) | 110 |
+| New descriptions kept | 91 |
+| Dropped by the generator's evidence filter | 7 |
+| Lost to the generator's own duplicate filter (it merged the text into another family's) | 12 |
+| Families with a description now | 120 of 684 |
+| Descriptions that name a tool of the family | 10 |
+| Length | 51 words on average |
+| Worst case priced before the run | $4.6137 (cap $5.00) |
+| **Charged, read from the account** | **$0.6073** (usage $88.8063 → $89.4136) |
+
+Credit after the run: $95.00 bought, $89.41 used, **$5.59 left**.
+Per family sent: $0.0055. The duplicate filter is the old
+generator's own; a family it merges away is paid for and gets no text.
+
+### What is visibly weak
+
+1. **Many competencies have no level.** 294 of 1,677 come from phrases without
+   a verb. This is a property of the postings (and of the rule extractor, which
+   tags a noun such as "programming" as a hard skill), not something the method
+   may fill in.
+2. **Small parts carry extraction noise.** A level asked for by a handful of
+   postings takes its statement from very few phrases, and some read badly or
+   are fragments. 234 competencies are held at "eksploratif" for having fewer
+   than 5 postings.
+3. **The same statement can appear twice in a family**: once without a level
+   (postings that name the work as a noun) and once on C3 (postings that write
+   "perform ..."). Both are what the postings say; "perform" is a real verb
+   there, but a generic one.
+4. **The level follows from the verb table**, which is unreviewed, and a verb
+   alone does not fix a level (Stanny 2016). "Develop" is read as C6 here.
+5. The benefit and culture families of EXP-028 are still there, now split by
+   level as well.
+
+- **Limits:** evidence from the rule extractor, accuracy unmeasured; one model,
+  one run, no repeat for the generator; nobody but the developer has read the
+  statements or the descriptions; `min_variant_postings` is a starting value.
+- **Files:** `DATA/competency/runs/e0_pool_all_v4/` (`competencies.json`,
+  `family_descriptions.json`, `groups.json` = the families, `report.json`,
+  figures); draft profile `2026-0-draf4`.
+
 ---
 
 ## Spending on paid model calls
@@ -991,8 +1121,9 @@ the developer has read its statements.
 | EXP-025 (end-to-end rehearsal, two runs) | $0.1845 |
 | EXP-026 (earlier generator, 15 groups) | not metered: at most $0.5783, estimated $0.07 |
 | EXP-028 (earlier generator, 30 groups; read from the account) | $0.1627 |
-| **Total recorded (metered runs)** | **$2.5183** |
-| **Upper bound including EXP-026** | **$3.0966** |
+| EXP-029 (earlier generator, 110 families; read from the account) | $0.6073 |
+| **Total recorded (metered runs)** | **$3.1256** |
+| **Upper bound including EXP-026** | **$3.7039** |
 
 "Charged" is an upper estimate (see the shared settings). The provider's own
 balance is the authority.

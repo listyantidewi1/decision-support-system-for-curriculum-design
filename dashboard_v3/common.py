@@ -37,11 +37,24 @@ LEVEL_LABEL = {"remember": "mengingat", "understand": "memahami", "apply": "mene
                "analyze": "menganalisis", "evaluate": "mengevaluasi", "create": "mencipta"}
 
 
+LEVEL_CODES = ["C6", "C5", "C4", "C3", "C2", "C1"]
+NO_LEVEL = "tanpa kata kerja"
+
+
 def level_text(cog: dict | None) -> str:
     """'C6 mencipta' for a level read from the postings, '' when there is none."""
     if not cog or not cog.get("level"):
         return ""
     return f"{cog['code']} {LEVEL_LABEL.get(cog['level'], cog['level'])}"
+
+
+def level_code(rec: dict) -> str | None:
+    """The filter value of a recommendation: its Bloom code, NO_LEVEL when its
+    postings use no verb, None for a profile published before levels existed."""
+    cog = rec.get("cognitive")
+    if cog is None:
+        return None
+    return cog.get("code") or NO_LEVEL
 
 
 def list_profiles() -> list[dict]:

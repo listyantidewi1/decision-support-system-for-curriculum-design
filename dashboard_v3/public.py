@@ -42,6 +42,12 @@ with st.sidebar:
                             format_func=lambda s: C.STATUS_LABEL[s])
     stream = st.multiselect("Jenis", ["technical", "soft"], default=["technical", "soft"],
                             format_func=lambda s: "Teknis" if s == "technical" else "Penunjang (soft skill)")
+    level_options = [c for c in C.LEVEL_CODES + [C.NO_LEVEL]
+                     if any(C.level_code(r) == c for r in recs)]
+    levels = st.multiselect(
+        "Tingkat kognitif (Bloom)", level_options, default=level_options,
+        help="Tingkat yang diminta lowongan, dibaca dari kata kerja yang mereka pakai. "
+             "Pilih tingkat yang sesuai dengan jenjang lembaga Anda.") if level_options else []
     min_postings = st.number_input("Minimal jumlah lowongan", min_value=0, value=0, step=1)
     query = st.text_input("Cari dalam pernyataan")
 
@@ -58,6 +64,7 @@ c4.metric("Rekomendasi", f"{len(recs):,}")
 shown = [r for r in recs
          if r["contract"]["status"] in status and r["stream"] in stream
          and r["n_postings"] >= min_postings
+         and (C.level_code(r) is None or C.level_code(r) in levels)
          and (not query or query.lower() in r["statement"]["text"].lower())]
 
 tab_list, tab_map, tab_summary, tab_curriculum, tab_changes, tab_about = st.tabs(
@@ -101,7 +108,34 @@ with tab_list:
                      f"{pick['share_of_postings']:.1%} dari lowongan yang dianalisis.")
             cog = pick.get("cognitive")
             default_verb = pick["statement"].get("verb_source") == "default"
-            if cog is None:                      # a profile published before 2026-11-20
+            fam = pick.get("family")
+            if fam:                              # one competency per level of a family
+                n_fam = fam["n_postings"]
+                if cog.get("level"):
+                    st.write(f"Tingkat kognitif: **{C.level_text(cog)}** — kata kerja pada "
+                             f"tingkat ini dipakai {cog['n_postings']} lowongan, "
+                             f"{cog['share_of_family_postings']:.0%} dari {n_fam} lowongan "
+                             f"rumpun kompetensi ini.")
+                else:
+                    st.write(f"Tingkat kognitif: **tidak dinyatakan lowongan** — "
+                             f"{cog['n_postings']} lowongan menyebut pekerjaan ini tanpa kata "
+                             f"kerja, sehingga tingkatnya tidak dapat dibaca.")
+                if len(fam.get("competencies") or []) > 1:
+                    st.markdown("**Kompetensi serumpun, per tingkat kognitif**")
+                    st.dataframe([{"Tingkat": C.level_text(x) or "tidak dinyatakan",
+                                   "Pernyataan kompetensi": x["statement"],
+                                   "Lowongan": x["n_postings"],
+                                   "": "← yang sedang dibuka"
+                                   if x["competency_id"] == pick["competency_id"] else ""}
+                                  for x in fam["competencies"]], hide_index=True, width="stretch")
+                    st.caption("Satu lowongan dapat meminta lebih dari satu tingkat, sehingga "
+                               "jumlahnya dapat melebihi jumlah lowongan rumpun.")
+                if fam.get("description"):
+                    with st.expander("Uraian rumpun (ditulis model bahasa, mencakup semua tingkat)"):
+                        st.write(fam["description"]["text"])
+                        st.caption("Uraian ini ditulis untuk seluruh rumpun dan mencampur "
+                                   "beberapa tingkat; bukan pernyataan kompetensi satu tingkat.")
+            elif cog is None:                    # a profile published before 2026-11-20
                 st.write(f"Kata kerja: *{pick['statement']['verb']}* · tingkat kognitif "
                          f"(Krathwohl): {pick['statement']['krathwohl']}")
             elif cog.get("level"):

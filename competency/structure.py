@@ -45,8 +45,10 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from typing import Sequence
 
+import dataclasses
+
 from .evidence import Evidence, canonical_key
-from .grouping import Group
+from .grouping import Describer, Group, GroupingConfig
 from .statement import INDONESIAN_VERBS, VERBS, split_verb_object
 
 STRUCTURE_VERSION = "verb-knowledge-v1"
@@ -75,6 +77,9 @@ class StructureConfig:
     # "highest level asked for": the highest level that at least this share of
     # the verb-using postings ask for (one posting must not set it)
     highest_level_floor: float = 0.20
+    # a cognitive level becomes a competency of its own when at least this many
+    # postings of the group use a verb on it
+    min_variant_postings: int = 2
     version: str = STRUCTURE_VERSION
 
 
@@ -193,6 +198,103 @@ def cognitive_profile(verb_postings: dict[str, set], n_group_postings: int,
                highest={"level": high["level"], "code": high["code"], "share": high["share"]},
                levels=rows, basis="verbs written in the postings")
     return out
+
+
+def split_by_level(groups: Sequence[Group], evidence: Sequence[Evidence], n_postings: int,
+                   grouping_cfg: GroupingConfig | None = None,
+                   posting_group: dict[str, str] | None = None,
+                   cfg: StructureConfig | None = None) -> tuple[list[Group], dict]:
+    """One competency per cognitive level of each group.
+
+    The researcher (2026-11-20): "apply web programming" and "develop a website"
+    are two different competencies on two different cognitive levels; where a
+    group holds several verbs, make related competencies, one per level, and
+    say how many postings ask for each. Nobody should be misled by one level
+    standing for a whole group, and institutions of different levels use the
+    result.
+
+    A group of phrases that mean the same work (a FAMILY) is cut by the level
+    of the verbs its phrases open with:
+
+      * a phrase belongs to every level its verbs sit on ("design and maintain
+        databases" is in the create part and in the apply part);
+      * each part is described exactly like a group (its own phrases, postings,
+        tools, soft skills, work behaviours) and gets its own verbs and its
+        own shared knowledge object;
+      * phrases that open with no verb ("programming", "unit testing") form a
+        part without a level: the postings name the work and say nothing of
+        the level;
+      * a level that fewer than `min_variant_postings` postings ask for makes
+        no competency; its units are counted in the report.
+
+    The parts keep the family's validity status (it was judged on the meaning
+    of the whole group). Because a phrase can be in two parts, the parts'
+    postings add up to more than the family's."""
+    cfg, gcfg = cfg or StructureConfig(), grouping_cfg or GroupingConfig()
+    describer = Describer(evidence, n_postings, gcfg, posting_group)
+    vocabulary = knowledge_vocabulary(evidence, cfg)
+    by_id = {e.evidence_id: e for e in evidence}
+    parsed: dict[str, tuple[list[str], list[str], bool]] = {}
+    out: list[Group] = []
+    too_small = 0
+    for g in groups:
+        by_level: dict[str | None, list[Evidence]] = defaultdict(list)
+        for eid in g.evidence_ids:
+            e = by_id[eid]
+            if e.text not in parsed:
+                verbs, obj = split_verb_object(e.text) if e.tag == "SH" else ([], "")
+                idn = bool(verbs) and verbs[0] in INDONESIAN_VERBS
+                parsed[e.text] = (verbs, object_chunk(obj, idn) if verbs else [], idn)
+            verbs = parsed[e.text][0]
+            if not verbs:
+                by_level[None].append(e)
+            for level in {VERBS[v] for v in verbs}:
+                by_level[level].append(e)
+        order = [lv for lv in reversed(LEVELS) if lv in by_level] + (
+            [None] if None in by_level else [])
+        family_postings = len({by_id[i].posting_id for i in g.evidence_ids})
+        with_verb = len({e.posting_id for lv in order if lv for e in by_level[lv]})
+        for level in order:
+            part = by_level[level]
+            postings = {e.posting_id for e in part}
+            if level is not None and len(postings) < cfg.min_variant_postings:
+                too_small += len(part)
+                continue
+            verb_postings: dict[str, set] = defaultdict(set)
+            rows = []
+            for e in part:
+                verbs, chunk, idn = parsed[e.text]
+                on_level = [v for v in verbs if VERBS[v] == level]
+                for v in on_level:
+                    verb_postings[v].add(e.posting_id)
+                if on_level and chunk:
+                    rows.append((e.posting_id, on_level, chunk, idn))
+            n = len(postings)
+            code = BLOOM_CODE.get(level)
+            v = dataclasses.replace(
+                g, group_id=f"{g.group_id}@{code or 'none'}", family_id=g.group_id, level=level,
+                **describer.describe(part))
+            v.verbs = sorted(
+                ({"verb": w, "krathwohl": level, "n_postings": len(ps), "share": round(len(ps) / n, 4)}
+                 for w, ps in verb_postings.items()),
+                key=lambda r: (-r["n_postings"], r["verb"]))[:cfg.max_items]
+            v.knowledge_objects = shared_objects(rows, n, cfg, vocabulary)
+            v.cognitive = {
+                "level": level, "code": code, "n_postings": n,
+                "share_of_family_postings": round(n / max(1, family_postings), 4),
+                "n_family_postings": family_postings,
+                "n_family_postings_with_a_verb": with_verb,
+                "basis": ("verbs written in the postings" if level else
+                          "the postings name this work without a verb: no level can be read")}
+            out.append(v)
+    out.sort(key=lambda v: (-v.n_postings, v.group_id))
+    report = {"n_families": len(groups), "n_competencies_by_level": len(out),
+              "by_level": dict(Counter(v.cognitive["code"] or "none" for v in out)),
+              "n_families_with_more_than_one_level": sum(
+                  1 for n in Counter(v.family_id for v in out if v.level).values() if n > 1),
+              "n_units_on_a_level_too_small_to_stand": too_small,
+              "min_variant_postings": cfg.min_variant_postings}
+    return out, report
 
 
 def knowledge_vocabulary(evidence: Sequence[Evidence], cfg: StructureConfig) -> dict[str, dict]:

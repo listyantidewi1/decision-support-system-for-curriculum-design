@@ -322,7 +322,7 @@
  {
   "area": "Competency layers",
   "name": "how the knowledge of a competency is read from its phrases",
-  "value": "{\"highest_level_floor\": 0.2, \"keep_longer_form_at\": 0.5, \"max_items\": 8, \"max_object_words\": 4, \"min_item_postings\": 2, \"min_vocabulary_postings\": 3}",
+  "value": "{\"highest_level_floor\": 0.2, \"keep_longer_form_at\": 0.5, \"max_items\": 8, \"max_object_words\": 4, \"min_item_postings\": 2, \"min_variant_postings\": 2, \"min_vocabulary_postings\": 3}",
   "status": "starting value",
   "where": "competency/structure.py",
   "note": "the shared head of the objects; a word-order rule, no part-of-speech tagger"
@@ -338,7 +338,7 @@
  {
   "area": "Competency layers",
   "name": "cognitive level of a competency",
-  "value": "read from the verbs the postings use (the level most postings ask for; C1-C6); never from a default verb supplied by the method",
+  "value": "read from the verbs the postings use (C1-C6); never from a default verb supplied by the method; phrases without a verb form a competency with no level",
   "status": "decided",
   "where": "competency/structure.py",
   "note": "the researcher's correction, 2026-11-20; a test holds it"
@@ -386,10 +386,26 @@
  {
   "area": "Competency layers",
   "name": "verb table",
-  "value": "verbs-v1-unreviewed",
+  "value": "verbs-v2-sourced-unreviewed",
   "status": "starting value",
-  "where": "competency/statement.py",
-  "note": "Krathwohl levels assigned by the developer; no expert review yet"
+  "where": "competency/verbs/bloom_verbs_v2.tsv",
+  "note": "203 verbs with their sources in competency/verbs/SOURCES.md; no expert review yet"
+ },
+ {
+  "area": "Competency layers",
+  "name": "verb table hash (sha256)",
+  "value": "5dc013e835eb2e92f8f55063abb814d23936b36c4042345887a36d217c96e1b6",
+  "status": "by design",
+  "where": "competency/verbs/bloom_verbs_v2.tsv",
+  "note": ""
+ },
+ {
+  "area": "Competency layers",
+  "name": "one competency per cognitive level of a group",
+  "value": "a group (family) is split by the level of its verbs; each level is a competency with its own statement and its own number of postings",
+  "status": "decided",
+  "where": "competency/structure.py",
+  "note": "the researcher, 2026-11-20"
  },
  {
   "area": "Competency layers",

@@ -58,13 +58,16 @@ def worst_case_usd(prompts: Sequence[str], system: str, max_tokens: int, retries
 
 
 def generate(groups: Sequence[Group], clusters_by_id: dict, *, max_groups: int, max_usd: float,
-             soft_skills: Sequence[str] = (), model: str | None = None, log=print) -> dict:
+             soft_skills: Sequence[str] = (), model: str | None = None, log=print,
+             only: set | None = None, skip: set | frozenset = frozenset()) -> dict:
     """Statements for the `max_groups` valid technical groups with the most
     postings. Returns {"statements": {group_id: (Statement, extras)}, "info"}."""
     import competency_generator_v2 as G
     from competency_v2_schema import GeneratorConfig
+    # `only`: the families that may be described; `skip`: those already described
     chosen = [g for g in groups if g.status == "sahih" and g.stream == "technical"
-              and g.group_id in clusters_by_id][:max_groups]
+              and g.group_id in clusters_by_id and g.group_id not in skip
+              and (only is None or g.group_id in only)][:max_groups]
     cfg = GeneratorConfig(max_competencies_per_cluster=1)
     if model:
         cfg.model = model

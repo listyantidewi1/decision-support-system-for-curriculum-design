@@ -1,0 +1,215 @@
+# Verb table v2: which cognitive process (revised Bloom taxonomy) a verb is read as.
+# Columns, tab-separated: verb	lang	level	process	also	basis
+#   level    remember | understand | apply | analyze | evaluate | create   (C1 .. C6)
+#   process  the Anderson-Krathwohl cognitive process the verb is read as, when one fits
+#   also     other levels where published verb lists or the framework itself place the verb
+#   basis    AK    the name of a process in Anderson & Krathwohl (2001), or one of its listed alternative names
+#            LIST  commonly placed on this level in published lists of measurable verbs
+#            DEV   the developer's reading of a software-work verb the framework does not list
+#            ID    Indonesian equivalent of an English row (the developer's translation)
+#            SOFT  interpersonal verb: the cognitive dimension fits it poorly; never used for a hard skill
+#            DEFAULT  supplied by the method when the postings give no verb; never sets a level
+# See SOURCES.md in this folder. UNREVIEWED: no expert has checked this table.
+recognize	en	remember	recognizing		AK
+identify	en	remember	recognizing	understand,analyze	AK
+recall	en	remember	recalling		AK
+retrieve	en	remember	recalling		AK
+list	en	remember	recalling		LIST
+name	en	remember	recalling		LIST
+state	en	remember	recalling		LIST
+memorize	en	remember	recalling		LIST
+interpret	en	understand	interpreting		AK
+clarify	en	understand	interpreting		AK
+paraphrase	en	understand	interpreting		AK
+translate	en	understand	interpreting	apply	AK
+exemplify	en	understand	exemplifying		AK
+illustrate	en	understand	exemplifying		AK
+classify	en	understand	classifying	analyze	AK
+categorize	en	understand	classifying	analyze	AK
+summarize	en	understand	summarizing		AK
+generalize	en	understand	summarizing		AK
+infer	en	understand	inferring		AK
+conclude	en	understand	inferring	evaluate	AK
+predict	en	understand	inferring		AK
+compare	en	understand	comparing	analyze,evaluate	AK
+contrast	en	understand	comparing	analyze	AK
+map	en	understand	comparing		AK
+match	en	understand	comparing	remember	AK
+explain	en	understand	explaining		AK
+describe	en	understand	explaining	remember	LIST
+discuss	en	understand	explaining		LIST
+understand	en	understand			LIST
+execute	en	apply	executing		AK
+implement	en	apply	implementing	create	AK
+use	en	apply	implementing		AK
+utilize	en	apply	implementing		AK
+apply	en	apply	implementing		LIST
+perform	en	apply	executing		DEV
+operate	en	apply	executing		DEV
+run	en	apply	executing		DEV
+deploy	en	apply	executing		DEV
+configure	en	apply	implementing		DEV
+install	en	apply	executing		DEV
+maintain	en	apply	executing	evaluate	DEV
+administer	en	apply	executing		DEV
+manage	en	apply	implementing	evaluate	DEV
+migrate	en	apply	implementing		DEV
+release	en	apply	executing		DEV
+support	en	apply	executing		DEV
+document	en	apply	implementing	understand	DEV
+automate	en	apply	implementing	create	DEV
+integrate	en	apply	implementing	analyze,create	DEV
+secure	en	apply	implementing		DEV
+scale	en	apply	implementing	evaluate	DEV
+deliver	en	apply	executing	create	DEV
+train	en	apply	implementing		DEV
+facilitate	en	apply	implementing		DEV
+provide	en	apply	executing		DEV
+follow	en	apply	executing		DEV
+handle	en	apply	executing		DEV
+update	en	apply	implementing		DEV
+fix	en	apply	implementing	analyze	DEV
+solve	en	apply	implementing	analyze	LIST
+calculate	en	apply	executing		LIST
+compute	en	apply	executing		LIST
+demonstrate	en	apply	executing	understand	DEFAULT
+differentiate	en	analyze	differentiating		AK
+discriminate	en	analyze	differentiating		AK
+distinguish	en	analyze	differentiating	understand	AK
+select	en	analyze	differentiating	evaluate	AK
+organize	en	analyze	organizing	create	AK
+structure	en	analyze	organizing	create	AK
+outline	en	analyze	organizing	understand	AK
+parse	en	analyze	organizing		AK
+attribute	en	analyze	attributing		AK
+deconstruct	en	analyze	attributing		AK
+analyse	en	analyze			LIST
+analyze	en	analyze			LIST
+examine	en	analyze			LIST
+inspect	en	analyze		evaluate	LIST
+debug	en	analyze	attributing	apply	DEV
+troubleshoot	en	analyze	attributing	apply	DEV
+diagnose	en	analyze	attributing		DEV
+investigate	en	analyze			DEV
+trace	en	analyze	attributing		DEV
+profile	en	analyze	differentiating	evaluate	DEV
+research	en	analyze		create	DEV
+check	en	evaluate	checking		AK
+detect	en	evaluate	checking	analyze	AK
+monitor	en	evaluate	checking	apply,analyze	AK
+test	en	evaluate	checking	apply	AK
+critique	en	evaluate	critiquing		AK
+judge	en	evaluate	critiquing		AK
+evaluate	en	evaluate			LIST
+assess	en	evaluate	critiquing		LIST
+review	en	evaluate	critiquing	analyze	DEV
+validate	en	evaluate	checking		DEV
+verify	en	evaluate	checking		DEV
+audit	en	evaluate	checking		DEV
+measure	en	evaluate	checking	apply	LIST
+recommend	en	evaluate	critiquing		LIST
+justify	en	evaluate	critiquing		LIST
+prioritize	en	evaluate	critiquing		DEV
+benchmark	en	evaluate	checking		DEV
+optimize	en	evaluate	critiquing	create	DEV
+improve	en	evaluate	critiquing	create	DEV
+generate	en	create	generating		AK
+hypothesize	en	create	generating		AK
+plan	en	create	planning		AK
+design	en	create	planning		AK
+produce	en	create	producing		AK
+construct	en	create	producing		AK
+create	en	create			LIST
+develop	en	create	producing	apply	LIST
+build	en	create	producing	apply	DEV
+write	en	create	producing	apply	DEV
+architect	en	create	planning		DEV
+refactor	en	create	producing	evaluate	DEV
+prototype	en	create	producing		DEV
+compose	en	create	producing		LIST
+formulate	en	create	generating		LIST
+devise	en	create	planning		LIST
+invent	en	create	generating		LIST
+propose	en	create	generating	evaluate	LIST
+define	en	create	planning	remember	DEV
+specify	en	create	planning		DEV
+customize	en	create	producing	apply	DEV
+extend	en	create	producing	apply	DEV
+engineer	en	create	producing		DEV
+innovate	en	create	generating		DEV
+mengingat	id	remember	recalling		ID
+mengenali	id	remember	recognizing		ID
+mengidentifikasi	id	remember	recognizing	understand,analyze	ID
+menyebutkan	id	remember	recalling		ID
+menjelaskan	id	understand	explaining		ID
+memahami	id	understand			ID
+menafsirkan	id	understand	interpreting		ID
+mengklasifikasikan	id	understand	classifying	analyze	ID
+merangkum	id	understand	summarizing		ID
+menyimpulkan	id	understand	inferring	evaluate	ID
+membandingkan	id	understand	comparing	analyze,evaluate	ID
+mencontohkan	id	understand	exemplifying		ID
+menerapkan	id	apply	implementing		ID
+mengimplementasikan	id	apply	implementing	create	ID
+menggunakan	id	apply	implementing		ID
+melakukan	id	apply	executing		ID
+melaksanakan	id	apply	executing		ID
+menjalankan	id	apply	executing		ID
+mengoperasikan	id	apply	executing		ID
+memelihara	id	apply	executing	evaluate	ID
+merawat	id	apply	executing		ID
+mengonfigurasi	id	apply	implementing		ID
+menginstal	id	apply	executing		ID
+mengelola	id	apply	implementing	evaluate	ID
+mendokumentasikan	id	apply	implementing	understand	ID
+mengintegrasikan	id	apply	implementing	analyze,create	ID
+mengotomatisasi	id	apply	implementing	create	ID
+memperbaiki	id	apply	implementing	analyze	ID
+menyelesaikan	id	apply	implementing	analyze	ID
+mendukung	id	apply	executing		ID
+mengamankan	id	apply	implementing		ID
+menunjukkan	id	apply	executing	understand	DEFAULT
+menganalisis	id	analyze			ID
+menguraikan	id	analyze	organizing		ID
+membedakan	id	analyze	differentiating	understand	ID
+mengorganisasikan	id	analyze	organizing	create	ID
+menelusuri	id	analyze	attributing		ID
+mendiagnosis	id	analyze	attributing		ID
+menyelidiki	id	analyze			ID
+meneliti	id	analyze		create	ID
+mengevaluasi	id	evaluate			ID
+menilai	id	evaluate	critiquing		ID
+menguji	id	evaluate	checking	apply	ID
+memeriksa	id	evaluate	checking		ID
+memantau	id	evaluate	checking	apply,analyze	ID
+memvalidasi	id	evaluate	checking		ID
+memverifikasi	id	evaluate	checking		ID
+meninjau	id	evaluate	critiquing	analyze	ID
+mengoptimalkan	id	evaluate	critiquing	create	ID
+meningkatkan	id	evaluate	critiquing	create	ID
+merekomendasikan	id	evaluate	critiquing		ID
+menciptakan	id	create			ID
+mencipta	id	create			ID
+membuat	id	create	producing		ID
+merancang	id	create	planning		ID
+mendesain	id	create	planning		ID
+membangun	id	create	producing	apply	ID
+mengembangkan	id	create	producing	apply	ID
+menulis	id	create	producing	apply	ID
+menyusun	id	create	producing	analyze	ID
+merencanakan	id	create	planning		ID
+menghasilkan	id	create	producing		ID
+merumuskan	id	create	generating		ID
+mendefinisikan	id	create	planning	remember	ID
+communicate	en	apply			SOFT
+collaborate	en	apply			SOFT
+coordinate	en	apply		evaluate	SOFT
+present	en	apply			SOFT
+lead	en	apply			SOFT
+mentor	en	apply			SOFT
+coach	en	apply			SOFT
+negotiate	en	apply			SOFT
+berkomunikasi	id	apply			SOFT
+berkolaborasi	id	apply			SOFT
+berkoordinasi	id	apply			SOFT
+memimpin	id	apply			SOFT
