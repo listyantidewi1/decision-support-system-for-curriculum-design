@@ -36,7 +36,7 @@ from pathlib import Path
 
 from .grouping import Group
 
-VERB_TABLE_VERSION = "verbs-v2-sourced-unreviewed"
+VERB_TABLE_VERSION = "verbs-v2.3-sourced-unreviewed"
 VERB_TABLE = Path(__file__).resolve().parent / "verbs" / "bloom_verbs_v2.tsv"
 # A statement that lists every tool of a group is a tool list, not a
 # competency. First trial (EXP-019): several accepted statements named 7 or 8.
@@ -74,6 +74,28 @@ VERB_INFO: dict[str, dict] = load_verb_table()
 # base form -> cognitive process category (Anderson & Krathwohl)
 VERBS: dict[str, str] = {v: row["level"] for v, row in VERB_INFO.items()}
 INDONESIAN_VERBS = {v for v, row in VERB_INFO.items() if row["lang"] == "id"}
+# Verbs that say only "do it": the work is named by the noun after them
+# ("perform code reviews" is reviewing; "melakukan pengujian" is menguji).
+LIGHT_VERBS = {"perform", "melakukan", "melaksanakan", "menjalankan"}
+NOMINAL_TABLE = Path(__file__).resolve().parent / "verbs" / "deverbal_nouns_v1.tsv"
+NOMINALS_VERSION = "deverbal-nouns-v1.1"
+
+
+def load_nominals(path: Path = NOMINAL_TABLE) -> dict[str, dict]:
+    """noun -> {lang, verb}: nouns made from a verb, with that verb."""
+    out: dict[str, dict] = {}
+    for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip() or line.startswith("#"):
+            continue
+        cells = [c.strip() for c in line.split("\t")]
+        if len(cells) != 3 or cells[1] not in ("en", "id") or cells[2] not in VERB_INFO \
+                or cells[0] in out:
+            raise ValueError(f"{path.name} line {n}: bad or repeated row: {line!r}")
+        out[cells[0]] = {"lang": cells[1], "verb": cells[2]}
+    return out
+
+
+NOMINALS: dict[str, dict] = load_nominals()
 _STOP = {"a", "an", "the", "and", "or", "of", "to", "for", "in", "on", "with", "using", "by",
          "at", "as", "our", "your", "their", "is", "are", "dan", "atau", "yang", "untuk",
          "dengan", "di", "ke", "dari", "pada", "dalam", "menggunakan", "serta", "new"}
@@ -89,6 +111,8 @@ def _forms() -> dict[str, str]:
             for form in line:
                 out[form] = line[0]
     for v, row in VERB_INFO.items():
+        if row["basis"] == "NOM":        # met only through its noun; never opens a phrase
+            continue
         out.setdefault(v, v)
         if row["lang"] == "en":          # verbs the extractor's lexicon does not inflect
             stem = v[:-1] if v.endswith("e") else v
@@ -106,7 +130,7 @@ def base_verb(word: str) -> str | None:
     if _FORMS is None:
         _FORMS = _forms()
     base = _FORMS.get(word.lower())
-    return base if base in VERBS else None
+    return base if base in VERBS and VERB_INFO[base]["basis"] != "NOM" else None
 
 
 @dataclass
@@ -146,7 +170,7 @@ def grounding(statement_text: str, group: Group, verb: str = "", verb_source: st
         vocab.update(_words(t["text"]))
     vocab |= {base_verb(w) or w for w in list(vocab)}
     words = [w for w in _words(statement_text) if w not in _STOP]
-    if verb_source == "default" and words and words[0] == verb.lower():
+    if verb_source in ("default", "light verb") and words and words[0] == verb.lower():
         words = words[1:]
     if not words:
         return 0.0, []
@@ -192,6 +216,123 @@ def split_verb_object(text: str) -> tuple[list[str], str]:
     return (verbs, obj) if obj else ([], whole)
 
 
+_NP_END = {"for", "with", "using", "in", "on", "to", "of", "across", "by", "from", "through",
+           "within", "into", "at", "as", "via", "including", "and", "or", "&", "/", "that",
+           "which", "based", "per"}
+
+
+@dataclass(frozen=True)
+class Reading:
+    """What one hard-skill phrase says: which verbs, acting on what.
+
+    how        verb            the phrase opens with its verb(s): "develop web applications"
+               deverbal        it names the work with a noun made from a verb:
+                               "web application development", "pengujian aplikasi"
+               light+deverbal  the same behind a verb that only says "do it":
+                               "perform code reviews", "melakukan pengujian"
+               none            a noun phrase that names no work ("programming languages")
+    verbs      the verbs, read from the noun where that is how the work is named
+    obj        the object when the phrase gives it in place: after the verb, after an
+               Indonesian noun ("pengembangan aplikasi web"), or after "of"
+    modifier   English noun phrases only: the words before the noun ("web application").
+               Whether they are its object ("web application development") or describe it
+               ("automated testing") cannot be told from the phrase alone.
+    nominal    the noun phrase as written, for a statement that keeps it"""
+    verbs: tuple[str, ...]
+    how: str
+    indonesian: bool
+    obj: str = ""
+    modifier: str = ""
+    nominal: str = ""
+
+
+_FRAGMENT_JOINERS = {"and", "or", "&", "/", "dan", "atau", "serta", ","}
+# quality words that are nouns: as the object of a verb they name work
+_QUALITY_NOUNS = {"quality", "reliability", "scalability", "maintainability", "security",
+                  "performance", "availability", "usability", "accessibility", "efficiency",
+                  "stability", "kualitas", "keamanan", "kinerja", "keandalan"}
+
+
+def is_fragment(text: str) -> bool:
+    """A statement made from a phrase that was cut before its object, so that it
+    names no work. It is an extraction error (EXP-030, EXP-033).
+
+    The words after the statement's first verb are read one by one: a plain noun
+    ("web applications", "code", "test plans") means there is an object, and the
+    statement is not a fragment. Without a plain noun, it is a fragment when
+      - nothing follows the verb ("Perform");
+      - it ends in a quality word or a participle ("Write clean", "Design
+        scalable", "Perform deliver integrated");
+      - it is a list of verb forms joined by commas or "and", at least half of
+        them bare verbs rather than work-nouns ("Perform Design, develop",
+        "Perform building, documenting", "Perform Creates, implements, ...");
+      - after a verb that only says "do it", a single bare verb ("Perform deliver").
+    A single work-noun ("Perform debugging", "Melakukan pemrograman") or a list
+    of work-nouns ("Perform debugging, troubleshooting") names work: not a fragment."""
+    from .qualifiers import QUALITY_TERMS
+    # a comma is kept as a word of its own: it joins a list
+    words = ["," if w == "," else w.strip(",.;:()\"'").lower()
+             for w in text.replace(",", " , ").split()]
+    words = [w for w in words if w]
+    if not words:
+        return True
+    rest = words[1:]
+    content = [w for w in rest if w not in _FRAGMENT_JOINERS
+               and w not in {"the", "a", "an", "of", "to", "for", "with", "yang", "untuk"}]
+    if not content:
+        return True
+    joined = len(content) < len(rest) and any(w in _FRAGMENT_JOINERS for w in rest)
+    kinds = []
+    for w in content:
+        if w in _QUALITY_NOUNS:
+            return False                         # "improve reliability": a quality named as an object
+        if w in QUALITY_TERMS:
+            kinds.append("quality")
+            continue
+        if w in NOMINALS:
+            kinds.append("work-noun")
+            continue
+        b = base_verb(w)
+        if b:
+            if w.endswith("ed") and w != b:
+                kinds.append("participle")
+            elif w.endswith("s") and w != b and not joined:
+                return False                     # "test plans", "create prototypes": a noun
+            else:
+                kinds.append("verb")
+            continue
+        return False                             # a plain noun: the statement has an object
+    if kinds[-1] in ("quality", "participle"):
+        return True
+    if joined and kinds.count("verb") * 2 >= len(kinds):
+        return True
+    return words[0] in LIGHT_VERBS and all(k == "verb" for k in kinds)
+
+
+def read_phrase(text: str) -> Reading:
+    verbs, obj = split_verb_object(text)
+    if verbs and any(v not in LIGHT_VERBS for v in verbs):
+        return Reading(tuple(verbs), "verb", verbs[0] in INDONESIAN_VERBS, obj)
+    np_text = obj if verbs else text.strip(" ,.")
+    kind = "light+deverbal" if verbs else "deverbal"
+    words = [w.strip(" ,.;:()[]\"'") for w in np_text.split()]
+    words = [w for w in words if w]
+    low = [w.lower() for w in words]
+    # Indonesian: the noun comes first and its object follows it
+    if low and NOMINALS.get(low[0], {}).get("lang") == "id":
+        return Reading((NOMINALS[low[0]]["verb"],), kind, True, " ".join(words[1:]), "", np_text)
+    # English: the noun closes the noun phrase
+    cut = next((i for i, w in enumerate(low) if w in _NP_END), len(low))
+    head = cut - 1
+    if head >= 0 and NOMINALS.get(low[head], {}).get("lang") == "en":
+        after_of = " ".join(words[cut + 1:]) if cut < len(low) and low[cut] == "of" else ""
+        return Reading((NOMINALS[low[head]]["verb"],), kind, False, after_of,
+                       " ".join(words[:head]), np_text)
+    if verbs:                               # a light verb with an ordinary object: "perform tasks"
+        return Reading(tuple(verbs), "verb", verbs[0] in INDONESIAN_VERBS, obj)
+    return Reading((), "none", False, "", "", np_text)
+
+
 def _mostly_indonesian(texts) -> bool | None:
     """True/False by a vote of function words over the sentences; None when
     there is nothing to vote on."""
@@ -226,6 +367,9 @@ def deterministic_statement(group: Group, max_technologies: int = 0) -> Statemen
         # only an action or soft-skill phrase can open with a verb: the
         # knowledge term "design patterns" is not the verb "design"
         found, obj = split_verb_object(m["text"]) if m["tag"] in ("SH", "SS") else ([], "")
+        if found and all(v in LIGHT_VERBS for v in found) and \
+                read_phrase(m["text"]).how == "light+deverbal":
+            found = []                       # "perform code reviews": the work is in the noun
         if found:
             # in a part cut for one level, the phrase speaks through its verb on
             # that level ("design and maintain X" is "maintain X" on C3)
@@ -239,20 +383,36 @@ def deterministic_statement(group: Group, max_technologies: int = 0) -> Statemen
     # they are at least half of the group's evidence; otherwise the group is
     # mostly nouns ("programming", "code reviews") and its most frequent phrase
     # is used with a default verb chosen by that phrase's tag.
-    if verbs and verb_led_evidence * 2 >= group.n_evidence:
+    cog = getattr(group, "cognitive", None) or {}
+    label = cog.get("nominal_label")
+    known = [k for k in getattr(group, "knowledge_objects", []) if k.get("verbs")]
+    if wanted_level and label and (not known or label["n_postings"] > known[0]["n_postings"]):
+        # Most of this part names its work with a noun ("unit testing", "pemrograman")
+        # and no object could be read for it. The noun phrase is kept as written; the
+        # level is that of the noun's verb. "Perform" here is wording, not a level.
+        obj = label["text"]
+        indonesian = label.get("indonesian")
+        if indonesian is None:
+            indonesian = bool(_mostly_indonesian(s.get("sentence_text", "")
+                                                 for s in group.samples))
+        verb = "melakukan" if indonesian else "perform"
+        source, object_source = "light verb", "noun phrase"
+        notes.append(f"the work is named by a noun made from a verb: the level '{wanted_level}' "
+                     f"is the level of that verb, not of '{verb}'")
+    elif known and (wanted_level or (verbs and verb_led_evidence * 2 >= group.n_evidence)):
+        # The object the part's phrases share, whether they state it after a verb
+        # ("develop web applications") or through a noun ("web application
+        # development"). Of the verbs used with it, the one on the part's level:
+        # the verb of a statement signals its level.
+        on_level = [v for v in known[0]["verbs"] if VERBS.get(v) == wanted_level]
+        obj, verb, object_source = known[0]["text"], (on_level or known[0]["verbs"])[0], "knowledge"
+        source = "evidence"
+        notes.append(f"the object is shared by {known[0]['n_postings']} of the group's "
+                     f"{group.n_postings} postings ({known[0]['share']:.0%})")
+    elif verbs and verb_led_evidence * 2 >= group.n_evidence:
         verb = sorted(verbs, key=lambda v: (-verbs[v], v))[0]
         obj = sorted(objects[verb], key=lambda o: (-objects[verb][o], o))[0]
         source = "evidence"
-        known = [k for k in getattr(group, "knowledge_objects", []) if k.get("verbs")]
-        if known:
-            # of the verbs used with that object, the one on the level the
-            # postings ask for: the verb of a statement signals its level
-            wanted = (getattr(group, "cognitive", None) or {}).get("level")
-            on_level = [v for v in known[0]["verbs"] if VERBS.get(v) == wanted]
-            obj, verb, object_source = known[0]["text"], (on_level or known[0]["verbs"])[0], \
-                "knowledge"
-            notes.append(f"the object is shared by {known[0]['n_postings']} of the group's "
-                         f"{group.n_postings} postings ({known[0]['share']:.0%})")
     else:
         top = group.members[0]
         obj = top["text"]
@@ -284,7 +444,9 @@ def deterministic_statement(group: Group, max_technologies: int = 0) -> Statemen
     # The level is what the postings' verbs ask for. A default verb is the
     # method's wording, so its level is never reported as the level demanded.
     read = (getattr(group, "cognitive", None) or {}).get("level")
-    if read:
+    if read and source == "light verb":
+        level, level_source = read, "deverbal noun"
+    elif read:
         level, level_source = read, "postings"
         if VERBS[verb] != read:
             notes.append(f"the statement's verb '{verb}' is on the level '{VERBS[verb]}'; the "

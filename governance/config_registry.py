@@ -186,6 +186,68 @@ def collect() -> list[dict]:
         "no expert review yet")
     add(area, "verb table hash (sha256)", statement.verb_table_sha256(), DESIGN,
         "competency/verbs/bloom_verbs_v2.tsv")
+    add(area, "nouns made from a verb", statement.NOMINALS_VERSION, STARTING,
+        "competency/verbs/deverbal_nouns_v1.tsv",
+        f"{len(statement.NOMINALS)} nouns ('development' = develop); the developer's list, "
+        "unreviewed. A phrase that names its work with one of them takes the verb's level "
+        "(the researcher's correction, 2026-11-20)")
+    add(area, "verbs that only say 'do it'", sorted(statement.LIGHT_VERBS), STARTING,
+        "competency/statement.py", "in 'perform code reviews' the work is the noun's verb")
+    from competency import smoothing
+    from governance import zoning
+    z = {f.name: f.default for f in dataclasses.fields(zoning.ZoningConfig)}
+    add(area, "sentence filter: duty and requirement sentences only",
+        {k: v for k, v in z.items() if k != "version"}, STARTING, "governance/zoning.py",
+        "weak labels from section headers plus a classifier; not validated against people; "
+        "the cut-off 0.5 was set from the developer's reading of 64 sentences (EXP-030)")
+    add(area, "sentence filter version", zoning.ZONING_VERSION, DESIGN, "governance/zoning.py")
+    add(area, "intervals, pooled level mix, rank ranges", smoothing.SMOOTHING_VERSION, DESIGN,
+        "competency/smoothing.py",
+        f"{smoothing.BOOTSTRAP_ROUNDS} bootstrap rounds, seed {smoothing.BOOTSTRAP_SEED}; the "
+        "strength of the pooling is estimated from the data")
+    from competency import formulate, qualifiers, skkni
+    add(area, "SKKNI parser", skkni.PARSER_VERSION, DESIGN, "competency/skkni.py",
+        "every SKKNI PDF in DATA/master_skkni, whatever its year")
+    add(area, "how a competency statement is formulated",
+        "like an SKKNI unit title: an operational verb on the competency's level, the specific "
+        "object of work, and the standard, quality and outcome its postings ask for; no tool "
+        "names. The competencies come from the postings, not from SKKNI",
+        DECIDED, "competency/formulate.py",
+        "the promotors' definition and the researcher's correction, 2026-11-20")
+    add(area, "SKKNI wording in a statement",
+        "used when a competency IS an SKKNI unit; only when the SKKNI title's verb is on the "
+        "competency's level (otherwise both levels are shown)", STARTING,
+        "competency/formulate.py",
+        "the researcher: 'you might use the SKKNI wordings'; the level condition is the developer's")
+    add(area, "a 'same as SKKNI' decision needs a second model",
+        "the writer's 'sama' stands only when a second model, shown the competency and that one "
+        "unit and nothing the writer decided, also says 'sama'; otherwise it becomes 'sebagian' "
+        "and the market's statement is kept", STARTING, "competency/formulate.py",
+        "the developer's rule: the writer alone was wrong in 4 of its 10 'sama' calls on the "
+        "development sample (EXP-032)")
+    add(area, "second model for the 'same as SKKNI' decision", formulate.CONFIRM_MODEL, STARTING,
+        "competency/formulate.py", "another family than the writer (GPT) and than the reference "
+        "judges (Claude); one definition of 'sama' is shared by both prompts")
+    fc = {f.name: f.default for f in dataclasses.fields(formulate.FormulateConfig)}
+    add(area, "when a standard, quality or outcome enters a statement",
+        {k: v for k, v in fc.items() if k != "version"}, STARTING, "competency/formulate.py")
+    add(area, "statement formulation version", formulate.FORMULATE_VERSION, DESIGN,
+        "competency/formulate.py")
+    add(area, "statement writer model", endtoend.STATEMENT_MODEL, STARTING,
+        "competency/formulate.py", "checked by the module's own checker; EXP-032")
+    add(area, "quality words and their ISO/IEC 25010 characteristic",
+        f"{len(qualifiers.QUALITY_TERMS)} words", STARTING, "competency/qualifiers.py",
+        "the developer's mapping; check the standard before citing")
+    add(area, "named practices and standards read from postings",
+        [n for n, _ in qualifiers.NAMED_STANDARDS], STARTING, "competency/qualifiers.py")
+    from competency import structure as _structure
+    add(area, "families that give the same statement on the same level are merged",
+        f"only through a statement that names specific work; {len(_structure.GENERIC_NOUNS)} "
+        "general nouns ('solutions', 'applications', 'issues') link nothing", STARTING,
+        "competency/structure.py", "the developer's rule (EXP-033)")
+    add(area, "a statement cut before its object is held back",
+        "'statement_is_a_fragment' blocks the status kandidat tinjauan and is not formulated",
+        STARTING, "competency/statement.py", "the developer's rule (EXP-033)")
     add(area, "one competency per cognitive level of a group",
         "a group (family) is split by the level of its verbs; each level is a competency with "
         "its own statement and its own number of postings", DECIDED, "competency/structure.py",

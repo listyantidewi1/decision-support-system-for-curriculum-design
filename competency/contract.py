@@ -56,7 +56,8 @@ class StudyFacts:
 
 def decide(*, group_status: str, n_postings: int, grounding: float,
            okupasi_mapped: bool | None, cfg: ContractConfig | None = None,
-           facts: StudyFacts | None = None, grounding_passed: bool | None = None) -> dict:
+           facts: StudyFacts | None = None, grounding_passed: bool | None = None,
+           fragment: bool = False) -> dict:
     """`okupasi_mapped` is None when the mapping step was not run; that blocks
     too, because an unmapped competency was never shown to map anywhere.
     `grounding_passed`, when given, is the verdict of the statement writer's own
@@ -67,6 +68,9 @@ def decide(*, group_status: str, n_postings: int, grounding: float,
         core.append(f"group_status={group_status or 'unknown'}")
     if n_postings < cfg.min_postings:
         core.append(f"postings<{cfg.min_postings}")
+    if fragment:
+        # the phrases were cut before their object: they name no work (EXP-030)
+        core.append("statement_is_a_fragment")
     if grounding_passed is None:
         check = f"lexical>={cfg.min_grounding:.2f}"
         if grounding < cfg.min_grounding:

@@ -48,6 +48,14 @@ class GroupingConfig:
     # a competency: the tools used for it, the knowledge behind it, the soft
     # skills and work behaviours expected of the person who has it.
     competency_tags: tuple[str, ...] = ("SH",)
+    # Families whose centres point nearly the same way are one family. The
+    # clusterer separates phrases by their wording, so "REST API development",
+    # "integrating REST APIs" and "design and implement RESTful APIs" came out
+    # as three families (clustering check of 2026-11-20: 119 pairs of families
+    # at cosine >= 0.90). None = no merging. Complete linkage: EVERY pair in a
+    # merged family is at least this close.
+    merge_threshold: float | None = None
+    merge_top_phrases: int = 12
     max_profile_items: int = 8            # soft skills / work behaviours listed per competency
     min_profile_postings: int = 2
     # Two-stage grouping, for a corpus too large to cluster every phrase.
@@ -102,6 +110,7 @@ class Group:
     # set by competency.structure.split_by_level: a group is split into one part
     # per cognitive level; each part is a competency of its own
     family_id: str = ""                   # the group this part was split from
+    merged_from: list[str] = field(default_factory=list)   # families merged into this one
     level: str | None = None              # the cognitive level of this part
     status: str = ""
     status_code: str = ""
@@ -203,6 +212,89 @@ def attach_tail(clusters, tail_items, cfg: GroupingConfig, embed=None) -> dict:
                 report["n_phrases_attached"] += 1
                 report["n_evidence_attached"] += len(by_key[k])
     return report
+
+
+def merge_similar(clusters, cfg: GroupingConfig, embed=None) -> tuple[list, dict]:
+    """Stage 1b: merge clusters whose centres are nearly the same direction.
+
+    The centre of a cluster is the posting-weighted mean of the embeddings of
+    its `merge_top_phrases` most frequent phrases (the shared sentence embedder,
+    without the clusterer's prompt prefix, which inflates every cosine). The
+    largest cluster of a merged set keeps its id and receives the others'
+    phrases. Its cohesion (mean pairwise cosine of its phrases) is recomputed
+    from the parts: pairs inside a part keep that part's cohesion; a pair
+    across two parts is about the cosine of the two centres times the square
+    root of the product of their cohesions."""
+    import numpy as np
+    report = {"merge_threshold": cfg.merge_threshold, "n_families_before": len(clusters),
+              "n_merged_sets": 0, "n_families_merged_away": 0}
+    if cfg.merge_threshold is None or len(clusters) < 2:
+        report["n_families_after"] = len(clusters)
+        return list(clusters), report
+    from sklearn.cluster import AgglomerativeClustering
+    if embed is None:
+        from .mapping import shared_embedder
+        model = shared_embedder()
+
+        def embed(texts):
+            return model.encode(texts, batch_size=128, show_progress_bar=False,
+                                normalize_embeddings=True)
+    out = []
+    for stream in ("technical", "soft"):
+        cs = [c for c in clusters
+              if ("soft" if getattr(c, "stream", "") == "soft_skill" else "technical") == stream]
+        if len(cs) < 2:
+            out.extend(cs)
+            continue
+        texts, owner, weight = [], [], []
+        for i, c in enumerate(cs):
+            posts: dict[str, set] = defaultdict(set)
+            form: dict[str, str] = {}
+            for it in c.items:
+                posts[it.key].add(it.posting_id)
+                form.setdefault(it.key, it.text)
+            for key in sorted(posts, key=lambda k: (-len(posts[k]), k))[:cfg.merge_top_phrases]:
+                texts.append(form[key])
+                owner.append(i)
+                weight.append(len(posts[key]))
+        vec = np.asarray(embed(texts), dtype=np.float64)
+        owner_a, weight_a = np.asarray(owner), np.asarray(weight, dtype=np.float64)
+        cent = np.zeros((len(cs), vec.shape[1]))
+        for i in range(len(cs)):
+            idx = np.where(owner_a == i)[0]
+            c = (vec[idx] * weight_a[idx, None]).sum(0)
+            cent[i] = c / (np.linalg.norm(c) or 1.0)
+        labels = AgglomerativeClustering(
+            n_clusters=None, metric="cosine", linkage="complete",
+            distance_threshold=1.0 - cfg.merge_threshold).fit_predict(cent)
+        for lab in sorted(set(labels.tolist())):
+            idx = [int(i) for i in np.where(labels == lab)[0]]
+            if len(idx) == 1:
+                out.append(cs[idx[0]])
+                continue
+            idx.sort(key=lambda i: (-len(cs[i].items), str(cs[i].id)))
+            keep = cs[idx[0]]
+            n = np.array([len(cs[i].items) for i in idx], dtype=np.float64)
+            coh = np.array([max(0.0, float(getattr(cs[i], "cohesion_score", 0.0))) for i in idx])
+            total = float((n ** 2 * coh).sum())
+            for a in range(len(idx)):
+                for b in range(len(idx)):
+                    if a != b:
+                        total += n[a] * n[b] * float(cent[idx[a]] @ cent[idx[b]]) * float(
+                            np.sqrt(coh[a] * coh[b]))
+            centres = [getattr(cs[i], "centroid_embedding", None) for i in idx]
+            if all(c is not None for c in centres):
+                mean = sum(np.asarray(c, dtype=np.float64) * w for c, w in zip(centres, n)) / n.sum()
+                keep.centroid_embedding = mean
+            for i in idx[1:]:
+                keep.items.extend(cs[i].items)
+            keep.cohesion_score = total / float(n.sum() ** 2)
+            keep.merged_from = [str(cs[i].id) for i in idx[1:]]
+            out.append(keep)
+            report["n_merged_sets"] += 1
+            report["n_families_merged_away"] += len(idx) - 1
+    report["n_families_after"] = len(out)
+    return out, report
 
 
 def _audit(groups: list[Group]) -> None:
@@ -338,7 +430,8 @@ def group_evidence(evidence: Sequence[Evidence], n_postings: int,
                    clusterer: Callable | None = None,
                    posting_group: dict[str, str] | None = None,
                    embed: Callable | None = None,
-                   keep_clusters: dict | None = None) -> tuple[list[Group], dict]:
+                   keep_clusters: dict | None = None,
+                   merge_embed: Callable | None = None) -> tuple[list[Group], dict]:
     """(groups, report). `n_postings` is the denominator for every share.
     `posting_group` maps a posting to its employer/template group; without it
     every posting counts as its own group."""
@@ -363,6 +456,7 @@ def group_evidence(evidence: Sequence[Evidence], n_postings: int,
         core = [it for it in items if len(seen[(it.stream, it.key)]) >= cfg.core_min_postings]
         tail = [it for it in items if len(seen[(it.stream, it.key)]) < cfg.core_min_postings]
     clusters, cluster_report = (clusterer or _default_clusterer)(core, cfg)
+    clusters, merge_report = merge_similar(clusters, cfg, merge_embed)
     if tail and clusters:
         attach_report = attach_tail(clusters, tail, cfg, embed)
 
@@ -379,6 +473,7 @@ def group_evidence(evidence: Sequence[Evidence], n_postings: int,
         groups.append(Group(
             group_id=str(c.id), stream=stream, label=str(c.summary_label),
             top_terms=list(c.top_terms), cohesion=float(c.cohesion_score),
+            merged_from=list(getattr(c, "merged_from", [])),
             **describer.describe(ev, attached_ids)))
     groups.sort(key=lambda g: (-g.n_postings, g.group_id))
     if groups:
@@ -394,5 +489,5 @@ def group_evidence(evidence: Sequence[Evidence], n_postings: int,
               "two_stage": {"core_min_postings": cfg.core_min_postings,
                             "n_evidence_in_stage_1": len(core), **(attach_report or {})}
               if cfg.core_min_postings > 1 else None,
-              "clusterer": cluster_report}
+              "merge": merge_report, "clusterer": cluster_report}
     return groups, report

@@ -45,14 +45,14 @@ Streamlit Community Cloud accounts so the page can go online.
 | Multi-LLM labelling | `labeling/` | Built. Prompt v0 is the default. Ensemble already run on `pilot_100` and stored blind. `labeling.versus_gold` compares it with the gold when that exists. |
 | Extraction models E0–E6, D1–D3 | `fivetag/` | All built; see `fivetag/README.md`. E1 training rehearsed on Kaggle. Router thresholds untuned. |
 | D1/D2 conflicts | `fivetag/conflict_routing.py` | Risk rule and acceptance rule registered (`docs/experiments/PREREG_d3_conflict_routing.md`). Adjudicator model not registered; Qwen 3.8 Flash is provisional. |
-| Competency layers | `competency/` | Built. **Competencies are built from hard skills only; tools, knowledge, soft skills and work behaviours are attached to each one** (researcher's decision, 2026-11-19). Two statement writers: rules (free) and the earlier LLM generator through `competency/v2_generator.py` (EXP-026). Whole-corpus runs: EXP-027, EXP-028, then EXP-029 (current design: one competency per cognitive level; run `e0_pool_all_v4`, draft profile `2026-0-draf4`). See `competency/README.md`. |
+| Competency layers | `competency/` | Built. **Competencies are built from hard skills only; tools, knowledge, soft skills and work behaviours are attached to each one** (researcher's decision, 2026-11-19). Two statement writers: rules (free) and the earlier LLM generator through `competency/v2_generator.py` (EXP-026). Whole-corpus runs: EXP-027 to EXP-030. Current: `e0_pool_all_v8` (EXP-033: fragments held back, families with the same statement merged), with 81 competencies formulated SKKNI-style in `formulated.json` (EXP-032: 43 development + 40 held-out, version 4.3, checked by independent judges); draft profile `2026-0-draf6`. See `competency/README.md`. |
 | Time analysis | `competency/temporal.py` | Built; run once on the whole pool (experiment log, EXP-023). Thresholds and weight formula are starting values. |
 | Coverage audit, delta recommendations | `competency/coverage.py`, `delta.py` | Built and tested. Coverage against SKKNI run once (EXP-024). Delta needs an uploaded curriculum; none has been used yet. |
 | Versioned profile | `competency/profile.py` | Built. One DRAFT exists locally: `DATA/competency/profiles/drafts/2026-0-draf1/`. No release exists. |
 | End-to-end pipelines P1–P3 | `competency/endtoend.py` | Built and tested with a fake model; rehearsed once on 12 postings (EXP-025). Not a comparison yet: sample too small, extractors unmeasured. |
 | Figures | `competency/figures.py` | Built. Charts of the development experiments are committed under `docs/experiments/figures/`; charts of runs stay with the run under `DATA/`. |
 | Dashboards | `dashboard_v3/public.py`, `dashboard_v3/admin.py`, `dashboard_v3/termmap_view.py` (the cluster map tab) | Built, tested headless. Not deployed. `dashboard/` and `dashboard_v2/` are the pre-approval versions, still wired to the old chain. |
-| Configuration registry | `governance/config_registry.py` → `docs/CONFIG_REGISTRY.md` | Generated from the code; a test fails if it is out of date. 20 settings are still "starting value": they are the list of things to agree with the promotor or the experts. |
+| Configuration registry | `governance/config_registry.py` → `docs/CONFIG_REGISTRY.md` | Generated from the code; a test fails if it is out of date. 26 settings are still "starting value": they are the list of things to agree with the promotor or the experts. |
 | Dictionaries | `fivetag/lexicons/v1`, `v2` (+O*NET), `v3` (+ESCO) | `fivetag` defaults to v1; the competency chain uses v2; v3 is built but not used by default (EXP-021). |
 
 ## 4. How to run and check things
@@ -136,6 +136,23 @@ The old generator itself still reports no usage.
 - [x] Verb table as a sourced file, 203 verbs — `competency/verbs/`, EXP-029
 - [x] Generator descriptions for more families; they describe the family, not one level — EXP-029
 
+- [x] Clustering check: families are tight but fragmented, and about 10 of 24 sampled "valid" families were not competencies — EXP-030
+- [x] Sentence filter (duty and requirement sentences only) — `governance/zoning.py`, `tests/test_zoning.py`, EXP-030
+- [x] Merge of near-duplicate families — `competency/grouping.py` `merge_similar`, EXP-030
+- [x] Verbs read from nouns; light verbs — `competency/statement.py`, `competency/structure.py` `Reader`, EXP-030
+- [x] Intervals, pooled level mix, rank ranges, family-level rank stability — `competency/smoothing.py`, EXP-030
+- [x] SKKNI documents read in full (all 29 in `DATA/master_skkni`, 2015–2025) — `competency/skkni.py`
+- [x] ~~Competency units in the full SKKNI form (EXP-031)~~ — withdrawn the same day: the researcher meant the formulation of statements, not whole units
+- [x] Statements formulated like SKKNI titles from the market evidence, with SKKNI wording where a competency is an SKKNI unit on the same level; shown in the public dashboard — `competency/formulate.py`, EXP-032
+- [x] Fragments held back; families with the same statement on the same level merged (only through statements that name specific work) — `competency/statement.py` `is_fragment`, `competency/structure.py` `merge_same_statement`, EXP-033
+- [x] Formulation checked by independent judges (3 blind SKKNI-match judges, 2 statement reviewers), revised to version 4.3 (a second model must confirm a "same as SKKNI"), and checked again on 40 held-out competencies — EXP-032
+- [ ] Formulate the other 517 "kandidat tinjauan" competencies of run `e0_pool_all_v8` (`--all --skip-existing`) — after the researcher has read the sample of EXP-032 and decided on the open points below (costs credit: about $0.0023 per competency, $1.2–1.5 in all)
+- [ ] Open from EXP-032 (researcher's decision): (1) let the formulation flag, or refuse, "competencies" that are not work (work behaviours, purpose clauses, employer branding) and mixed families — a third of the held-out sample; (2) make the writer include an allowed standard or quality that fits (it left one out in 8 of 19 held-out cases). Either change needs a fresh held-out sample to measure it
+- [ ] Repair the two defects EXP-030 found: fragments (spans cut before their object) and the same statement in two families
+- [ ] A cognitive-level classifier that reads the whole phrase in context, checked against phrases labelled by experts. Waits for the pilot and for expert labels; nothing is built.
+- [ ] Education required by the posting (SMK, D3, S1) per competency. Not built.
+- [ ] Reweighting time windows to a common mix of platforms and countries. Not built.
+
 Known faults of the attached lists, not yet repaired (EXP-027, "What is visibly
 weak"): lift is not comparable across languages; spelling variants of one soft
 skill are separate lines; a rule statement can be a fragment of one posting.
@@ -177,6 +194,10 @@ say what each layer assumes.
 | The cognitive level of a competency is read from the verbs the postings use (C1–C6), never from a default verb the method supplied | 2026-11-20 | `competency/structure.py` (a test holds it) |
 | A group is a family; each cognitive level in it is a competency of its own, with its own statement and its own number of postings ("apply web programming" and "develop a website" are two competencies). No single level stands for a family | 2026-11-20 | `competency/structure.py` `split_by_level` |
 | The verb-to-level table is a written, sourced file, to be reviewed by the researcher | 2026-11-20 | `competency/verbs/bloom_verbs_v2.tsv`, `SOURCES.md` |
+| A phrase that names its work with a noun made from a verb takes that verb and its level: "Perform web application development" is "Develop web applications", C6 | 2026-11-20 | `competency/statement.py` `read_phrase`, `competency/verbs/deverbal_nouns_v1.tsv` |
+| The promotors' definition of a competency: a measurable combination of knowledge, skills, abilities and behaviours; a task title ("develop web application") is a duty until it states how well, which standards and what outcome | 2026-11-20 | `competency/formulate.py`, `competency/qualifiers.py` |
+| The researcher's correction: SKKNI unit titles are examples of how a competency statement is FORMULATED. The competencies come from the market (SKKNI is part of the problem; the programming standard is from 2016). Where a competency matches an SKKNI unit, the SKKNI wording may be used. NOT: translating competencies into whole SKKNI units (EXP-031 did that; withdrawn) | 2026-11-20 | `competency/formulate.py`, EXP-032 |
+| Build the four improvements the developer recommended: read verbs from nouns, intervals and pooled shares, a filter for sentences that are not requirements, (later, after the pilot) a level classifier that reads context | 2026-11-20 | this file §6; EXP-030 |
 | KKNI is additional information for the reader; it never enters the status or the order | 2026-11-19 | `competency/contract.py` (a test holds it) |
 | The earlier LLM generator (`competency_generator_v2`) is the statement writer to build on, not the short rule statements | 2026-11-19 | `competency/v2_generator.py`, EXP-026 |
 | Kitalulus and Kemnaker are in the monthly round (promotor agreed) | 2026-11-19 | `docs/corpus/SOURCE_AUDIT.md` K8, K10 |
@@ -188,6 +209,9 @@ say what each layer assumes.
 
 - The verb table (`competency/verbs/bloom_verbs_v2.tsv`, `verbs-v2-sourced-unreviewed`): the researcher has not reviewed it. The Indonesian rows are the developer's translations; a list her institution uses should replace them.
 - Which cognitive levels suit which kind of institution (SMK, D3, S1). The dashboard only offers a filter; nothing maps a level to an institution.
+- Whether the formulated statements of EXP-032 are what the promotors mean; who supplies measurable criteria the postings do not give.
+- Whether SKKNI wording should also be used when the SKKNI title's verb is on another level than the postings ask (the developer's rule says no and shows both levels).
+- **Whether the sentence filter (`governance/zoning.py`) and the later level classifier fit the approved plan or need the promotor's agreement.** The developer raised this before building; the researcher said to go ahead. The plan names a sentence relevance filter (`it_relevance_filter.py`, ADAPT); the zone filter is a cheap, weakly supervised relative of it. Not validated against people.
 - Postings versus employers as the count of demand, the two contract thresholds, the verb table (`competency/README.md`).
 - Whether a generator statement may be judged by the generator's own evidence filter (built that way; `docs/CONFIG_REGISTRY.md`).
 - Which model is the registered adjudicator (provisional: Qwen 3.8 Flash; confirm on pilot gold).

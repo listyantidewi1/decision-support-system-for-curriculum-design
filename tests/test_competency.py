@@ -362,7 +362,8 @@ def test_a_competency_is_a_verb_plus_the_knowledge_its_phrases_act_on():
     assert k["tagged_knowledge"] is True
     assert len(g.knowledge_objects) == 1            # "features" is in one posting only
     assert rep["n_units_containing_a_term_tagged_knowledge"] == 6
-    assert rep["n_units_opening_with_a_verb"] == 7 and rep["n_groups_with_a_knowledge_object"] == 1
+    assert rep["n_units_with_a_verb"] == 7 and rep["n_groups_with_a_knowledge_object"] == 1
+    assert rep["n_units_whose_verb_is_read_from_a_noun"] == 0
     # the statement: verb + that knowledge; no tool is named
     st = S.deterministic_statement(g)
     assert st.text == "Design machine learning algorithms" and st.object_source == "knowledge"
@@ -496,27 +497,177 @@ def test_a_group_gives_one_competency_per_cognitive_level_with_its_own_demand():
     family.status = VALID
     parts, rep = ST.split_by_level([family], ev, 15)
     by = {v.group_id: v for v in parts}
-    assert set(by) == {"cluster_h0000@C6", "cluster_h0000@C3", "cluster_h0000@none"}
-    create, apply_, none = by["cluster_h0000@C6"], by["cluster_h0000@C3"], by["cluster_h0000@none"]
+    # "web programming" names its work with a noun made from a verb (to program):
+    # it belongs to the level of that verb, not to a part without a level
+    assert set(by) == {"cluster_h0000@C6", "cluster_h0000@C3"}
+    create, apply_ = by["cluster_h0000@C6"], by["cluster_h0000@C3"]
     # "design and maintain websites" is in BOTH parts, through its verb of each level
-    assert (create.n_postings, apply_.n_postings, none.n_postings) == (7, 5, 4)
+    assert (create.n_postings, apply_.n_postings) == (11, 5)
     assert S.deterministic_statement(create).text == "Develop websites"
     assert S.deterministic_statement(apply_).text == "Apply web programming"
     assert {v["verb"] for v in apply_.verbs} == {"apply", "maintain"}
-    assert {v["verb"] for v in create.verbs} == {"develop", "design"}
-    st = S.deterministic_statement(none)
-    assert st.text == "Perform web programming" and st.krathwohl == "not stated"
+    assert {v["verb"] for v in create.verbs} == {"develop", "design", "program"}
+    assert create.cognitive["read_from"] == {"verb": 7, "noun made from a verb": 4}
     # each part is described by its own postings: tools, soft skills
     assert [t["text"] for t in create.technologies] == ["React"]
     assert [t["text"] for t in apply_.technologies] == ["PHP"]
     assert [x["text"] for x in create.soft_skills] == ["teamwork"] and apply_.soft_skills == []
-    assert create.cognitive["share_of_family_postings"] == round(7 / 15, 4)
-    assert create.cognitive["n_family_postings_with_a_verb"] == 11
+    assert create.cognitive["share_of_family_postings"] == round(11 / 15, 4)
+    assert create.cognitive["n_family_postings_with_a_verb"] == 15
     assert all(v.family_id == "cluster_h0000" and v.status == VALID for v in parts)
     # the level asked for by one posting makes no competency, and is counted
     assert rep["n_units_on_a_level_too_small_to_stand"] == 1
-    assert rep["by_level"] == {"C6": 1, "C3": 1, "none": 1}
+    assert rep["by_level"] == {"C6": 1, "C3": 1}
     assert rep["n_families_with_more_than_one_level"] == 1
+
+
+def test_a_phrase_that_names_its_work_with_a_noun_is_read_through_that_nouns_verb():
+    r = S.read_phrase
+    assert (r("web application development").how, r("web application development").verbs) == \
+        ("deverbal", ("develop",))
+    assert r("web application development").modifier == "web application"
+    assert r("Perform code reviews").how == "light+deverbal" and r("Perform code reviews").verbs == ("review",)
+    assert r("pengembangan aplikasi web").obj == "aplikasi web" and r("pengembangan aplikasi web").indonesian
+    assert r("development of scalable web apps").obj == "scalable web apps"
+    assert r("Melakukan pengujian").verbs == ("menguji",)
+    assert r("programming languages").how == "none"          # names no work
+    assert r("perform tasks").how == "verb" and r("perform tasks").verbs == ("perform",)
+    assert r("Develop REST APIs").how == "verb"
+
+
+def test_perform_development_is_a_develop_competency_on_the_level_of_develop():
+    """The researcher's correction: "Perform web application development" and
+    "Perform mobile development" look like C3 (perform) but the work is
+    developing; the competencies are "Develop web applications" and "Develop
+    mobile applications"."""
+    from competency import structure as ST
+    sents, preds = {}, {}
+    n = [0]
+
+    def add(text, span, tag="SH", times=1):
+        for _ in range(times):
+            n[0] += 1
+            sid = f"u-{n[0]:016x}#000"
+            sents[sid] = {"text": text, "posting_id": f"u-{n[0]:016x}"}
+            preds[sid] = [make_pred(text, text.index(span), text.index(span) + len(span), tag)]
+    add("Experience in web application development.", "web application development", times=6)
+    add("Develop web applications.", "Develop web applications", times=3)
+    add("Experience in mobile development.", "mobile development", times=4)
+    add("Develop mobile applications.", "Develop mobile applications", times=5)
+    add("Strong unit testing.", "unit testing", times=5)
+    add("Perform code reviews.", "Perform code reviews", times=3)
+    add("Review code.", "Review code", times=2)
+    add("Menguasai pemrograman.", "pemrograman", times=3)
+    add("Knows programming languages.", "programming languages", times=2)
+    ev = E.build_evidence(preds, sents)
+    reader = ST.Reader(ev, ST.StructureConfig())
+    assert reader.row("web application development") == (("develop",), ["web", "applications"],
+                                                         False, "confirmed")
+    assert reader.row("mobile development") == (("develop",), ["mobile", "applications"], False,
+                                                "completed")
+    assert reader.row("unit testing")[1:] == ([], False, "unconfirmed")
+    assert reader.row("Perform code reviews") == (("review",), ["code"], False, "confirmed")
+    assert reader.row("programming languages")[3] == "none"
+
+    def cluster(prefix, ids):
+        return SimpleNamespace(id=prefix, stream="hard_plus_knowledge", items=ids,
+                               summary_label=prefix, top_terms=[prefix], cohesion_score=0.9)
+
+    def by_topic(items, cfg):
+        topics = {"web": [], "mobile": [], "testing": [], "review": [], "id": [], "lang": []}
+        for it in items:
+            t = it.text.lower()
+            key = ("web" if "web" in t else "mobile" if "mobile" in t else "testing" if "unit" in t
+                   else "review" if "review" in t else "id" if "pemrograman" in t else "lang")
+            topics[key].append(it)
+        return [cluster(k, v) for k, v in topics.items() if v], {}
+    families, _ = group_evidence(ev, n[0], clusterer=by_topic)
+    for f in families:
+        f.status = VALID
+    parts, rep = ST.split_by_level(families, ev, n[0])
+    got = {p.group_id: (S.deterministic_statement(p), p) for p in parts}
+    st, part = got["web@C6"]
+    assert st.text == "Develop web applications" and st.krathwohl == "create" and part.n_postings == 9
+    assert got["mobile@C6"][0].text == "Develop mobile applications"
+    # no object could be read for "unit testing": the noun phrase is kept, the level
+    # is that of "to test", and the statement says "perform" is not the level
+    st, part = got["testing@C5"]
+    assert st.text == "Perform unit testing" and st.krathwohl == "evaluate"
+    assert st.verb_source == "light verb" and st.krathwohl_source == "deverbal noun"
+    assert "not of 'perform'" in st.notes[0] and st.grounding == 1.0
+    assert got["review@C5"][0].text == "Review code" and got["review@C5"][1].n_postings == 5
+    st, _ = got["id@C6"]
+    assert st.text == "Melakukan pemrograman" and st.krathwohl == "create"
+    # a noun phrase that names no work stays without a level
+    assert got["lang@none"][0].krathwohl == "not stated"
+    assert set(got) == {"web@C6", "mobile@C6", "testing@C5", "review@C5", "id@C6", "lang@none"}
+    how = rep["units_with_a_level_by_how_they_were_read"]
+    assert how["deverbal, object confirmed"] == 6 and how["deverbal, object completed"] == 4
+    assert how["deverbal, object unconfirmed"] == 5 and how["light+deverbal, object confirmed"] == 3
+
+
+def test_families_with_nearly_the_same_centre_are_merged_into_one():
+    import numpy as np
+    sents, preds = {}, {}
+    n = [0]
+
+    def add(text, times):
+        for _ in range(times):
+            n[0] += 1
+            sid = f"u-{n[0]:016x}#000"
+            sents[sid] = {"text": text + ".", "posting_id": f"u-{n[0]:016x}"}
+            preds[sid] = [make_pred(text + ".", 0, len(text), "SH")]
+    add("REST API development", 5)
+    add("Integrate REST APIs", 3)
+    add("Maintain databases", 4)
+    ev = E.build_evidence(preds, sents)
+
+    def fake_embed(texts):
+        table = {"rest api development": [1.0, 0.0], "integrate rest apis": [0.98, 0.2],
+                 "maintain databases": [0.0, 1.0]}
+        v = np.array([table[t.lower()] for t in texts], dtype=float)
+        return v / np.linalg.norm(v, axis=1, keepdims=True)
+    apart, rep0 = group_evidence(ev, n[0], clusterer=_key_clusterer)
+    assert len(apart) == 3 and rep0["merge"]["n_families_merged_away"] == 0
+    merged, rep = group_evidence(ev, n[0], GroupingConfig(merge_threshold=0.90),
+                                 clusterer=_key_clusterer, merge_embed=fake_embed)
+    assert len(merged) == 2 and rep["merge"] == {
+        "merge_threshold": 0.90, "n_families_before": 3, "n_merged_sets": 1,
+        "n_families_merged_away": 1, "n_families_after": 2}
+    api = next(g for g in merged if g.merged_from)
+    assert api.n_postings == 8 and {m["text"] for m in api.members} == {
+        "REST API development", "Integrate REST APIs"}
+    assert len(api.merged_from) == 1 and 0.8 < api.cohesion <= 0.9      # lower than either part
+    assert next(g for g in merged if not g.merged_from).n_postings == 4
+    # a stricter threshold leaves them apart: every pair must be that close
+    strict, _ = group_evidence(ev, n[0], GroupingConfig(merge_threshold=0.99),
+                               clusterer=_key_clusterer, merge_embed=fake_embed)
+    assert len(strict) == 3
+
+
+def test_counts_carry_intervals_and_a_small_family_is_pulled_towards_the_common_mix():
+    from competency import smoothing as SM
+    d = SM.demand(42, 1000)
+    assert d["share"] == 0.042 and d["ci95"][0] < 0.042 < d["ci95"][1]
+    assert d["ci95"][1] - d["ci95"][0] < 0.03
+    assert SM.demand(0, 0)["share"] == 0.0
+    counts = {f"big{i}": {"C6": 50 + i, "C3": 50 - i} for i in range(10)}
+    counts["small"] = {"C6": 3}                       # 3 postings, all on one level
+    mix = SM.pool_level_mix(counts)
+    assert mix["strength"] > 0 and abs(mix["mix"]["C6"] - 0.5) < 0.05
+    small = mix["shares"]["small"]["C6"]
+    assert small["raw"] == 1.0 and 0.5 < small["pooled"] < 1.0       # pulled towards the mix
+    big = mix["shares"]["big0"]["C6"]
+    assert abs(big["pooled"] - big["raw"]) < abs(small["pooled"] - small["raw"])
+    assert SM.pool_level_mix({}) == {"strength": None, "mix": {}, "shares": {}}
+    postings = [f"p{i}" for i in range(1000)]
+    items = {"a": set(postings[:300]), "b": set(postings[295:590]), "c": set(postings[990:995])}
+    ranks = SM.bootstrap_ranks(items, postings)
+    assert [ranks[k]["rank"] for k in "abc"] == [1, 2, 3]
+    assert ranks["a"]["rank_interval90"] == [1, 2] and ranks["b"]["rank_interval90"] == [1, 2]
+    assert ranks["c"]["rank_interval90"] == [3, 3]           # far behind: its rank is certain
+    assert SM.bootstrap_ranks(items, postings) == ranks      # a fixed seed
+    assert SM.bootstrap_ranks({}, postings) == {}
 
 
 def test_every_verb_the_extractor_can_open_a_hard_skill_with_has_a_sourced_level():
@@ -525,9 +676,15 @@ def test_every_verb_the_extractor_can_open_a_hard_skill_with_has_a_sourced_level
     for version in ("v1", "v2", "v3"):
         for line in load(version).lines("actions", "verbs"):
             assert line[0] in table, f"{line[0]} (lexicon {version}) has no row in the verb table"
-    assert len(table) >= 200 and S.VERB_TABLE_VERSION == "verbs-v2-sourced-unreviewed"
+    assert len(table) >= 200 and S.VERB_TABLE_VERSION == "verbs-v2.3-sourced-unreviewed"
     assert {r["level"] for r in table.values()} == set(S.LEVELS)
-    assert {r["basis"] for r in table.values()} == {"AK", "LIST", "DEV", "ID", "SOFT", "DEFAULT"}
+    assert {r["basis"] for r in table.values()} == {"AK", "LIST", "DEV", "ID", "SOFT", "DEFAULT",
+                                                    "NOM"}
+    # a verb met only through its noun never opens a phrase: "code reviews" is not "to code"
+    assert S.base_verb("code") is None and S.base_verb("program") is None
+    assert S.VERBS["program"] == "create"
+    for noun, row in S.load_nominals().items():
+        assert row["verb"] in table and table[row["verb"]]["lang"] == row["lang"], noun
     # the framework's own placements
     assert table["test"]["level"] == "evaluate" and table["test"]["process"] == "checking"
     assert table["design"]["process"] == "planning" and table["implement"]["level"] == "apply"
@@ -624,6 +781,61 @@ def test_a_generator_statement_is_judged_by_the_generators_evidence_filter():
     assert decide(**{**ok, "grounding": 0.95})["grounding_check"] == "lexical>=0.80"
 
 
+def test_two_families_that_give_the_same_statement_on_the_same_level_become_one():
+    from competency import structure as ST
+    sents, preds = {}, {}
+    n = [0]
+
+    def add(text, span, times):
+        for _ in range(times):
+            n[0] += 1
+            sid = f"u-{n[0]:016x}#000"
+            sents[sid] = {"text": text, "posting_id": f"u-{n[0]:016x}"}
+            preds[sid] = [make_pred(text, text.index(span), text.index(span) + len(span), "SH")]
+    add("Develop web applications.", "Develop web applications", 4)
+    add("Experience in web application development.", "web application development", 5)
+    add("Maintain databases.", "Maintain databases", 3)
+    ev = E.build_evidence(preds, sents)
+
+    def by_wording(items, cfg):                       # the clusterer splits by wording
+        verb = [i for i in items if i.text.startswith("Develop")]
+        noun = [i for i in items if i.text.startswith("web")]
+        db = [i for i in items if i.text.startswith("Maintain")]
+        return [SimpleNamespace(id=k, stream="hard_plus_knowledge", items=v, summary_label=k,
+                                top_terms=[k], cohesion_score=0.9)
+                for k, v in (("verb", verb), ("noun", noun), ("db", db))], {}
+    families, _ = group_evidence(ev, n[0], clusterer=by_wording)
+    for f in families:
+        f.status = VALID
+    parts, _ = ST.split_by_level(families, ev, n[0])
+    assert sorted(S.deterministic_statement(p).text for p in parts if p.level == "create") == [
+        "Develop web applications", "Develop web applications"]
+    merged, rep = ST.merge_same_statement(families, parts, ev, n[0])
+    assert rep["n_families_merged_away"] == 1 and rep["n_merged_sets"] == 1
+    assert len(merged) == 2
+    web = next(g for g in merged if g.merged_from)
+    assert web.group_id == "noun" and web.merged_from == ["verb"] and web.n_postings == 9
+    parts2, _ = ST.split_by_level(merged, ev, n[0])
+    assert [(S.deterministic_statement(p).text, p.n_postings) for p in parts2
+            if p.family_id == "noun"] == [("Develop web applications", 9)]
+    # nothing to merge: the families come back unchanged
+    same, rep = ST.merge_same_statement(merged, parts2, ev, n[0])
+    assert rep["n_families_merged_away"] == 0 and len(same) == 2
+    # a statement that names no specific work links nothing ("Develop solutions")
+    assert ST.names_specific_work("Develop web applications")
+    assert ST.names_specific_work("Review code") and ST.names_specific_work("Perform unit testing")
+    for generic in ("Develop solutions", "Troubleshoot issues", "Build applications",
+                    "Support development", "Melakukan pengembangan", "Deliver"):
+        assert not ST.names_specific_work(generic), generic
+
+
+def test_a_fragment_statement_cannot_be_a_candidate():
+    ok = dict(group_status=VALID, n_postings=10, grounding=0.9, okupasi_mapped=True)
+    d = decide(**ok, fragment=True)
+    assert d["status"] == STATUS_EXPLORATORY and d["blockers"] == ["statement_is_a_fragment"]
+    assert decide(**ok)["status"] == STATUS_CANDIDATE
+
+
 def test_formal_review_is_never_reached_without_the_three_human_facts():
     ok = dict(group_status=VALID, n_postings=10, grounding=0.9, okupasi_mapped=True)
     d = decide(**ok)
@@ -670,6 +882,11 @@ def test_pipeline_writes_an_evidence_package_and_says_it_is_an_engineering_run()
             "competency_id": c["competency_id"], "code": "C6", "level": "create",
             "statement": "Develop REST APIs", "n_postings": 6}]
         assert c["family"]["description"] is None and report["n_families"] == 1
+        # every count says how sure it is
+        assert c["demand"]["n_postings"] == 6 and c["demand"]["share"] == 1.0
+        assert c["demand"]["ci95"][0] < 1.0 and c["demand"]["rank"] == 1
+        assert c["family"]["rank"] == 1 and c["family"]["rank_interval90"] == [1, 1]
+        assert report["smoothing"]["bootstrap_rounds"] == 200 and report["zone_filter"] is None
         assert report["levels"]["by_level"] == {"C6": 1}
         assert "detail-oriented" in (out / "work_behaviour_profile.csv").read_text("utf-8-sig")
         assert report["not_built_yet"]

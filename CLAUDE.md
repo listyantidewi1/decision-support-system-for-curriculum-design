@@ -173,9 +173,12 @@ Current, passing, and the part of the repo you can trust:
 | `test_after_annotation` | 20 | `.venv-ml` |
 | `test_gold_to_models` | 10 | `.venv-ml` |
 | `test_fivetag` | 73 | `.venv-ml` |
-| `test_competency` | 54 | `.venv-ml` |
+| `test_competency` | 60 | `.venv-ml` |
+| `test_zoning` | 6 | `.venv-ml` |
+| `test_formulate` | 13 | `.venv-ml` |
+| `test_skkni` | 27 | `.venv-ml` |
 | `test_config_registry` | 5 | `.venv-ml` |
-| `test_dashboard_v3` | 8 | `.venv-ml` |
+| `test_dashboard_v3` | 9 | `.venv-ml` |
 | `test_acquisition_monthly` | 11 | `.venv-ml` |
 | `test_annotation_server` | 23 | **`.venv`** |
 
@@ -332,6 +335,40 @@ it is stored as the family's description, never as a competency statement.
 `--reuse-v2-from <run>` takes over descriptions already paid for instead of
 calling the model again.
 
+**The competency chain drops sentences that are not requirements, and that
+filter is unvalidated.** `governance/zoning.py` labels sentences from section
+headers (weak labels), trains a small classifier on them and removes company,
+benefit and legal sentences before anything is counted. It was built because
+about 10 of 24 sampled "valid" families were things like "support you and your
+family" or "apply early" (EXP-030). Its cut-off came from the developer reading
+64 sentences. Do not quote its agreement figure as accuracy; when the gold
+standard exists, measure how many expert spans sit in dropped sentences.
+`--no-zone-filter` is the ablation. Related: a phrase that names its work with
+a noun made from a verb ("web application development", "pengujian") is read
+through `competency/verbs/deverbal_nouns_v1.tsv` and takes that verb's level;
+"perform" in front of it is wording (the researcher's correction). And with
+`--all`, families whose centres are at cosine >= 0.90 are merged, because the
+clusterer splits one piece of work by its wording.
+
+**SKKNI titles show how a statement is FORMULATED; the competencies come from
+the market.** The promotors defined a competency on 2026-11-20 as a measurable
+combination of knowledge, skills, abilities and behaviours, and called "develop
+web application" a duty until it states how well, which standards and what
+outcome. The researcher then corrected the developer: SKKNI unit titles are
+examples of how to formulate a statement, not a format to translate the
+market's competencies into; SKKNI is part of the problem (the programming
+standard is from 2016). `competency/formulate.py` writes one SKKNI-style line
+per competency from its own evidence (`competency/qualifiers.py`), uses SKKNI
+wording only where a competency IS an SKKNI unit on the same level, and refuses
+tools, numbers and standards the postings do not give. Do not bring back the
+whole-unit writer of EXP-031 (elements, KUK): that was the misreading. A
+"same as SKKNI" call keeps SKKNI wording only when a second model of another
+family (`CONFIRM_MODEL`, Qwen) agrees: alone, the writer (GPT) was wrong in 4
+of its 10 "same" calls (EXP-032). Do not drop that step to save a call; a
+missed "same" costs nothing, a wrong one replaces the market's wording. The
+reference judges of EXP-032 were Claude subagents, not experts. An
+OpenRouter cost read from the account lags: read it again later.
+
 **Competencies are built from SKILL_HARD only, and KKNI never decides anything.**
 Both are the researcher's decisions of 2026-11-19. Tools and technology are
 attached to a competency by sharing a sentence; soft skills, work behaviours
@@ -398,7 +435,7 @@ Authoritative detail is in `docs/IMPLEMENTATION_PLAN.md` §0. Orientation only:
 | Layer | Modules | Status |
 |---|---|---|
 | 0 — acquisition | `acquisition/` (adapters, batch store, cadence; `monthly` = the monthly round as one command, driven by `configs/monthly_roster.json`), `job_scraping/` | NEW / ADAPT |
-| 1 — corpus governance | `preprocess_jobs_pipeline.py`, `scripts/audit_corpus_lineage.py`, `governance/` (`rules.py`, `ladder.py`), `it_relevance_filter.py` | ADAPT / NEW |
+| 1 — corpus governance | `preprocess_jobs_pipeline.py`, `scripts/audit_corpus_lineage.py`, `governance/` (`rules.py`, `ladder.py`, `zoning.py` = duty/requirement sentence filter, `config_registry.py`), `it_relevance_filter.py` | ADAPT / NEW |
 | 2 — gold standard | **`gold_standard/`** (pool, sampling, splits, IAA, seal; and the post-annotation kit: `after_annotation` = one command, `gate`, `calibration`, `adjudicate`, and `materialise` = seal the test labels and export train/dev for the models — see `docs/RUNBOOK_after_annotation.md`), `annotation_server/`, `gold_labeling_ui/` | **current work** |
 | 2b — silver labels | `labeling/` (verifier, alignment, consensus, guideline-only prompt pack, OpenRouter runner with a hard spending cap, a SYNTHETIC guideline-conformance set and a SkillSpan probe for measuring prompt changes; output goes to the gitignored `DATA/labeling/`, never under `DATA/gold_standard/`), `gold_standard/metrics.py` (the one shared evaluation engine) | NEW, **current work** |
 | 3 — extraction | **`fivetag/`** (every condition of proposal §3.3.1–3.3.3 behind one interface: E0 rules + versioned lexicon, E1/E2 encoder with layered BIO and the DAPT script, E3 GLiNER adapter, E4/E5 LLM with retrieval, E6 router, D1–D3 classifiers, `benchmark`; see `fivetag/README.md`), `baseline_versions/` (pre-approval benchmark material), `extraction_typing.py` (v1 classifier, still feeds the v1 competency stages), `llm_client_router.py` | NEW, **current work** / ADAPT |

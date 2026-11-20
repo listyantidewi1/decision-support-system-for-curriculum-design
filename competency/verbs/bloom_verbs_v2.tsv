@@ -9,6 +9,8 @@
 #            ID    Indonesian equivalent of an English row (the developer's translation)
 #            SOFT  interpersonal verb: the cognitive dimension fits it poorly; never used for a hard skill
 #            DEFAULT  supplied by the method when the postings give no verb; never sets a level
+#            NOM   recognised only through its noun ("programming" -> program): the base form is
+#                  also a common noun ("code reviews"), so it never opens a phrase as a verb
 # See SOURCES.md in this folder. UNREVIEWED: no expert has checked this table.
 recognize	en	remember	recognizing		AK
 identify	en	remember	recognizing	understand,analyze	AK
@@ -137,6 +139,10 @@ customize	en	create	producing	apply	DEV
 extend	en	create	producing	apply	DEV
 engineer	en	create	producing		DEV
 innovate	en	create	generating		DEV
+program	en	create	producing	apply	NOM
+code	en	create	producing	apply	NOM
+script	en	create	producing	apply	NOM
+model	en	create	producing	analyze	NOM
 mengingat	id	remember	recalling		ID
 mengenali	id	remember	recognizing		ID
 mengidentifikasi	id	remember	recognizing	understand,analyze	ID
@@ -144,6 +150,7 @@ menyebutkan	id	remember	recalling		ID
 menjelaskan	id	understand	explaining		ID
 memahami	id	understand			ID
 menafsirkan	id	understand	interpreting		ID
+menerjemahkan	id	understand	interpreting	apply	ID
 mengklasifikasikan	id	understand	classifying	analyze	ID
 merangkum	id	understand	summarizing		ID
 menyimpulkan	id	understand	inferring	evaluate	ID
@@ -201,6 +208,35 @@ merencanakan	id	create	planning		ID
 menghasilkan	id	create	producing		ID
 merumuskan	id	create	generating		ID
 mendefinisikan	id	create	planning	remember	ID
+menangani	id	apply	executing		ID
+menjaga	id	apply	executing		ID
+mempertahankan	id	apply	executing		ID
+menyiapkan	id	apply	executing		ID
+mempersiapkan	id	apply	executing		ID
+menyajikan	id	apply	executing		ID
+menindaklanjuti	id	apply	implementing		ID
+memperbarui	id	apply	implementing		ID
+mengaplikasikan	id	apply	implementing		ID
+mengimplementasi	id	apply	implementing	create	ID
+memodifikasi	id	apply	implementing	create	ID
+mengatur	id	apply	implementing		ID
+menyelaraskan	id	apply	implementing		ID
+menghimpun	id	apply	executing	remember	ID
+mengumpulkan	id	apply	executing	remember	ID
+melaporkan	id	understand	explaining	apply	ID
+mendeskripsikan	id	understand	explaining		ID
+menjabarkan	id	understand	explaining		ID
+mengelompokkan	id	understand	classifying		ID
+memilih	id	analyze	differentiating	evaluate	ID
+memecahkan	id	analyze	attributing	apply	ID
+menentukan	id	evaluate	critiquing	analyze	ID
+menetapkan	id	evaluate	critiquing	create	ID
+menelaah	id	evaluate	critiquing	analyze	ID
+memastikan	id	evaluate	checking		ID
+mendeteksi	id	evaluate	checking	analyze	ID
+mengukur	id	evaluate	checking	apply	ID
+mengkaji	id	evaluate	critiquing	analyze	ID
+memprogram	id	create	producing	apply	ID
 communicate	en	apply			SOFT
 collaborate	en	apply			SOFT
 coordinate	en	apply		evaluate	SOFT

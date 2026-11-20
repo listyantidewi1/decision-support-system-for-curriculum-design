@@ -1108,6 +1108,462 @@ generator's own; a family it merges away is paid for and gets no text.
   `family_descriptions.json`, `groups.json` = the families, `report.json`,
   figures); draft profile `2026-0-draf4`.
 
+## EXP-030 — Checking the clustering; sentence filter, merged families, verbs read from nouns, intervals
+
+- **Date / status:** 2026-11-20 · ENGINEERING
+- **Why:** the researcher asked to "look carefully through the results, and check
+  whether the clustering works well", pointed out that "Perform web application
+  development" and "Perform mobile development" look like C3 but are developing
+  (C6), and asked to build the developer's recommendations: verbs read from
+  nouns, intervals and pooled shares, a filter for sentences that are not
+  requirements (a level classifier that reads context waits for expert labels).
+
+### 1. The check of the families of EXP-029 (run `e0_pool_all_v4`)
+
+Method: for each of the 684 families, the posting-weighted centre of the
+embeddings of its 12 most frequent phrases (the shared sentence embedder);
+"tightness" = mean cosine of those phrases to their own centre; pairs of
+families compared by the cosine of their centres; 24 valid families drawn at
+random (seed 20261120) and read by the developer.
+
+| | |
+|---|---|
+| Postings per family | median 64, largest 5,365 |
+| Tightness of a family | median 0.93 (10th percentile 0.75) |
+| Pairs of families with centres at cosine ≥ 0.90 / ≥ 0.85 / ≥ 0.80 | 119 / 353 / 687 |
+| Families less tight than their similarity to the nearest other family | 185 |
+| Of 24 random valid families, read by the developer | about 7 company, benefit or culture text ("support you and your family", "build on our values of respect", "create a workforce"), 4 vague, the rest software work |
+
+Reading: the families are TIGHT but FRAGMENTED. The clusterer separates one
+piece of work by its wording ("REST API development", "integrating REST APIs",
+"design and implement RESTful APIs" were three families), and a large share of
+"valid" families are not requirements at all.
+
+### 2. What was built
+
+- **Sentence filter** (`governance/zoning.py`, `zoning-v1`). Section headers in the
+  postings ("Responsibilities", "Qualifications", "What we offer", "Tentang
+  kami") give weak labels to the sentences under them (17,272 headers in
+  8,873 of 18,667 postings; 246,472 sentences under a header).
+  A tf-idf + logistic-regression classifier trained on them judges the
+  398,504 sentences with no header above. A sentence is dropped under a
+  company, benefit or administrative header, or when the classifier gives it
+  P(duty or requirement) < 0.5. The cut-off was chosen by the developer
+  after reading 64 sentences in bands of P.
+- **Merging of near-duplicate families** (`grouping.merge_similar`): families
+  whose centres are at cosine ≥ 0.90 are merged, complete linkage.
+- **Verbs read from nouns** (`statement.read_phrase`, `structure.Reader`,
+  `verbs/deverbal_nouns_v1.tsv`): "web application development" = develop web
+  applications, "pengujian" = menguji, also behind "perform" / "melakukan". The
+  object is confirmed by postings that write the verb with it, or completed when
+  at least 5 postings write a longer object with that verb.
+- **Intervals** (`competency/smoothing.py`): 95% Wilson interval of each
+  share; 90% range of each rank over 200 bootstrap resamples of postings; each
+  family's level shares pooled across families (Dirichlet-multinomial, strength
+  estimated by maximum likelihood: 0.794 postings).
+
+### 3. The run (`e0_pool_all_v5`, 52 minutes)
+
+| | before (EXP-029) | now |
+|---|---|---|
+| Sentences kept by the filter | all | 480,353 of 662,248 (181,895 dropped) |
+| Evidence units | 470,280 | 424,873 |
+| Evidence dropped, by tag | — | KN 4.2%, SH 11.5%, SS 9.4%, TT 5.9%, WB 27.9% |
+| Families | 684 | 517 (53 merged away in 47 sets) |
+| Family status | sahih 667, perlu_dipecah 6, penampung_proses_penunjang 9, bercampur_domain 1, di_luar_bidang 1 | sahih 489, perlu_dipecah 17, penampung_proses_penunjang 10, di_luar_bidang 1 |
+| Pairs of families at cosine ≥ 0.90 / ≥ 0.85 / ≥ 0.80 | 119 / 353 / 687 | 19 / 150 / 332 |
+| Competencies | 1,677 | 1,150 |
+| Status | kandidat_tinjauan 1,100, eksploratif 577 | kandidat_tinjauan 774, eksploratif 376 |
+| Competencies without a readable level | 308 | 98 |
+| Hard-skill units whose verb was read from a noun | 0 | 29,877 |
+| Rank correlation between half-year windows, competencies | 0.60, 0.85, 0.65 | 0.67, 0.87, 0.71 |
+| … families | — | 0.79, 0.93, 0.82 |
+
+How the level of each hard-skill unit was read: deverbal, object completed 1,162; deverbal, object confirmed 10,057; deverbal, object no object 9,756; deverbal, object stated 14; deverbal, object unconfirmed 7,633; light+deverbal, object completed 17; light+deverbal, object confirmed 328; light+deverbal, object no object 246; light+deverbal, object stated 318; light+deverbal, object unconfirmed 343; verb, object stated 69,012.
+Statements by (verb source, object source): evidence/knowledge 970, default/phrase 83, light verb/noun phrase 68, evidence/phrase 29.
+Held back by: okupasi_unmapped 236, postings<5 150, grounding<0.80 8.
+
+The researcher's examples:
+
+| As it was | Now | Level | Postings |
+|---|---|---|---|
+| Perform mobile development (305 postings, no level read) | Develop mobile applications | C6 | 398 |
+| Perform code reviews (2,498 no level; 93 at C3 from "perform") | Review code | C5 | 2,558 |
+| Melakukan pemrograman (412, no level read) | Melakukan pemrograman | C6 | 465 |
+| Perform unit testing (620 no level; 77 at C3 from "perform") | Perform unit testing | C5 | 676 |
+
+**The filter, measured against its own weak labels** (sentences under a
+header, in 1,747 postings held out of training): accuracy 0.8303, precision of
+"drop" 0.3564, recall of "drop" 0.7172. This is agreement with the headers,
+not accuracy against people. The low precision says that many sentences the
+classifier would drop sit under a duty or requirement header; some of those are
+company introductions placed under "About the role", some are real
+requirements. How many expert-tagged spans the filter removes is the number
+that matters, and it can only be measured on the gold standard. The filter
+removed 11.5% of hard-skill and 27.9% of work-behaviour evidence.
+
+**The same 24-family reading on the new run** (seed 20261120, same procedure;
+the families are different): about 12 software work, 5 company or benefit
+text ("career development", "support our employees and their families"), 2
+mixed, 4 FRAGMENTS (spans cut short: "deliver reliable", "Perform functional",
+"Design and implement robust"), 1 knowledge term tagged as a skill
+("operating systems"). Junk is reduced, not removed.
+
+### What is still wrong (found by this check)
+
+1. **Fragments**: the rule extractor cuts spans before their object ("Write
+   clean", "Design scalable", "Perform Design, develop"). They become
+   statements. Not repaired.
+2. **The same statement in two families**: "Develop web applications" (C6)
+   is the statement of two families (185 and 174 postings), one written with
+   the verb, one with the noun ("web application development"). Their centres
+   are below 0.90, so they were not merged. Not repaired.
+3. **Company and benefit families remain** (about 5 of 24).
+4. The 120 family descriptions paid for in EXP-029 could not be carried over:
+   the families changed, and a description is reused only for a family made of
+   exactly the same evidence.
+
+- **Limits:** evidence from the rule extractor, accuracy unmeasured; the
+  filter is unvalidated and its cut-off is the developer's; the merge threshold
+  0.90 and the completion minimum 5 are starting values; "junk" and "fragment"
+  in the 24-family readings are the developer's judgement.
+- **Files:** `DATA/competency/runs/e0_pool_all_v5/`; draft profile `2026-0-draf5`.
+
+## EXP-031 — Competency units in the SKKNI form, from the posting evidence (first trials)
+
+> **Withdrawn the same day (2026-11-20).** The researcher clarified that the
+> SKKNI units the promotors showed are examples of how a competency STATEMENT
+> is formulated, not a format to translate the market's competencies into:
+> SKKNI is part of the problem the study addresses, and where a competency
+> matches an SKKNI unit, its wording may be used. The whole-unit writer
+> (elements, KUK, range, assessment guide) was removed; the evidence profile
+> and the SKKNI reader were kept. What replaced it: EXP-032. The entry below
+> is kept as the record of what was run and paid for.
+
+- **Date / status:** 2026-11-20 · DEVELOPMENT
+- **Why:** the promotors' definition, forwarded by the researcher: "A
+  competency is a measurable combination of knowledge, skills, abilities, and
+  behaviors needed to perform a task or role effectively ... 'develop web
+  application' alone is too broad and vague to count as a well-defined
+  competency — it is a general job duty or task. To turn it into a true
+  competency, you need to specify how well it is done, which skills/standards
+  are applied, and what measurable outcome it achieves." Their examples were
+  SKKNI units (J.620100.004.02 Menggunakan struktur data, …).
+
+### 1. SKKNI units read in full (`competency/skkni.py`, `skkni-parser-v1`)
+
+`DATA/master_skkni/json/skkni.json` held unit titles only. The document
+"Software Development Pemrograman.pdf" was parsed: **47 units, 151 elements, 392 performance
+criteria (KUK)**, each unit with its range of variables and assessment guide.
+One unit has an element whose KUK did not parse (reported, not hidden). The
+code series in this document is J.620100.xxx.01/02; the promotors' table cites
+some units with a later version number (.02 where this document has .01).
+
+### 2. The evidence profile of every competency (free)
+
+For each competency of `e0_pool_all_v5`, the words in its phrases and right
+after them in the same sentence: quality words (each mapped by the developer to
+an ISO/IEC 25010 characteristic), named practices and standards, purpose
+clauses. Of the 774 competencies with status "kandidat tinjauan": **480
+have a quality word, 301 a named standard, 121 an outcome clause**
+(each in at least 2 of the competency's postings).
+
+### 3. The writer (`competency/unit.py`, `skkni-unit-v1`)
+
+Model `openai/gpt-5.4-mini`, shown the real unit J.620100.016.01 as the model of form,
+writes title, description, 2–4 elements with 2–3 KUK each, range of variables
+and assessment guide, citing for every element and KUK the evidence ids it
+rests on. A checker refuses a unit whose title is not on the competency's
+cognitive level, whose element sits above it, whose KUK is not a passive
+observable statement or cites no evidence, which names a tool outside
+"peralatan" or a number the evidence does not hold. One retry.
+
+Five competencies, chosen by the developer to cover levels C3–C6:
+Develop mobile applications (C6), Maintain web applications (C3), Review code
+(C5), Perform debugging (C4), Develop APIs (C6).
+
+| | trial 1 | trial 2 |
+|---|---|---|
+| Accepted | 2 of 5 | 5 of 5 |
+| Calls | 9 | 6 |
+| Change between the trials | — | checker accepts the hyphenated passive ("di-review"); 28 Indonesian verbs added to the verb table (v2.2: menangani, menjaga, menetapkan, menyajikan, menelaah …); the writer is given the Indonesian verbs allowed on and below the level |
+
+Why trial 1 refused three: twice an element above the unit's level
+("Mengevaluasi" in a C3 unit, "Memverifikasi" in a C4 unit: right to refuse);
+three times an Indonesian verb missing from the table (a gap of the table); and
+"di-review", "di-evaluasi" (passive, refused for the hyphen: a fault of the
+checker).
+
+**Cost of both trials, read from the account:** $0.0693 (usage $89.4136 → $89.4829).
+The account showed only part of it right after the first trial and the rest an
+hour later; a cost read from the account must be read again later. Credit left:
+$5.52.
+
+### What the units show (developer's reading of the five)
+
+- They have the SKKNI form, and each KUK carries the postings behind it:
+  "API dirancang sesuai prinsip REST" (REST, 56 postings), "Kode diperiksa
+  untuk memastikan kepatuhan terhadap praktik terbaik" (best practices, 335).
+- **"How well" and "which standards" come from the postings; "measurable
+  outcome" mostly does not.** Postings name qualities (scalable, secure,
+  reliable) and standards (best practices, coding standards, REST), rarely a
+  threshold. Many KUK therefore end in SKKNI's own neutral "sesuai kebutuhan /
+  sesuai standar yang berlaku". A measurable criterion has to come from experts
+  or from SKKNI, not from postings.
+- Wording is uneven: "Menganalisis dan Memecahkan Masalah Debugging" where
+  SKKNI has "Melakukan Debugging" (J.620100.025); one unit left its work
+  attitudes in English.
+- Five units, one run each, read by the developer only. No expert has seen them.
+
+- **Files:** `DATA/master_skkni/json/skkni_units_pemrograman.json`;
+  `DATA/competency/runs/e0_pool_all_v5/unit_profiles.json`, `units_trial1.*`,
+  `units_trial2.*` (the units, `units_trial2.md` readable).
+
+---
+
+## EXP-032 — Competency statements formulated in the SKKNI style, checked by independent judges
+
+- **Date / status:** 2026-11-20 · DEVELOPMENT. The competencies come from the
+  engineering run `e0_pool_all_v8` (EXP-033), whose extractor is not yet
+  measured. The judges are language models (Claude subagents), not experts.
+- **Why:** the researcher's correction of the same day: "The competencies from
+  SKKNI are examples of how competency statements should be formulated. Not
+  that we need to translate our competencies to SKKNI terms. The SKKNI
+  themselves are part of a problem ... If any of our competency match those of
+  SKKNI, you might use the SKKNI wordings." With the promotors' definition
+  (EXP-031): a statement says how well, which standard and what outcome.
+- **Question:** can a model write, from a competency's own postings, one line
+  shaped like an SKKNI unit title (a verb on the competency's level, the
+  specific object of work, the standard, quality or outcome the postings ask
+  for, no tool names), and recognise when the competency IS an SKKNI unit, so
+  that the SKKNI wording can be used?
+
+### 1. SKKNI read in full (`competency/skkni.py`, `skkni-parser-v2`)
+
+All 29 SKKNI documents in `DATA/master_skkni` (decrees 2015–2025): **770
+units** with their elements and performance criteria. The 2019 document is
+laid out as a training package (codes ICT…, BSB…; decree 22/2019) and needed a
+second reader: 79 units, 307 elements, 1,313 criteria. An independent check of
+that reader's output found 16 defects in 15 units; all were fixed and are
+held by `tests/test_skkni.py` (27 tests). Two units stay wrong because the
+document itself is. The code "J.62010.033.02" is printed so in its document (a
+misprint of J.620100.033.02) and is kept as printed.
+
+### 2. How a statement is formulated (`competency/formulate.py`)
+
+Free steps: the competency's qualifiers (a standard, quality or outcome asked
+for in at least 5% and 3 of its postings; qualities mapped to ISO/IEC 25010)
+and its 8 nearest SKKNI units (multilingual sentence embedding of title,
+description and elements). Paid steps: the writer (`openai/gpt-5.4-mini`,
+temperature 0) writes the line, its English gloss, and says whether one unit
+is the same competency (sama), overlaps it (sebagian) or none does (tidak). A
+checker refuses a line whose verb is not on the level or is not the postings'
+own verb, that names a tool, a number, or a standard or quality the slots did
+not give, that leaves an ordinary word in English, or whose SKKNI wording does
+not begin with the title as written; one retry. The SKKNI title is used only
+for a "same" whose title's head verb is on the competency's level, and (from
+version 4) only when a second model (`qwen/qwen3.8-flash`), shown the
+competency and that one unit and nothing the writer decided, also says "same".
+
+### 3. Development sample and judges
+
+43 competencies of `e0_pool_all_v8` with status "kandidat tinjauan", spread
+over the levels, most frequent first (median 311 postings). The prompts were
+changed after reading them, so their figures are optimistic.
+
+**Match judges (round 1):** three Claude subagents, each alone, read the 43
+cases (the competency's evidence and its 8 nearest SKKNI units, nothing of
+what the formulator decided) and called each sama, sebagian or tidak. They
+agree almost perfectly with each other: **Fleiss' kappa 0.913** (observed
+agreement 0.953). Their majority (on all 43: 8 sama, 28 sebagian, 7 tidak) is
+the reference below; it does not depend on the formulator's version.
+
+**Statement reviewers:** two per round, each alone. Lens A: the promotors'
+definition and the SKKNI way of formulating. Lens B: fidelity to the evidence,
+and language. Each statement: ok, minor (small wording fix) or major (wrong,
+misleading or unusable).
+
+### 4. The versions, on the development sample
+
+"Relation agrees" counts a refused competency as a disagreement.
+
+| Version | What changed | Accepted | Relation agrees | "Same" calls right | True "same" found (of 8) | SKKNI wording right | Charged |
+|---|---|---|---|---|---|---|---|
+| try 1 (v1) | first trial | 43 | 28 | 4 of 6 | 4 | 4 of 5 | $0.0778 |
+| v1 | the run the judges read in round 1 | 43 | 25 | 6 of 19 | 6 | 6 of 11 | $0.0998 |
+| v2a | first run of v2 | 43 | 30 | 6 of 11 | 6 | 6 of 8 | $0.1329 |
+| v2 | after round 1: the judges' strict definition of "same"; the postings' own verb (no swap for another verb of the level); a glossary for ordinary words; qualities on artefacts; the SKKNI title used as written, with its own English; the title's HEAD verb decides its level | 43 | 33 | 5 of 7 | 5 | 5 of 6 | $0.1229 |
+| v3 | after round 2: more glossary; no-level work as "Melakukan + activity noun"; nothing added to the object; an SKKNI title may take one standard or outcome; sentence case | 41 | 31 | 6 of 10 | 6 | 6 of 8 | $0.1249 |
+| v4 | the second model must confirm a "same" | 42 | 34 | 4 of 4 | 4 | 4 of 4 | $0.1316 |
+| v4.1 | the checker reads the verb before a "sesuai… / according to…" clause; 12 Indonesian activity nouns (noun list v1.1); the writer sees the same 8 units as the judges (was 5); confirmation allowance 1,200 → 4,000 tokens and one retry (4 of 14 confirmations had been cut off); "deliver" = menerapkan (C3) or menghasilkan (C6) | 42 | 30 | 3 of 3 | 3 | 3 of 3 | $0.0914 |
+| **v4.3** (final) | v4.2: a statement may name its own work with a practice term ("Melakukan code review"); a slip in the SKKNI fields (a code beside "tidak", a "sebagian" without a code: 8 of 53 answers) no longer refuses the statement. v4.3: such a slip is asked about once; the first answer is kept if the second is worse | 43 | 30 | 4 of 4 | 4 | 4 of 4 | $0.0073 |
+
+The final set holds 38 entries made by v4.1, 3 by v4.2 and 2 by v4.3 (the
+held-out sample of section 5: 33, 6 and 1). A v4.1
+entry was redone only when one of its attempts met a rule that v4.2 or v4.3
+handles differently; the others are what v4.3 gives for the same answers
+(the prompts did not change after v4.1).
+
+Statement reviews of the development sample:
+
+| Round | Statements | Lens A ok / minor / major | Lens B ok / minor / major | Major for either | Ok for both |
+|---|---|---|---|---|---|
+| 1 | v1 | 12 / 16 / 15 | 20 / 13 / 10 | 16 | 9 |
+| 2 | v2 | 13 / 21 / 9 | 23 / 17 / 3 | 9 | 9 |
+| 3 | v4.3 | 17 / 18 / 8 | 30 / 9 / 4 | 9 | 14 |
+
+**Correction:** the developer's first reading of rounds 1 and 2 had lens A and
+lens B swapped (the workflow journal lists answers in the order the agents
+finished; the label is in a separate record). The table above is joined by
+label; the combined columns were not affected.
+
+### 5. The held-out check
+
+- **Sample:** 40 competencies drawn at random, in proportion to level (C3 15,
+  C4 4, C5 8, C6 13; seed 20261121), from the 557 "kandidat tinjauan"
+  competencies that were not in the development sample. Median 30 postings.
+  No C1, C2 or no-level candidate was left to draw.
+- **How independent it is:** no prompt was changed on it and no judge had seen
+  it. But its first run (v4) showed checker faults that v4.1–v4.3 fixed (the
+  "deliver" verb, the qualifier clause, cut-off confirmations, the slips in
+  the SKKNI fields), so its acceptance (38 of 40) is not an independent figure.
+- **Match judges (round 3):** the same setup. Fleiss' kappa 0.865 (observed
+  0.933). Majority: 3 sama, 27 sebagian, 10 tidak.
+
+| On the held-out sample | Result |
+|---|---|
+| Accepted by the checker | 38 of 40 (2 refused correctly: "execute automation scripts" rewritten as programming, C6 for C3; "monitoring and troubleshooting", two levels in one line) |
+| Relation agrees with the judges | 22 of 40 (development: 30 of 43) |
+| "Same" calls / right | 1 / 0 — "Membuat dokumentasi teknis" (H22) for ICAICT408A, confirmed by the second model; the judges call it partial because the family is mixed. Its twin H24, with the same statement and clean evidence, is "same" for all three judges; the writer called H24 partial |
+| True "same" found | 0 of 3 (all 3 units were among the writer's candidates) |
+| "Partial" where the judges see none | 9 — mostly competencies that are not work (below) |
+| Statements, lens A ok / minor / major | 14 / 13 / 11 (of 38) |
+| Statements, lens B ok / minor / major | 15 / 14 / 8 (of 37: one case missing from its answer) |
+| Major for either / ok for both | 12 of 38 / 8 of 38 |
+
+What the reviewers found, most frequent first (both lenses):
+
+1. **The competency list, not the formulation:** 7 of the 38 held-out
+   "competencies" are not work (a work behaviour, "operate independently"; a
+   purpose clause, "support decision-making"; employer branding, "build
+   first-class products"; self-development, "develop competencies"; a cut
+   phrase, "write unit [tests]"; one employer's sentence repeated in 15
+   postings). 6 are mixed families whose statement takes a minority object
+   ("RPA" for 7 of 101 postings). The formulation turns all of them into
+   fluent statements instead of refusing them.
+2. **Allowed qualifiers left out:** 8 of the 19 held-out cases where one fits
+   (development: 13 of 25), so the line does not say how well or to which
+   standard although the postings ask for it.
+3. Duty-level objects where the evidence names something narrower
+   ("Mengembangkan aplikasi", "Mengembangkan web", "Melakukan optimasi solusi").
+4. Unidiomatic Indonesian ("melaksanakan solusi", "melakukan dukungan",
+   "mengembangkan web"), "Mendukung" as a verb (not observable), and the
+   English glosses of SKKNI titles left in Title Case.
+5. One piece of work split by wording or by the postings' language (debugging
+   three times in the development sample; H22 and H24).
+
+### 6. Cost
+
+Provider-reported, call by call (the logs below): the 8 rows above plus the
+version-4 and version-4.1 runs of the held-out sample ($0.1316 and $0.0918)
+and its redo ($0.0105). **Total $1.0225.** Account usage read afterwards:
+$90.5055. It was $89.9027 before v3: $0.6028 more, where the logs of the runs
+since then add up to $0.5891 (the account lags and is the authority). The judges ran inside the developer's session (no API
+credit); round 3: 7 agents, about 910,000 tokens, 17.5 minutes.
+
+### 7. Reading (the developer's)
+
+- The second model does what it was added for: on the development sample the
+  writer's SKKNI wording was wrong 11 times in 38 uses before it (try 1 to v3)
+  and 0 times in 11 after (v4, v4.1, v4.3). It did not catch a mixed family whose statement
+  looks clean (H22).
+- "Same" is found rarely (4 of 8; 0 of 3 held-out). A missed "same" costs
+  little: the market's statement is kept and the unit is shown as overlapping.
+- The line between "partial" and "none" is noisy: the same prompt gave 25 to
+  34 of 43 across versions with no trend after v2, and on the held-out sample
+  the writer claims an overlap where the judges see none 9 times. The
+  dashboard therefore no longer says "not covered by the standard" for
+  "none", only that none of the 8 nearest units is the same or overlapping
+  according to the writer.
+- Most major defects come from the competency list: about a third of the
+  held-out candidates are not work or are mixed families. The formulation is
+  the wrong place to fix that, but it could flag them for the review queue.
+
+### 8. Limits
+
+- The judges are one model family (Claude), not experts. Their kappa shows
+  that they agree with each other, not that they are right.
+- Small numbers: 8 and 3 "same" cases.
+- The development sample tuned the prompts; the held-out sample tuned the
+  checker (section 5).
+- The competencies come from an engineering run; the extractor is unmeasured.
+
+- **Files:** `competency/formulate.py` (`formulate-v4.3`),
+  `competency/qualifiers.py`, `competency/skkni.py`,
+  `competency/verbs/deverbal_nouns_v1.tsv` (v1.1); tests `test_formulate` (13),
+  `test_skkni` (27). `DATA/competency/runs/e0_pool_all_v8/`: `formulated.json`
+  / `.csv` (both samples, 83, 81 accepted), `formulated_dev43_v43.*`,
+  `formulated_heldout.*`, the earlier versions `formulated_{try1,v1,v2a,v2,v3,v4,
+  heldout_v4,v41_before_redo,heldout_v41_before_redo}.json`, every call in
+  `*_llm_log.jsonl` and `*_confirm_log.jsonl`; the judges' cases, answers and
+  scripts in `validation/` (its `README.md` says which is which). Draft
+  profile `DATA/competency/profiles/drafts/2026-0-draf6/`.
+
+---
+
+## EXP-033 — Two clean-ups of the competency list: fragments held back, families with the same statement merged
+
+- **Date / status:** 2026-11-20 · ENGINEERING (no paid call). Run before the
+  formulation runs of EXP-032, which all use the run `e0_pool_all_v8` built here.
+- **Why:** reading run `e0_pool_all_v5` for the researcher's question "check
+  whether the clustering works well", the developer found two faults that no
+  number showed. (1) Statements cut before their object, presented as
+  competencies: "Write clean", "Design scalable", "Perform Design, develop".
+  They come from extraction spans that stop early. (2) One piece of work shown
+  twice: "develop web applications" (verb) and "web application development"
+  (noun, read as develop since EXP-030) were two families giving the same
+  statement on the same level.
+- **What changed:** `competency/statement.py` `is_fragment`: no plain noun after
+  the verb, only verb forms (a verb list such as "Design, develop"), or a quality
+  word or participle at the end. The contract gives such a competency the
+  blocker `statement_is_a_fragment` (it cannot reach "kandidat tinjauan") and
+  the formulation never sends it to a model. `competency/structure.py`
+  `merge_same_statement`: families giving the same statement on the same level
+  are joined (union-find) and split by level again, but only through a
+  statement that names specific work (`names_specific_work`: not a fragment, on
+  a level, its object not one of the general nouns in `GENERIC_NOUNS` such as
+  "solutions", "applications", "issues").
+- **Data and settings:** E0 evidence, lexicon v2, the whole pool (18,667
+  postings), duty and requirement sentences only (zone filter of EXP-030),
+  near-duplicate merge at cosine 0.90. Verb table v2.2 in these runs.
+
+| Run | Change | Families | Competencies | Kandidat tinjauan | Same-statement merge |
+|---|---|---|---|---|---|
+| `e0_pool_all_v5` | before (EXP-030) | 517 | 1,150 | 774 | — |
+| `e0_pool_all_v6` | merge through any shared statement | 403 | 874 | 516 | 52 sets, 114 families merged away |
+| `e0_pool_all_v7` | merge only through statements naming specific work; fragment rule | 448 | 1,001 | 609 | 47 sets, 69 merged away; 86 fragments held back |
+| `e0_pool_all_v8` | fragment rule also catches verb lists ("Design, develop") and keeps nouns in "-s" | 447 | 998 | 599 | 48 sets, 70 merged away; 97 fragments held back |
+
+- **v6 was withdrawn the same hour:** general statements ("Develop solutions",
+  "Troubleshoot issues", "Design solutions", "Build applications") linked
+  unrelated work into catch-all families, one of them "Develop applications"
+  with 4,229 postings. That is why only specific statements may link.
+- **What is left (v8, the current run):** 26 statements on one level are still
+  shared by more than one competency (65 competencies; 19 of these statements
+  by more than one review candidate). All have a general object ("Build
+  applications", 581 + 278 + 3 postings; "Design solutions"; "Implement
+  solutions"; "Troubleshoot issues"). They are different phrase clusters behind
+  one general statement and are deliberately not merged; the formulation flags
+  them "terlalu umum". Some linked statements are not work at all ("Build
+  relationships", "Create culture", "Improve lives", "Perform duties",
+  "Develop skills"): sentences the zone filter let through, merged with each
+  other only.
+- **Limits:** both rules are the developer's, checked by reading, not against
+  people. The fragment rule reads words, not grammar: "Write clear" is a
+  fragment it misses ("clear" is in no word list).
+- **Files:** `DATA/competency/runs/e0_pool_all_v6/` (withdrawn), `_v7/`, `_v8/`
+  (`report.json` → `levels.same_statement_merge`, `levels.same_statement_links`).
+
 ---
 
 ## Spending on paid model calls
@@ -1122,8 +1578,10 @@ generator's own; a family it merges away is paid for and gets no text.
 | EXP-026 (earlier generator, 15 groups) | not metered: at most $0.5783, estimated $0.07 |
 | EXP-028 (earlier generator, 30 groups; read from the account) | $0.1627 |
 | EXP-029 (earlier generator, 110 families; read from the account) | $0.6073 |
-| **Total recorded (metered runs)** | **$3.1256** |
-| **Upper bound including EXP-026** | **$3.7039** |
+| EXP-031 (unit writer, two trials of 5; read from the account) | $0.0693 |
+| EXP-032 (statement formulation, try 1 to v4.3, both samples; provider-reported per call) | $1.0225 |
+| **Total recorded (metered runs)** | **$4.2174** |
+| **Upper bound including EXP-026** | **$4.7957** |
 
 "Charged" is an upper estimate (see the shared settings). The provider's own
 balance is the authority.

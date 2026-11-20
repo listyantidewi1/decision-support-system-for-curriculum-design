@@ -175,6 +175,31 @@ def test_public_dashboard_shows_related_competencies_per_level_and_filters_by_le
     assert "Tingkat kognitif: **C3 menerapkan**" in " ".join(m.value for m in at.markdown)
 
 
+def test_public_dashboard_shows_the_formulated_statement_and_its_skkni_match():
+    root, run = _env()
+    (run / "formulated.json").write_text(json.dumps({"statements": {
+        "c1": {"accepted": True, "pernyataan": "Mengembangkan REST API sesuai prinsip REST",
+               "statement_en": "Develop RESTful APIs", "sumber_rumusan": "pasar",
+               "kualifikasi": [{"id": "S1", "kind": "standard", "text": "REST principles",
+                                "n_postings": 5}],
+               "skkni": {"kode": "J.620100.032.01", "judul": "Menerapkan Code Review",
+                         "tahun": "2016", "hubungan": "sama", "kode_tingkat_judul": "C3",
+                         "tingkat_sama": False}, "flags": []},
+        "c2": {"accepted": False, "problems": ["x"]}}}), encoding="utf-8")
+    PF.build(run, "2026-1", profiles_dir=root / "profiles")
+    at = AppTest.from_file(PUBLIC).run(timeout=90)
+    _ok(at)
+    text = " ".join(m.value for m in at.markdown)
+    assert "Mengembangkan REST API sesuai prinsip REST" in text
+    assert "REST principles (5 lowongan)" in text
+    assert "SKKNI J.620100.032.01 (2016)" in text and "judul SKKNI pada C3" in text
+    assert any("Pernyataan aturan (tanpa model bahasa): Develop REST APIs" in c.value
+               for c in at.caption)
+    # a competency without an accepted formulation keeps the rule statement
+    from dashboard_v3 import common as CM
+    assert CM.statement_text({"statement": {"text": "Perform unit testing"}}) == "Perform unit testing"
+
+
 def test_public_filters_narrow_the_list():
     root, run = _env()
     PF.build(run, "2026-1", profiles_dir=root / "profiles")

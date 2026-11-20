@@ -49,7 +49,7 @@ import dataclasses
 
 from .evidence import Evidence, canonical_key
 from .grouping import Describer, Group, GroupingConfig
-from .statement import INDONESIAN_VERBS, VERBS, split_verb_object
+from .statement import INDONESIAN_VERBS, VERBS, read_phrase
 
 STRUCTURE_VERSION = "verb-knowledge-v1"
 _BREAK_EN = {"for", "with", "using", "in", "on", "to", "of", "across", "that", "which", "by",
@@ -80,6 +80,10 @@ class StructureConfig:
     # a cognitive level becomes a competency of its own when at least this many
     # postings of the group use a verb on it
     min_variant_postings: int = 2
+    # "mobile development": the object is completed to the most frequent phrase
+    # with that verb ("develop mobile applications") only when at least this
+    # many postings write that phrase
+    min_completion_postings: int = 5
     version: str = STRUCTURE_VERSION
 
 
@@ -162,6 +166,99 @@ def shared_objects(rows: Sequence[tuple[str, list[str], list[str], bool]], n_gro
     return out
 
 
+class Reader:
+    """Reads every hard-skill phrase of a corpus once: its verbs and its object.
+
+    A phrase that opens with a verb states its object. A phrase that names its
+    work with a noun made from a verb ("web application development", "unit
+    testing") gives the verb, but in English not always the object: the words
+    before the noun are its object in "web application development" and only
+    describe it in "automated testing". The phrase alone cannot tell, so the
+    corpus is asked:
+
+      confirmed   some posting writes the verb with those very words as its
+                  object ("develop web applications"): they are the object;
+      completed   the words open an object that postings do write with that
+                  verb, in at least `min_completion_postings` postings ("mobile"
+                  -> "develop mobile applications"): the most frequent such
+                  object is taken, and marked as completed;
+      unconfirmed neither: the phrase counts for the level of its verb and
+                  gives no object. Its statement keeps the noun phrase.
+
+    Indonesian nouns ("pengembangan aplikasi web") and "development of X" give
+    their object in place and need no such check."""
+
+    def __init__(self, evidence: Sequence[Evidence], cfg: StructureConfig):
+        self.cfg = cfg
+        self.reading = {}
+        seen: dict[tuple, set] = defaultdict(set)
+        forms: dict[tuple, Counter] = defaultdict(Counter)
+        for e in evidence:
+            if e.tag != "SH":
+                continue
+            r = self.reading.get(e.text)
+            if r is None:
+                r = self.reading[e.text] = read_phrase(e.text)
+            if r.obj:                                   # the object is stated in the phrase
+                chunk = object_chunk(r.obj, r.indonesian)
+                if chunk:
+                    for v in r.verbs:
+                        key = (v, self._norm(chunk))
+                        seen[key].add(e.posting_id)
+                        forms[key][tuple(chunk)] += 1
+        self._seen, self._forms = seen, forms
+        self._by_start: dict[tuple, list[tuple]] = defaultdict(list)
+        for key in seen:
+            self._by_start[(key[0], key[1][:1])].append(key)
+        self._rows: dict[str, tuple[tuple[str, ...], list[str], bool, str]] = {}
+
+    @staticmethod
+    def _norm(chunk: Sequence[str]) -> tuple[str, ...]:
+        words = [w.lower() for w in chunk]
+        if words and len(words[-1]) > 3 and words[-1].endswith("s") and not words[-1].endswith("ss"):
+            words[-1] = words[-1][:-1]                  # "applications" and "application" agree
+        return tuple(words)
+
+    def row(self, text: str) -> tuple[tuple[str, ...], list[str], bool, str]:
+        """(verbs, object words, Indonesian?, how the object was read)."""
+        if text in self._rows:
+            return self._rows[text]
+        r = self.reading.get(text) or read_phrase(text)
+        cfg = self.cfg
+        if not r.verbs:
+            out = ((), [], False, "none")
+        elif r.obj:
+            out = (r.verbs, object_chunk(r.obj, r.indonesian), r.indonesian, "stated")
+        elif r.how == "verb" or not r.modifier:
+            out = (r.verbs, [], r.indonesian, "no object")
+        else:
+            words = object_chunk(r.modifier, False)
+            norm = self._norm(words)
+            verb = r.verbs[0]
+            exact = (verb, norm)
+            out = (r.verbs, [], False, "unconfirmed")
+            if words and len(self._seen.get(exact, ())) >= cfg.min_item_postings:
+                out = (r.verbs, list(max(sorted(self._forms[exact]),
+                                         key=lambda f: self._forms[exact][f])), False, "confirmed")
+            elif words:
+                longer = [k for k in self._by_start.get((verb, norm[:1]), ())
+                          if len(k[1]) == len(norm) + 1
+                          and tuple(w.lower() for w in k[1][:len(norm)]) == tuple(
+                              w.lower() for w in words)]
+                if longer:
+                    best = max(longer, key=lambda k: (len(self._seen[k]), k))
+                    if len(self._seen[best]) >= cfg.min_completion_postings:
+                        out = (r.verbs, list(max(sorted(self._forms[best]),
+                                                 key=lambda f: self._forms[best][f])),
+                               False, "completed")
+        self._rows[text] = out
+        return out
+
+    def how(self, text: str) -> str:
+        r = self.reading.get(text) or read_phrase(text)
+        return r.how
+
+
 def cognitive_profile(verb_postings: dict[str, set], n_group_postings: int,
                       cfg: StructureConfig) -> dict:
     """The cognitive level the POSTINGS ask for, read from their own verbs.
@@ -233,19 +330,16 @@ def split_by_level(groups: Sequence[Group], evidence: Sequence[Evidence], n_post
     cfg, gcfg = cfg or StructureConfig(), grouping_cfg or GroupingConfig()
     describer = Describer(evidence, n_postings, gcfg, posting_group)
     vocabulary = knowledge_vocabulary(evidence, cfg)
+    reader = Reader(evidence, cfg)
     by_id = {e.evidence_id: e for e in evidence}
-    parsed: dict[str, tuple[list[str], list[str], bool]] = {}
     out: list[Group] = []
     too_small = 0
+    read_as: Counter = Counter()
     for g in groups:
         by_level: dict[str | None, list[Evidence]] = defaultdict(list)
         for eid in g.evidence_ids:
             e = by_id[eid]
-            if e.text not in parsed:
-                verbs, obj = split_verb_object(e.text) if e.tag == "SH" else ([], "")
-                idn = bool(verbs) and verbs[0] in INDONESIAN_VERBS
-                parsed[e.text] = (verbs, object_chunk(obj, idn) if verbs else [], idn)
-            verbs = parsed[e.text][0]
+            verbs = reader.row(e.text)[0] if e.tag == "SH" else ()
             if not verbs:
                 by_level[None].append(e)
             for level in {VERBS[v] for v in verbs}:
@@ -262,13 +356,28 @@ def split_by_level(groups: Sequence[Group], evidence: Sequence[Evidence], n_post
                 continue
             verb_postings: dict[str, set] = defaultdict(set)
             rows = []
+            kinds: Counter = Counter()                  # how the units of this part were read
+            nominal: dict[str, set] = defaultdict(set)  # noun phrases that gave no object
+            nominal_form: dict[str, Counter] = defaultdict(Counter)
+            nominal_idn: dict[str, bool] = {}
             for e in part:
-                verbs, chunk, idn = parsed[e.text]
+                if level is None:
+                    kinds["no verb"] += 1
+                    continue
+                verbs, chunk, idn, obj_how = reader.row(e.text)
                 on_level = [v for v in verbs if VERBS[v] == level]
+                how = reader.how(e.text)
+                kinds["verb" if how == "verb" else "noun made from a verb"] += 1
+                read_as[(how, obj_how)] += 1
                 for v in on_level:
                     verb_postings[v].add(e.posting_id)
                 if on_level and chunk:
                     rows.append((e.posting_id, on_level, chunk, idn))
+                elif on_level and how != "verb":
+                    r = reader.reading[e.text]
+                    nominal[e.key].add(e.posting_id)
+                    nominal_form[e.key][r.nominal or e.text] += 1
+                    nominal_idn[e.key] = r.indonesian
             n = len(postings)
             code = BLOOM_CODE.get(level)
             v = dataclasses.replace(
@@ -284,8 +393,16 @@ def split_by_level(groups: Sequence[Group], evidence: Sequence[Evidence], n_post
                 "share_of_family_postings": round(n / max(1, family_postings), 4),
                 "n_family_postings": family_postings,
                 "n_family_postings_with_a_verb": with_verb,
-                "basis": ("verbs written in the postings" if level else
-                          "the postings name this work without a verb: no level can be read")}
+                "read_from": dict(kinds),
+                "basis": ("the verbs of the postings, and nouns made from a verb" if level else
+                          "the postings name this work with a noun that carries no verb: "
+                          "no level can be read")}
+            if nominal:
+                top = max(nominal, key=lambda k: (len(nominal[k]), k))
+                forms = nominal_form[top]
+                v.cognitive["nominal_label"] = {
+                    "text": max(sorted(forms), key=lambda f: forms[f]),
+                    "n_postings": len(nominal[top]), "indonesian": nominal_idn[top]}
             out.append(v)
     out.sort(key=lambda v: (-v.n_postings, v.group_id))
     report = {"n_families": len(groups), "n_competencies_by_level": len(out),
@@ -293,7 +410,10 @@ def split_by_level(groups: Sequence[Group], evidence: Sequence[Evidence], n_post
               "n_families_with_more_than_one_level": sum(
                   1 for n in Counter(v.family_id for v in out if v.level).values() if n > 1),
               "n_units_on_a_level_too_small_to_stand": too_small,
-              "min_variant_postings": cfg.min_variant_postings}
+              "min_variant_postings": cfg.min_variant_postings,
+              "units_with_a_level_by_how_they_were_read": {
+                  f"{how}, object {obj}": n for (how, obj), n in sorted(read_as.items())},
+              "min_completion_postings": cfg.min_completion_postings}
     return out, report
 
 
@@ -326,14 +446,109 @@ def knowledge_in(obj: str, vocabulary: dict[str, dict], max_words: int = 6) -> s
     return None
 
 
+# Nouns too general to show that two families are the same work: "Develop
+# solutions" or "Troubleshoot issues" is said of very different work. The first
+# run of the merge linked unrelated families through such statements into
+# catch-all families of thousands of postings (EXP-033).
+GENERIC_NOUNS = {
+    "application", "applications", "solution", "solutions", "system", "systems", "software",
+    "feature", "features", "product", "products", "service", "services", "project", "projects",
+    "process", "processes", "tool", "tools", "platform", "platforms", "issue", "issues",
+    "problem", "problems", "task", "tasks", "work", "development", "operations", "operation",
+    "initiatives", "results", "value", "things", "impact", "quality", "experience", "experiences",
+    "support", "environment", "environments", "technology", "technologies", "functionality",
+    "aplikasi", "solusi", "sistem", "fitur", "produk", "layanan", "proyek", "proses", "masalah",
+    "pekerjaan", "pengembangan", "teknologi"}
+
+
+def names_specific_work(statement: str) -> bool:
+    """True when the statement's object says WHAT work: not empty, and not only
+    general nouns ("Develop web applications" yes; "Develop solutions" no)."""
+    from .statement import LIGHT_VERBS, base_verb
+    words = [w.strip(",.;:()").lower() for w in statement.split()]
+    words = [w for w in words if w]
+    if not words:
+        return False
+    rest = words[1:]
+    while rest and (rest[0] in LIGHT_VERBS or (words[0] in LIGHT_VERBS and base_verb(rest[0]))):
+        rest = rest[1:]
+    content = [w for w in rest if w not in {"the", "a", "an", "and", "or", "dan", "atau", "of", "for"}]
+    return bool(content) and not all(w in GENERIC_NOUNS for w in content)
+
+
+def merge_same_statement(families: Sequence[Group], parts: Sequence[Group],
+                         evidence: Sequence[Evidence], n_postings: int,
+                         grouping_cfg: GroupingConfig | None = None,
+                         posting_group: dict[str, str] | None = None) -> tuple[list[Group], dict]:
+    """Families whose parts get the SAME statement on the SAME level are one family.
+
+    The clusterer separates one piece of work by its wording: "develop web
+    applications" (verb) and "web application development" (noun) fell into two
+    families whose centres were too far apart to merge, and both gave "Develop
+    web applications" on C6 (EXP-030). Here the parts' rule statements are
+    compared: two families that share one (level, statement) are merged, and so
+    on transitively. A part without a level, or whose statement is a fragment
+    or names no specific work ("Develop solutions"), does not link families.
+
+    The merged family keeps the id, label, validity status and cohesion of its
+    largest member; its evidence is the union; `merged_from` names the others."""
+    from .statement import deterministic_statement, is_fragment
+    parent = {g.group_id: g.group_id for g in families}
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    first: dict[tuple[str, str], str] = {}
+    links = []
+    for p in parts:
+        if not p.level or p.family_id not in parent:
+            continue
+        text = deterministic_statement(p).text
+        if is_fragment(text) or not names_specific_work(text):
+            continue
+        key = (p.level, text.lower())
+        other = first.setdefault(key, p.family_id)
+        if other != p.family_id and find(other) != find(p.family_id):
+            parent[find(p.family_id)] = find(other)
+            links.append({"statement": text, "level": p.level, "families": [other, p.family_id]})
+    sets: dict[str, list[Group]] = defaultdict(list)
+    for g in families:
+        sets[find(g.group_id)].append(g)
+    if all(len(v) == 1 for v in sets.values()):
+        return list(families), {"n_families_before": len(families), "n_merged_sets": 0,
+                                "n_families_merged_away": 0, "links": []}
+    describer = Describer(evidence, n_postings, grouping_cfg or GroupingConfig(), posting_group)
+    by_id = {e.evidence_id: e for e in evidence}
+    out: list[Group] = []
+    for members in sets.values():
+        if len(members) == 1:
+            out.append(members[0])
+            continue
+        members.sort(key=lambda g: (-g.n_postings, g.group_id))
+        base = members[0]
+        ids = sorted({i for g in members for i in g.evidence_ids})
+        merged = dataclasses.replace(
+            base, merged_from=list(base.merged_from) + [g.group_id for g in members[1:]],
+            **describer.describe([by_id[i] for i in ids]))
+        out.append(merged)
+    out.sort(key=lambda g: (-g.n_postings, g.group_id))
+    return out, {"n_families_before": len(families),
+                 "n_merged_sets": sum(1 for v in sets.values() if len(v) > 1),
+                 "n_families_merged_away": sum(len(v) - 1 for v in sets.values()),
+                 "links": links[:200]}
+
+
 def annotate(groups: Sequence[Group], evidence: Sequence[Evidence],
              cfg: StructureConfig | None = None) -> dict:
     """Fills `verbs` and `knowledge_objects` of every group; returns a report."""
     cfg = cfg or StructureConfig()
     vocabulary = knowledge_vocabulary(evidence, cfg)
+    reader = Reader(evidence, cfg)
     by_id = {e.evidence_id: e for e in evidence}
-    parsed: dict[str, tuple[list[str], list[str], bool, bool]] = {}
-    n_units = n_with_verb = n_with_tagged = 0
+    tagged: dict[str, bool] = {}
+    n_units = n_with_verb = n_with_tagged = n_from_noun = 0
     for g in groups:
         verb_postings: dict[str, set] = defaultdict(set)
         rows, postings = [], set()
@@ -342,19 +557,17 @@ def annotate(groups: Sequence[Group], evidence: Sequence[Evidence],
             postings.add(e.posting_id)
             if e.tag != "SH":
                 continue
-            if e.text not in parsed:
-                verbs, obj = split_verb_object(e.text)
-                idn = bool(verbs) and verbs[0] in INDONESIAN_VERBS
-                parsed[e.text] = (verbs, object_chunk(obj, idn) if verbs else [], idn,
-                                  knowledge_in(obj, vocabulary) is not None)
-            verbs, chunk, idn, tagged = parsed[e.text]
+            verbs, chunk, idn, _ = reader.row(e.text)
+            if e.text not in tagged:
+                tagged[e.text] = knowledge_in(e.text, vocabulary) is not None
             n_units += 1
             n_with_verb += bool(verbs)
-            n_with_tagged += tagged
+            n_from_noun += bool(verbs) and reader.how(e.text) != "verb"
+            n_with_tagged += tagged[e.text]
             for v in verbs:
                 verb_postings[v].add(e.posting_id)
             if verbs and chunk:
-                rows.append((e.posting_id, verbs, chunk, idn))
+                rows.append((e.posting_id, list(verbs), chunk, idn))
         n = max(1, len(postings))
         g.verbs = sorted(
             ({"verb": v, "krathwohl": VERBS.get(v, "not in the verb table"),
@@ -366,7 +579,8 @@ def annotate(groups: Sequence[Group], evidence: Sequence[Evidence],
     with_obj = [g for g in groups if g.knowledge_objects]
     return {"structure_version": cfg.version, "n_groups": len(groups),
             "n_hard_skill_units_in_groups": n_units,
-            "n_units_opening_with_a_verb": n_with_verb,
+            "n_units_with_a_verb": n_with_verb,
+            "n_units_whose_verb_is_read_from_a_noun": n_from_noun,
             "n_units_containing_a_term_tagged_knowledge": n_with_tagged,
             "n_knowledge_terms_in_vocabulary": len(vocabulary),
             "min_vocabulary_postings": cfg.min_vocabulary_postings,

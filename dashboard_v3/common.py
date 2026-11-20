@@ -48,6 +48,13 @@ def level_text(cog: dict | None) -> str:
     return f"{cog['code']} {LEVEL_LABEL.get(cog['level'], cog['level'])}"
 
 
+def statement_text(rec: dict) -> str:
+    """The statement a reader sees: the SKKNI-style formulation when the
+    profile has one, else the rule statement of the pipeline."""
+    f = rec.get("formulated") or {}
+    return f.get("pernyataan") or rec["statement"]["text"]
+
+
 def level_code(rec: dict) -> str | None:
     """The filter value of a recommendation: its Bloom code, NO_LEVEL when its
     postings use no verb, None for a profile published before levels existed."""

@@ -42,7 +42,8 @@ from .contract import ContractConfig, StudyFacts, decide
 from .evidence import Evidence, by_tag, denominators, from_ensemble_run, from_extractor, profile
 from .grouping import GroupingConfig, group_evidence
 from .statement import (GROUNDING_VERSION, VERB_TABLE_VERSION, VERBS,
-                        deterministic_statement, llm_statement, unchecked_llm_statement)
+                        deterministic_statement, is_fragment, llm_statement,
+                        unchecked_llm_statement)
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 RUNS_DIR = REPO_ROOT / "DATA" / "competency" / "runs"
@@ -63,7 +64,7 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
         curriculum_units: Sequence[dict] | None = None, curriculum_name: str = "kurikulum",
         curriculum_kkni_level: int | None = None, check_statements: bool = True,
         pipeline_name: str = "", embedder=None, v2_generator: dict | None = None,
-        log=print) -> dict:
+        prefilter: dict | None = None, log=print) -> dict:
     out_dir = Path(out_dir).resolve()
     if GS_DIR.resolve() in out_dir.parents:
         raise ValueError("competency output must not be written under DATA/gold_standard/")
@@ -81,6 +82,18 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
     # One competency per cognitive level of each group (the group is the family).
     variants, split_report = ST.split_by_level(groups, evidence, den["n_postings"], grouping_cfg,
                                                posting_group)
+    # families that give the same statement on the same level are one family
+    groups, same_statement_report = ST.merge_same_statement(
+        groups, variants, evidence, den["n_postings"], grouping_cfg, posting_group)
+    if same_statement_report["n_families_merged_away"]:
+        log(f"merged {same_statement_report['n_families_merged_away']} families that gave the "
+            f"same statement on the same level")
+        structure_report = ST.annotate(groups, evidence)
+        variants, split_report = ST.split_by_level(groups, evidence, den["n_postings"],
+                                                   grouping_cfg, posting_group)
+    split_report["same_statement_merge"] = {k: v for k, v in same_statement_report.items()
+                                            if k != "links"}
+    split_report["same_statement_links"] = same_statement_report["links"][:50]
     # The earlier LLM generator writes ONE description per family: it blends the
     # levels on purpose, so it describes the family and is not a competency of
     # one level. Descriptions already paid for are taken over, not bought again.
@@ -168,6 +181,31 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
                          "verbs": g.verbs, "knowledge_objects": g.knowledge_objects,
                          "tag_counts": g.tag_counts, "cohesion": g.cohesion,
                          "evidence_ids": g.evidence_ids, "samples": g.samples}})
+    # ---- how sure the counts are (competency.smoothing)
+    from . import smoothing as SM
+    posting_of = {e.evidence_id: e.posting_id for e in evidence}
+    all_postings = sorted({(r.get("posting_id") or s.split("#")[0]) for s, r in sentences.items()})
+    item_postings = {c["competency_id"]: {posting_of[i] for i in c["evidence"]["evidence_ids"]}
+                     for c in competencies}
+    family_postings = {g.group_id: {posting_of[i] for i in g.evidence_ids} for g in groups}
+    comp_ranks = SM.bootstrap_ranks(item_postings, all_postings)
+    family_ranks = SM.bootstrap_ranks(family_postings, all_postings)
+    level_counts: dict[str, dict[str, int]] = {}
+    for c in competencies:
+        level_counts.setdefault(c["family"]["id"], {})[c["cognitive"]["code"] or "none"] = \
+            c["n_postings"]
+    mix = SM.pool_level_mix(level_counts)
+    for c in competencies:
+        c["demand"] = {**SM.demand(c["n_postings"], den["n_postings"]),
+                       **comp_ranks.get(c["competency_id"], {})}
+        c["family"].update(family_ranks.get(c["family"]["id"], {}))
+        c["family"]["demand"] = SM.demand(c["family"]["n_postings"], den["n_postings"])
+        share = mix["shares"].get(c["family"]["id"], {}).get(c["cognitive"]["code"] or "none")
+        c["cognitive"]["share_among_family_levels"] = share
+    smoothing_report = {"version": SM.SMOOTHING_VERSION, "bootstrap_rounds": SM.BOOTSTRAP_ROUNDS,
+                        "bootstrap_seed": SM.BOOTSTRAP_SEED,
+                        "level_mix_prior_strength_in_postings": mix["strength"],
+                        "level_mix_of_all_families": mix["mix"]}
     # every competency names its relatives: the other levels of the same family
     relatives: dict[str, list[dict]] = {}
     for c in competencies:
@@ -210,7 +248,8 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
                                cfg=contract_cfg, facts=facts,
                                # a v2 statement reached here only by passing the generator's
                                # own evidence filter; the ones it dropped are in the report
-                               grounding_passed=True if c.get("v2") else None)
+                               grounding_passed=True if c.get("v2") else None,
+                               fragment=is_fragment(c["statement"]["text"]))
     # ---- time analysis of each competency inside this run's own postings
     temporal_report: dict = {"run": False}
     if posting_month and competencies:
@@ -231,6 +270,8 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
             "adequacy", "adequacy_reason", "trend_test_note", "windows", "n_items_analysed",
             "n_items_too_rare", "trend_counts", "volatility_counts", "top_n_turnover")},
             "rank_stability": T.rank_stability([r["shares"] for r in t["items"]]),
+            "rank_stability_of_families": T.rank_stability(
+                [r["shares"] for r in T.analyse(family_postings, months, temporal_cfg)["items"]]),
             "persistence_module_used_for_order": use_persistence}
 
     # ---- coverage against the official references, and against a curriculum
@@ -267,6 +308,7 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
                              "the rest" if v2_generator else
                              "llm with deterministic fallback" if llm_call else "deterministic-v1"),
         "v2_generator": v2_info, "structure": structure_report, "levels": split_report,
+        "zone_filter": prefilter, "smoothing": smoothing_report,
         "n_families": len(groups),
         "n_families_described_by_the_generator": len(
             {c["family"]["id"] for c in competencies if c["family"]["description"]}),
@@ -372,6 +414,30 @@ def run(evidence: Sequence[Evidence], sentences: Mapping[str, Mapping], out_dir:
     return report
 
 
+def zone_filter(evidence: Sequence[Evidence], gs_dir: Path = GS_DIR, log=print
+                ) -> tuple[list[Evidence], dict]:
+    """Drops evidence from sentences that are not a duty or a requirement
+    (company description, benefits, legal and application text). The filter is
+    fitted on the whole sentence pool every time, so a sample run and a full run
+    judge a sentence alike. See `governance.zoning` for what it can and cannot
+    claim."""
+    import pandas as pd
+    from collections import Counter as _Counter
+    from governance import zoning as Z
+    pool = pd.read_parquet(gs_dir / "sentence_pool.parquet",
+                           columns=["sentence_id", "posting_id", "sent_index", "sentence_text"])
+    res = Z.fit(pool["posting_id"].tolist(), pool["sent_index"].tolist(),
+                pool["sentence_text"].tolist())
+    keep = dict(zip(pool["sentence_id"], res["keep"]))
+    kept = [e for e in evidence if keep.get(e.sentence_id, True)]
+    before, after = _Counter(e.tag for e in evidence), _Counter(e.tag for e in kept)
+    report = {**res["report"], "evidence_before": dict(before), "evidence_after": dict(after),
+              "evidence_dropped_share": {t: round(1 - after[t] / before[t], 4) for t in before}}
+    log(f"zone filter: {len(evidence) - len(kept)} of {len(evidence)} evidence units dropped "
+        f"(sentences that are not a duty or a requirement)")
+    return kept, report
+
+
 def _v2_options(args) -> dict | None:
     if args.statements != "v2":
         return None
@@ -446,6 +512,12 @@ def main() -> None:
                          "postings, attach the rest (default 1 for a sample, 3 with --all)")
     e0.add_argument("--attach-threshold", type=float, default=GroupingConfig.attach_threshold)
     e0.add_argument("--indonesian-only", action="store_true")
+    e0.add_argument("--no-zone-filter", action="store_true",
+                    help="keep evidence from company, benefit and legal sentences (ablation)")
+    e0.add_argument("--merge-threshold", type=float, default=None,
+                    help="merge families whose centres are at least this close "
+                         "(default 0.90 with --all, no merging for a sample)")
+    e0.add_argument("--no-merge", action="store_true")
     e0.add_argument("--lexicon", default="v2")
     e0.add_argument("--seed", type=int, default=7)
     en = sub.add_parser("ensemble", help="spans accepted by a stored multi-LLM run")
@@ -473,11 +545,17 @@ def main() -> None:
                                    args.indonesian_only, stratum=args.stratum)
         extractor = E0Rules(version=args.lexicon)
         evidence = from_extractor(extractor, sentences)
+        prefilter = None
+        if not args.no_zone_filter:
+            evidence, prefilter = zone_filter(evidence)
         core = args.core_min_postings or (3 if args.all else 1)
+        merge = None if args.no_merge else (args.merge_threshold or (0.90 if args.all else None))
         grouping_cfg = GroupingConfig(core_min_postings=core,
-                                      attach_threshold=args.attach_threshold)
+                                      attach_threshold=args.attach_threshold,
+                                      merge_threshold=merge)
         source = (f"E0 rules, lexicon {args.lexicon}, "
                   + ("whole pool" if args.all else f"pool sample seed {args.seed}")
+                  + ("" if args.no_zone_filter else ", duty and requirement sentences only")
                   + (f", stratum {args.stratum}" if args.stratum else ""))
     else:
         import pandas as pd
@@ -486,7 +564,7 @@ def main() -> None:
                      for r in df.itertuples(index=False)}
         evidence = from_ensemble_run(Path(args.run_dir), sentences, args.accept_majority)
         source = f"multi-LLM run {Path(args.run_dir).name}, split {args.split}"
-        grouping_cfg = None
+        grouping_cfg, prefilter = None, None
     posting_group = None
     groups_path = GS_DIR / "leakage_groups.parquet"
     if groups_path.is_file():
@@ -500,7 +578,7 @@ def main() -> None:
                  contract_cfg=ContractConfig(min_postings=args.min_postings),
                  grouping_cfg=grouping_cfg,
                  mapping=not args.no_mapping, posting_group=posting_group,
-                 v2_generator=_v2_options(args),
+                 v2_generator=_v2_options(args), prefilter=prefilter,
                  posting_month=posting_months(), pipeline_name="P1" if args.cmd == "e0" else "")
     competencies = json.loads((Path(report["out_dir"]) / "competencies.json").read_text("utf-8"))
     print()

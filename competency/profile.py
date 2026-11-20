@@ -111,6 +111,11 @@ def build(run_dir: Path, version: str, *, previous: Path | None = None,
     """Publish a profile from a finished `competency.pipeline` run."""
     run_dir = Path(run_dir)
     comps = json.loads((run_dir / "competencies.json").read_text(encoding="utf-8"))
+    # statements formulated in the SKKNI style (competency.formulate), when the run has them
+    formulated: dict = {}
+    if (run_dir / "formulated.json").is_file():
+        formulated = {k: v for k, v in json.loads((run_dir / "formulated.json").read_text(
+            encoding="utf-8"))["statements"].items() if v.get("accepted")}
     report = json.loads((run_dir / "report.json").read_text(encoding="utf-8"))
     kind = "releases" if valid_for_release else "drafts"
     out_dir = Path(profiles_dir) / kind / version
@@ -125,6 +130,7 @@ def build(run_dir: Path, version: str, *, previous: Path | None = None,
             "rank": rank, "competency_id": c["competency_id"], "statement": c["statement"],
             "stream": c["stream"], "contract": c["contract"], "delta": c.get("delta"),
             "cognitive": c.get("cognitive"), "family": c.get("family"),
+            "formulated": formulated.get(c["competency_id"]),
             "coverage": c.get("coverage"), "kkni": c.get("kkni"), "okupasi": c.get("okupasi"),
             "temporal": c.get("temporal"), "n_postings": c["n_postings"],
             "n_posting_groups": c.get("n_posting_groups"),

@@ -66,6 +66,26 @@ and institutions of different levels use the result.
   levels it teaches to. Which levels suit which kind of institution is NOT
   decided anywhere in the code.
 
+**A noun made from a verb carries the verb** (the researcher's correction,
+2026-11-20). "Perform web application development" looks like C3 because of
+"perform", but the work is developing: the competency is "Develop web
+applications", on C6. `statement.read_phrase` reads such phrases through
+`verbs/deverbal_nouns_v1.tsv` ("development" = develop, "testing" = test,
+"pengujian" = menguji), also behind a verb that only says "do it" ("perform
+code reviews" = review code).
+
+- The level is that of the noun's verb, and the page says it was read from a
+  noun.
+- The object needs care in English: the words before the noun are its object
+  in "web application development" and only describe it in "automated
+  testing". So the corpus is asked. *Confirmed*: postings write the verb with
+  those very words ("develop web applications"). *Completed*: the words open an
+  object that at least 5 postings write with that verb ("mobile development"
+  becomes "Develop mobile applications"). *Unconfirmed*: neither; the statement
+  keeps the noun phrase ("Perform unit testing") with the level of "to test",
+  and says that "perform" is wording, not a level.
+- A noun phrase that names no work ("programming languages") still has no level.
+
 **The verb table.** Which verb sits on which level is
 `verbs/bloom_verbs_v2.tsv`: 203 verbs, English and Indonesian, each with the
 cognitive process it is read as, the other levels where published lists place
@@ -92,6 +112,131 @@ order and a list of prepositions, so a span the extractor cut short ("Write
 clean") gives a wrong object. Each statement carries the share of the group's
 postings that support its object (`object_support` in the CSV), so a weak one
 can be seen.
+
+## How a competency statement is formulated
+
+**The promotors' definition (2026-11-20):** a competency is a measurable
+combination of knowledge, skills, abilities and behaviours needed to perform a
+task or role; "develop web application" is a duty, not yet a competency, until
+it says how well it is done, which skills or standards apply and what outcome
+it achieves. Their examples were SKKNI unit titles ("Menggunakan struktur
+data", "Menulis kode dengan prinsip sesuai guidelines dan best practices").
+
+**The researcher's correction (same day):** those SKKNI titles are examples of
+HOW a statement is formulated, not a format to translate the market's
+competencies into. SKKNI is part of the problem the study addresses (the
+programming standard dates from 2016); the competencies come from current
+postings. Where a competency IS an SKKNI unit, the SKKNI wording may be used.
+
+So every competency gets one statement in Indonesian, shaped like an SKKNI
+title, with an English gloss (`formulate.py`):
+
+    <operational verb on the competency's level> <the specific object of work>
+        [standard or method: "sesuai prinsip REST"]  [quality: "yang aman"]  [outcome: "untuk ..."]
+
+- The bracketed parts come from the competency's own postings
+  (`qualifiers.py`): quality words (each with its ISO/IEC 25010
+  characteristic), named practices and standards, purpose clauses. A part
+  enters only when at least 5% of the competency's postings (and at least 3)
+  ask for it. No tool or product name enters a statement.
+- The nearest SKKNI units are found among all SKKNI documents in
+  `DATA/master_skkni` (`skkni.py`; they range from 2015 to 2025). A model
+  formulates the statement and says whether one of them is the same
+  competency. A checker refuses a verb off the level, a tool, a number, or a
+  standard or quality the postings did not give.
+- The statement uses the verb the postings use for the work (or
+  "Melakukan"/"Melaksanakan" + its work-noun: "Melakukan debugging"), never a
+  stock verb that merely sits on the same level. Qualities describe an
+  artefact (an application, code, an API), not requirements or performance.
+- **SKKNI wording** is used when the competency is the SAME as an SKKNI unit
+  (same work, same object, same scope; judged strictly) AND the SKKNI title's
+  head verb is on the competency's level AND a second model of another family
+  (`CONFIRM_MODEL`, Qwen), shown the competency and that one unit and nothing
+  the writer decided, also says "same". The title is used exactly as written,
+  optionally with one standard or outcome; the market's statement is kept
+  beside it. Otherwise the market's statement is used; when only the levels
+  differ, both levels are shown.
+- Slips in the writer's SKKNI fields (a code beside "tidak", a "sebagian"
+  without a code) are asked about once, then read cautiously with a note;
+  they do not cost the statement.
+- **Checked by independent judges (EXP-032).** Three blind judges of the SKKNI
+  relation agree with each other almost perfectly (Fleiss' kappa 0.91 and
+  0.87). On the 43 competencies the prompts were developed on, version 4.3
+  used SKKNI wording 4 times, all right (before the second model: 11 wrong in
+  38 uses). On 40 competencies drawn at random from the others: 1 SKKNI
+  wording, wrong (a mixed family behind a clean statement); 12 of 38
+  statements have a major defect for at least one of two reviewers, most of
+  them because the "competency" is not work (a work behaviour, a purpose
+  clause, employer branding) or is a mixed family. The formulation turns such
+  input into a fluent line; it does not yet refuse or flag it.
+- A competency with a general object ("applications", "solutions") is flagged
+  "terlalu umum".
+
+```powershell
+.venv-ml\Scripts\python.exe -m competency.skkni parse-all
+.venv-ml\Scripts\python.exe -m competency.formulate --run DATA\competency\runs\<run> --sample 40 --max-usd 0.40
+# every candidate, leaving out those already formulated (costs credit: about $0.0023 each)
+.venv-ml\Scripts\python.exe -m competency.formulate --run DATA\competency\runs\<run> --all --skip-existing --max-usd 2.00
+```
+
+An earlier reading of the promotors' message (same day) wrote each competency
+out as a whole SKKNI unit, with elements and performance criteria (EXP-031).
+That was not what was meant, and the unit writer was removed.
+
+## Two clean-ups of the competency list (EXP-033)
+
+- **Fragments are held back.** A statement whose phrases were cut before
+  their object ("Write clean", "Design scalable", "Perform Design, develop")
+  names no work; `statement.is_fragment` finds it (no plain noun after the
+  verb; only verb forms, or a trailing quality word or participle) and the
+  contract gives it the blocker `statement_is_a_fragment`. The formulation
+  never sends a fragment to the model.
+- **Families that give the same statement on the same level are merged**
+  (`structure.merge_same_statement`): "develop web applications" (verb) and
+  "web application development" (noun) were two families with one statement.
+  Only a statement that names specific work links families: a first run that
+  let generic statements link ("Develop solutions", "Troubleshoot issues")
+  chained unrelated work into catch-all families of thousands of postings and
+  was withdrawn.
+
+## Before anything is counted: only duty and requirement sentences
+
+A posting also describes the company, lists benefits and tells the reader how
+to apply. The rule extractor tags any phrase that opens with an action verb, so
+"support you and your family" and "apply early" became hard skills and then
+"valid" competencies: in a random sample of 24 valid families read on
+2026-11-20, about 10 were of that kind. `governance/zoning.py` removes such
+sentences first.
+
+- Section headers in the postings ("Responsibilities", "Qualifications", "What
+  we offer", "Tentang kami") label the sentences under them. These labels are
+  weak: nobody checked them.
+- A classifier learns from them and judges the sentences no header covers. It
+  drops a sentence only when the probability that it is a duty or requirement
+  is under 0.5.
+- **It is not validated against people.** The cut-off was set from the
+  developer's reading of 64 sentences. The gold standard will show how many
+  expert-tagged spans sit in sentences this filter drops; that is the number
+  to report. `--no-zone-filter` switches it off, to measure what it changes.
+
+## Families that are the same work are merged
+
+The clusterer separates phrases by wording, so "REST API development",
+"integrating REST APIs" and "design and implement RESTful APIs" came out as
+three families (119 pairs of families with centres at cosine 0.90 or more). With
+`--all`, families whose centres are that close are merged
+(`grouping.merge_similar`, complete linkage: every pair in a merged family is
+that close). The threshold is a starting value.
+
+## How sure a count is
+
+`smoothing.py` adds to every competency: the 95% interval of its share of
+postings; the range of ranks it takes when the postings are resampled 200
+times (two competencies whose ranges overlap are not shown to differ); and its
+share among the levels of its family, estimated together with all families so
+that a level seen in three postings of a small family is not read as a firm
+percentage. Rank stability over time is reported for families as well as for
+competencies.
 
 ## The map of knowledge and technology
 

@@ -1,0 +1,94 @@
+# Nouns made from a verb: the work they name is the work of that verb.
+# "web application development" is "develop web applications"; "pengujian" is "menguji".
+# Columns, tab-separated: noun	lang	verb      (the verb must have a row in bloom_verbs_v2.tsv)
+# English nouns close a noun phrase ("unit testing"); Indonesian ones open it ("pengujian unit").
+# The researcher's correction of 2026-11-20: "Perform web application development" looks like
+# C3 (perform) but the work is developing. A phrase that names its work with one of these nouns
+# takes the level of the verb, marked as read from a noun. UNREVIEWED.
+development	en	develop
+testing	en	test
+tests	en	test
+debugging	en	debug
+programming	en	program
+coding	en	code
+scripting	en	script
+modelling	en	model
+modeling	en	model
+implementation	en	implement
+deployment	en	deploy
+deployments	en	deploy
+maintenance	en	maintain
+integration	en	integrate
+integrations	en	integrate
+automation	en	automate
+configuration	en	configure
+administration	en	administer
+management	en	manage
+analysis	en	analyse
+optimization	en	optimize
+optimisation	en	optimize
+tuning	en	optimize
+review	en	review
+reviews	en	review
+monitoring	en	monitor
+troubleshooting	en	troubleshoot
+refactoring	en	refactor
+documentation	en	document
+migration	en	migrate
+migrations	en	migrate
+installation	en	install
+evaluation	en	evaluate
+assessment	en	assess
+validation	en	validate
+verification	en	verify
+engineering	en	engineer
+design	en	design
+planning	en	plan
+prototyping	en	prototype
+research	en	research
+training	en	train
+operation	en	operate
+operations	en	operate
+delivery	en	deliver
+support	en	support
+pengembangan	id	mengembangkan
+pengujian	id	menguji
+pemrograman	id	memprogram
+perancangan	id	merancang
+pembuatan	id	membuat
+pembangunan	id	membangun
+pemeliharaan	id	memelihara
+perawatan	id	merawat
+perbaikan	id	memperbaiki
+penerapan	id	menerapkan
+implementasi	id	mengimplementasikan
+integrasi	id	mengintegrasikan
+otomatisasi	id	mengotomatisasi
+konfigurasi	id	mengonfigurasi
+instalasi	id	menginstal
+pengelolaan	id	mengelola
+analisis	id	menganalisis
+dokumentasi	id	mendokumentasikan
+evaluasi	id	mengevaluasi
+pemantauan	id	memantau
+pemeriksaan	id	memeriksa
+perencanaan	id	merencanakan
+penulisan	id	menulis
+penyusunan	id	menyusun
+desain	id	mendesain
+optimalisasi	id	mengoptimalkan
+optimasi	id	mengoptimalkan
+# v1.1 (2026-11-20): Indonesian activity nouns whose verb was already in the verb table. Found
+# missing when the formulation checker could not read 'Melakukan peninjauan kode' (EXP-032).
+pendokumentasian	id	mendokumentasikan
+pengoptimalan	id	mengoptimalkan
+penanganan	id	menangani
+peninjauan	id	meninjau
+penelaahan	id	menelaah
+dukungan	id	mendukung
+pengumpulan	id	mengumpulkan
+pengamanan	id	mengamankan
+pemecahan	id	memecahkan
+penyelesaian	id	menyelesaikan
+penyiapan	id	menyiapkan
+pengintegrasian	id	mengintegrasikan

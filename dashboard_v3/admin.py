@@ -1,6 +1,8 @@
 """Admin dashboard: the operator's view of runs, audits and human review queues.
 
-    .venv-ml\\Scripts\\streamlit.exe run dashboard_v3/admin.py --server.port 8502
+    .venv-ml\\Scripts\\streamlit.exe run dashboard_v3/admin.py --server.port 8502 --server.address 127.0.0.1
+
+(on this computer only; see the note in public.py)
 
 What an operator can do here:
   * look at every competency run: its counts, its figures, the validity status

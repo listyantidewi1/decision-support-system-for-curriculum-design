@@ -1,6 +1,12 @@
 """Public dashboard: a school reads a published competency profile (Gambar 3.3).
 
-    .venv-ml\\Scripts\\streamlit.exe run dashboard_v3/public.py
+    .venv-ml\\Scripts\\streamlit.exe run dashboard_v3/public.py --server.port 8511 --server.address 127.0.0.1
+
+`--server.address 127.0.0.1` keeps it on this computer: the evidence shown
+holds phrases from the local corpus, and Streamlit otherwise listens on every
+network interface. Do not put that address in a project-wide
+`.streamlit/config.toml`: the annotator UI (`run_annotation_stack.ps1`) relies
+on the default to be reachable by the annotators on the network.
 
 It shows one versioned profile at a time: the recommendations with their
 status, the evidence behind each one, the proposed KKNI level and okupasi, the
@@ -65,7 +71,7 @@ shown = [r for r in recs
          if r["contract"]["status"] in status and r["stream"] in stream
          and r["n_postings"] >= min_postings
          and (C.level_code(r) is None or C.level_code(r) in levels)
-         and (not query or query.lower() in r["statement"]["text"].lower())]
+         and (not query or query.lower() in (C.statement_text(r) + " " + r["statement"]["text"]).lower())]
 
 tab_list, tab_map, tab_summary, tab_curriculum, tab_changes, tab_about = st.tabs(
     ["Rekomendasi", "Peta pengetahuan & teknologi", "Ringkasan", "Kurikulum Anda",
@@ -83,7 +89,8 @@ with tab_map:
 with tab_list:
     st.caption(f"{len(shown)} dari {len(recs)} rekomendasi. Urutan: status, lalu bobot "
                f"persistensi, lalu jumlah lowongan. Bobot hanya mengurutkan; tidak menaikkan status.")
-    table = [{"#": r["rank"], "Pernyataan kompetensi": r["statement"]["text"],
+    table = [{"#": r["rank"], "Pernyataan kompetensi": C.statement_text(r),
+              "SKKNI": ((r.get("formulated") or {}).get("skkni") or {}).get("kode") or "",
               "Status": C.STATUS_LABEL[r["contract"]["status"]],
               "Lowongan": r["n_postings"], "Pangsa": f"{r['share_of_postings']:.1%}",
               "Tingkat kognitif": C.level_text(r.get("cognitive")),
@@ -96,26 +103,65 @@ with tab_list:
     st.subheader("Bukti di balik satu rekomendasi")
     if shown:
         pick = st.selectbox("Pilih pernyataan", shown,
-                            format_func=lambda r: f"{r['rank']}. {r['statement']['text'][:110]}")
+                            format_func=lambda r: f"{r['rank']}. {C.statement_text(r)[:110]}")
         a, b = st.columns(2)
         with a:
-            st.markdown(f"**{pick['statement']['text']}**")
+            fm = pick.get("formulated")
+            st.markdown(f"**{C.statement_text(pick)}**")
+            if fm:
+                st.caption(f"{fm.get('statement_en', '')} · rumusan: {fm.get('sumber_rumusan', '')}")
+                if fm.get("kualifikasi"):
+                    st.write("Standar, mutu, dan hasil yang diminta lowongan: " + "; ".join(
+                        f"{q['text']} ({q['n_postings']} lowongan)" for q in fm["kualifikasi"]))
+                sk = fm.get("skkni")
+                if sk:
+                    rel = {"sama": "kompetensi yang sama", "sebagian": "tumpang tindih"}.get(
+                        sk["hubungan"], sk["hubungan"])
+                    lvl = ("" if sk.get("tingkat_sama") or not sk.get("kode_tingkat_judul") else
+                           f" — judul SKKNI pada {sk['kode_tingkat_judul']}, lowongan meminta "
+                           f"{(pick.get('cognitive') or {}).get('code') or 'tanpa tingkat'}")
+                    st.write(f"SKKNI {sk['kode']} ({sk.get('tahun', '')}) “{sk['judul']}”: {rel}{lvl}.")
+                else:
+                    st.write("Di antara 8 unit SKKNI terdekat, tidak ada yang sama atau tumpang "
+                             "tindih menurut penulis rumusan (belum diperiksa ahli).")
+                for flag in fm.get("flags", []):
+                    st.warning(flag.replace("terlalu_umum:", "Terlalu umum:"))
+                st.caption(f"Pernyataan aturan (tanpa model bahasa): {pick['statement']['text']}")
             st.write(f"Status: **{C.STATUS_LABEL[pick['contract']['status']]}**")
             if pick["contract"]["blockers"]:
                 st.write("Belum naik status karena: " + ", ".join(pick["contract"]["blockers"]))
+            dem = pick.get("demand") or {}
             st.write(f"Diminta oleh {pick['n_postings']} lowongan "
                      f"({pick.get('n_posting_groups', pick['n_postings'])} pemberi kerja/templat), "
-                     f"{pick['share_of_postings']:.1%} dari lowongan yang dianalisis.")
+                     f"{pick['share_of_postings']:.1%} dari lowongan yang dianalisis"
+                     + (f" (selang kepercayaan 95%: {dem['ci95'][0]:.1%}–{dem['ci95'][1]:.1%})"
+                        if dem.get("ci95") else "") + ".")
+            if dem.get("rank"):
+                lo, hi = dem["rank_interval90"]
+                st.write(f"Peringkat menurut jumlah lowongan: **{dem['rank']}** "
+                         f"(rentang 90% bila lowongan disampel ulang: {lo}–{hi}). Dua kompetensi "
+                         f"yang rentangnya tumpang-tindih belum terbukti berbeda peringkat.")
             cog = pick.get("cognitive")
             default_verb = pick["statement"].get("verb_source") == "default"
             fam = pick.get("family")
             if fam:                              # one competency per level of a family
                 n_fam = fam["n_postings"]
                 if cog.get("level"):
-                    st.write(f"Tingkat kognitif: **{C.level_text(cog)}** — kata kerja pada "
-                             f"tingkat ini dipakai {cog['n_postings']} lowongan, "
+                    st.write(f"Tingkat kognitif: **{C.level_text(cog)}** — diminta "
+                             f"{cog['n_postings']} lowongan, "
                              f"{cog['share_of_family_postings']:.0%} dari {n_fam} lowongan "
                              f"rumpun kompetensi ini.")
+                    read = cog.get("read_from") or {}
+                    from_noun = read.get("noun made from a verb", 0)
+                    if from_noun:
+                        st.caption(
+                            f"Cara membaca tingkat: {read.get('verb', 0)} frasa memakai kata "
+                            f"kerja langsung; {from_noun} frasa menyebut pekerjaannya dengan kata "
+                            f"benda bentukan kata kerja (mis. 'development' = develop, "
+                            f"'pengujian' = menguji) dan diberi tingkat kata kerja itu.")
+                    if pick["statement"].get("verb_source") == "light verb":
+                        st.caption("Kata 'Perform'/'Melakukan' pada pernyataan ini hanya "
+                                   "susunan kalimat; tingkatnya berasal dari kata bendanya.")
                 else:
                     st.write(f"Tingkat kognitif: **tidak dinyatakan lowongan** — "
                              f"{cog['n_postings']} lowongan menyebut pekerjaan ini tanpa kata "

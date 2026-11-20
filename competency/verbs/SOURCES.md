@@ -80,6 +80,19 @@ knowledge, and the soft skills and work behaviours are listed beside it.
   posting "define the requirements / the architecture" is planning, although
   verb lists place "define" on C1 (recalling a definition).
 
+## Version 2.1 (2026-11-20, same day)
+
+Five rows were added with basis `NOM`: program, code, script, model,
+memprogram. They are verbs met only through their noun ("programming" =
+program). Their base form is also a common noun ("code reviews"), so they are
+never read as the verb that opens a phrase. No other row changed.
+
+`deverbal_nouns_v1.tsv` lists the nouns made from a verb and their verb
+("development" = develop, "pengujian" = menguji). It is the developer's list,
+unreviewed. English morphology of this kind is regular (-ment, -ing, -ion);
+Indonesian peN-…-an and per-…-an nouns likewise. The list is closed on purpose:
+a noun is read through a verb only if a row says so.
+
 ## Rules the code follows
 
 - A default verb ("perform", "melakukan", "explain", …) supplied by the method

@@ -322,7 +322,7 @@
  {
   "area": "Competency layers",
   "name": "how the knowledge of a competency is read from its phrases",
-  "value": "{\"highest_level_floor\": 0.2, \"keep_longer_form_at\": 0.5, \"max_items\": 8, \"max_object_words\": 4, \"min_item_postings\": 2, \"min_variant_postings\": 2, \"min_vocabulary_postings\": 3}",
+  "value": "{\"highest_level_floor\": 0.2, \"keep_longer_form_at\": 0.5, \"max_items\": 8, \"max_object_words\": 4, \"min_completion_postings\": 5, \"min_item_postings\": 2, \"min_variant_postings\": 2, \"min_vocabulary_postings\": 3}",
   "status": "starting value",
   "where": "competency/structure.py",
   "note": "the shared head of the objects; a word-order rule, no part-of-speech tagger"
@@ -378,7 +378,7 @@
  {
   "area": "Competency layers",
   "name": "grouping settings",
-  "value": "{\"attach_threshold\": 0.75, \"cohesion_threshold\": 0.55, \"competency_tags\": [\"SH\"], \"core_min_postings\": 1, \"embedder_model\": \"sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2\", \"max_profile_items\": 8, \"max_samples\": 5, \"max_technologies\": 8, \"min_postings_per_phrase\": 1, \"min_profile_postings\": 2, \"min_technology_postings\": 2, \"version\": \"grouping-v1\"}",
+  "value": "{\"attach_threshold\": 0.75, \"cohesion_threshold\": 0.55, \"competency_tags\": [\"SH\"], \"core_min_postings\": 1, \"embedder_model\": \"sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2\", \"max_profile_items\": 8, \"max_samples\": 5, \"max_technologies\": 8, \"merge_threshold\": null, \"merge_top_phrases\": 12, \"min_postings_per_phrase\": 1, \"min_profile_postings\": 2, \"min_technology_postings\": 2, \"version\": \"grouping-v1\"}",
   "status": "starting value",
   "where": "competency/grouping.py",
   "note": "cohesion floor carried over from the pre-approval clusterer"
@@ -386,18 +386,154 @@
  {
   "area": "Competency layers",
   "name": "verb table",
-  "value": "verbs-v2-sourced-unreviewed",
+  "value": "verbs-v2.3-sourced-unreviewed",
   "status": "starting value",
   "where": "competency/verbs/bloom_verbs_v2.tsv",
-  "note": "203 verbs with their sources in competency/verbs/SOURCES.md; no expert review yet"
+  "note": "237 verbs with their sources in competency/verbs/SOURCES.md; no expert review yet"
  },
  {
   "area": "Competency layers",
   "name": "verb table hash (sha256)",
-  "value": "5dc013e835eb2e92f8f55063abb814d23936b36c4042345887a36d217c96e1b6",
+  "value": "dad4c7405b6a40a88c9cc1710178d93bae644cd19550a4e384f85229acb11a4d",
   "status": "by design",
   "where": "competency/verbs/bloom_verbs_v2.tsv",
   "note": ""
+ },
+ {
+  "area": "Competency layers",
+  "name": "nouns made from a verb",
+  "value": "deverbal-nouns-v1.1",
+  "status": "starting value",
+  "where": "competency/verbs/deverbal_nouns_v1.tsv",
+  "note": "85 nouns ('development' = develop); the developer's list, unreviewed. A phrase that names its work with one of them takes the verb's level (the researcher's correction, 2026-11-20)"
+ },
+ {
+  "area": "Competency layers",
+  "name": "verbs that only say 'do it'",
+  "value": "[\"melaksanakan\", \"melakukan\", \"menjalankan\", \"perform\"]",
+  "status": "starting value",
+  "where": "competency/statement.py",
+  "note": "in 'perform code reviews' the work is the noun's verb"
+ },
+ {
+  "area": "Competency layers",
+  "name": "sentence filter: duty and requirement sentences only",
+  "value": "{\"drop_below\": 0.5, \"max_features\": 200000, \"min_df\": 5, \"seed\": 20261120, \"test_share\": 0.2}",
+  "status": "starting value",
+  "where": "governance/zoning.py",
+  "note": "weak labels from section headers plus a classifier; not validated against people; the cut-off 0.5 was set from the developer's reading of 64 sentences (EXP-030)"
+ },
+ {
+  "area": "Competency layers",
+  "name": "sentence filter version",
+  "value": "zoning-v1",
+  "status": "by design",
+  "where": "governance/zoning.py",
+  "note": ""
+ },
+ {
+  "area": "Competency layers",
+  "name": "intervals, pooled level mix, rank ranges",
+  "value": "smoothing-v1",
+  "status": "by design",
+  "where": "competency/smoothing.py",
+  "note": "200 bootstrap rounds, seed 20261120; the strength of the pooling is estimated from the data"
+ },
+ {
+  "area": "Competency layers",
+  "name": "SKKNI parser",
+  "value": "skkni-parser-v2",
+  "status": "by design",
+  "where": "competency/skkni.py",
+  "note": "every SKKNI PDF in DATA/master_skkni, whatever its year"
+ },
+ {
+  "area": "Competency layers",
+  "name": "how a competency statement is formulated",
+  "value": "like an SKKNI unit title: an operational verb on the competency's level, the specific object of work, and the standard, quality and outcome its postings ask for; no tool names. The competencies come from the postings, not from SKKNI",
+  "status": "decided",
+  "where": "competency/formulate.py",
+  "note": "the promotors' definition and the researcher's correction, 2026-11-20"
+ },
+ {
+  "area": "Competency layers",
+  "name": "SKKNI wording in a statement",
+  "value": "used when a competency IS an SKKNI unit; only when the SKKNI title's verb is on the competency's level (otherwise both levels are shown)",
+  "status": "starting value",
+  "where": "competency/formulate.py",
+  "note": "the researcher: 'you might use the SKKNI wordings'; the level condition is the developer's"
+ },
+ {
+  "area": "Competency layers",
+  "name": "a 'same as SKKNI' decision needs a second model",
+  "value": "the writer's 'sama' stands only when a second model, shown the competency and that one unit and nothing the writer decided, also says 'sama'; otherwise it becomes 'sebagian' and the market's statement is kept",
+  "status": "starting value",
+  "where": "competency/formulate.py",
+  "note": "the developer's rule: the writer alone was wrong in 4 of its 10 'sama' calls on the development sample (EXP-032)"
+ },
+ {
+  "area": "Competency layers",
+  "name": "second model for the 'same as SKKNI' decision",
+  "value": "qwen/qwen3.8-flash",
+  "status": "starting value",
+  "where": "competency/formulate.py",
+  "note": "another family than the writer (GPT) and than the reference judges (Claude); one definition of 'sama' is shared by both prompts"
+ },
+ {
+  "area": "Competency layers",
+  "name": "when a standard, quality or outcome enters a statement",
+  "value": "{\"confirm_max_tokens\": 4000, \"max_qualities\": 2, \"max_standards\": 2, \"max_tokens\": 700, \"min_postings\": 3, \"min_share\": 0.05, \"n_candidates\": 8, \"outcome_min_postings\": 5, \"outcome_min_share\": 0.02}",
+  "status": "starting value",
+  "where": "competency/formulate.py",
+  "note": ""
+ },
+ {
+  "area": "Competency layers",
+  "name": "statement formulation version",
+  "value": "formulate-v4.3",
+  "status": "by design",
+  "where": "competency/formulate.py",
+  "note": ""
+ },
+ {
+  "area": "Competency layers",
+  "name": "statement writer model",
+  "value": "openai/gpt-5.4-mini",
+  "status": "starting value",
+  "where": "competency/formulate.py",
+  "note": "checked by the module's own checker; EXP-032"
+ },
+ {
+  "area": "Competency layers",
+  "name": "quality words and their ISO/IEC 25010 characteristic",
+  "value": "84 words",
+  "status": "starting value",
+  "where": "competency/qualifiers.py",
+  "note": "the developer's mapping; check the standard before citing"
+ },
+ {
+  "area": "Competency layers",
+  "name": "named practices and standards read from postings",
+  "value": "[\"best practices\", \"coding standards\", \"design patterns\", \"SOLID principles\", \"clean code\", \"test-driven development (TDD)\", \"behaviour-driven development (BDD)\", \"OWASP\", \"accessibility standards (WCAG)\", \"REST principles\", \"object-oriented principles\", \"MVC\", \"CI/CD\", \"Agile / Scrum\", \"code review\", \"unit tests\", \"security standards\", \"industry standards\", \"ISO/IEC 27001\", \"PCI DSS\", \"GDPR\", \"SDLC\", \"documentation standards\", \"company standards\", \"SOP / sesuai standar\"]",
+  "status": "starting value",
+  "where": "competency/qualifiers.py",
+  "note": ""
+ },
+ {
+  "area": "Competency layers",
+  "name": "families that give the same statement on the same level are merged",
+  "value": "only through a statement that names specific work; 57 general nouns ('solutions', 'applications', 'issues') link nothing",
+  "status": "starting value",
+  "where": "competency/structure.py",
+  "note": "the developer's rule (EXP-033)"
+ },
+ {
+  "area": "Competency layers",
+  "name": "a statement cut before its object is held back",
+  "value": "'statement_is_a_fragment' blocks the status kandidat tinjauan and is not formulated",
+  "status": "starting value",
+  "where": "competency/statement.py",
+  "note": "the developer's rule (EXP-033)"
  },
  {
   "area": "Competency layers",
