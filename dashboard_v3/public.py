@@ -90,6 +90,7 @@ with tab_list:
     st.caption(f"{len(shown)} dari {len(recs)} rekomendasi. Urutan: status, lalu bobot "
                f"persistensi, lalu jumlah lowongan. Bobot hanya mengurutkan; tidak menaikkan status.")
     table = [{"#": r["rank"], "Pernyataan kompetensi": C.statement_text(r),
+              "Tanda": ", ".join(C.mark_labels(r)),
               "SKKNI": ((r.get("formulated") or {}).get("skkni") or {}).get("kode") or "",
               "Status": C.STATUS_LABEL[r["contract"]["status"]],
               "Lowongan": r["n_postings"], "Pangsa": f"{r['share_of_postings']:.1%}",
@@ -125,7 +126,10 @@ with tab_list:
                     st.write("Di antara 8 unit SKKNI terdekat, tidak ada yang sama atau tumpang "
                              "tindih menurut penulis rumusan (belum diperiksa ahli).")
                 for flag in fm.get("flags", []):
-                    st.warning(flag.replace("terlalu_umum:", "Terlalu umum:"))
+                    st.warning(C.flag_text(flag))
+                if fm.get("flags"):
+                    st.caption("Tanda tidak mengubah status: kompetensi yang ditandai tetap "
+                               "ditampilkan agar penelaah dapat memutuskan.")
                 st.caption(f"Pernyataan aturan (tanpa model bahasa): {pick['statement']['text']}")
             st.write(f"Status: **{C.STATUS_LABEL[pick['contract']['status']]}**")
             if pick["contract"]["blockers"]:

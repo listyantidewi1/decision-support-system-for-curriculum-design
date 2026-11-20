@@ -184,7 +184,8 @@ def test_public_dashboard_shows_the_formulated_statement_and_its_skkni_match():
                                 "n_postings": 5}],
                "skkni": {"kode": "J.620100.032.01", "judul": "Menerapkan Code Review",
                          "tahun": "2016", "hubungan": "sama", "kode_tingkat_judul": "C3",
-                         "tingkat_sama": False}, "flags": []},
+                         "tingkat_sama": False},
+               "flags": ["keluarga_campuran: objek utama hanya 7 dari 101 lowongan"]},
         "c2": {"accepted": False, "problems": ["x"]}}}), encoding="utf-8")
     PF.build(run, "2026-1", profiles_dir=root / "profiles")
     at = AppTest.from_file(PUBLIC).run(timeout=90)
@@ -195,9 +196,17 @@ def test_public_dashboard_shows_the_formulated_statement_and_its_skkni_match():
     assert "SKKNI J.620100.032.01 (2016)" in text and "judul SKKNI pada C3" in text
     assert any("Pernyataan aturan (tanpa model bahasa): Develop REST APIs" in c.value
                for c in at.caption)
+    # a mark is shown, readably, and the competency stays in the list (marked, not left out)
+    assert any("Kelompok campuran: objek utama hanya 7 dari 101 lowongan" in w.value for w in at.warning)
+    assert any("Tanda tidak mengubah status" in c.value for c in at.caption)
     # a competency without an accepted formulation keeps the rule statement
     from dashboard_v3 import common as CM
     assert CM.statement_text({"statement": {"text": "Perform unit testing"}}) == "Perform unit testing"
+    rec = {"formulated": {"flags": ["bukan_pekerjaan: slogan", "kalimat_berulang: 6 lowongan",
+                                    "bukan_pekerjaan: lagi", "something else"]}}
+    assert CM.mark_labels(rec) == ["Mungkin bukan pekerjaan", "Kalimat berulang"]
+    assert CM.flag_text("terlalu_umum: objeknya umum") == "Terlalu umum: objeknya umum"
+    assert CM.flag_text("unknown: x") == "unknown: x" and CM.mark_labels({}) == []
 
 
 def test_public_filters_narrow_the_list():

@@ -175,7 +175,7 @@ Current, passing, and the part of the repo you can trust:
 | `test_fivetag` | 73 | `.venv-ml` |
 | `test_competency` | 60 | `.venv-ml` |
 | `test_zoning` | 6 | `.venv-ml` |
-| `test_formulate` | 13 | `.venv-ml` |
+| `test_formulate` | 14 | `.venv-ml` |
 | `test_skkni` | 27 | `.venv-ml` |
 | `test_config_registry` | 5 | `.venv-ml` |
 | `test_dashboard_v3` | 9 | `.venv-ml` |
@@ -366,7 +366,12 @@ whole-unit writer of EXP-031 (elements, KUK): that was the misreading. A
 family (`CONFIRM_MODEL`, Qwen) agrees: alone, the writer (GPT) was wrong in 4
 of its 10 "same" calls (EXP-032). Do not drop that step to save a call; a
 missed "same" costs nothing, a wrong one replaces the market's wording. The
-reference judges of EXP-032 were Claude subagents, not experts. An
+reference judges of EXP-032 were Claude subagents, not experts. Since
+version 5 (the researcher's decisions of 2026-11-21) competencies that are
+not work or mix different works are MARKED by a focused call of their own
+(`MARK_MODEL`), never left out, and a fitting standard or quality must be
+written. Do not move marking back into the writer's prompt: as a sixth task
+it missed a case its own rule named (EXP-034). An
 OpenRouter cost read from the account lags: read it again later.
 
 **Competencies are built from SKILL_HARD only, and KKNI never decides anything.**

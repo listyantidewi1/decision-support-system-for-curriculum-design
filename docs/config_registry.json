@@ -481,8 +481,48 @@
  },
  {
   "area": "Competency layers",
+  "name": "a statement names the standard or quality its postings ask for",
+  "value": "a qualifier that fits the object is written (the most frequent, at most two); when none fits, the writer must say why",
+  "status": "decided",
+  "where": "competency/formulate.py",
+  "note": "the researcher, 2026-11-21 (the writer had left one out in 8 of 19 held-out cases, EXP-032)"
+ },
+ {
+  "area": "Competency layers",
+  "name": "competencies that are not work, or mix different works, are marked",
+  "value": "marked, not left out; a mark changes no status",
+  "status": "decided",
+  "where": "competency/formulate.py",
+  "note": "the researcher, 2026-11-21"
+ },
+ {
+  "area": "Competency layers",
+  "name": "what counts as 'not work' and as a 'mixed family'",
+  "value": "a focused second model's judgement (MARK_SYSTEM: work behaviour, purpose clause, employer text, benefit, call to apply, self-development, non-software task, cut phrase; a family whose most frequent object covers only a small part of its postings)",
+  "status": "starting value",
+  "where": "competency/formulate.py",
+  "note": "the developer's wording of the reviewers' categories (EXP-032)"
+ },
+ {
+  "area": "Competency layers",
+  "name": "model that marks",
+  "value": "qwen/qwen3.8-flash",
+  "status": "starting value",
+  "where": "competency/formulate.py",
+  "note": "a focused call, shown only the evidence; in a dry run the writer, asked to mark as a sixth task, missed a case its own prompt named (EXP-034)"
+ },
+ {
+  "area": "Competency layers",
+  "name": "'kalimat berulang' mark (one employer's text)",
+  "value": "{\"distinct sentences per posting at most\": 0.3, \"with at least postings\": 5}",
+  "status": "starting value",
+  "where": "competency/formulate.py",
+  "note": "on e0_pool_all_v8 the 10 review candidates at or below 0.3 were all employer text (EXP-034)"
+ },
+ {
+  "area": "Competency layers",
   "name": "when a standard, quality or outcome enters a statement",
-  "value": "{\"confirm_max_tokens\": 4000, \"max_qualities\": 2, \"max_standards\": 2, \"max_tokens\": 700, \"min_postings\": 3, \"min_share\": 0.05, \"n_candidates\": 8, \"outcome_min_postings\": 5, \"outcome_min_share\": 0.02}",
+  "value": "{\"confirm_max_tokens\": 4000, \"max_qualities\": 2, \"max_standards\": 2, \"max_tokens\": 700, \"min_postings\": 3, \"min_share\": 0.05, \"n_candidates\": 8, \"outcome_min_postings\": 5, \"outcome_min_share\": 0.02, \"repeated_sentence_min_postings\": 5, \"repeated_sentence_ratio\": 0.3}",
   "status": "starting value",
   "where": "competency/formulate.py",
   "note": ""
@@ -490,7 +530,7 @@
  {
   "area": "Competency layers",
   "name": "statement formulation version",
-  "value": "formulate-v4.3",
+  "value": "formulate-v5",
   "status": "by design",
   "where": "competency/formulate.py",
   "note": ""

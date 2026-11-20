@@ -1566,6 +1566,158 @@ credit); round 3: 7 agents, about 910,000 tokens, 17.5 minutes.
 
 ---
 
+## EXP-034 — Formulation version 5: a fitting standard or quality is written, and what is not work or mixed is marked
+
+- **Date / status:** 2026-11-21 · DEVELOPMENT (same limits as EXP-032).
+- **Why:** the researcher's two decisions of 2026-11-21, after EXP-032:
+  "1. yes, mark them" (competencies that are not work, or mix different works,
+  are marked, not left out) and "2. yes" (a statement names the standard or
+  quality its postings ask for, when one fits).
+- **What changed (`formulate-v5`):** the writer must write the most frequent
+  fitting qualifier, or say why none fits; a qualifier listed as used must be
+  written (English or Indonesian form); a quality written as a standard
+  ("sesuai prinsip efisien") is refused; Indonesian forms of named standards
+  are recognised both ways; "query" is "kueri". Marks come from a focused call
+  of their own (`MARK_MODEL`, qwen/qwen3.8-flash), shown only the evidence; a
+  competency whose postings share at most 0.3 distinct sentences per posting
+  is marked "kalimat berulang" for free. Marks change no status; what is
+  marked not work keeps no SKKNI link. English glosses of SKKNI titles are in
+  sentence case.
+- **Dry runs (before the check):** 4 competencies of the EXP-032 held-out
+  sample (already judged, so the fresh sample stays unseen), twice. In the
+  first, the writer itself marked: it missed "support decision-making"
+  although its own rule named that example, and it listed the quality
+  "efficient" as used without writing it. Hence the separate marker and the
+  "is it written" check. The second dry run marked as the reviewers had, and
+  showed the quality-as-standard fault. Cost of both: $0.0506 by the capped
+  callers' estimates ($0.0303 + $0.0203); the first dry run's call log was
+  deleted before the second, so no provider-reported figure exists for it.
+- **The check, stated before its results:** a fresh sample of 40
+  "kandidat tinjauan" competencies of `e0_pool_all_v8` (random, in proportion
+  to level, seed 20261122, excluding the 83 of EXP-032), formulated once with
+  v5 and judged as in EXP-032 (3 blind match judges, 2 statement reviewers).
+  The reviewers also say, for each competency and without seeing the marks,
+  whether it is work, whether its family is mixed, and whether a fitting
+  allowed qualifier is left out. Version 5 passes when (a) at most 1 SKKNI
+  wording is wrong by the match judges' majority; (b) lens A finds a fitting
+  qualifier left out in fewer than 42% of the cases that have one (the v4.3
+  rate was 8 of 19); (c) of the competencies both reviewers call not work, the
+  marker marks at least half, and at least half of its "not work" marks are
+  shared by at least one reviewer (not evaluable if no such case). Passing
+  leads to the full run (cap $1.80, stated to the researcher on 2026-11-21);
+  failing stops it and is reported.
+
+### The run on the fresh sample (before the judges)
+
+- **Sample:** 40 drawn from the 517 candidates not used in EXP-032 (C3 16,
+  C4 3, C5 8, C6 13; median 50 postings); ids in
+  `validation/round4_v5/check_v5_ids.txt`.
+- **Accepted:** 34 of 40 (28 at the first attempt). Refused: 3 for a verb the
+  postings do not use ("Deploy applications", "Apply online", "Maintain
+  contribute"), 1 for a verb off the level ("Melakukan pemecahan masalah" for a
+  C3 "Memperbaiki masalah"), 1 for adding "best practices" ("Review Java
+  code"), 1 for listing "large-scale" without writing it ("Build
+  infrastructure"). Version 4.3 had refused 2 of 40 on the earlier sample.
+- **Qualifiers:** of the 15 accepted competencies that had an allowed
+  qualifier, 14 now write one and 1 gives a reason (v4.3: 8 of 19 left one out,
+  by lens A).
+- **Marks:** 5 not work, 11 mixed, none both (16 of 40); 4 marker answers
+  needed the retry and 1 stayed unreadable even then. 1 "kalimat berulang",
+  11 "terlalu umum". 4 competencies marked not work lost their SKKNI link.
+- **SKKNI:** 1 SKKNI wording; relations among the accepted: 1 sama, 25
+  sebagian, 8 tidak.
+- **Cost, provider-reported:** writer $0.1458 (52 calls; about 3,500 tokens in
+  per call), confirmation $0.0022 (7), marker $0.0365 (44; it reasons about
+  1,550 tokens per answer and 5 answers ran out of their 4,000 tokens):
+  **$0.1845**, $0.0046 per competency, twice version 4.1 (the longer prompt,
+  and less of it billed at the cached rate). The second dry run: $0.0181.
+- **Consequence:** the remaining 559 candidates would cost about $2.58, above
+  the $1.80 cap stated in the morning. The developer said so; the researcher
+  answered (2026-11-21): "it's alright even though it costs 2.58$". The full
+  run still waits for the bar above.
+
+### The judges (round 4) and the bar
+
+- **Judges:** workflow `wf_dd280351-6ae`, 5 Claude subagents, about 685,000
+  tokens, 28 minutes. Match judges agree almost perfectly: Fleiss' kappa
+  0.94 (observed 0.967); majority 7 sama, 24 sebagian, 9 tidak.
+- **The bar: PASSED.** (a) SKKNI wording wrong: 0 (1 used, right). (b) Lens A
+  finds a fitting qualifier left out in 1 of 15 cases (7%; v4.3: 8 of 19).
+  (c) Of the 6 competencies both reviewers call not work, the marker marked 4
+  (it marked V18 mixed instead, and its answer for V29 was unreadable); all 4
+  of its "not work" marks are shared by a reviewer.
+- **Mixed families (reported, no bar):** of the 8 both reviewers call mixed,
+  the marker marked 6; 6 of its 8 "mixed" marks are shared by a reviewer.
+- **SKKNI relation:** agrees with the judges' majority on 24 of 40 (6 refusals
+  count as disagreements); the writer found 1 of the 7 "same" cases (the
+  unit was among its candidates in 6), so SKKNI wording stays rare.
+- **Statements:** lens A 10 ok / 12 minor / 12 major; lens B 10 / 11 / 13 (34
+  reviewed). Major for either reviewer: 14 of 34. **11 of those 14 are
+  competencies the marker flagged**; among the 22 unflagged, 3 are major: an
+  employer-slogan family whose marker answer was unreadable (V29), a cut object
+  that carries the free "kalimat berulang" mark (V31), and "Mengembangkan
+  aplikasi web" (V25), the promotors' own example of a duty.
+- **What the qualifier rule costs:** lens B finds a qualifier attached to the
+  wrong noun or in the wrong role in 9 cases ("kebutuhan kinerja yang
+  berkinerja tinggi"; "sesuai prinsip REST dan skalabel"; a quality put on
+  what is analysed or optimised rather than on the artefact). Omission fell
+  (8 of 19 → 1 of 15); misplacement is the new main fault of the writer.
+- **Other recurring defects:** duty-level objects (solusi, aplikasi, desain,
+  perubahan: 15 cases by lens A, most of them in flagged families); objects
+  cut or narrowed (6, lens B); unexpanded acronyms ("SIT"), "alat" for
+  software tools.
+- **Reading:** the marks do what the researcher asked: they point a reviewer
+  to most of the problem statements without removing anything. The writer
+  still turns a mixed or non-work family into a fluent line; the mark is what
+  tells the reader not to trust it. Statements of unflagged competencies are
+  usable in most cases (19 of 22 without a major defect).
+- **Files:** `validation/round4_v5/` (`journal.jsonl`, `summary_v5.json`,
+  the case files); `formulated_v5.json` / `.csv`, `formulated_v5_*_log.jsonl`.
+
+### The full run (after the bar passed)
+
+- **What:** the other 559 "kandidat tinjauan" competencies (the 83 of EXP-032
+  among them, redone with v5), in three parallel parts of 187, 186 and 186
+  (`formulated_v5_part{1,2,3}.*`, ids in `validation/round4_v5/full_v5_part*.txt`;
+  caps per part: writer $0.85, confirmation $0.02, marker $0.20 by the callers'
+  estimates). No part stopped at its cap. Merged by
+  `validation/scripts/merge_v5_parts.py` into `formulated_v5.json`, which is now
+  the run's `formulated.json`; the 83 of version 4.3 are kept as
+  `formulated_v43_83.*`.
+- **All 599 candidates, version 5:**
+
+| | |
+|---|---|
+| Accepted / refused | 558 / 41 (refusals by the first problem of the last attempt: 13 verb off the level, 11 qualifier listed but not written, 7 a verb the postings do not use, 5 SKKNI-title rules, 3 an English word, 2 an added standard or quality) |
+| Marked not work / mixed / both | 110 / 208 / 53 — **265 of 599 (44%) marked**; 8 marker answers unreadable after the retry; in the full run 39 of 594 marker calls ran out of their 4,000 tokens, most recovered on the retry |
+| Other marks | 8 "kalimat berulang"; 206 "terlalu umum" |
+| SKKNI | 8 "same" confirmed (7 in SKKNI wording; in 1 the levels differ), 43 "same" not confirmed and read as partial; 377 partial, 173 none; 70 links dropped because the competency is marked not work |
+| Qualifiers | 185 of the 199 accepted competencies that have one write it; 14 give a reason |
+| Accepted by level | C2 2, C3 202, C4 50, C5 117, C6 180, no level 7 |
+
+- **Cost, provider-reported:** writer $2.0068 (717 calls), confirmation $0.0193
+  (46), marker $0.4562 (594): **$2.4823** for 559, $0.0044 each, within the
+  $2.58 the researcher approved. EXP-034 in all: $2.4823 + check $0.1845 +
+  dry runs $0.0181 (reported) and $0.0303 (estimate, log deleted) =
+  **$2.7152**. Account usage $93.2058 afterwards, from $90.5055 before the dry
+  runs: $2.7003. Credit left about $1.79.
+- **Draft profile `2026-0-draf7`:** 998 recommendations, 558 with a formulated
+  statement, 7 in SKKNI wording, 247 of the accepted ones marked; change log
+  against draft 6 empty (same competencies, same statuses). The public
+  dashboard renders it without an error (checked headless) and runs on
+  127.0.0.1:8511.
+- **Reading:** nearly half of the competencies the status contract lets
+  through to review are marked as not work or mixed, in line with what the two
+  reviewers found on the check sample. That is a finding about the competency
+  list (the clustering and the sentence filter upstream), not about the
+  formulation; by the researcher's decision nothing is removed and no status
+  changes.
+- **Limits:** only the 40 of the check were judged; the marker's agreement with
+  people is unmeasured (the reviewers are models); the competencies come from
+  an engineering run.
+
+---
+
 ## Spending on paid model calls
 
 | Entries | Charged |
@@ -1580,8 +1732,9 @@ credit); round 3: 7 agents, about 910,000 tokens, 17.5 minutes.
 | EXP-029 (earlier generator, 110 families; read from the account) | $0.6073 |
 | EXP-031 (unit writer, two trials of 5; read from the account) | $0.0693 |
 | EXP-032 (statement formulation, try 1 to v4.3, both samples; provider-reported per call) | $1.0225 |
-| **Total recorded (metered runs)** | **$4.2174** |
-| **Upper bound including EXP-026** | **$4.7957** |
+| EXP-034 (formulation v5: dry runs, check of 40, full run of 559; provider-reported, one dry run estimated) | $2.7152 |
+| **Total recorded (metered runs)** | **$6.9326** |
+| **Upper bound including EXP-026** | **$7.5109** |
 
 "Charged" is an upper estimate (see the shared settings). The provider's own
 balance is the authority.

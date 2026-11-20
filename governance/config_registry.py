@@ -228,6 +228,26 @@ def collect() -> list[dict]:
     add(area, "second model for the 'same as SKKNI' decision", formulate.CONFIRM_MODEL, STARTING,
         "competency/formulate.py", "another family than the writer (GPT) and than the reference "
         "judges (Claude); one definition of 'sama' is shared by both prompts")
+    add(area, "a statement names the standard or quality its postings ask for",
+        "a qualifier that fits the object is written (the most frequent, at most two); when "
+        "none fits, the writer must say why", DECIDED, "competency/formulate.py",
+        "the researcher, 2026-11-21 (the writer had left one out in 8 of 19 held-out cases, EXP-032)")
+    add(area, "competencies that are not work, or mix different works, are marked",
+        "marked, not left out; a mark changes no status", DECIDED, "competency/formulate.py",
+        "the researcher, 2026-11-21")
+    add(area, "what counts as 'not work' and as a 'mixed family'",
+        "a focused second model's judgement (MARK_SYSTEM: work behaviour, purpose clause, "
+        "employer text, benefit, call to apply, self-development, non-software task, cut phrase; "
+        "a family whose most frequent object covers only a small part of its postings)", STARTING,
+        "competency/formulate.py", "the developer's wording of the reviewers' categories (EXP-032)")
+    add(area, "model that marks", formulate.MARK_MODEL, STARTING, "competency/formulate.py",
+        "a focused call, shown only the evidence; in a dry run the writer, asked to mark as a "
+        "sixth task, missed a case its own prompt named (EXP-034)")
+    add(area, "'kalimat berulang' mark (one employer's text)",
+        {"distinct sentences per posting at most": formulate.FormulateConfig.repeated_sentence_ratio,
+         "with at least postings": formulate.FormulateConfig.repeated_sentence_min_postings},
+        STARTING, "competency/formulate.py",
+        "on e0_pool_all_v8 the 10 review candidates at or below 0.3 were all employer text (EXP-034)")
     fc = {f.name: f.default for f in dataclasses.fields(formulate.FormulateConfig)}
     add(area, "when a standard, quality or outcome enters a statement",
         {k: v for k, v in fc.items() if k != "version"}, STARTING, "competency/formulate.py")

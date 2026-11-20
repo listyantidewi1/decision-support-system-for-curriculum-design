@@ -55,6 +55,33 @@ def statement_text(rec: dict) -> str:
     return f.get("pernyataan") or rec["statement"]["text"]
 
 
+# Marks the formulation puts beside a statement (competency.formulate). They
+# change no status: the researcher decided on 2026-11-21 to mark such
+# competencies, not to leave them out.
+MARK_LABEL = {"bukan_pekerjaan": "Mungkin bukan pekerjaan", "keluarga_campuran": "Kelompok campuran",
+              "kalimat_berulang": "Kalimat berulang", "terlalu_umum": "Terlalu umum",
+              "fragmen": "Frasa terpotong"}
+
+
+def flag_text(flag: str) -> str:
+    """'bukan_pekerjaan: slogan perusahaan' -> 'Mungkin bukan pekerjaan: slogan perusahaan'."""
+    key, _, rest = flag.partition(":")
+    label = MARK_LABEL.get(key.strip())
+    if not label:
+        return flag
+    return f"{label}: {rest.strip()}" if rest.strip() else label
+
+
+def mark_labels(rec: dict) -> list[str]:
+    """The short names of a recommendation's marks, for the list."""
+    out: list[str] = []
+    for flag in (rec.get("formulated") or {}).get("flags", []):
+        label = MARK_LABEL.get(flag.partition(":")[0].strip())
+        if label and label not in out:
+            out.append(label)
+    return out
+
+
 def level_code(rec: dict) -> str | None:
     """The filter value of a recommendation: its Bloom code, NO_LEVEL when its
     postings use no verb, None for a profile published before levels existed."""

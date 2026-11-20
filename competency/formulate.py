@@ -48,6 +48,18 @@ Steps:
      family (`CONFIRM_MODEL`), shown the competency's evidence and that one unit
      and nothing the writer decided, must also say 'sama'. Otherwise the call
      becomes 'sebagian' and the market's statement stays (`apply_confirmation`).
+  7. MARK (paid, capped; the researcher's decision of 2026-11-21: mark, do not
+     leave out): a focused call (`MARK_MODEL`), shown only the evidence, marks
+     a competency that is not work (`bukan_pekerjaan`: a work behaviour, a
+     purpose clause, employer text, a cut phrase) or a family of different
+     works (`keluarga_campuran`), with a reason. One whose postings share very
+     few distinct sentences is marked `kalimat_berulang` (free). Marks go into
+     `flags`, beside the statement, and change no status; what is marked not
+     work keeps no SKKNI link.
+
+Since version 5 a qualifier that fits the object is written (the researcher's
+decision of 2026-11-21: a statement names the standard or quality its postings
+ask for); when none fits, the writer must say why (`alasan_tanpa_kualifikasi`).
 
 "Same competency" was checked against three independent judges (EXP-032), not
 against experts.
@@ -64,7 +76,7 @@ from typing import Callable, Sequence
 from .qualifiers import QUALITY_TERMS, NAMED_STANDARDS, profile, restates
 from .statement import INDONESIAN_VERBS, LEVELS, VERB_INFO, VERBS, is_fragment, read_phrase
 
-FORMULATE_VERSION = "formulate-v4.3"
+FORMULATE_VERSION = "formulate-v5"
 # the second, independent decision a 'sama' needs before SKKNI wording is used:
 # another model family than the writer (GPT) and than the reference judges (Claude)
 CONFIRM_MODEL = "qwen/qwen3.8-flash"
@@ -121,14 +133,14 @@ GLOSSARY = {
     "deliver": "menerapkan (C3) atau menghasilkan (C6), setingkat kompetensinya; bukan 'penyampaian'",
     "debugging issues": "debugging", "write code": "menulis kode",
     "prototypes": "purwarupa", "releases": "rilis", "documents": "dokumen",
-    "trunk-based development": "trunk-based development"}
+    "trunk-based development": "trunk-based development", "query": "kueri", "queries": "kueri"}
 _MUST_TRANSLATE = {"scalable", "reliable", "secure", "maintainable", "responsive", "efficient",
                    "robust", "accessible", "requirements", "issues", "production", "code",
                    "databases", "pipelines", "performance", "applications", "features",
                    "systems", "solutions", "processes", "scalability", "reliability",
                    "automation", "documentation", "tools", "testing", "support",
                    "programming", "development", "maintenance", "plans", "documents",
-                   "designs", "prototypes", "releases"}
+                   "designs", "prototypes", "releases", "query", "queries"}
 # Indonesian verbs the glossary gives for a posting verb that has no Indonesian verb of its
 # own ("deliver"): the checker counts them as that verb
 _RENDERS = {"menerapkan": ("deliver",), "menghasilkan": ("deliver",)}
@@ -139,6 +151,51 @@ _ENGLISH_ALLOWED_AFTER = {"code review", "source code", "unit test", "best pract
 
 _STANDARD_RX = [(name, re.compile(rx, re.I if not name.startswith(("SOLID", "OWASP", "MVC", "REST"))
                                   else 0)) for name, rx in NAMED_STANDARDS]
+# the Indonesian forms a statement may give a named standard; used both to see that
+# a standard listed as used is written, and to refuse one the slots did not give
+_STANDARD_ID_RX = {name: re.compile(rx, re.I) for name, rx in {
+    "best practices": r"praktik terbaik",
+    "coding standards": r"standar (?:pengodean|penulisan kode|kode|koding)|konvensi (?:penulisan )?kode",
+    "design patterns": r"pola (?:desain|perancangan)",
+    "clean code": r"kode (?:yang )?bersih",
+    "object-oriented principles": r"berorientasi objek|\bPBO\b",
+    "test-driven development (TDD)": r"berbasis pengujian",
+    "accessibility standards (WCAG)": r"standar aksesibilitas",
+    "code review": r"(?:peninjauan|tinjauan|penelaahan) kode",
+    "unit tests": r"pengujian unit",
+    "security standards": r"standar keamanan",
+    "industry standards": r"standar industri",
+    "SDLC": r"siklus hidup pengembangan",
+    "documentation standards": r"standar dokumentasi",
+    "company standards": r"standar (?:perusahaan|organisasi|internal|tim)",
+}.items()}
+
+
+def _names_standard(name: str, text: str) -> bool:
+    rx = dict(_STANDARD_RX).get(name)
+    id_rx = _STANDARD_ID_RX.get(name)
+    return bool((rx is not None and rx.search(text)) or (id_rx is not None and id_rx.search(text)))
+
+
+def _says(q: dict, text: str) -> bool:
+    """Does a statement actually write qualifier q, in English or in Indonesian?"""
+    low = text.lower()
+
+    def has(word: str) -> bool:
+        return bool(word) and bool(re.search(rf"(?<![\w-]){re.escape(word.lower())}(?![\w-])", low))
+    if q["kind"] == "quality":
+        char = q.get("iso25010")
+        words = {q["text"]} | {w for w, c in QUALITY_TERMS.items() if c == char} \
+            | {w for w, c in _QUALITY_ID.items() if c == char}
+        if GLOSSARY.get(q["text"].lower()):
+            words.add(GLOSSARY[q["text"].lower()].split(" (")[0])
+        return any(has(w) for w in words)
+    if q["kind"] == "standard":
+        name = q["text"].replace("following: ", "")
+        return _names_standard(q["text"], text) or has(name)
+    if q["kind"] == "outcome":
+        return has("untuk") or has("guna") or has("agar")
+    return True
 
 
 @dataclass(frozen=True)
@@ -153,6 +210,12 @@ class FormulateConfig:
     max_tokens: int = 700
     # the second model reasons before it answers; 1,200 tokens cut 4 of 14 answers off (EXP-032)
     confirm_max_tokens: int = 4000
+    # marked "kalimat_berulang" when the postings share this few distinct sentences
+    # (distinct / postings): one employer's text, not a skill. On e0_pool_all_v8 the 10
+    # review candidates at or below 0.3 were all employer text ("Apply today",
+    # "Support their families", "Create inclusive space") (EXP-034)
+    repeated_sentence_ratio: float = 0.3
+    repeated_sentence_min_postings: int = 5
     version: str = FORMULATE_VERSION
 
 
@@ -261,8 +324,11 @@ SYSTEM = (
     "dari bukti lowongan kerja, dengan GAYA PERUMUSAN judul unit SKKNI (contoh diberikan). "
     "Kompetensinya berasal dari lowongan, bukan dari SKKNI. Aturan:\n"
     "1. pernyataan (Bahasa Indonesia): satu baris pendek seperti judul unit SKKNI: kata kerja "
-    "operasional + objek kerja yang spesifik, lalu HANYA jika ada di 'kualifikasi': standar/metode, "
-    "mutu, hasil. Jangan menambah standar, mutu, hasil, angka, atau ambang lain.\n"
+    "operasional + objek kerja yang spesifik + standar/metode, mutu, atau hasil dari 'kualifikasi'. "
+    "Jika 'kualifikasi' berisi yang cocok dengan objek pernyataan, MASUKKAN yang paling sering "
+    "(paling banyak dua): itulah 'seberapa baik' dan 'standar apa' yang diminta lowongan. Jika tidak "
+    "ada yang cocok, tulis alasannya di 'alasan_tanpa_kualifikasi'. Jangan menambah standar, mutu, "
+    "hasil, angka, atau ambang yang tidak ada di 'kualifikasi'.\n"
     "1a. KATA KERJA: pakai kata kerja yang DIPAKAI LOWONGAN ('kata_kerja_utama', yang paling "
     "sering), dalam bentuk Indonesianya, atau 'Melakukan'/'Melaksanakan' + kata benda kegiatannya "
     "('Melakukan debugging', 'Melaksanakan pengujian unit'). JANGAN menggantinya dengan kata kerja "
@@ -290,17 +356,20 @@ SYSTEM = (
     "lunak', 'pada pemrograman', 'masalah', 'teknis'); jika objek di bukti umum, biarkan umum.\n"
     "2. JANGAN menyebut nama alat, produk, bahasa pemrograman, atau framework (Python, React, AWS, "
     "Laravel, dll.); alat dicatat terpisah.\n"
-    "3. statement_en: terjemahan Inggris yang setia dari 'pernyataan'. kualifikasi_dipakai: id "
+    "3. statement_en: terjemahan Inggris yang setia dari 'pernyataan', dalam bentuk perintah "
+    "('Develop ...', 'Perform ...'). kualifikasi_dipakai: id "
     "kualifikasi yang benar-benar tertulis dalam pernyataan; kosong jika tidak ada.\n"
     "4. skkni: bandingkan dengan 'kandidat_skkni'. " + SAME_RULE + "\n"
-    "5. Jika 'sama': pernyataan_skkni = judul unit SKKNI itu PERSIS seperti tertulis; boleh "
-    "diikuti SATU standar atau hasil dari 'kualifikasi' yang tersambung wajar ('Melakukan code "
+    "5. Jika 'sama': pernyataan_skkni = judul unit SKKNI itu PERSIS seperti tertulis; jika "
+    "'kualifikasi' berisi standar atau hasil yang cocok, tambahkan SATU (yang paling sering) yang "
+    "tersambung wajar ('Melakukan code "
     "review sesuai best practices', 'Melaksanakan pengujian unit program dalam alur CI/CD'). "
     "JANGAN menambahkan mutu ('yang ...') pada judul SKKNI. pernyataan_skkni_en = terjemahan "
     "Inggrisnya.\n"
     "Jawab HANYA dengan JSON: {\"pernyataan\":\"\",\"statement_en\":\"\","
-    "\"kualifikasi_dipakai\":[],\"skkni\":{\"kode\":null,\"hubungan\":\"tidak\","
-    "\"alasan\":\"\"},\"pernyataan_skkni\":null,\"pernyataan_skkni_en\":null}")
+    "\"kualifikasi_dipakai\":[],\"alasan_tanpa_kualifikasi\":\"\","
+    "\"skkni\":{\"kode\":null,\"hubungan\":\"tidak\",\"alasan\":\"\"},"
+    "\"pernyataan_skkni\":null,\"pernyataan_skkni_en\":null}")
 
 
 def main_verbs(prof: dict, n: int = 3) -> list[str]:
@@ -425,6 +494,30 @@ def check(raw: str | None, prof: dict, chosen: Sequence[dict],
     chosen_ids = {q["id"] for q in chosen}
     if set(used) - chosen_ids:
         problems.append(f"kualifikasi_dipakai names ids that were not given: {sorted(set(used) - chosen_ids)}")
+    # how well / which standard: a fitting qualifier is written, or the writer says why
+    # none fits (the writer left one out in 8 of 19 held-out cases, EXP-032; the
+    # researcher's decision of 2026-11-21)
+    if chosen and not used and not str(a.get("alasan_tanpa_kualifikasi") or "").strip():
+        problems.append("'kualifikasi' offers a standard, quality or outcome but none is used: "
+                        "write the most frequent one that fits the object, or give "
+                        "'alasan_tanpa_kualifikasi'")
+    # a quality is not a standard: "sesuai prinsip efisien" is refused, "kueri yang efisien"
+    # is meant (a v5 dry run)
+    qual_words = sorted(set(_QUALITY_ID) | {w for w, c in QUALITY_TERMS.items() if c != "general"},
+                        key=len, reverse=True)
+    as_standard = re.compile(r"\b(?:sesuai|according\s+to|following)\s+(?:(?:prinsip|principles?\s+of"
+                             r"|the)\s+)?(?:" + "|".join(map(re.escape, qual_words)) + r")\b", re.I)
+    # (the Indonesian line only: "following secure coding practices" is a fair English gloss)
+    if as_standard.search(pid):
+        problems.append("pernyataan writes a quality as if it were a standard ('sesuai ... "
+                        "<quality>'): put the quality on the artefact ('... yang <mutu>')")
+    # a qualifier listed as used must be written: the line, or the SKKNI wording, says it
+    # (a dry run of v5 listed 'efficient' for "Memelihara query basis data")
+    said = pid + " " + str(a.get("pernyataan_skkni") or "")
+    for q in chosen:
+        if q["id"] in set(used) and not _says(q, said):
+            problems.append(f"kualifikasi_dipakai lists {q['id']} ('{q['text']}') but the "
+                            f"pernyataan does not say it")
     # Slips in the SKKNI fields do not cost the statement: the link is set to the
     # cautious reading and a note is kept. The writer named the nearest unit
     # beside 'tidak', or claimed an overlap without a unit, in 8 of 53 answers (EXP-032).
@@ -512,8 +605,8 @@ def check(raw: str | None, prof: dict, chosen: Sequence[dict],
                 problems.append(f"{name} adds the quality '{word}', which the slots did not give")
         for sname, rx in _STANDARD_RX:
             # naming the work itself ("code review" for "Review code") adds no standard
-            if sname not in chosen_std and rx.search(body) and not rx.search(prof["statement"]) \
-                    and not restates(sname, prof["statement"]):
+            if sname not in chosen_std and _names_standard(sname, body) \
+                    and not rx.search(prof["statement"]) and not restates(sname, prof["statement"]):
                 problems.append(f"{name} adds the standard '{sname}', which the slots did not give")
     if problems:
         problems += slips                  # a retry should mend the SKKNI fields too
@@ -548,8 +641,8 @@ def decide_wording(a: dict, prof: dict, cands: Sequence[tuple[dict, float]]) -> 
             tail = sk_text[len(u["title"].strip()):].strip() if _norm(sk_text).startswith(
                 _norm(u["title"])) else ""
             out["pernyataan"] = sentence_case(u["title"].strip() + (" " + tail if tail else ""))
-            out["statement_en"] = (str(a.get("pernyataan_skkni_en") or "").strip()
-                                   or u.get("title_en") or a["statement_en"])
+            out["statement_en"] = sentence_case(str(a.get("pernyataan_skkni_en") or "").strip()
+                                                or u.get("title_en") or a["statement_en"])
             out["statement_en_pasar"] = a["statement_en"]
             out["sumber_rumusan"] = f"SKKNI {code}" + (" + pasar" if tail else "")
     return out
@@ -626,12 +719,97 @@ def apply_confirmation(w: dict, conf: dict | None) -> dict:
     return w
 
 
+# ----------------------------------------------------------------------- marks
+# The researcher's decision of 2026-11-21: competencies that are not work, or that
+# mix different works, are MARKED, not left out. A focused call of its own (in a
+# v5 dry run the writer, asked to mark as a sixth task, missed "support
+# decision-making" although its prompt named that very example).
+MARK_MODEL = "qwen/qwen3.8-flash"
+MARK_SYSTEM = (
+    "Anda memeriksa satu kelompok frasa yang dibaca dari lowongan kerja bidang perangkat lunak, "
+    "sebelum kelompok itu dijadikan kompetensi kurikulum SMK Rekayasa Perangkat Lunak. Nilai dari "
+    "bukti saja, menurut sebagian besar frasa dan lowongannya.\n"
+    "bukan_pekerjaan = true jika bukti TIDAK menyebut pekerjaan perangkat lunak yang dapat "
+    "diajarkan dan diamati, yaitu jika frasanya terutama: perilaku atau sikap kerja (bekerja "
+    "mandiri, cepat belajar, proaktif); tujuan atau manfaat dari pekerjaan lain tanpa menyebut "
+    "pekerjaannya (mendukung pengambilan keputusan, meningkatkan kepuasan pelanggan); uraian, "
+    "slogan, atau budaya perusahaan (membangun produk kelas dunia, menciptakan ruang yang "
+    "inklusif); tunjangan atau ajakan melamar; pengembangan diri atau karier; tugas di luar "
+    "perangkat lunak (rekrutmen, penjualan, administrasi kantor); atau frasa terpotong yang "
+    "kehilangan objeknya (menulis unit, mendukung bagian).\n"
+    "keluarga_campuran = true jika frasanya menyebut pekerjaan yang BERBEDA-BEDA, bukan satu "
+    "pekerjaan dengan variasi kata, sehingga objek kerja yang paling sering hanya mencakup "
+    "sebagian kecil lowongan (lihat 'porsi_objek_utama' dan 'n' pada 'objek_kerja').\n"
+    "Jawab HANYA dengan JSON: {\"bukan_pekerjaan\":false,\"keluarga_campuran\":false,"
+    "\"alasan\":\"satu kalimat\"}")
+
+
+def mark_messages(prof: dict) -> list[dict]:
+    """The competency's evidence only: nothing the writer wrote or decided."""
+    payload = {
+        "pernyataan_aturan_en": prof["statement"], "n_lowongan": prof["n_postings"],
+        "kata_kerja_lowongan": [{"verb": v["text"], "n": v["n_postings"]} for v in prof["verbs"][:6]],
+        "objek_kerja": [{"teks": o["text"], "n": o["n_postings"]} for o in prof["objects"][:6]],
+        "porsi_objek_utama": (round(prof["objects"][0]["n_postings"] / max(1, prof["n_postings"]), 2)
+                              if prof["objects"] else 0.0),
+        "contoh_frasa": prof["example_phrases"][:10],
+        "contoh_kalimat": [s[:240] for s in prof.get("example_sentences", [])[:5]],
+    }
+    return [{"role": "system", "content": MARK_SYSTEM},
+            {"role": "user", "content": json.dumps(payload, ensure_ascii=False)}]
+
+
+def mark_family(prof: dict, mark: Callable[[list[dict]], str | None], attempts: int = 2) -> dict:
+    """The marks of one competency; asked again once when the answer cannot be read.
+    An unreadable answer marks nothing, and says so."""
+    problem = ""
+    for n in range(1, attempts + 1):
+        raw = mark(mark_messages(prof))
+        try:
+            a = json.loads(re.sub(r"^```(?:json)?\s*|\s*```$", "", (raw or "").strip()))
+        except (TypeError, ValueError):
+            problem = "the answer is not JSON"
+            continue
+        if not (isinstance(a, dict) and isinstance(a.get("bukan_pekerjaan"), bool)
+                and isinstance(a.get("keluarga_campuran"), bool)):
+            problem = "bukan_pekerjaan and keluarga_campuran must be true or false"
+            continue
+        return {"bukan_pekerjaan": a["bukan_pekerjaan"], "keluarga_campuran": a["keluarga_campuran"],
+                "alasan": str(a.get("alasan") or "").strip()[:300], "percobaan": n}
+    return {"bukan_pekerjaan": False, "keluarga_campuran": False, "alasan": "",
+            "masalah": problem, "percobaan": attempts}
+
+
+def mark_flags(marks: dict | None) -> list[str]:
+    if not marks:
+        return []
+    reason = marks.get("alasan") or "ditandai pemeriksa"
+    return ([f"bukan_pekerjaan: {reason}"] if marks.get("bukan_pekerjaan") else []) + \
+           ([f"keluarga_campuran: {reason}"] if marks.get("keluarga_campuran") else [])
+
+
+def repeated_sentences(rows: Sequence[dict], cfg: FormulateConfig) -> str | None:
+    """A mark when the competency's postings share very few distinct sentences:
+    the evidence is then one employer's text repeated (a company description, a
+    benefit, a call to apply), not a skill many employers ask for."""
+    posts = {r.get("posting_id") for r in rows}
+    sentences = {_norm(r.get("sentence_text") or "") for r in rows}
+    if len(posts) < cfg.repeated_sentence_min_postings:
+        return None
+    if len(sentences) / len(posts) > cfg.repeated_sentence_ratio:
+        return None
+    return (f"kalimat_berulang: {len(posts)} lowongan memakai hanya {len(sentences)} kalimat "
+            f"berbeda (kemungkinan teks pemberi kerja, bukan keterampilan)")
+
+
 def formulate_one(c: dict, rows: Sequence[dict], index: SkkniIndex,
                   call: Callable[[list[dict]], str | None], cfg: FormulateConfig | None = None,
-                  confirm: Callable[[list[dict]], str | None] | None = None) -> dict:
-    """One competency: write, check (one retry), decide the wording, and confirm
-    a 'sama' with `confirm` (a second model). Without `confirm` no 'sama' is
-    confirmed, so no SKKNI wording is used."""
+                  confirm: Callable[[list[dict]], str | None] | None = None,
+                  mark: Callable[[list[dict]], str | None] | None = None) -> dict:
+    """One competency: mark it with `mark` (a second model), write, check (one
+    retry), decide the wording, and confirm a 'sama' with `confirm`. Without
+    `confirm` no 'sama' is confirmed, so no SKKNI wording is used; without `mark`
+    nothing is marked but the free 'kalimat_berulang'."""
     cfg = cfg or FormulateConfig()
     if is_fragment(c["statement"]["text"]):
         # a phrase cut before its object names no work: nothing to formulate, no call
@@ -649,6 +827,11 @@ def formulate_one(c: dict, rows: Sequence[dict], index: SkkniIndex,
     if obj_words and obj_words[-1] in GENERIC_OBJECTS:
         flags.append("terlalu_umum: objeknya umum ('" + " ".join(obj_words) + "')"
                      + ("" if chosen else " dan lowongan tidak menyebut standar, mutu, atau hasil"))
+    repeated = repeated_sentences(rows, cfg)
+    if repeated:
+        flags.append(repeated)
+    marks = mark_family(prof, mark) if mark else None
+    flags += mark_flags(marks)
     attempts, problems, reserve = [], [], None
     for i in range(2):
         raw = call(build_messages(prof, chosen, cands, problems))
@@ -669,6 +852,16 @@ def formulate_one(c: dict, rows: Sequence[dict], index: SkkniIndex,
             w = decide_wording(a, prof, cands)
             if a["skkni"].get("catatan"):
                 w["catatan_skkni"] = a["skkni"]["catatan"]
+            if marks and marks["bukan_pekerjaan"] and w["skkni"]:
+                # what is not work has no unit of work: no link, and no confirmation call
+                w["catatan_skkni"] = w.get("catatan_skkni", []) + [
+                    f"ditandai bukan pekerjaan: tautan {w['skkni']['kode']} "
+                    f"({w['skkni']['hubungan']}) tidak dipakai"]
+                w["skkni"] = None
+                if w["sumber_rumusan"].startswith("SKKNI"):
+                    w["pernyataan"] = w["pernyataan_pasar"]
+                    w["statement_en"] = w.pop("statement_en_pasar", w["statement_en"])
+                    w["sumber_rumusan"] = "pasar"
             if w["skkni"] and w["skkni"]["hubungan"] == "sama":
                 unit = next(u for u, _ in cands if u["code"] == w["skkni"]["kode"])
                 w = apply_confirmation(w, confirm_same(prof, unit, confirm) if confirm else None)
@@ -676,7 +869,8 @@ def formulate_one(c: dict, rows: Sequence[dict], index: SkkniIndex,
                     "accepted": True,
                     "level": prof.get("level"), "code": prof.get("code"),
                     "n_postings": prof["n_postings"], "pernyataan_aturan": prof["statement"],
-                    **w,
+                    **w, "tanda": marks,
+                    "alasan_tanpa_kualifikasi": str(a.get("alasan_tanpa_kualifikasi") or "").strip(),
                     "kualifikasi": [{k: q.get(k) for k in ("id", "kind", "text", "n_postings",
                                                             "share", "iso25010") if k in q}
                                     for q in chosen if q["id"] in set(a.get("kualifikasi_dipakai") or [])],
@@ -688,7 +882,7 @@ def formulate_one(c: dict, rows: Sequence[dict], index: SkkniIndex,
             "accepted": False, "level": prof.get("level"),
             "code": prof.get("code"), "n_postings": prof["n_postings"],
             "pernyataan_aturan": prof["statement"], "problems": problems, "flags": flags,
-            "attempts": attempts}
+            "tanda": marks, "attempts": attempts}
 
 
 def pick_sample(comps: Sequence[dict], n: int, seed: int, status: str | None) -> list[dict]:
@@ -729,6 +923,9 @@ def main(argv=None) -> int:
     ap.add_argument("--confirm-model", default=CONFIRM_MODEL,
                     help="the second model that must agree before SKKNI wording is used")
     ap.add_argument("--confirm-max-usd", type=float, default=0.10)
+    ap.add_argument("--mark-model", default=MARK_MODEL,
+                    help="the model that marks competencies that are not work or mix works")
+    ap.add_argument("--mark-max-usd", type=float, default=0.30)
     ap.add_argument("--skip-existing", action="store_true",
                     help="leave out competencies the output file already holds (no second payment)")
     args = ap.parse_args(argv)
@@ -763,32 +960,42 @@ def main(argv=None) -> int:
     confirm = capped_caller(args.confirm_model, DEFAULT_MODELS[args.confirm_model],
                             args.confirm_max_usd, max_tokens=cfg.confirm_max_tokens,
                             log_path=run_dir / f"{args.out}_confirm_log.jsonl")
+    marker = capped_caller(args.mark_model, DEFAULT_MODELS[args.mark_model],
+                           args.mark_max_usd, max_tokens=cfg.confirm_max_tokens,
+                           log_path=run_dir / f"{args.out}_mark_log.jsonl")
     n_done = 0
     for c in chosen:
         try:
-            r = formulate_one(c, rows[c["competency_id"]], index, call, cfg, confirm=confirm)
+            r = formulate_one(c, rows[c["competency_id"]], index, call, cfg, confirm=confirm,
+                              mark=marker)
         except BudgetError as exc:
             print(f"stopped: {exc}")
             break
         store["statements"][c["competency_id"]] = r
         n_done += 1
         s = r.get("skkni") or {}
+        t = r.get("tanda") or {}
         print(f"{'OK ' if r['accepted'] else 'REJ'} {r.get('code') or '--':4s} "
               f"{(r.get('pernyataan') or '; '.join(r.get('problems', [])))[:90]}"
               + (f"  [{s.get('hubungan')} {s.get('kode')}"
                  + ("" if "dikonfirmasi" not in s else
                     " confirmed" if s["dikonfirmasi"] else
                     f" NOT confirmed: second model {(s.get('konfirmasi') or {}).get('hubungan')}")
-                 + "]" if s else ""))
+                 + "]" if s else "")
+              + (" {NOT WORK}" if t.get("bukan_pekerjaan") else "")
+              + (" {MIXED}" if t.get("keluarga_campuran") else "")
+              + (f" {{mark unreadable: {t['masalah']}}}" if t.get("masalah") else ""))
     vals = list(store["statements"].values())
     this_call = {"version": FORMULATE_VERSION, "n": n_done,
                  "spent_usd_estimate": round(call.spent(), 6), "n_calls": call.n_calls,
                  "confirm_spent_usd_estimate": round(confirm.spent(), 6),
-                 "confirm_n_calls": confirm.n_calls}
+                 "confirm_n_calls": confirm.n_calls,
+                 "mark_spent_usd_estimate": round(marker.spent(), 6), "mark_n_calls": marker.n_calls}
     old = store.get("info") or {}
     # earlier notes on the file (its samples) are kept; every run into it is listed
     store["info"] = {**old, "formulate_version": FORMULATE_VERSION, "settings": asdict(cfg),
                      "model": STATEMENT_MODEL, "confirm_model": args.confirm_model,
+                     "mark_model": args.mark_model,
                      "n_skkni_units": len(units),
                      "skkni_documents": sorted({u.get("source", "") for u in units}),
                      "n_statements": len(vals), "n_accepted": sum(v["accepted"] for v in vals),

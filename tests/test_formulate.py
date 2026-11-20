@@ -139,7 +139,7 @@ def test_the_nearest_skkni_units_are_found_by_their_title_description_and_elemen
 def _answer(**over):
     a = {"pernyataan": "Mengembangkan aplikasi web yang aman sesuai best practices",
          "statement_en": "Develop secure web applications following best practices",
-         "kualifikasi_dipakai": ["S1", "Q1"],
+         "kualifikasi_dipakai": ["S1", "Q1"], "alasan_tanpa_kualifikasi": "",
          "skkni": {"kode": None, "hubungan": "tidak", "alasan": ""}, "pernyataan_skkni": None}
     a.update(over)
     return json.dumps(a)
@@ -374,6 +374,92 @@ def test_a_slip_in_the_skkni_fields_is_asked_again_and_the_first_answer_kept_if_
     assert r["accepted"] and r["attempts"][1]["dipakai_jawaban"] == 1
     assert r["pernyataan"] == "Mengembangkan aplikasi web" and "dibuang" in r["catatan_skkni"][0]
     assert r["skkni"] is None                                       # 'tidak': no link is shown
+
+
+def test_a_fitting_qualifier_is_written_and_what_is_not_work_or_mixed_is_marked():
+    """The researcher's decisions of 2026-11-21: a statement names the standard or
+    quality its postings ask for; what is not work, or mixes works, is marked."""
+    prof = Q.profile(_competency(), _rows())
+    chosen = F.choose_qualifiers(prof, F.FormulateConfig(min_share=0.2, min_postings=3,
+                                                         max_qualities=1, max_standards=1))
+    cands = F.SkkniIndex(UNITS, embed=_embed).nearest("web aplikasi", 3)
+    ids = {q["text"]: q["id"] for q in chosen}
+    bare = _plain()                                            # qualifiers offered, none used
+    assert any("none is used" in p for p in F.check(bare, prof, chosen, cands)[1])
+    why = _plain(alasan_tanpa_kualifikasi="mutu dan standar tidak menerangkan objek ini")
+    assert F.check(why, prof, chosen, cands)[1] == []
+    # a qualifier listed as used must be written, in English or in Indonesian
+    claimed = _answer(pernyataan="Mengembangkan aplikasi web", statement_en="Develop web applications",
+                      kualifikasi_dipakai=[ids["secure"]])                  # "aman" is not there
+    assert any("does not say it" in p for p in F.check(claimed, prof, chosen, cands)[1])
+    as_std = _answer(pernyataan="Mengembangkan aplikasi web sesuai prinsip aman",
+                     statement_en="Develop web applications according to secure principles",
+                     kualifikasi_dipakai=[ids["secure"]])
+    assert any("writes a quality as if it were a standard" in p
+               for p in F.check(as_std, prof, chosen, cands)[1])
+    written = _answer(pernyataan="Mengembangkan aplikasi web yang aman", kualifikasi_dipakai=[ids["secure"]],
+                      statement_en="Develop secure web applications")
+    assert F.check(written, prof, chosen, cands)[1] == []
+    std = {"id": "S9", "kind": "standard", "text": "design patterns"}
+    assert F._says(std, "Merancang aplikasi sesuai pola desain") and not F._says(std, "Merancang aplikasi")
+    assert F._says({"id": "O1", "kind": "outcome", "text": "improve performance"},
+                   "Mengoptimalkan kueri untuk meningkatkan kinerja")
+    # an Indonesian rendering of a standard the slots did not give is refused too
+    added = _answer(pernyataan="Mengembangkan aplikasi web sesuai pola desain",
+                    statement_en="Develop web applications", kualifikasi_dipakai=[],
+                    alasan_tanpa_kualifikasi="x")
+    assert any("adds the standard 'design patterns'" in p for p in F.check(added, prof, chosen, cands)[1])
+    # MARKS: a focused second model, shown only the evidence, marks what is not work or mixed
+    c = _competency()
+    idx = F.SkkniIndex(UNITS, embed=_embed)
+    cfg = F.FormulateConfig(min_share=0.9)
+    seen = []
+
+    def marker(answer):
+        def mark(messages):
+            seen.append(messages)
+            return answer
+        return mark
+
+    def never(messages):
+        raise AssertionError("what is not work needs no confirmation of an SKKNI unit")
+    linked = _plain(skkni={"kode": "J.62SAD00.001.1", "hubungan": "sama", "alasan": "x"},
+                    pernyataan_skkni="Mengembangkan Aplikasi Web",
+                    pernyataan_skkni_en="Develop web applications")
+    r = F.formulate_one(c, _rows(), idx, lambda m: linked, cfg, confirm=never,
+                        mark=marker('{"bukan_pekerjaan": true, "keluarga_campuran": false, '
+                                    '"alasan": "slogan perusahaan"}'))
+    # marked, not left out: the statement is written; what is not work keeps no SKKNI link
+    assert r["accepted"] and r["pernyataan"] == "Mengembangkan aplikasi web" and r["skkni"] is None
+    assert r["sumber_rumusan"] == "pasar" and "tidak dipakai" in r["catatan_skkni"][-1]
+    assert "bukan_pekerjaan: slogan perusahaan" in r["flags"] and r["tanda"]["bukan_pekerjaan"]
+    payload = json.loads(seen[0][1]["content"])
+    assert "pernyataan" not in payload and "kandidat_skkni" not in payload
+    assert 0 < payload["porsi_objek_utama"] <= 1 and payload["contoh_kalimat"]
+    mixed = F.formulate_one(c, _rows(), idx, lambda m: _plain(), cfg,
+                            mark=marker('{"bukan_pekerjaan": false, "keluarga_campuran": true, '
+                                        '"alasan": "RPA hanya 7 dari 101 lowongan"}'))
+    assert "keluarga_campuran: RPA hanya 7 dari 101 lowongan" in mixed["flags"]
+    assert mixed["version"] == "formulate-v5"
+    # an unreadable mark marks nothing and says so; a refused competency is marked as well
+    lost = F.formulate_one(c, _rows(), idx, lambda m: "{}", cfg, mark=marker("not json"))
+    assert not lost["accepted"] and lost["tanda"]["masalah"] and lost["tanda"]["percobaan"] == 2
+    assert not any(f.startswith(("bukan_pekerjaan", "keluarga_campuran")) for f in lost["flags"])
+    # the writer writes; marking is not its task
+    assert "bukan_pekerjaan" not in F.SYSTEM and "bukan_pekerjaan" in F.MARK_SYSTEM
+    # one employer's sentence repeated across postings is marked without a model
+    same = [{"text": "Support families", "posting_id": f"p{i}", "start": 0, "end": 16,
+             "sentence_text": "We support our employees and their families."} for i in range(6)]
+    assert F.repeated_sentences(same, F.FormulateConfig()).startswith("kalimat_berulang: 6 lowongan")
+    assert F.repeated_sentences(_rows(), F.FormulateConfig()) is None       # 6 postings, 3 sentences
+    assert F.repeated_sentences(same[:4], F.FormulateConfig()) is None      # too few postings
+    assert "alasan_tanpa_kualifikasi" in F.SYSTEM
+    # the English of an SKKNI title is in sentence case, like every other statement
+    same_unit = json.loads(_answer(skkni={"kode": "J.62SAD00.001.1", "hubungan": "sama", "alasan": "x"},
+                                   pernyataan_skkni="Mengembangkan Aplikasi Web",
+                                   pernyataan_skkni_en="Develop Web Applications"))
+    w = F.decide_wording(same_unit, {"level": "create", "statement": "Develop web applications"}, cands)
+    assert w["statement_en"] == "Develop web applications"
 
 
 def test_the_checker_reads_the_work_before_its_qualifiers_and_the_glossary_verbs():

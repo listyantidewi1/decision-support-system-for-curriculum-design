@@ -159,6 +159,19 @@ title, with an English gloss (`formulate.py`):
 - Slips in the writer's SKKNI fields (a code beside "tidak", a "sebagian"
   without a code) are asked about once, then read cautiously with a note;
   they do not cost the statement.
+- **Since version 5 (the researcher's decisions of 2026-11-21):** a standard or
+  quality the postings ask for is written when it fits the object (the writer
+  must otherwise say why none fits, and a qualifier listed as used must really
+  be in the line); and a competency that is not work (a work behaviour, a
+  purpose clause, employer text, a cut phrase) or that mixes different works
+  is **marked, not left out**. The marks come from a focused call of their own
+  (`MARK_MODEL`), shown only the evidence; a competency whose postings share
+  very few distinct sentences is marked "kalimat berulang" without a model.
+  Marks change no status. The dashboard shows them in a "Tanda" column and
+  beside the statement. Checked on a fresh sample of 40 against a bar written
+  down beforehand (passed), then run on all 599 review candidates of
+  `e0_pool_all_v8`: 558 statements, 265 competencies marked (EXP-034). The
+  writer's main remaining fault is a quality attached to the wrong word.
 - **Checked by independent judges (EXP-032).** Three blind judges of the SKKNI
   relation agree with each other almost perfectly (Fleiss' kappa 0.91 and
   0.87). On the 43 competencies the prompts were developed on, version 4.3
