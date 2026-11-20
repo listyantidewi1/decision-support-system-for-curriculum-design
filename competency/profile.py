@@ -124,12 +124,14 @@ def build(run_dir: Path, version: str, *, previous: Path | None = None,
         recs.append({
             "rank": rank, "competency_id": c["competency_id"], "statement": c["statement"],
             "stream": c["stream"], "contract": c["contract"], "delta": c.get("delta"),
+            "cognitive": c.get("cognitive"),
             "coverage": c.get("coverage"), "kkni": c.get("kkni"), "okupasi": c.get("okupasi"),
             "temporal": c.get("temporal"), "n_postings": c["n_postings"],
             "n_posting_groups": c.get("n_posting_groups"),
             "share_of_postings": c["share_of_postings"],
-            "evidence": {k: c["evidence"][k] for k in ("members", "technologies",
-                                                       "knowledge_context", "samples")}})
+            "evidence": {k: c["evidence"].get(k, []) for k in (
+                "members", "verbs", "knowledge_objects", "technologies", "knowledge_context",
+                "knowledge", "soft_skills", "work_behaviours", "samples")}})
     counts: dict[str, int] = {}
     for r in recs:
         counts[r["contract"]["status"]] = counts.get(r["contract"]["status"], 0) + 1
@@ -158,6 +160,8 @@ def build(run_dir: Path, version: str, *, previous: Path | None = None,
     (out_dir / "profile.json").write_text(json.dumps(profile, indent=1, ensure_ascii=False,
                                                      default=str), encoding="utf-8")
     (out_dir / "profile.md").write_text(to_markdown(profile), encoding="utf-8")
+    if (run_dir / "term_map.json").is_file():     # the cluster map travels with the profile
+        (out_dir / "term_map.json").write_bytes((run_dir / "term_map.json").read_bytes())
     profile["out_dir"] = str(out_dir)
     return profile
 

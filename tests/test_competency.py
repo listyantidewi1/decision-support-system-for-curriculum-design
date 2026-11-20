@@ -109,15 +109,39 @@ def test_profiles_and_denominators_count_postings_not_mentions():
 
 
 # -------------------------------------------------------------------- grouping
-def test_groups_are_built_from_sh_kn_ss_and_never_from_technology_or_behaviour():
+def test_competencies_are_built_from_hard_skills_only():
     ev, sents = _evidence(6)
     groups, report = group_evidence(ev, 6, clusterer=_key_clusterer)
-    assert {g.label for g in groups} == {"develop rest apis", "data structures", "teamwork"}
-    assert {g.stream for g in groups} == {"technical", "soft"}
+    assert {g.label for g in groups} == {"develop rest apis"}          # nothing from KN/SS/TT/WB
+    assert {g.stream for g in groups} == {"technical"}
     for g in groups:
-        assert set(g.tag_counts) <= {"SH", "KN", "SS"}
-    assert report["n_evidence_groupable"] == 24 == report["n_evidence_grouped"]
+        assert set(g.tag_counts) == {"SH"}
+    assert report["n_evidence_groupable"] == 12 == report["n_evidence_grouped"]
+    assert GroupingConfig().competency_tags == ("SH",)
     assert GroupingConfig().min_postings_per_phrase == 1
+    # the earlier design is still reachable, for an ablation
+    old, _ = group_evidence(ev, 6, GroupingConfig(competency_tags=("SH", "KN", "SS")),
+                            clusterer=_key_clusterer)
+    assert {g.label for g in old} == {"develop rest apis", "data structures", "teamwork"}
+
+
+def test_each_competency_lists_its_soft_skills_behaviours_and_knowledge_with_share_and_lift():
+    ev, sents = _evidence(6)
+    # two more postings that ask ONLY for teamwork: it becomes less specific to the competency
+    extra, preds = {}, {}
+    for p in (20, 21):
+        sid = f"u-{p:016x}#000"
+        extra[sid] = {"text": "Good teamwork.", "posting_id": f"u-{p:016x}"}
+        preds[sid] = [make_pred("Good teamwork.", 5, 13, "SS")]
+    ev = ev + E.build_evidence(preds, extra)
+    (g,) = group_evidence(ev, 8, clusterer=_key_clusterer)[0]
+    assert g.soft_skills == [{"text": "teamwork", "n_postings": 6, "share": 1.0, "lift": 1.0}]
+    assert g.work_behaviours == [{"text": "detail-oriented", "n_postings": 6, "share": 1.0,
+                                  "lift": 1.33}]
+    assert g.knowledge == [{"text": "data structures", "n_postings": 6, "share": 1.0,
+                            "lift": 1.33}]
+    assert g.knowledge_context == []                 # never in the same SENTENCE as the action
+    assert {t["text"] for t in g.technologies} == {"Spring Boot", "Java 17"}
 
 
 def test_technology_is_attached_by_sharing_a_sentence():
@@ -126,7 +150,6 @@ def test_technology_is_attached_by_sharing_a_sentence():
     by = {g.label: g for g in groups}
     assert {t["text"] for t in by["develop rest apis"].technologies} == {"Spring Boot", "Java 17"}
     assert by["develop rest apis"].technologies[0]["n_postings"] == 6
-    assert by["data structures"].technologies == [] and by["teamwork"].technologies == []
     g = by["develop rest apis"]
     assert g.n_evidence == 12 and g.n_postings == 6 and g.share_of_postings == 1.0
     assert g.samples and g.samples[0]["sentence_text"] in TEXTS
@@ -163,11 +186,14 @@ def _m(text, tag, n=5):
     return {"text": text, "tag": tag, "n_evidence": n, "n_postings": n}
 
 
-def test_deterministic_statement_uses_the_postings_own_verb_object_and_technologies():
-    st = S.deterministic_statement(_group([_m("Develop REST APIs", "SH", 6),
-                                           _m("developing REST APIs", "SH", 2)],
-                                          ["Spring Boot", "Java"]))
-    assert st.text == "Develop REST APIs using Spring Boot and Java"
+def test_deterministic_statement_is_a_verb_and_its_object_without_tool_names():
+    g = _group([_m("Develop REST APIs", "SH", 6), _m("developing REST APIs", "SH", 2)],
+               ["Spring Boot", "Java"])
+    st = S.deterministic_statement(g)
+    assert st.text == "Develop REST APIs" and st.technologies == []
+    # tool names can be put back for an ablation, never by default
+    assert S.deterministic_statement(g, max_technologies=3).text == \
+        "Develop REST APIs using Spring Boot and Java"
     assert (st.verb, st.krathwohl, st.language, st.verb_source) == ("develop", "create", "en",
                                                                     "evidence")
     assert st.grounding == 1.0 and st.ungrounded == []
@@ -176,16 +202,25 @@ def test_deterministic_statement_uses_the_postings_own_verb_object_and_technolog
 def test_a_knowledge_term_that_starts_like_a_verb_is_not_read_as_an_action():
     st = S.deterministic_statement(_group([_m("design patterns", "KN")], ["Java"]))
     assert st.text == "Explain design patterns" and st.verb_source == "default"
-    assert st.krathwohl == "understand" and st.technologies == []
+    # a default verb is the method's wording: its level is not reported as demanded
+    assert st.krathwohl == "not stated" and st.krathwohl_source == "none"
+    assert st.technologies == []
 
 
 def test_default_verbs_follow_the_tag_and_the_language():
     assert S.deterministic_statement(_group([_m("unit testing", "SH")], ["Jest"])).text \
-        == "Perform unit testing using Jest"
+        == "Perform unit testing"
     assert S.deterministic_statement(_group([_m("teamwork", "SS")], stream="soft")).text \
         == "Demonstrate teamwork"
     st = S.deterministic_statement(_group([_m("Membangun aplikasi web", "SH")], ["Laravel"]))
-    assert st.text == "Membangun aplikasi web menggunakan Laravel" and st.language == "id"
+    assert st.text == "Membangun aplikasi web" and st.language == "id"
+    # a one-word label takes its language from the sentences it came from
+    g = _group([_m("pemrograman", "SH")])
+    g.samples = [{"sentence_text": "Menguasai pemrograman dan memiliki pengalaman kerja."}]
+    assert S.deterministic_statement(g).text == "Melakukan pemrograman"
+    g.samples = [{"sentence_text": "Experience with programming and the team."}]
+    g.members[0]["text"] = "programming"
+    assert S.deterministic_statement(g).text == "Perform programming"
     assert S.deterministic_statement(_group([_m("struktur data", "KN")])).text \
         == "Menjelaskan struktur data"
 
@@ -272,6 +307,184 @@ def test_verb_table_is_versioned_and_marked_unreviewed():
     assert S.base_verb("Developing") == "develop" and S.base_verb("banana") is None
 
 
+# ------------------------------------------- verb + knowledge, and the term map
+def test_a_phrase_is_split_into_its_verbs_and_its_object():
+    f = S.split_verb_object
+    assert f("Develop machine learning algorithms") == (["develop"], "machine learning algorithms")
+    assert f("design, develop and test web apps") == (["design", "develop", "test"], "web apps")
+    assert f("unit testing") == ([], "unit testing")
+    assert f("Develop and maintain") == ([], "Develop and maintain")
+
+
+def test_a_competency_is_a_verb_plus_the_knowledge_its_phrases_act_on():
+    from competency import structure as ST
+    sents, preds = {}, {}
+
+    def add(p, i, text, spans):
+        sid = f"u-{p:016x}#{i:03d}"
+        sents[sid] = {"text": text, "posting_id": f"u-{p:016x}"}
+        preds[sid] = [make_pred(text, text.index(t), text.index(t) + len(t), tag) for t, tag in spans]
+    for p in range(4):                       # the knowledge term stands alone in 4 postings
+        add(p, 0, "Knowledge of machine learning algorithms.", [("machine learning algorithms", "KN")])
+    for p in range(3):
+        add(p, 1, "Develop machine learning algorithms in Python.",
+            [("Develop machine learning algorithms", "SH"), ("Python", "TT")])
+    for p in range(3, 6):
+        add(p, 1, "Design and evaluate scalable machine learning algorithms for vision.",
+            [("Design and evaluate scalable machine learning algorithms for vision", "SH")])
+    add(6, 1, "Develop new features.", [("Develop new features", "SH")])
+    ev = E.build_evidence(preds, sents)
+    vocab = ST.knowledge_vocabulary(ev, ST.StructureConfig())
+    assert set(vocab) == {"machine learning algorithms"}
+    assert ST.knowledge_in("scalable machine learning algorithms for vision", vocab) == \
+        "machine learning algorithms"
+    assert ST.knowledge_in("new features", vocab) is None
+    # the noun phrase after the verb, cut at the first preposition
+    assert ST.object_chunk("scalable machine learning algorithms for vision", False) == \
+        ["scalable", "machine", "learning", "algorithms"]
+    assert ST.object_chunk("the clean, maintainable and efficient code", False) == \
+        ["clean", "maintainable", "and", "efficient", "code"]
+    assert ST.object_chunk("aplikasi web dan mobile", True) == ["aplikasi", "web"]
+
+    def one_cluster(items, cfg):
+        return [SimpleNamespace(id="cluster_h0000", stream="hard_plus_knowledge", items=list(items),
+                                summary_label="ml", top_terms=["ml"], cohesion_score=0.9)], {}
+    (g,), _ = group_evidence(ev, 7, clusterer=one_cluster)
+    rep = ST.annotate([g], ev)
+    assert [(v["verb"], v["n_postings"]) for v in g.verbs] == [("develop", 4), ("design", 3),
+                                                              ("evaluate", 3)]
+    assert g.verbs[0]["krathwohl"] == "create"
+    # "algorithms" is the shared head; it is lengthened while more than half of
+    # its postings keep the longer form, and stops before "scalable" (3 of 6)
+    k = g.knowledge_objects[0]
+    assert (k["text"], k["n_postings"]) == ("machine learning algorithms", 6)
+    assert k["verbs"] == ["design", "develop", "evaluate"] and abs(k["share"] - 6 / 7) < 1e-3
+    assert k["tagged_knowledge"] is True
+    assert len(g.knowledge_objects) == 1            # "features" is in one posting only
+    assert rep["n_units_containing_a_term_tagged_knowledge"] == 6
+    assert rep["n_units_opening_with_a_verb"] == 7 and rep["n_groups_with_a_knowledge_object"] == 1
+    # the statement: verb + that knowledge; no tool is named
+    st = S.deterministic_statement(g)
+    assert st.text == "Design machine learning algorithms" and st.object_source == "knowledge"
+    assert st.grounding == 1.0 and "6 of the group's 7 postings" in st.notes[0]
+
+
+def test_cognitive_level_is_read_from_the_postings_verbs_never_from_a_default_verb():
+    from competency import structure as ST
+    cfg = ST.StructureConfig()
+    # the researcher's case: a group named by the noun "pemrograman", whose
+    # postings write "membangun" and "menulis" (create), a few "memelihara" (apply)
+    verbs = {"membangun": {f"p{i}" for i in range(6)}, "menulis": {f"p{i}" for i in range(4, 9)},
+             "memelihara": {"p0", "p20"}}
+    cog = ST.cognitive_profile(verbs, 40, cfg)
+    assert (cog["level"], cog["code"]) == ("create", "C6") and cog["n_postings_with_a_verb"] == 10
+    assert cog["share"] == 0.9 and cog["share_of_group_postings"] == 0.25
+    assert [(r["code"], r["n_postings"]) for r in cog["levels"]] == [("C6", 9), ("C3", 2)]
+    assert cog["highest"]["code"] == "C6"
+    # the highest level needs a fifth of the verb-using postings behind it
+    mostly_apply = {"memelihara": {f"p{i}" for i in range(9)}, "membangun": {"p9"}}
+    cog2 = ST.cognitive_profile(mostly_apply, 10, cfg)
+    assert cog2["code"] == "C3" and cog2["highest"]["code"] == "C3"
+    mostly_apply["membangun"] = {"p8", "p9"}
+    assert ST.cognitive_profile(mostly_apply, 10, cfg)["highest"]["code"] == "C6"
+    none = ST.cognitive_profile({"membangun": {"p1"}}, 30, cfg)
+    assert none["level"] is None and "too few" in none["basis"]
+    assert ST.BLOOM_CODE == {"remember": "C1", "understand": "C2", "apply": "C3",
+                             "analyze": "C4", "evaluate": "C5", "create": "C6"}
+    # the statement of that noun-led group keeps its default verb, but its level
+    # is the one the postings ask for, and the difference is written down
+    g = _group([_m("pemrograman", "SH", 40), _m("Membangun aplikasi", "SH", 3)])
+    g.samples = [{"sentence_text": "Menguasai pemrograman dan memiliki pengalaman."}]
+    g.cognitive = cog
+    st = S.deterministic_statement(g)
+    assert st.text == "Melakukan pemrograman" and st.verb_source == "default"
+    assert st.krathwohl == "create" and st.krathwohl_source == "postings"
+    assert any("ask for 'create'" in n for n in st.notes)
+    # with a verb-led group, the verb on the demanded level is the one chosen
+    g2 = _group([_m("Maintain websites", "SH", 5), _m("Build websites", "SH", 4)])
+    g2.knowledge_objects = [{"text": "websites", "n_postings": 9, "share": 1.0,
+                             "verbs": ["maintain", "build"], "tagged_knowledge": False}]
+    g2.cognitive = {"level": "create", "code": "C6"}
+    assert S.deterministic_statement(g2).text == "Build websites"
+
+
+def test_generator_statements_of_an_earlier_run_are_reused_without_a_new_call():
+    ev, sents = _evidence(6)
+
+    def fake_generate(groups, clusters_by_id, **kw):
+        g = groups[0]
+        st = S.Statement("Develop REST APIs for internal services.", "develop", "", [], "create",
+                         "en", "v2-generator", "evidence", 0.7)
+        return {"statements": {g.group_id: (st, {"kkni_level": 5, "rationale": "r"})},
+                "info": {"n_groups_sent": 1, "n_statements": 1, "model": "m"}}
+
+    def must_not_be_called(*a, **k):
+        raise AssertionError("the generator was called although statements were to be reused")
+    with tempfile.TemporaryDirectory() as tmp:
+        first = run(ev, sents, Path(tmp) / "a", evidence_source="test", mapping=False,
+                    clusterer=_key_clusterer, log=lambda *_: None,
+                    v2_generator={"max_groups": 5, "max_usd": 1.0, "generate": fake_generate})
+        again = run(ev, sents, Path(tmp) / "b", evidence_source="test", mapping=False,
+                    clusterer=_key_clusterer, log=lambda *_: None,
+                    v2_generator={"reuse_from": first["out_dir"], "generate": must_not_be_called})
+        comps = json.loads((Path(again["out_dir"]) / "competencies.json").read_text("utf-8"))
+        assert comps[0]["statement"]["text"] == "Develop REST APIs for internal services."
+        assert comps[0]["v2"]["rationale"] == "r" and comps[0]["cognitive"]["code"] == "C6"
+        info = again["v2_generator"]
+        assert info["new_calls"] == 0 and info["n_statements"] == 1 and info["reused_from_run"] == "a"
+        # a group made of other evidence does not inherit a statement
+        fewer = [e for e in ev if e.posting_id != ev[0].posting_id]
+        third = run(fewer, sents, Path(tmp) / "c", evidence_source="test", mapping=False,
+                    clusterer=_key_clusterer, log=lambda *_: None,
+                    v2_generator={"reuse_from": first["out_dir"]})
+        assert third["v2_generator"]["n_statements"] == 0
+        assert third["v2_generator"]["n_not_reused_because_the_group_changed"] == 1
+        assert again["cognitive"]["by_level"] == {"C6": 1}
+
+
+def test_shared_object_is_found_across_differently_worded_phrases():
+    from competency import structure as ST
+    cfg = ST.StructureConfig()
+    rows = [(f"p{i}", ["build"], ST.object_chunk(o, False), False) for i, o in enumerate([
+        "scalable REST APIs for internal services", "secure REST APIs", "REST APIs",
+        "REST APIs with Spring Boot", "GraphQL APIs", "the next generation of platforms",
+        "clean, maintainable and efficient code", "efficient code"])]
+    rows += [("p20", ["membangun"], ST.object_chunk("aplikasi web dan mobile", True), True),
+             ("p21", ["mengembangkan"], ST.object_chunk("aplikasi web berbasis Laravel", True), True)]
+    found = ST.shared_objects(rows, 10, cfg)
+    assert [(k["text"], k["n_postings"]) for k in found] == [
+        ("REST APIs", 4), ("efficient code", 2), ("aplikasi web", 2)]
+    assert found[0]["verbs"] == ["build"] and found[2]["verbs"] == ["membangun", "mengembangkan"]
+    assert all(k["tagged_knowledge"] is False for k in found)
+
+
+def test_term_map_groups_terms_that_are_asked_for_together():
+    from competency import termmap as TM
+    rows = []
+    stacks = [(["React", "TypeScript", "Next.js", "CSS"], "TT"), (["Python", "pandas", "SQL", "Spark"], "TT")]
+    for s, (terms, tag) in enumerate(stacks):
+        for p in range(30):
+            for t in terms:
+                rows.append((f"p{s}-{p}", tag, t.lower(), t))
+            rows.append((f"p{s}-{p}", "KN", "web standards" if s == 0 else "data modelling",
+                         "web standards" if s == 0 else "data modelling"))
+    rows.append(("p0-0", "TT", "cobol", "COBOL"))                # too rare: left out
+    rows.append(("p0-0", "SS", "teamwork", "teamwork"))          # not a tag of the map
+    m = TM.build(rows, 60, TM.TermMapConfig(n_clusters=2))
+    assert m["n_terms"] == 10 and len(m["clusters"]) == 2
+    by = {t["term"]: t for t in m["terms"]}
+    assert "COBOL" not in by and "teamwork" not in by
+    assert len({by[t]["cluster"] for t in ("React", "TypeScript", "Next.js", "CSS", "web standards")}) == 1
+    assert len({by[t]["cluster"] for t in ("Python", "pandas", "SQL", "Spark", "data modelling")}) == 1
+    assert by["React"]["cluster"] != by["Python"]["cluster"]
+    assert by["React"]["n_postings"] == 30 and by["React"]["share"] == 0.5
+    assert {c["n_knowledge"] for c in m["clusters"]} == {1} and "notice" in m
+    again = TM.build(rows, 60, TM.TermMapConfig(n_clusters=2))
+    assert again["terms"] == m["terms"]                          # a fixed seed: the same drawing
+    tiny = TM.build(rows[:3], 60, TM.TermMapConfig(min_postings=1))
+    assert tiny["n_terms"] <= 5 and len(tiny["clusters"]) == 1   # too few terms to cluster
+
+
 # -------------------------------------------------------------------- contract
 def test_contract_statuses_and_their_blockers():
     ok = dict(group_status=VALID, n_postings=10, grounding=0.9, okupasi_mapped=True)
@@ -284,6 +497,32 @@ def test_contract_statuses_and_their_blockers():
                             ({"okupasi_mapped": None}, "okupasi_mapping_not_run")]:
         d = decide(**{**ok, **change})
         assert d["status"] == STATUS_EXPLORATORY and blocker in d["blockers"], change
+
+
+def test_kkni_is_information_only_and_never_changes_status_or_order():
+    import inspect
+    from competency import contract as CT
+    from competency.delta import priority_order
+    assert "kkni" not in inspect.signature(CT.decide).parameters
+    base = {"statement": {"text": "Develop APIs"}, "n_postings": 9, "share_of_postings": 0.1,
+            "contract": {"status": STATUS_CANDIDATE, "blockers": []}}
+    a = [{**base, "competency_id": "a", "kkni": {"level": 3, "confident": True}},
+         {**base, "competency_id": "b", "kkni": {"level": 7, "confident": True}},
+         {**base, "competency_id": "c", "kkni": None}]
+    b = [{**c, "kkni": {"level": 5, "confident": False}} for c in a]
+    assert [c["competency_id"] for c in priority_order(a)] == \
+           [c["competency_id"] for c in priority_order(b)]
+
+
+def test_a_generator_statement_is_judged_by_the_generators_evidence_filter():
+    ok = dict(group_status=VALID, n_postings=10, grounding=0.1, okupasi_mapped=True)
+    assert decide(**ok)["status"] == STATUS_EXPLORATORY          # lexical check: too abstract
+    d = decide(**ok, grounding_passed=True)
+    assert d["status"] == STATUS_CANDIDATE and d["grounding_check"] == "generator_evidence_filter"
+    d = decide(**{**ok, "grounding": 0.95}, grounding_passed=False)
+    assert d["status"] == STATUS_EXPLORATORY
+    assert d["blockers"] == ["statement_evidence_filter_failed"]
+    assert decide(**{**ok, "grounding": 0.95})["grounding_check"] == "lexical>=0.80"
 
 
 def test_formal_review_is_never_reached_without_the_three_human_facts():
@@ -307,13 +546,21 @@ def test_pipeline_writes_an_evidence_package_and_says_it_is_an_engineering_run()
         out = Path(report["out_dir"])
         assert {p.name for p in out.iterdir()} == {
             "competencies.json", "competencies.csv", "groups.json", "report.json",
-            "evidence.parquet",
+            "evidence.parquet", "term_map.json",
             "technology_profile.csv", "work_behaviour_profile.csv"}
         comps = json.loads((out / "competencies.json").read_text(encoding="utf-8"))
         assert report["notice"].startswith("ENGINEERING RUN")
-        assert report["n_evidence_by_tag"]["TT"] == 12 and report["n_competencies"] == len(comps) == 3
+        assert report["n_evidence_by_tag"]["TT"] == 12 and report["n_competencies"] == len(comps) == 1
+        assert [s["text"] for s in comps[0]["evidence"]["soft_skills"]] == ["teamwork"]
+        assert [s["text"] for s in comps[0]["evidence"]["work_behaviours"]] == ["detail-oriented"]
+        assert [s["text"] for s in comps[0]["evidence"]["knowledge"]] == ["data structures"]
+        header = (out / "competencies.csv").read_text("utf-8-sig").splitlines()[0]
+        assert "soft_skills" in header and "work_behaviours" in header and "knowledge" in header
         c = next(c for c in comps if c["statement"]["verb"] == "develop")
-        assert c["statement"]["text"] == "Develop REST APIs using Java 17 and Spring Boot"
+        assert c["statement"]["text"] == "Develop REST APIs"
+        assert [v["verb"] for v in c["evidence"]["verbs"]] == ["develop"]
+        assert {t["text"] for t in c["evidence"]["technologies"]} == {"Java 17", "Spring Boot"}
+        assert (out / "term_map.json").is_file() and report["term_map"]["n_terms"] == 3
         assert c["contract"]["status"] == STATUS_EXPLORATORY
         assert c["contract"]["blockers"] == ["okupasi_mapping_not_run"]
         assert len(c["evidence"]["evidence_ids"]) == 12 and c["evidence"]["samples"]
@@ -434,6 +681,102 @@ def test_temporal_output_is_written_outside_the_gold_tree():
         assert not (T.GS_DIR / "_temporal_should_not_exist").exists()
         return
     raise AssertionError("temporal output was allowed under DATA/gold_standard/")
+
+
+# ------------------------------------------------- bridge to the v2 generator
+def test_v2_bridge_refuses_before_spending_past_the_cap():
+    from competency import v2_generator as V2
+    assert V2.worst_case_usd(["x" * 2500], "s" * 250, max_tokens=2000, retries=2) > 0.02
+    ev, _ = _evidence(6)
+    keep: dict = {}
+
+    def clusterer(items, cfg):
+        clusters, rep = _key_clusterer(items, cfg)
+        for c in clusters:
+            c.n_unique_jobs, c.n_items, c.cohesion_std = 6, len(c.items), 0.0
+            c.n_skill_items = c.n_knowledge_items = 0
+        return clusters, rep
+    groups, _ = group_evidence(ev, 6, clusterer=clusterer, keep_clusters=keep)
+    assert set(keep) == {g.group_id for g in groups}
+    for g in groups:
+        g.status = VALID
+    try:
+        V2.generate(groups, keep, max_groups=5, max_usd=0.0001, log=lambda *_: None)
+    except V2.GeneratorBudgetError:
+        return
+    raise AssertionError("the v2 generator bridge did not enforce its cap")
+
+
+def test_pipeline_uses_v2_statements_and_keeps_the_llm_kkni_as_a_suggestion():
+    ev, sents = _evidence(6)
+
+    def fake_generate(groups, clusters_by_id, **kw):
+        g = next(x for x in groups if x.stream == "technical" and x.label == "develop rest apis")
+        st = S.Statement("Develop REST APIs for internal services. Apply versioning.", "develop",
+                         "", [], "create", "en", "v2-generator", "evidence", 0.7)
+        return {"statements": {g.group_id: (st, {"kkni_level": 5, "rationale": "r",
+                                                 "kkni_level_source": "llm_suggested"})},
+                "info": {"n_groups_sent": 1, "n_statements": 1}}
+    with tempfile.TemporaryDirectory() as tmp:
+        rep = run(ev, sents, Path(tmp) / "r", evidence_source="test", mapping=False,
+                  clusterer=_key_clusterer, log=lambda *_: None,
+                  v2_generator={"max_groups": 5, "max_usd": 1.0, "generate": fake_generate})
+        comps = json.loads((Path(rep["out_dir"]) / "competencies.json").read_text("utf-8"))
+    v2 = next(c for c in comps if c["statement"]["method"] == "v2-generator")
+    assert v2["statement"]["text"].startswith("Develop REST APIs for internal services")
+    assert v2["v2"]["rationale"] == "r"
+    assert v2["kkni"] == {"level": 5, "source": "llm_suggested", "confident": False, "llm_level": 5}
+    assert len(comps) == 1                        # one competency: the hard-skill group
+    assert rep["v2_generator"]["n_statements"] == 1 and "v2 generator" in rep["statement_method"]
+
+
+# ------------------------------------------ two-stage grouping, rank stability
+def test_two_stage_grouping_clusters_frequent_phrases_and_attaches_rare_ones():
+    import numpy as np
+    sents, preds = {}, {}
+
+    def add(posting, text, span, tag):
+        sid = f"u-{posting:016x}#000"
+        sents[sid] = {"text": text, "posting_id": f"u-{posting:016x}"}
+        preds[sid] = [make_pred(text, text.index(span), text.index(span) + len(span), tag)]
+    for p in range(4):                                             # frequent: 4 postings
+        add(p, "Develop REST APIs.", "Develop REST APIs", "SH")
+    add(10, "Develop scalable REST APIs.", "Develop scalable REST APIs", "SH")   # rare, close
+    add(11, "Water the office plants.", "Water the office plants", "SH")         # rare, far
+    ev = E.build_evidence(preds, sents)
+
+    def clusterer(items, cfg):
+        assert {it.text for it in items} == {"Develop REST APIs"}      # only the frequent phrase
+        c = SimpleNamespace(id="cluster_h0001", stream="hard_plus_knowledge", items=list(items),
+                            summary_label="develop rest apis", top_terms=["rest", "apis"],
+                            cohesion_score=0.9, centroid_embedding=np.array([1.0, 0.0]))
+        return [c], {"stand_in": True}
+
+    def embed(texts):
+        return np.array([[0.95, 0.31] if "REST" in t else [0.0, 1.0] for t in texts])
+    cfg = GroupingConfig(core_min_postings=2, attach_threshold=0.75)
+    groups, report = group_evidence(ev, 6, cfg, clusterer=clusterer, embed=embed)
+    (g,) = groups
+    assert {m["text"] for m in g.members} == {"Develop REST APIs", "Develop scalable REST APIs"}
+    assert [(m["text"], m["attached"]) for m in g.members] == [
+        ("Develop REST APIs", False), ("Develop scalable REST APIs", True)]   # core first
+    assert g.n_postings == 5 and g.n_evidence == 5
+    two = report["two_stage"]
+    assert (two["n_tail_phrases"], two["n_phrases_attached"], two["n_evidence_attached"]) == (2, 1, 1)
+    assert two["n_evidence_in_stage_1"] == 4 and report["n_evidence_left_ungrouped"] == 1
+    one_stage, r1 = group_evidence(ev, 6, GroupingConfig(), clusterer=_key_clusterer)
+    assert r1["two_stage"] is None and len(one_stage) == 3
+
+
+def test_rank_stability_compares_consecutive_windows():
+    same = T.rank_stability([[0.5, 0.5], [0.3, 0.3], [0.1, 0.1], [0.05, 0.05]], top_ks=(2,))
+    assert same["pairs"][0]["spearman"] == 1.0 and same["pairs"][0]["top_k_jaccard"] == {"2": 1.0}
+    flipped = T.rank_stability([[0.5, 0.05], [0.3, 0.1], [0.1, 0.3], [0.05, 0.5]], top_ks=(2,))
+    assert flipped["pairs"][0]["spearman"] == -1.0
+    assert flipped["pairs"][0]["top_k_jaccard"] == {"2": 0.0} and flipped["mean_spearman"] == -1.0
+    assert T.rank_stability([[0.1], [0.2], [0.3]])["pairs"] == []          # one window: nothing
+    three = T.rank_stability([[0.3, 0.2, 0.1], [0.2, 0.3, 0.2], [0.1, 0.1, 0.3]], top_ks=(1, 9))
+    assert len(three["pairs"]) == 2 and "9" not in three["pairs"][0]["top_k_jaccard"]
 
 
 # ------------------------------------------- coverage, delta, versioned profile

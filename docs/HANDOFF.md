@@ -45,13 +45,14 @@ Streamlit Community Cloud accounts so the page can go online.
 | Multi-LLM labelling | `labeling/` | Built. Prompt v0 is the default. Ensemble already run on `pilot_100` and stored blind. `labeling.versus_gold` compares it with the gold when that exists. |
 | Extraction models E0–E6, D1–D3 | `fivetag/` | All built; see `fivetag/README.md`. E1 training rehearsed on Kaggle. Router thresholds untuned. |
 | D1/D2 conflicts | `fivetag/conflict_routing.py` | Risk rule and acceptance rule registered (`docs/experiments/PREREG_d3_conflict_routing.md`). Adjudicator model not registered; Qwen 3.8 Flash is provisional. |
-| Competency layers | `competency/` | Built; one engineering run. See `competency/README.md`. |
+| Competency layers | `competency/` | Built. **Competencies are built from hard skills only; tools, knowledge, soft skills and work behaviours are attached to each one** (researcher's decision, 2026-11-19). Two statement writers: rules (free) and the earlier LLM generator through `competency/v2_generator.py` (EXP-026). Whole-corpus runs: EXP-027, then EXP-028 (current design; run `e0_pool_all_v3`, draft profile `2026-0-draf3`). See `competency/README.md`. |
 | Time analysis | `competency/temporal.py` | Built; run once on the whole pool (experiment log, EXP-023). Thresholds and weight formula are starting values. |
 | Coverage audit, delta recommendations | `competency/coverage.py`, `delta.py` | Built and tested. Coverage against SKKNI run once (EXP-024). Delta needs an uploaded curriculum; none has been used yet. |
 | Versioned profile | `competency/profile.py` | Built. One DRAFT exists locally: `DATA/competency/profiles/drafts/2026-0-draf1/`. No release exists. |
 | End-to-end pipelines P1–P3 | `competency/endtoend.py` | Built and tested with a fake model; rehearsed once on 12 postings (EXP-025). Not a comparison yet: sample too small, extractors unmeasured. |
 | Figures | `competency/figures.py` | Built. Charts of the development experiments are committed under `docs/experiments/figures/`; charts of runs stay with the run under `DATA/`. |
-| Dashboards | `dashboard_v3/public.py`, `dashboard_v3/admin.py` | Built, tested headless. Not deployed. `dashboard/` and `dashboard_v2/` are the pre-approval versions, still wired to the old chain. |
+| Dashboards | `dashboard_v3/public.py`, `dashboard_v3/admin.py`, `dashboard_v3/termmap_view.py` (the cluster map tab) | Built, tested headless. Not deployed. `dashboard/` and `dashboard_v2/` are the pre-approval versions, still wired to the old chain. |
+| Configuration registry | `governance/config_registry.py` → `docs/CONFIG_REGISTRY.md` | Generated from the code; a test fails if it is out of date. 20 settings are still "starting value": they are the list of things to agree with the promotor or the experts. |
 | Dictionaries | `fivetag/lexicons/v1`, `v2` (+O*NET), `v3` (+ESCO) | `fivetag` defaults to v1; the competency chain uses v2; v3 is built but not used by default (EXP-021). |
 
 ## 4. How to run and check things
@@ -114,12 +115,36 @@ lands, with the file that holds it.
 - [x] Admin dashboard and public dashboard — `dashboard_v3/`
 - [x] Figures (asked for during the session) — `competency/figures.py`
 
+Added after that list, same night and after midnight (20 November):
+
+- [x] Configuration registry — `governance/config_registry.py`, `docs/CONFIG_REGISTRY.md`
+- [x] Clean-up audit; two files moved to `legacy/` — `CLAUDE.md` §4
+- [x] Bridge to the earlier LLM generator — `competency/v2_generator.py`, EXP-026
+- [x] Competencies from hard skills only, with tools, knowledge, soft skills and work behaviours attached — `competency/grouping.py`, EXP-027
+- [x] KKNI made information only, held by a test — `competency/contract.py`
+- [x] Two-stage grouping for the whole corpus, and rank stability between windows — `competency/grouping.py`, `competency/temporal.py`, EXP-027
+
+- [x] A competency as verb + knowledge, statement without tool names — `competency/structure.py`, `competency/statement.py`, EXP-028
+- [x] Cluster map of knowledge terms and technologies, as a dashboard tab and a still figure — `competency/termmap.py`, `dashboard_v3/termmap_view.py`, `competency/figures.py`
+- [x] The earlier generator run on the 30 most frequent hard-skill competencies of the whole corpus, cost measured from the account — EXP-028
+
+The account balance can be read (numbers only) through OpenRouter's `/credits`
+endpoint with the key the code already loads; that is how EXP-028 was costed.
+The old generator itself still reports no usage.
+
+Known faults of the attached lists, not yet repaired (EXP-027, "What is visibly
+weak"): lift is not comparable across languages; spelling variants of one soft
+skill are separate lines; a rule statement can be a fragment of one posting.
+
 What comes next, in the order I would take it:
 
 1. Put the annotation page online once the researcher has the Fly.io and
    Streamlit accounts (steps in `annotation_server/README.md`, "Deploy").
-2. A better KKNI step (see the repair above).
-3. Re-run the LLM statement trial with the three-technology limit and log it.
+2. Run the earlier generator on the hard-skill-only groups of the whole corpus
+   (EXP-026 used the older grouping) and have the researcher read the result.
+   It costs credit: needs her go-ahead and `--max-usd`.
+3. A better KKNI step. The generator's own proposal is not it (level 5 for all
+   13 statements in EXP-026). KKNI is information only, so this blocks nothing.
 4. Try the delta recommendations on a real SMK RPL curriculum document.
 5. A larger P1–P3 rehearsal when credit allows; then the temporal-stability and
    repeated-run measurements the rehearsal could not make.
@@ -143,13 +168,23 @@ say what each layer assumes.
 | One tagging layer per tag in the encoder | 2026-11-19 | `fivetag/README.md` |
 | ESCO and O*NET lists join the dictionary | 2026-11-19 | `fivetag/README.md` |
 | Risk rule for D1/D2 conflicts and its acceptance thresholds (promotor agreed) | 2026-11-19 | `docs/experiments/PREREG_d3_conflict_routing.md` |
+| Competencies come from SKILL_HARD. Each competency lists the tools and technology mostly used for it, and the soft skills and work behaviours expected with it | 2026-11-19 | `competency/__init__.py`, `competency/README.md` |
+| A competency is a verb (placed on the taxonomy) plus a knowledge. The statement names no tool: "Perform programming", not "Perform programming using Python, PHP and JavaScript" | 2026-11-20 | `competency/structure.py`, `competency/statement.py` (tests hold both) |
+| The cognitive level of a competency is read from the verbs the postings use (C1–C6), never from a default verb the method supplied | 2026-11-20 | `competency/structure.py` `cognitive_profile` (a test holds it) |
+| KKNI is additional information for the reader; it never enters the status or the order | 2026-11-19 | `competency/contract.py` (a test holds it) |
+| The earlier LLM generator (`competency_generator_v2`) is the statement writer to build on, not the short rule statements | 2026-11-19 | `competency/v2_generator.py`, EXP-026 |
 | Kitalulus and Kemnaker are in the monthly round (promotor agreed) | 2026-11-19 | `docs/corpus/SOURCE_AUDIT.md` K8, K10 |
 | Training runs on Kaggle | 2026-11-19 | `fivetag/README.md` |
 | Every experiment is logged | 2026-11-19 | `CLAUDE.md` §8 |
+| The pre-approval dashboards (`dashboard/`, `dashboard_v2/`) are kept; the old orchestrator and its scripts therefore stay live | 2026-11-19 | `CLAUDE.md` §4 |
 
 ## 8. Decisions still open (the researcher's)
 
-- The role of each tag in the competency layer, postings versus employers as the count of demand, the two contract thresholds, the verb table (`competency/README.md`).
+- Whether one competency may carry several verbs of different taxonomy levels (the statement uses the most frequent on the demanded level; the others are listed).
+- The verb table (`competency/statement.py`, `verbs-v1-unreviewed`): which verb sits on which Bloom level. Every cognitive level shown follows from it and nobody but the developer has reviewed it.
+- Whether the level of a competency is the one most postings ask for (built) or the highest one asked for (shown beside it).
+- Postings versus employers as the count of demand, the two contract thresholds, the verb table (`competency/README.md`).
+- Whether a generator statement may be judged by the generator's own evidence filter (built that way; `docs/CONFIG_REGISTRY.md`).
 - Which model is the registered adjudicator (provisional: Qwen 3.8 Flash; confirm on pilot gold).
 - How the main annotation of 1,200 is paid for.
 - Budget for labelling the whole corpus with the LLM ensemble.

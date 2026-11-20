@@ -43,6 +43,22 @@ class GroupingConfig:
     # Rarity is judged per GROUP instead (the audit's low-frequency status and
     # the contract's min_postings).
     min_postings_per_phrase: int = 1
+    # Which tags a competency is BUILT from. The researcher's decision of
+    # 2026-11-19: competencies come from hard skills. Everything else describes
+    # a competency: the tools used for it, the knowledge behind it, the soft
+    # skills and work behaviours expected of the person who has it.
+    competency_tags: tuple[str, ...] = ("SH",)
+    max_profile_items: int = 8            # soft skills / work behaviours listed per competency
+    min_profile_postings: int = 2
+    # Two-stage grouping, for a corpus too large to cluster every phrase.
+    # Stage 1 clusters only the phrases seen in at least `core_min_postings`
+    # postings: they define the themes. Stage 2 attaches each rarer phrase to
+    # the nearest theme when it is close enough, and otherwise leaves it out.
+    # 1 = one stage, every phrase clustered (fine up to a few thousand postings).
+    core_min_postings: int = 1
+    # floor of the cosine to a group's centre; the working threshold per group
+    # is max(this, sqrt(cohesion of the group)). A starting value.
+    attach_threshold: float = 0.75
     cohesion_threshold: float = 0.55
     max_technologies: int = 8
     min_technology_postings: int = 2      # a technology must co-occur in this many postings
@@ -68,8 +84,21 @@ class Group:
     n_posting_groups: int
     cohesion: float
     tag_counts: dict[str, int]
+    # named in the SAME SENTENCE as the group's phrases
     technologies: list[dict] = field(default_factory=list)      # {text, n_postings}
     knowledge_context: list[dict] = field(default_factory=list)
+    # asked for in the SAME POSTINGS: {text, n_postings, share, lift}. `share` is
+    # the part of this group's postings that also ask for it; `lift` is that
+    # share divided by its share over all postings (above 1 = asked for more
+    # often with this competency than in general).
+    soft_skills: list[dict] = field(default_factory=list)
+    work_behaviours: list[dict] = field(default_factory=list)
+    knowledge: list[dict] = field(default_factory=list)
+    # set by competency.structure: the verbs the postings use for this work and
+    # the knowledge those verbs act on (read from inside the phrases)
+    verbs: list[dict] = field(default_factory=list)
+    knowledge_objects: list[dict] = field(default_factory=list)
+    cognitive: dict = field(default_factory=dict)       # the level the postings' verbs ask for
     status: str = ""
     status_code: str = ""
     status_flags: list[str] = field(default_factory=list)
@@ -87,6 +116,8 @@ class _Skill:
         self.sentence_id = e.sentence_id.replace("#", "_")     # "<posting>_<n>": its job-id rule
         self.type = SimpleNamespace(value=kind)                # "hard" | "soft"
         self.evidence_id = e.evidence_id
+        self.key, self.posting_id = e.key, e.posting_id
+        self.stream = "soft" if kind == "soft" else "technical"
 
 
 class _Knowledge:
@@ -96,6 +127,7 @@ class _Knowledge:
         self.text, self.sentence_text, self.source = e.text, e.sentence_text, e.source
         self.sentence_id = e.sentence_id.replace("#", "_")
         self.evidence_id = e.evidence_id
+        self.key, self.posting_id, self.stream = e.key, e.posting_id, "technical"
 
 
 def _default_clusterer(items, cfg: GroupingConfig):
@@ -112,11 +144,76 @@ def _default_clusterer(items, cfg: GroupingConfig):
                       "runtime_seconds": report.runtime_seconds}
 
 
+def _default_embed(texts: list[str], cfg: GroupingConfig):
+    """Embeddings of phrases, made the way the clusterer makes them (same
+    model, same prefix, unit length), so a phrase can be compared with the
+    centre of a cluster."""
+    from clustering import ClusteringConfig
+    from clustering.skill_clusterer import _get_embedder
+    prefix = ClusteringConfig().template_prefix
+    return _get_embedder(cfg.embedder_model).encode(
+        [prefix + t for t in texts], normalize_embeddings=True, convert_to_numpy=True,
+        batch_size=256, show_progress_bar=False)
+
+
+def attach_tail(clusters, tail_items, cfg: GroupingConfig, embed=None) -> dict:
+    """Stage 2: add each rare phrase to the nearest cluster of its own stream
+    when the cosine to that cluster's centre reaches `attach_threshold`.
+    Clusters are changed in place (their `items` grow); their centre and
+    cohesion are those of stage 1 and are not recomputed."""
+    import numpy as np
+    by_key: dict[tuple[str, str], list] = defaultdict(list)
+    for it in tail_items:
+        by_key[(it.stream, it.key)].append(it)
+    report = {"n_tail_phrases": len(by_key), "n_tail_evidence": len(tail_items),
+              "n_phrases_attached": 0, "n_evidence_attached": 0,
+              "attach_threshold": cfg.attach_threshold}
+    for stream in ("technical", "soft"):
+        cs = [c for c in clusters
+              if ("soft" if getattr(c, "stream", "") == "soft_skill" else "technical") == stream
+              and getattr(c, "centroid_embedding", None) is not None]
+        keys = [k for k in by_key if k[0] == stream]
+        if not cs or not keys:
+            continue
+        centres = np.array([np.asarray(c.centroid_embedding, dtype=np.float32) for c in cs])
+        norms = np.linalg.norm(centres, axis=1, keepdims=True)
+        centres = centres / np.where(norms > 0, norms, 1.0)
+        vecs = (embed or (lambda t: _default_embed(t, cfg)))([by_key[k][0].text for k in keys])
+        sims = np.asarray(vecs, dtype=np.float32) @ centres.T
+        # A phrase joins a group only if it is at least as close to the centre
+        # as the group's own members typically are. For unit vectors the mean
+        # cosine of members to their centre is about sqrt(cohesion), cohesion
+        # being the mean pairwise cosine. `attach_threshold` is the floor.
+        # (First whole-pool attempt, EXP-026: a flat 0.75 attached 94% of all
+        # rare phrases, because the shared embedding prefix inflates cosines.)
+        need = np.array([max(cfg.attach_threshold,
+                             float(max(0.0, getattr(c, "cohesion_score", 0.0))) ** 0.5)
+                         for c in cs], dtype=np.float32)
+        sims = np.where(sims >= need[None, :], sims, -1.0)
+        best = sims.argmax(axis=1)
+        for row, k in enumerate(keys):
+            if float(sims[row, best[row]]) >= 0.0:
+                for it in by_key[k]:
+                    it.attached = True               # a variant added in stage 2
+                cs[int(best[row])].items.extend(by_key[k])
+                report["n_phrases_attached"] += 1
+                report["n_evidence_attached"] += len(by_key[k])
+    return report
+
+
 def _audit(groups: list[Group]) -> None:
     from pipeline_scientific_audits import audit_cluster_validity
-    dicts = [{"id": g.group_id, "summary_label": g.label, "top_terms": g.top_terms,
-              "items": [m["text"] for m in g.members], "cohesion_score": g.cohesion,
-              "n_items": len(g.members), "n_unique_jobs": g.n_postings} for g in groups]
+    # The audit judges a group as the clusterer formed it: its size and cohesion
+    # thresholds were set for that. Phrases attached in stage 2 are variants of
+    # the group's themes, so they do not count towards "too large to be one
+    # group". (First whole-pool run, EXP-026: counting them flagged 697 of 912
+    # groups as needing a split.) Their postings still count as demand.
+    dicts = []
+    for g in groups:
+        core = [m for m in g.members if not m.get("attached")] or g.members
+        dicts.append({"id": g.group_id, "summary_label": g.label, "top_terms": g.top_terms,
+                      "items": [m["text"] for m in core], "cohesion_score": g.cohesion,
+                      "n_items": len(core), "n_unique_jobs": g.n_postings})
     with tempfile.TemporaryDirectory() as tmp:
         report = audit_cluster_validity(dicts, Path(tmp))
     by_id = report["cluster_validity_by_id"]
@@ -130,7 +227,9 @@ def _audit(groups: list[Group]) -> None:
 def group_evidence(evidence: Sequence[Evidence], n_postings: int,
                    cfg: GroupingConfig | None = None,
                    clusterer: Callable | None = None,
-                   posting_group: dict[str, str] | None = None) -> tuple[list[Group], dict]:
+                   posting_group: dict[str, str] | None = None,
+                   embed: Callable | None = None,
+                   keep_clusters: dict | None = None) -> tuple[list[Group], dict]:
     """(groups, report). `n_postings` is the denominator for every share.
     `posting_group` maps a posting to its employer/template group; without it
     every posting counts as its own group."""
@@ -139,34 +238,76 @@ def group_evidence(evidence: Sequence[Evidence], n_postings: int,
     by_id = {e.evidence_id: e for e in evidence}
     items = []
     for e in evidence:
+        if e.tag not in cfg.competency_tags:
+            continue
         if e.tag == "SH":
             items.append(_Skill(e, "hard"))
         elif e.tag == "SS":
             items.append(_Skill(e, "soft"))
         elif e.tag == "KN":
             items.append(_Knowledge(e))
-    clusters, cluster_report = (clusterer or _default_clusterer)(items, cfg)
+    core, tail, attach_report = items, [], None
+    if cfg.core_min_postings > 1:
+        seen: dict[tuple[str, str], set] = defaultdict(set)
+        for it in items:
+            seen[(it.stream, it.key)].add(it.posting_id)
+        core = [it for it in items if len(seen[(it.stream, it.key)]) >= cfg.core_min_postings]
+        tail = [it for it in items if len(seen[(it.stream, it.key)]) < cfg.core_min_postings]
+    clusters, cluster_report = (clusterer or _default_clusterer)(core, cfg)
+    if tail and clusters:
+        attach_report = attach_tail(clusters, tail, cfg, embed)
 
     tech_by_sentence: dict[str, list[Evidence]] = defaultdict(list)
     kn_by_sentence: dict[str, list[Evidence]] = defaultdict(list)
+    # Knowledge is profiled both ways: `knowledge_context` (same sentence, rare
+    # but direct) and `knowledge` (same postings: knowledge is usually asked for
+    # on a line of its own, like soft skills).
+    profile_postings: dict[str, dict[str, set]] = {t: defaultdict(set)
+                                                   for t in ("SS", "WB", "KN")}
+    profile_forms: dict[str, dict[str, Counter]] = {t: defaultdict(Counter)
+                                                    for t in ("SS", "WB", "KN")}
     for e in evidence:
         if e.tag == "TT":
             tech_by_sentence[e.sentence_id].append(e)
         elif e.tag == "KN":
             kn_by_sentence[e.sentence_id].append(e)
+        if e.tag in profile_postings and e.tag not in cfg.competency_tags:
+            profile_postings[e.tag][e.key].add(e.posting_id)
+            profile_forms[e.tag][e.key][e.text] += 1
+
+    def posting_profile(tag: str, postings: set) -> list[dict]:
+        """What the postings of a group also ask for, with how typical that is."""
+        rows = []
+        for key, ps in profile_postings[tag].items():
+            both = len(ps & postings)
+            if both < cfg.min_profile_postings:
+                continue
+            share = both / len(postings)
+            base = len(ps) / n_postings if n_postings else 0.0
+            forms = profile_forms[tag][key]
+            rows.append({"text": max(sorted(forms), key=lambda s: forms[s]), "n_postings": both,
+                         "share": round(share, 4),
+                         "lift": round(share / base, 2) if base > 0 else None})
+        rows.sort(key=lambda r: (-r["n_postings"], r["text"]))
+        return rows[:cfg.max_profile_items]
 
     groups: list[Group] = []
     for c in clusters:
         ev = [by_id[i.evidence_id] for i in c.items]
         if not ev:
             continue
+        if keep_clusters is not None:            # for the v2 generator bridge
+            keep_clusters[str(c.id)] = c
         ids = {e.evidence_id for e in ev}
+        attached_ids = {i.evidence_id for i in c.items if getattr(i, "attached", False)}
         postings = {e.posting_id for e in ev}
         sentence_ids = {e.sentence_id for e in ev}
         members: dict[tuple[str, str], dict] = {}
         for e in ev:
             m = members.setdefault((e.key, e.tag), {"text": e.text, "tag": e.tag, "n_evidence": 0,
-                                                    "_postings": set(), "_forms": Counter()})
+                                                    "_postings": set(), "_forms": Counter(),
+                                                    "_attached": True})
+            m["_attached"] = m["_attached"] and e.evidence_id in attached_ids
             m["n_evidence"] += 1
             m["_postings"].add(e.posting_id)
             m["_forms"][e.text] += 1
@@ -174,8 +315,10 @@ def group_evidence(evidence: Sequence[Evidence], n_postings: int,
         for m in members.values():
             member_rows.append({"text": max(sorted(m["_forms"]), key=lambda s: m["_forms"][s]),
                                 "tag": m["tag"], "n_evidence": m["n_evidence"],
-                                "n_postings": len(m["_postings"])})
-        member_rows.sort(key=lambda r: (-r["n_postings"], -r["n_evidence"], r["text"]))
+                                "n_postings": len(m["_postings"]),
+                                "attached": bool(m["_attached"])})
+        member_rows.sort(key=lambda r: (r["attached"], -r["n_postings"], -r["n_evidence"],
+                                        r["text"]))
 
         def context(table, exclude_members: bool):
             seen: dict[str, dict] = {}
@@ -209,17 +352,23 @@ def group_evidence(evidence: Sequence[Evidence], n_postings: int,
             n_posting_groups=len({posting_group.get(p, p) for p in postings}),
             cohesion=float(c.cohesion_score), tag_counts=dict(Counter(e.tag for e in ev)),
             technologies=context(tech_by_sentence, False),
-            knowledge_context=context(kn_by_sentence, True), samples=samples))
+            knowledge_context=context(kn_by_sentence, True),
+            soft_skills=posting_profile("SS", postings),
+            work_behaviours=posting_profile("WB", postings),
+            knowledge=posting_profile("KN", postings), samples=samples))
     groups.sort(key=lambda g: (-g.n_postings, g.group_id))
     if groups:
         _audit(groups)
     grouped = {i for g in groups for i in g.evidence_ids}
-    eligible = [e for e in evidence if e.tag in ("SH", "SS", "KN")]
+    eligible = [e for e in evidence if e.tag in cfg.competency_tags]
     report = {"grouping_version": cfg.version, "embedder_model": cfg.embedder_model,
               "n_evidence_groupable": len(eligible),
               "n_evidence_grouped": len(grouped),
               "n_evidence_left_ungrouped": len(eligible) - len(grouped),
               "n_groups": len(groups),
               "status_distribution": dict(Counter(g.status for g in groups)),
+              "two_stage": {"core_min_postings": cfg.core_min_postings,
+                            "n_evidence_in_stage_1": len(core), **(attach_report or {})}
+              if cfg.core_min_postings > 1 else None,
               "clusterer": cluster_report}
     return groups, report

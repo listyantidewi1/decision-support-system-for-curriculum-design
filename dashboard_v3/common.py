@@ -33,6 +33,15 @@ DELTA_LABEL = {"menambah": "Menambah", "memperdalam": "Memperdalam",
                "mempertahankan": "Mempertahankan", "mengurangi_penekanan": "Mengurangi penekanan",
                "pemantauan": "Pemantauan saja"}
 BLUE = "#2a78d6"
+LEVEL_LABEL = {"remember": "mengingat", "understand": "memahami", "apply": "menerapkan",
+               "analyze": "menganalisis", "evaluate": "mengevaluasi", "create": "mencipta"}
+
+
+def level_text(cog: dict | None) -> str:
+    """'C6 mencipta' for a level read from the postings, '' when there is none."""
+    if not cog or not cog.get("level"):
+        return ""
+    return f"{cog['code']} {LEVEL_LABEL.get(cog['level'], cog['level'])}"
 
 
 def list_profiles() -> list[dict]:

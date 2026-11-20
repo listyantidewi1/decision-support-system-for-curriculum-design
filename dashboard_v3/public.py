@@ -60,8 +60,18 @@ shown = [r for r in recs
          and r["n_postings"] >= min_postings
          and (not query or query.lower() in r["statement"]["text"].lower())]
 
-tab_list, tab_summary, tab_curriculum, tab_changes, tab_about = st.tabs(
-    ["Rekomendasi", "Ringkasan", "Kurikulum Anda", "Catatan perubahan", "Tentang"])
+tab_list, tab_map, tab_summary, tab_curriculum, tab_changes, tab_about = st.tabs(
+    ["Rekomendasi", "Peta pengetahuan & teknologi", "Ringkasan", "Kurikulum Anda",
+     "Catatan perubahan", "Tentang"])
+
+with tab_map:
+    map_path = Path(chosen["path"]).parent / "term_map.json"
+    if map_path.is_file():
+        from dashboard_v3 import termmap_view
+        termmap_view.render(st, C.load_json(map_path), recs)
+    else:
+        st.info("Profil ini diterbitkan sebelum peta kelompok tersedia. Terbitkan versi baru "
+                "dari run yang memuat `term_map.json` untuk melihatnya.")
 
 with tab_list:
     st.caption(f"{len(shown)} dari {len(recs)} rekomendasi. Urutan: status, lalu bobot "
@@ -69,6 +79,7 @@ with tab_list:
     table = [{"#": r["rank"], "Pernyataan kompetensi": r["statement"]["text"],
               "Status": C.STATUS_LABEL[r["contract"]["status"]],
               "Lowongan": r["n_postings"], "Pangsa": f"{r['share_of_postings']:.1%}",
+              "Tingkat kognitif": C.level_text(r.get("cognitive")),
               "KKNI (usulan)": (f"{r['kkni']['level']}" + ("" if r["kkni"].get("confident") else " ?"))
               if r.get("kkni") and r["kkni"].get("level") else "",
               "Rujukan resmi (usulan)": C.COVERAGE_LABEL.get(
@@ -88,9 +99,28 @@ with tab_list:
             st.write(f"Diminta oleh {pick['n_postings']} lowongan "
                      f"({pick.get('n_posting_groups', pick['n_postings'])} pemberi kerja/templat), "
                      f"{pick['share_of_postings']:.1%} dari lowongan yang dianalisis.")
-            st.write(f"Kata kerja: *{pick['statement']['verb']}* · tingkat kognitif "
-                     f"(Krathwohl): {pick['statement']['krathwohl']} · keterpautan bukti "
-                     f"{pick['statement']['grounding']:.2f}")
+            cog = pick.get("cognitive")
+            default_verb = pick["statement"].get("verb_source") == "default"
+            if cog is None:                      # a profile published before 2026-11-20
+                st.write(f"Kata kerja: *{pick['statement']['verb']}* · tingkat kognitif "
+                         f"(Krathwohl): {pick['statement']['krathwohl']}")
+            elif cog.get("level"):
+                st.write(f"Tingkat kognitif yang diminta lowongan: **{C.level_text(cog)}** — "
+                         f"{cog['share']:.0%} dari {cog['n_postings_with_a_verb']} lowongan "
+                         f"yang memakai kata kerja"
+                         + (f". Tertinggi yang diminta sedikitnya seperlima lowongan: "
+                            f"{C.level_text(cog['highest'])}."
+                            if cog["highest"]["level"] != cog["level"] else "."))
+                st.dataframe([{"Tingkat": C.level_text(lv), "Lowongan": lv["n_postings"],
+                               "Pangsa": f"{lv['share']:.0%}"} for lv in cog["levels"]],
+                             hide_index=True, width="stretch")
+            else:
+                st.write("Tingkat kognitif: **tidak dapat dibaca** — lowongan kelompok ini "
+                         "hampir tidak memakai kata kerja.")
+            st.write(f"Kata kerja pada pernyataan: *{pick['statement']['verb']}*"
+                     + (" (bawaan metode, bukan dari lowongan; tidak menentukan tingkat)"
+                        if default_verb else "")
+                     + f" · keterpautan bukti {pick['statement']['grounding']:.2f}")
             kk = pick.get("kkni") or {}
             if kk.get("level"):
                 st.write(f"Jenjang KKNI (usulan): **{kk['level']}**"
@@ -109,10 +139,32 @@ with tab_list:
             st.dataframe([{"Frasa": m["text"], "Tag": m["tag"], "Lowongan": m["n_postings"]}
                           for m in pick["evidence"]["members"][:15]], hide_index=True,
                          width="stretch")
+            verbs = pick["evidence"].get("verbs") or []
+            objects = pick["evidence"].get("knowledge_objects") or []
+            if verbs or objects:
+                st.markdown("**Kompetensi = kata kerja + pengetahuan**")
+                if verbs:
+                    st.write("Kata kerja yang dipakai lowongan: " + ", ".join(
+                        f"{v['verb']} ({v['krathwohl']}, {v['n_postings']})" for v in verbs[:6]))
+                if objects:
+                    st.dataframe([{"Pengetahuan yang dikerjakan": o["text"],
+                                   "Lowongan": o["n_postings"], "Pangsa": f"{o['share']:.0%}",
+                                   "Kata kerja": ", ".join(o["verbs"])} for o in objects],
+                                 hide_index=True, width="stretch")
             if pick["evidence"]["technologies"]:
-                st.markdown("**Teknologi yang disebut bersama**")
+                st.markdown("**Alat dan teknologi yang paling banyak dipakai**")
                 st.write(", ".join(f"{t['text']} ({t['n_postings']})"
                                    for t in pick["evidence"]["technologies"]))
+            for key, title in (("knowledge", "Pengetahuan lain yang diminta bersama"),
+                               ("soft_skills", "Soft skill yang diharapkan"),
+                               ("work_behaviours", "Perilaku kerja yang diharapkan")):
+                rows = pick["evidence"].get(key) or []
+                if rows:
+                    st.markdown(f"**{title}**")
+                    st.dataframe([{"": t["text"], "Lowongan": t["n_postings"],
+                                   "Pangsa": f"{t['share']:.0%}",
+                                   "Dibanding umum": f"{t['lift']}×" if t.get("lift") else ""}
+                                  for t in rows], hide_index=True, width="stretch")
             if pick["evidence"].get("samples"):
                 st.markdown("**Contoh kalimat sumber**")
                 for s in pick["evidence"]["samples"][:3]:

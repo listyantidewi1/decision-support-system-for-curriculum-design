@@ -584,6 +584,400 @@ Qwen 14, p = 0.115. Three comparisons, uncorrected.
   (`comparison.json`, `comparison_first_run.json`, one folder per pipeline,
   figures).
 
+## EXP-026 — The earlier LLM competency generator on five-tag groups (first trial)
+
+- **Date / status:** 2026-11-19 · ENGINEERING
+- **Why:** the researcher pointed out that the recommendation system built
+  before approval (`competency_generator_v2`, shown in `dashboard_v2`) wrote
+  much better competencies than the short rule statements of EXP-017 and
+  EXP-024. The plan says to reuse it. A bridge was written
+  (`competency/v2_generator.py`, `v2-generator-bridge-v1`) and tried once.
+- **Question:** does the earlier generator work when it is fed groups built from
+  five-tag evidence, and how do its statements compare with the rule statements
+  for the same groups?
+- **Data:** the 581-posting sample of EXP-017/EXP-024 (20,000 sentences, seed 7).
+  Evidence from E0, lexicon v2. **Grouping was still the earlier design: groups
+  built from hard-skill AND knowledge phrases.** The decision that competencies
+  come from hard skills only was taken later the same day, so this trial does
+  not use it.
+- **Settings:** the 15 valid technical groups with the most postings; model
+  `openrouter:gpt-5.4-mini`, temperature 0.3, at most 2,000 output tokens, at
+  most 2 retries, one competency per group (`max_competencies_per_cluster = 1`),
+  generator version `v2.0.0`, its evidence filter switched on. Soft-skill
+  reference list: the most frequent soft-skill phrases of the run.
+- **Numbers** (from `report.json` and `competencies.json`):
+
+| | |
+|---|---|
+| Groups sent | 15 |
+| Statements returned | 13 |
+| Dropped by the generator's own evidence filter | 2 |
+| Length of a generator statement | 51 words on average (40 to 59) |
+| Length of the rule statement for the same 13 groups | 4.3 words on average (2 to 8) |
+| Lexical grounding (share of statement words found in the group's phrases) | 0.03 to 0.61; none reaches the 0.80 of the status contract |
+| The generator's own grounding badge | 0.00 to 0.94; "passed" for 8, "not passed" for 5 |
+| KKNI level proposed by the model | level 5 for all 13 |
+| KKNI level of the nearest descriptor for the same 13 | level 4 for 6, level 3 for 3, level 5 for 3, level 7 for 1; none confident |
+| Soft skills chosen by the model per statement | 4 to 6 |
+| Status given by the contract as it stood | eksploratif for all 13 (blocked by "grounding<0.80"; one also by "okupasi_unmapped") |
+| Run time | 263 seconds for the whole chain |
+
+- **Two examples, same group:**
+  rule: "Perform debugging using Git, JavaScript and AWS";
+  generator: "Troubleshoot and resolve software defects by systematically
+  debugging application code and runtime behavior. Apply testing, code review,
+  and root cause analysis to isolate failures, verify fixes, and prevent
+  recurrence. Work from observed symptoms to implement effective solutions for
+  routine issues and complex system problems."
+  rule: "Explain relational databases"; generator: "Design and optimize
+  application databases and database schemas for reliable storage, retrieval,
+  and data integrity. Apply relational database concepts, SQL, and standard data
+  modeling methods ..."
+- **The two it dropped:** a cloud-infrastructure statement, because it named
+  "IAM" and no source sentence does; a software-practice statement, because it
+  named "SDLC" and the abbreviation is not in that group's 34 sentences (the
+  full phrase is). The filter is literal by design.
+- **What was learned:**
+  1. The earlier generator works on five-tag groups without change, and its
+     statements read as competencies; the rule statements do not.
+  2. The status contract's grounding check (share of statement words found in
+     the evidence, at least 0.80) was made for short rule statements. It rejects
+     every generator statement, because the generator is asked to abstract. The
+     earlier system had already met this: its own code says the grounding score
+     is "label-only, not a gate" and that the gate is the evidence filter. The
+     contract was changed after this run to do the same for generator statements
+     (`grounding_check = generator_evidence_filter`; a starting value, see the
+     configuration registry). This run's files still show the old outcome.
+  3. The model's KKNI proposal does not discriminate: level 5 thirteen times.
+     It cannot replace the KKNI step. KKNI is in any case information for the
+     reader only (the researcher, 2026-11-19) and never enters the status.
+  4. Six of the 13 groups were made mostly of KNOWLEDGE phrases ("algorithms",
+     "data structures", "relational databases"). For them the generator had to
+     invent the action, and for "algorithms" it took it from very few postings
+     ("object detection, classification, sensing, perception, and robotic
+     processing"). This is an argument for the decision taken afterwards:
+     build competencies from hard skills, attach knowledge to them.
+  5. One group ("professional development", 40 postings) is employer-benefit
+     text that E0 tagged as a skill; the generator duly wrote a competency about
+     designing career pathways for employees. A statement is only as good as
+     the group behind it.
+- **Cost:** not metered. The earlier generator does not report token use, so
+  the exact charge is unknown. The cap check before the run priced the worst
+  case (every retry, full output allowance) at **$0.5783**; that is the upper
+  bound. A plain estimate from the prompt sizes with no retries is about $0.07.
+- **Limits:** 15 groups, one model, one run, no repeat (the generator is not
+  deterministic at temperature 0.3); nobody but the developer has read the
+  statements; the groups are of the earlier design; evidence is from the rule
+  extractor whose accuracy is unmeasured.
+- **Files:** `DATA/competency/runs/e0_pool20k_v2gen/` (generator statements) and
+  `DATA/competency/runs/e0_pool20k/` (rule statements for the same groups).
+
+## EXP-027 — The competency chain on the whole pool: hard-skill competencies with their tools, knowledge, soft skills and work behaviours
+
+- **Date / status:** 2026-11-19 to 2026-11-20 (two runs, the second finished after midnight) · ENGINEERING
+- **Question:** does the chain run on every posting; what does a competency
+  look like when it is built from hard skills only and described by the other
+  four tags; and how stable is the ranking of competencies from one time window
+  to the next?
+- **Data:** the whole sentence pool: 662,248 sentences from
+  18,667 postings (8,186 employer/template
+  groups). Evidence from E0, lexicon v2: 470,280 units
+  (SH 166,182, SS 61,881, KN 31,565, TT 179,969, WB 30,683).
+- **Command:** `python -m competency.pipeline e0 --all --tag e0_pool_all --min-postings 5`.
+  No paid call. 13 minutes on the laptop's CPU.
+
+### Two runs, and why the first is not the result
+
+**First attempt (earlier design, flawed grouping).** Groups were built from
+hard-skill, knowledge and soft-skill phrases (259,628 units). To
+make the whole pool fit, grouping was split in two stages: phrases seen in at
+least 3 postings were clustered (139,715 units), and
+each rarer phrase was attached to the nearest cluster if its cosine to the
+cluster's centre reached a flat 0.75. Result: 912 groups, of which
+**697 "perlu dipecah"** and only 99 valid;
+99 statements. Two faults produced this, both mine:
+  1. the flat threshold attached 103,005 of 109,425 rare phrases
+     (94%): a loose cluster accepted almost anything;
+  2. the validity audit counted the attached phrases as members, so every large
+     group looked too big and too loose and was marked "to be split".
+  Its report is kept as `report_first_attempt.json`. Its rank stability (93
+  items; rank correlation 0.34, 0.69, 0.26,
+  mean 0.43) is the stability of a bad list and
+  should not be quoted.
+
+**Second run (the result of this entry).** Three changes:
+  1. the researcher's decision of 2026-11-19: competencies are built from
+     SKILL_HARD only (`competency_tags = ("SH",)`);
+  2. a rare phrase is attached only when its cosine reaches
+     max(0.75, √cohesion of that cluster), so a tight cluster asks for more;
+  3. the audit judges a group by its stage-1 members only.
+
+### Numbers of the second run (from `report.json`, `competencies.json`)
+
+| | |
+|---|---|
+| Hard-skill evidence units | 166,182 |
+| in stage 1 (phrase seen in at least 3 postings) | 67,811 |
+| rarer phrases offered to stage 2 | 89,866 phrases, 98,371 units |
+| of these attached | 33,244 phrases (37%), 37,722 units |
+| Units in a group / not in any group | 105,428 / 60,754 (37% left out) |
+| Groups | 684: sahih 667, penampung_proses_penunjang 9, perlu_dipecah 6, bercampur_domain 1, di_luar_bidang 1 |
+| Statements (rule statements) | 667: kandidat_tinjauan 477, eksploratif 190 |
+| Held back by | okupasi_unmapped 189, postings<5 3 |
+| Statements that use a default verb | 88 |
+| KKNI proposals marked confident | 2 of 667 (information only; never part of the status) |
+| Coverage by SKKNI unit titles (proposed, not validated) | tercakup_jelas 36, tercakup_sebagian 320, belum_tercakup 136, masukan_pembaruan 175 |
+
+**What is attached to a competency** (at most 8 lines are listed per kind; an
+item must occur in at least 2 of the competency's postings):
+
+| Attached | How | Competencies with at least one | Median lift of the listed lines | Lines with lift above 1.5 |
+|---|---|---|---|---|
+| Tools and technology | same sentence | 431 of 667 | — | — |
+| Knowledge | same postings | 660 of 667 | 2.24 | 72% of 4,799 |
+| Knowledge | same sentence | 215 of 667 | — | — |
+| Soft skills | same postings | 667 of 667 | 1.48 | 49% of 5,139 |
+| Work behaviours | same postings | 666 of 667 | 1.41 | 45% of 5,040 |
+
+Share = part of the competency's postings that also ask for the item. Lift =
+that share divided by the item's share among all 18,667 postings.
+
+- **Three competencies as the run wrote them** (percent = share, × = lift):
+  - **Perform backend development using Node.js, Java and Python** — 579 postings, 437 employers/templates
+    - tools named with it: Node.js (96), Java (91), Python (86), Go (35), .NET (34), Spring Boot (32)
+    - knowledge: cloud platforms 18% (×2.35), relational databases 14% (×3.4), microservices architecture 11% (×4.85), system design 10% (×2.25)
+    - soft skills: communication 50% (×1.08), problem-solving 39% (×1.58), collaboration 27% (×1.06), leadership 15% (×0.76)
+    - work behaviours: responsible 21% (×0.89), passionate 19% (×1.18), reliable 17% (×1.57), flexible 12% (×0.66)
+  - **Perform automated testing using Git, Playwright and Selenium** — 1,126 postings, 791 employers/templates
+    - tools named with it: Git (87), Playwright (57), Selenium (51), Python (47), Cypress (45), Docker (36)
+    - knowledge: cloud platforms 12% (×1.52), design patterns 8% (×1.75), software development lifecycle 8% (×2.4), programming languages 7% (×1.05)
+    - soft skills: communication 53% (×1.15), collaboration 36% (×1.41), problem-solving 32% (×1.28), leadership 23% (×1.21)
+    - work behaviours: responsible 26% (×1.13), flexible 20% (×1.12), reliable 19% (×1.74), passionate 17% (×1.06)
+  - **Design relational databases using SQL, PostgreSQL and SQL Server** — 578 postings, 442 employers/templates
+    - tools named with it: SQL (130), PostgreSQL (49), SQL Server (43), MySQL (40), Oracle (31), MongoDB (21)
+    - knowledge: cloud platforms 13% (×1.67), relational databases 9% (×2.23), cloud infrastructure 7% (×1.52), design patterns 6% (×1.31)
+    - soft skills: communication 46% (×0.99), problem-solving 31% (×1.26), collaboration 23% (×0.89), leadership 11% (×0.59)
+    - work behaviours: responsible 28% (×1.21), flexible 16% (×0.86), reliable 14% (×1.3), passionate 13% (×0.77)
+
+### Rank stability across time windows
+
+Proposal: "kesamaan peringkat dan keanggotaan daftar kompetensi teratas ...
+pada jendela waktu yang berbeda". For the 574 competencies with
+enough postings, the share of postings in each half-year window was ranked and
+consecutive windows compared. Windows used (postings):
+2025-01..2025-06 (354), 2025-07..2025-12 (4,336), 2026-01..2026-06 (6,911), 2026-07..2026-12 (6,919).
+
+| Windows compared | Spearman rank correlation | Top-20 overlap | Top-50 overlap | Top-100 overlap |
+|---|---|---|---|---|
+| 2025-01..2025-06 to 2025-07..2025-12 | 0.75 | 0.60 | 0.67 | 0.61 |
+| 2025-07..2025-12 to 2026-01..2026-06 | 0.91 | 0.54 | 0.69 | 0.79 |
+| 2026-01..2026-06 to 2026-07..2026-12 | 0.76 | 0.43 | 0.49 | 0.55 |
+
+Mean rank correlation 0.81. Trend test: {'tidak_terdeteksi': 574}
+(no trend detected for any competency over four windows). Volatility: {'tinggi': 256, 'sedang': 176, 'rendah': 142}.
+
+- **What the stability figure measures and what it does not:** the competencies
+  are formed once, from all postings, and then ranked inside each window. It is
+  the stability of the RANKING of a fixed list. It does not show whether the
+  same competencies would be formed from one window's postings alone; that
+  needs the chain run separately per window and has not been done.
+
+### What is visibly weak
+
+1. **Soft skills and work behaviours barely differ between competencies.**
+   "communication" is asked for in about half of the postings of nearly every
+   competency, with a lift close to 1: it is asked for everywhere. The lift is
+   what shows the specific ones (for example "attention to detail" and
+   "reliable" with testing). Read the lift, not the share.
+2. **Lift is distorted by language.** About 4% of the pool is Indonesian. An
+   Indonesian soft skill ("komunikasi") is rare among all postings and common
+   among the postings of an Indonesian-language competency, so its lift is 10
+   to 20. That is the language, not the competency. The lift must be computed
+   inside one language, or Indonesian and English forms of one skill merged,
+   before these numbers are compared across languages. Not done.
+3. **Spelling variants are separate lines** ("problem-solving" and "problem
+   solving"), which splits their share.
+4. **Some rule statements are a peculiar phrase from a few postings**: several
+   of the 25 most frequent statements carry an employer's name or a fragment of
+   a sentence. The rule statement takes the group's most frequent verb and the
+   most frequent object of that verb; in a broad group where nearly every
+   object occurs once or twice, the winner is an accident.
+   The earlier LLM generator (EXP-026) writes from the whole group and would not
+   have this fault; it has not been run on these groups.
+5. **Same-posting attachment is weak evidence.** It shows that employers who
+   want the competency also want the soft skill, not that the skill is used in
+   that work.
+6. 37% of hard-skill units are in no group (phrases too rare and too
+   far from every cluster). Whether they are noise or lost competencies has not
+   been examined.
+7. An English default verb is put in front of an Indonesian label for some
+   groups ("Perform pemrograman ...").
+
+- **Limits:** evidence from the rule extractor, accuracy unmeasured; the first
+  window has far fewer postings than the others and the mix of platforms and
+  countries differs between windows, so part of any instability is collection,
+  not demand; `core_min_postings`, `attach_threshold`, the 8-line limit and the
+  2-posting minimum are starting values chosen without tuning; cluster centres
+  and cohesion are those of stage 1 and are not recomputed after attaching;
+  attaching KNOWLEDGE is the developer's reading and awaits the researcher.
+- **Files:** `DATA/competency/runs/e0_pool_all/` (evidence table, groups,
+  competencies, `report.json`, `report_first_attempt.json`, figures).
+
+## EXP-028 — A competency as verb + knowledge, the cognitive level read from the postings, the cluster map, and the earlier generator on the 30 most frequent competencies
+
+- **Date / status:** 2026-11-20 · ENGINEERING
+- **Why:** three instructions of the researcher on this day. (1) "A competency
+  is actually verb + knowledge ... 'develop machine learning algorithm':
+  'develop' is the verb (according to taxonomy) and 'machine learning
+  algorithm' is a knowledge"; tools and technology support it. (2) The
+  statement must not name tools: "Perform programming", not "Perform
+  pemrograman using Python, PHP and JavaScript"; tools, work behaviours and
+  soft skills are listed for the competency. (3) After seeing the dashboard:
+  the cognitive level shown did not match what the postings ask; a group whose
+  postings say "membangun"/"develop" (C6) was shown as "apply" (C3). She also
+  asked for a view of the clusters of knowledge and of tools and technology,
+  and approved running the earlier LLM generator.
+- **Data:** the whole sentence pool, 662,248 sentences from
+  18,667 postings; evidence from E0, lexicon v2
+  (470,280 units). Same grouping as EXP-027 (684 groups, sahih 667, penampung_proses_penunjang 9, perlu_dipecah 6, bercampur_domain 1, di_luar_bidang 1).
+- **Runs:** `e0_pool_all_v2gen` (the chain with the generator on the 30 most
+  frequent valid groups; paid) and `e0_pool_all_v3` (the same chain after the
+  cognitive-level correction; the generator statements of the first run were
+  taken over with `--reuse-v2-from`, 29 reused, 0 not, no new call;
+  11 minutes). The numbers below are from `e0_pool_all_v3` unless said otherwise.
+
+### 1. Verb and knowledge read from the phrases (`verb-knowledge-v1`)
+
+| | |
+|---|---|
+| Hard-skill units in groups | 105,428 |
+| of these opening with a verb of the table | 72,640 (69%) |
+| of these containing a term that is tagged KNOWLEDGE anywhere in the corpus (vocabulary of 934 terms seen in at least 3 postings) | **662 (0.6%)** |
+| Groups with at least one shared knowledge object | 651 of 684 |
+| Groups whose first knowledge object is also a KNOWLEDGE-tagged term | 3 |
+
+The third row is the reason the knowledge of a competency is read from the
+object of the verb and not from the KNOWLEDGE tag: the extractor tags a term
+KNOWLEDGE when it stands alone, and when a verb governs it the whole phrase is
+a hard skill. Requiring the tag would have left almost every competency without
+a knowledge. Method (no part-of-speech tagger): the object is cut at the first
+preposition; its head word is taken (last word in English, first in
+Indonesian); the most shared head is lengthened a word at a time while more
+than half of its postings keep the longer form.
+
+Rule statements (638; median length 2 words; none names a tool):
+562 are a verb of the postings plus the shared knowledge object,
+75 are a default verb plus the group's most frequent noun phrase,
+1 use the literal object. For the first kind, the share of the
+group's postings behind the object: median 0.60; at least 0.20 for
+482; below 0.05 for 3.
+
+Status: kandidat_tinjauan 456, eksploratif 211; held back by okupasi_unmapped 210, postings<5 3.
+(EXP-027, with tool names in the statements: 477 and 190. The okupasi step
+compares the statement text, and a two-word statement matches less often.)
+
+### 2. Cognitive level: before and after the correction
+
+Before: the level shown was the level of the statement's verb, including a
+DEFAULT verb the method had supplied. After: the level is read from the verbs
+the postings use; a posting counts once for each level; the level is the one
+most postings ask for (C1 remember … C6 create); a default verb sets nothing.
+
+| | |
+|---|---|
+| Competencies with a level read from the postings | 635 of 667 |
+| without (their postings use almost no verb) | 32 |
+| by level | C6 276, C3 262, C5 63, C4 34, none 32 |
+| Competencies present in both runs | 667 |
+| whose shown level CHANGED | **84** (13% of those with a readable level) |
+| of these, shown before with the level of a default verb | 40 |
+| most frequent changes (before → after) | apply → create: 43; create → apply: 23; evaluate → apply: 7; apply → evaluate: 5; apply → analyze: 3 |
+| Rule statements whose verb is still on another level than the postings ask | 46 (a default verb, or no verb of that level is used with the object) |
+
+| Statement as shown before (EXP-027) | Level shown before | Rule statement now | Level read from the postings | Verbs of the postings |
+|---|---|---|---|---|
+| Perform pemrograman using Python, PHP and JavaScript | apply | Melakukan pemrograman | C6 create (65% of 266) | menulis, membangun, melakukan, membuat |
+| Design relational databases using SQL, PostgreSQL and SQL Server | create | (generator statement) | C3 apply (56% of 512) | design, optimize, maintain, develop |
+| Troubleshoot issues using SQL, Azure and Datadog | analyze | Troubleshoot issues | C4 analyze (100% of 345) | troubleshoot, melakukan |
+| Perform web development using JavaScript, CSS and HTML | apply | Perform web development | none readable |  |
+| Melakukan pengujian menggunakan Git, Android dan JIRA | apply | Melakukan pengujian | C5 evaluate (50% of 142) | test, melakukan, analyse, mengembangkan |
+| Design REST APIs using Postman, Python and Java | create | Develop RESTful APIs | C6 create (71% of 331) | develop, integrate, build, design |
+
+The first row is the researcher's own example.
+
+### 3. The cluster map of knowledge and technology (`termmap-v1`)
+
+500 terms (the 250 most frequent KNOWLEDGE terms and the 250 most frequent
+technology names, each in at least 5 postings) in 20 clusters. Method:
+positive pointwise mutual information of sharing a posting, truncated SVD to
+32 dimensions, average-linkage clustering on cosine distance; t-SNE (seed
+20261120) for the drawing only.
+
+| Cluster | Terms | Knowledge | Technology | Named after |
+|---|---|---|---|---|
+| 1 | 125 | 55 | 70 | JavaScript, Git, React |
+| 2 | 87 | 31 | 56 | AWS, Azure, Docker |
+| 3 | 55 | 23 | 32 | Python, SQL, Power BI |
+| 4 | 30 | 8 | 22 | Java, Jira, Oracle |
+| 5 | 18 | 1 | 17 | C#, .NET, SQL Server |
+| 6 | 19 | 16 | 3 | C++, programming languages, algorithms |
+| 7 | 21 | 8 | 13 | Android, iOS, Kotlin |
+| 8 | 22 | 15 | 7 | Salesforce, SAP, ServiceNow |
+| 9 | 14 | 7 | 7 | Postman, Selenium, JMeter |
+| 10 | 18 | 9 | 9 | Figma, WordPress, Google Analytics |
+
+The other 10 clusters hold 91 terms, almost all rare KNOWLEDGE terms.
+The clusters are of co-occurrence, not of meaning; their number
+(20 = the square root of the number of terms, capped at 20) is a setting.
+Shown as the tab "Peta pengetahuan & teknologi" of the public dashboard and as
+`figures/term_map.png`.
+
+### 4. The earlier generator on the 30 most frequent valid groups
+
+Model `openrouter:gpt-5.4-mini`, generator `v2.0.0`, one competency per group, its evidence
+filter on.
+
+| | |
+|---|---|
+| Groups sent | 30 |
+| Statements returned | 29 |
+| Dropped by its evidence filter | 1 (it named "APIs" where no source sentence of the group does literally) |
+| Length | 50 words on average (36 to 59) |
+| Statements that name a tool of the group | 4 of 29 (reported, not removed: the old generator's prompt is not edited) |
+| KKNI level proposed by the model | level 5: 28, level 6: 1 |
+| Status under the contract (generator statements are judged by the generator's evidence filter) | kandidat_tinjauan 29 |
+| Worst case priced before the run | $1.2504 (cap $1.80) |
+| **Charged, read from the account** | **$0.1627** (usage $88.6437 → $88.8063) |
+
+- **Reading of the 29 by the developer only:** most describe software work and
+  read as competencies. 3 are clearly not software work: they are about
+  employees' professional development, career development and an inclusive
+  workplace. Those groups are
+  employer-benefit and company-culture sentences that the rule extractor tagged
+  as hard skills; the generator wrote a fluent statement for each. A fluent
+  statement is no evidence that the group behind it is a competency.
+- The model's KKNI proposal again does not discriminate (level 5 for 28 of 29).
+- **What the cost measurement adds:** OpenRouter's `/credits` endpoint, read
+  with the key the code already loads, gives usage before and after. The run
+  cost 13% of its priced worst case. Credit on the account after the run:
+  $95.00 bought, $88.81 used, **$6.19 left**. EXP-026 could not be
+  costed this way afterwards; its true cost stays unknown (at most $0.5783).
+
+### Limits
+
+Evidence from the rule extractor, accuracy unmeasured, and visibly wrong for
+some of the most frequent groups (benefit and culture sentences; spans cut
+short, which give objects such as "clean"). The verb table that places each
+verb on a level is the developer's and unreviewed (`verbs-v1-unreviewed`):
+every level in section 2 follows from it. "The level most postings ask for" is
+one of two possible rules; the highest level asked for by a fifth of the
+verb-using postings is recorded beside it. The head-of-object rule is word
+order, not grammar. One model, one run, no repeat for the generator; nobody but
+the developer has read its statements.
+
+- **Files:** `DATA/competency/runs/e0_pool_all_v3/` (final), `e0_pool_all_v2gen/`
+  (the paid run), `e0_pool_all/` (EXP-027, the "before").
+
 ---
 
 ## Spending on paid model calls
@@ -595,7 +989,10 @@ Qwen 14, p = 0.115. Three comparisons, uncorrected.
 | EXP-019 (statement writer trial) | $0.0261 |
 | EXP-020 (adjudicator comparison) | $0.0678 |
 | EXP-025 (end-to-end rehearsal, two runs) | $0.1845 |
-| **Total recorded** | **$2.3556** |
+| EXP-026 (earlier generator, 15 groups) | not metered: at most $0.5783, estimated $0.07 |
+| EXP-028 (earlier generator, 30 groups; read from the account) | $0.1627 |
+| **Total recorded (metered runs)** | **$2.5183** |
+| **Upper bound including EXP-026** | **$3.0966** |
 
 "Charged" is an upper estimate (see the shared settings). The provider's own
 balance is the authority.

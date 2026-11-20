@@ -36,6 +36,13 @@ def _comp(cid, text, status, n, members):
                           "language": "en", "grounding": 1.0, "notes": []},
             "contract": {"status": status, "blockers": [] if status != "eksploratif" else ["postings<5"]},
             "kkni": {"level": 4, "confident": False, "similarity": 0.3},
+            "cognitive": {"level": "create", "code": "C6", "share": 0.9,
+                          "n_postings_with_a_verb": 10, "share_of_group_postings": 0.8,
+                          "highest": {"level": "create", "code": "C6", "share": 0.9},
+                          "levels": [{"level": "create", "code": "C6", "n_postings": 9,
+                                      "share": 0.9},
+                                     {"level": "apply", "code": "C3", "n_postings": 2,
+                                      "share": 0.2}]},
             "okupasi": [{"occupation_en": "Junior Programmer"}],
             "coverage": {"SKKNI": {"proposed": "tercakup_sebagian", "best_similarity": 0.5,
                                    "validated_by_expert": False,
@@ -101,8 +108,41 @@ def test_public_dashboard_shows_a_draft_with_its_warning_and_the_evidence():
     assert [m.value for m in at.metric][:4] == ["100", "15", "2", "2"]
     text = " ".join(m.value for m in at.markdown)
     assert "Develop REST APIs" in text and "Frasa dari lowongan" in text
+    # the level is the one the postings' verbs ask for, with the Bloom code
+    assert "Tingkat kognitif yang diminta lowongan: **C6 mencipta**" in text
+    assert "90% dari 10 lowongan yang memakai kata kerja" in text
     assert any("An invented sentence." in c.value for c in at.caption)
     assert any("Versi pertama" in i.value for i in at.info)
+
+
+def test_public_dashboard_draws_the_cluster_map_of_knowledge_and_technology():
+    from competency import termmap as TM
+    from dashboard_v3 import termmap_view as TV
+    root, run = _env()
+    rows = []
+    for s, terms in enumerate([["React", "TypeScript", "CSS"], ["Python", "pandas", "Docker"]]):
+        for p in range(12):
+            rows += [(f"p{s}-{p}", "TT", t.lower(), t) for t in terms]
+            rows.append((f"p{s}-{p}", "KN", f"topic {s}", f"topic {s}"))
+    tm = TM.build(rows, 24, TM.TermMapConfig(n_clusters=2))
+    (run / "term_map.json").write_text(json.dumps(tm), encoding="utf-8")
+    PF.build(run, "2026-1", profiles_dir=root / "profiles")
+    assert (root / "profiles" / "drafts" / "2026-1" / "term_map.json").is_file()
+    at = AppTest.from_file(PUBLIC).run(timeout=90)
+    _ok(at)
+    assert any("8 dari 8 istilah" in c.value and "2 kelompok" in c.value for c in at.caption)
+    assert any(s.value == "Kelompok" for s in at.subheader)
+    # one cluster in focus: its terms, and the competencies that use them
+    at.selectbox(key="termmap_cluster").select(
+        next(t["cluster"] for t in tm["terms"] if t["term"] == "Docker")).run(timeout=90)
+    _ok(at)
+    assert any("Kompetensi yang memakai istilah kelompok ini" in m.value for m in at.markdown)
+    # a cluster keeps its colour when a filter removes other clusters' points
+    df, domain, colours = TV.frame(tm)
+    assert len(domain) == 2 and colours == TV.PALETTE[:2]
+    hit = TV.related_competencies([{"statement": {"text": "X"}, "n_postings": 3,
+                                    "evidence": {"technologies": [{"text": "docker"}]}}], {"Docker"})
+    assert hit == [{"Pernyataan kompetensi": "X", "Lowongan": 3, "Istilah kelompok ini": "docker"}]
 
 
 def test_public_filters_narrow_the_list():

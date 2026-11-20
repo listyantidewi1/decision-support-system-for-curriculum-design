@@ -98,7 +98,9 @@ def hbar(labels, values, title, path, note, *, colors=None, value_fmt="{:,.0f}",
     ax.spines["bottom"].set_visible(False)
     ax.set_xlabel(xlabel)
     if "%" in value_fmt:
-        ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:.0%}"))
+        # below 5% whole-percent ticks repeat ("0%, 0%, 1%, 1%"): show one decimal
+        digits = 0 if top >= 0.05 else 1
+        ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:.{digits}%}"))
     _titles(ax, title, subtitle)
     return _finish(fig, path, note)
 
@@ -229,7 +231,8 @@ def figures_for_run(run_dir: Path) -> list[Path]:
         made.append(hbar(order, [blockers[k] for k in order],
                          "Why statements stay exploratory", out / "blockers.png", note,
                          xlabel="statements held back by this reason"))
-    top = comps[:15]
+    # the file is in priority order (status first); this chart is about frequency
+    top = sorted(comps, key=lambda c: (-c["n_postings"], c["competency_id"]))[:15]
     if top:
         made.append(hbar([c["statement"]["text"][:60] for c in top],
                          [c["share_of_postings"] for c in top],
@@ -255,6 +258,10 @@ def figures_for_run(run_dir: Path) -> list[Path]:
         order = sorted(kk)
         made.append(hbar(order, [kk[k] for k in order], "Proposed KKNI level of the statements",
                          out / "kkni_levels.png", note, xlabel="statements"))
+    if (run_dir / "term_map.json").is_file():
+        tm = json.loads((run_dir / "term_map.json").read_text(encoding="utf-8"))
+        if tm.get("n_terms", 0) >= 6:
+            made.append(term_map(tm, out / "term_map.png", note))
     for ref, name in (("SKKNI", "coverage_skkni.png"),):
         cov: dict[str, int] = {}
         for c in comps:
@@ -268,6 +275,59 @@ def figures_for_run(run_dir: Path) -> list[Path]:
                              f"Proposed coverage by {ref} (not yet validated by experts)",
                              out / name, note, xlabel="statements"))
     return made
+
+
+def term_map(tm: dict, path: Path, note: str, n_labels: int = 60) -> Path:
+    """The cluster map of knowledge terms and technologies as a still picture.
+    Circle = tool or technology, square = knowledge term; size = postings; the
+    eight largest clusters have a colour, the rest are grey."""
+    plt = _plt()
+    names = {c["cluster"]: f"{c['cluster']}. {c['label']}" for c in tm["clusters"]}
+    coloured = [c["cluster"] for c in tm["clusters"][:len(SERIES)]]
+    colour = {c: SERIES[i] for i, c in enumerate(coloured)}
+    terms = tm["terms"]
+    top = max((t["n_postings"] for t in terms), default=1)
+    fig, ax = plt.subplots(figsize=(10.5, 8.2))
+    for marker, tag in (("o", "TT"), ("s", "KN")):
+        part = [t for t in terms if t["tag"] == tag]
+        ax.scatter([t["x"] for t in part], [t["y"] for t in part],
+                   s=[18 + 620 * (t["n_postings"] / top) ** 0.5 for t in part],
+                   c=[colour.get(t["cluster"], "#b9b8b1") for t in part], marker=marker,
+                   edgecolors=SURFACE, linewidths=0.7, alpha=0.88, zorder=2)
+    # names: the most asked-for terms first; a name that would sit on top of one
+    # already written is left out (the interactive page shows every name on hover)
+    xs, ys = [t["x"] for t in terms], [t["y"] for t in terms]
+    dx, dy = (max(xs) - min(xs) or 1) * 0.07, (max(ys) - min(ys) or 1) * 0.022
+    placed: list[tuple[float, float]] = []
+    for t in sorted(terms, key=lambda t: -t["n_postings"]):
+        if len(placed) >= n_labels:
+            break
+        if any(abs(t["x"] - px) < dx and abs(t["y"] - py) < dy for px, py in placed):
+            continue
+        placed.append((t["x"], t["y"]))
+        ax.annotate(t["term"], (t["x"], t["y"]), xytext=(0, 6), textcoords="offset points",
+                    ha="center", va="bottom", fontsize=6.6, color=INK2, zorder=3)
+    for side in ("left", "bottom"):
+        ax.spines[side].set_visible(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.margins(0.04)
+    from matplotlib.lines import Line2D
+    handles = [Line2D([], [], marker="o", linestyle="", color=colour[c], markersize=7,
+                      label=names[c][:58]) for c in coloured]
+    if len(tm["clusters"]) > len(coloured):
+        handles.append(Line2D([], [], marker="o", linestyle="", color="#b9b8b1", markersize=7,
+                              label=f"{len(tm['clusters']) - len(coloured)} smaller clusters"))
+    handles += [Line2D([], [], marker="o", linestyle="", color=MUTED, markersize=7,
+                       label="circle: tool / technology"),
+                Line2D([], [], marker="s", linestyle="", color=MUTED, markersize=7,
+                       label="square: knowledge term")]
+    ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.02), ncol=2,
+              fontsize=7.6, handletextpad=0.4, columnspacing=2.2)
+    _titles(ax, "Knowledge terms and technologies that are asked for together",
+            f"{tm['n_terms']} terms in {len(tm['clusters'])} clusters of co-occurrence · size = "
+            f"postings · positions are a drawing aid, only near and far mean something")
+    return _finish(fig, path, note, legend_rows=1)
 
 
 def figures_for_temporal(folder: Path, top: int = 6) -> list[Path]:

@@ -275,6 +275,41 @@ def _count(rows, key) -> dict:
     return out
 
 
+def rank_stability(share_rows: Sequence[Sequence[float]], top_ks: Sequence[int] = (20, 50, 100)
+                   ) -> dict:
+    """How stable is the ranking from one window to the next?
+
+    `share_rows[i]` = the shares of item i in each window. For every pair of
+    consecutive windows: Spearman's rank correlation of the shares over all
+    items, and for each k the overlap (Jaccard) of the two top-k lists. This is
+    the proposal's "kesamaan peringkat dan keanggotaan daftar kompetensi
+    teratas" across time windows, for a FIXED set of items. It does not measure
+    whether the items themselves would be formed again from another window's
+    data; that needs the pipeline run separately per window.
+    """
+    rows = [list(r) for r in share_rows if r]
+    n_windows = min((len(r) for r in rows), default=0)
+    out = {"n_items": len(rows), "n_windows": n_windows, "pairs": []}
+    if len(rows) < 3 or n_windows < 2:
+        return out
+    from scipy import stats
+    for w in range(n_windows - 1):
+        a, b = [r[w] for r in rows], [r[w + 1] for r in rows]
+        rho = stats.spearmanr(a, b).statistic
+        pair = {"from_window": w, "to_window": w + 1,
+                "spearman": None if rho != rho else float(rho), "top_k_jaccard": {}}
+        for k in top_ks:
+            if k > len(rows):
+                continue
+            ta = set(sorted(range(len(rows)), key=lambda i: (-a[i], i))[:k])
+            tb = set(sorted(range(len(rows)), key=lambda i: (-b[i], i))[:k])
+            pair["top_k_jaccard"][str(k)] = len(ta & tb) / len(ta | tb)
+        out["pairs"].append(pair)
+    rhos = [p["spearman"] for p in out["pairs"] if p["spearman"] is not None]
+    out["mean_spearman"] = sum(rhos) / len(rhos) if rhos else None
+    return out
+
+
 def aggregate(member_weights: Sequence[tuple[float, float]]) -> dict:
     """A competency's weight from its member skills: (weight, prevalence) pairs.
     The proposal leaves the rule open ("nilai maksimum atau rerata berbobot

@@ -34,6 +34,8 @@ import it, and do not move it back without a reason recorded in the commit.
 | `scripts/trend_score_sensitivity.py` | v1 trend sensitivity. Referenced only by pre-approval docs. |
 | `scripts/power_analysis_gold_set.py` | Superseded by `docs/experiments/PREREG_gold_standard_size.md`, which registers the gold-standard size from a measured learning curve. |
 | `scripts/smoke_role_normalizer.py` | Duplicate: defines `_ROLE_BUCKETS` locally instead of importing `role_normalization`. The live smoke test is `scripts/smoke_role_normalization.py`, which does import it. |
+| `skill_trend_holdout_validation.py` | v1 check of trend detection on held-out months (old RQ3). Reads the pre-approval `results/` CSVs; nothing calls it; the researcher confirmed on 2026-11-19 that she does not run it. Its IDEA is worth porting on purpose into `competency/temporal.py` once there are enough time windows: predict direction on early windows, check it on later ones. |
+| `plot_aggregated.bat` | v1 plotting launcher. Calls bare `python` and `aggregate_results.py` (already here). Moved 2026-11-19; it had been missed when its two siblings were retired. |
 | `run.bat`, `run_phase_2.bat` | v1 orchestration entry points. Retired together with the scripts they call, so they do not survive as dangling references that a future session reads as proof those scripts are live. |
 
 ## What was deliberately NOT quarantined

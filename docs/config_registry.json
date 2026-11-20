@@ -1,0 +1,498 @@
+[
+ {
+  "area": "Gold standard",
+  "name": "annotation guideline",
+  "value": "AG-RPL-LIMA-v3.0",
+  "status": "decided",
+  "where": "gold_standard/__init__.py",
+  "note": "validated by three validators, 2026-11-18"
+ },
+ {
+  "area": "Gold standard",
+  "name": "sample sizes (pilot / main / practice)",
+  "value": "[100, 1200, 10]",
+  "status": "registered",
+  "where": "docs/experiments/PREREG_gold_standard_size.md",
+  "note": ""
+ },
+ {
+  "area": "Gold standard",
+  "name": "sampling seed",
+  "value": "42",
+  "status": "by design",
+  "where": "gold_standard/__init__.py",
+  "note": ""
+ },
+ {
+  "area": "Gold standard",
+  "name": "pilot gate version",
+  "value": "pilot-gate-v1",
+  "status": "registered",
+  "where": "docs/experiments/PREREG_pilot_gate.md",
+  "note": ""
+ },
+ {
+  "area": "Gold standard",
+  "name": "pilot gate: go at / stop below",
+  "value": "[0.6, 0.4]",
+  "status": "registered",
+  "where": "docs/experiments/PREREG_pilot_gate.md",
+  "note": ""
+ },
+ {
+  "area": "Gold standard",
+  "name": "pilot gate: minimum complete share",
+  "value": "0.95",
+  "status": "registered",
+  "where": "docs/experiments/PREREG_pilot_gate.md",
+  "note": ""
+ },
+ {
+  "area": "Gold standard",
+  "name": "train / dev / test split",
+  "value": "720 / 240 / 240, group-aware",
+  "status": "registered",
+  "where": "docs/experiments/split_spec_v1.md",
+  "note": ""
+ },
+ {
+  "area": "Gold standard",
+  "name": "test scoring rule",
+  "value": "strict span-F1, sealed denominator",
+  "status": "registered",
+  "where": "docs/experiments/PREREG_test_scoring_rule.md",
+  "note": ""
+ },
+ {
+  "area": "Gold standard",
+  "name": "bootstrap iterations / seed",
+  "value": "[2000, 42]",
+  "status": "by design",
+  "where": "gold_standard/iaa.py",
+  "note": ""
+ },
+ {
+  "area": "LLM labelling",
+  "name": "labelling version",
+  "value": "0.1.0",
+  "status": "by design",
+  "where": "labeling/__init__.py",
+  "note": ""
+ },
+ {
+  "area": "LLM labelling",
+  "name": "default prompt",
+  "value": "v0-guideline-only",
+  "status": "decided",
+  "where": "labeling/prompts.py",
+  "note": "v0 kept after EXP-006; the final prompt is chosen on the gold dev split"
+ },
+ {
+  "area": "LLM labelling",
+  "name": "prompt v0-guideline-only (SHA-256)",
+  "value": "d03786b2f41a903fc24a5cf70998ac840129f1f163a4b4c46b4513ebdf5946ad",
+  "status": "by design",
+  "where": "labeling/prompts.py",
+  "note": ""
+ },
+ {
+  "area": "LLM labelling",
+  "name": "prompt v1-sh-action-and-noun-lists (SHA-256)",
+  "value": "ca6397c859a03bcc76587b47a5e276e6f4d33ca2bdc822757ea1ac2ad2074193",
+  "status": "by design",
+  "where": "labeling/prompts.py",
+  "note": ""
+ },
+ {
+  "area": "LLM labelling",
+  "name": "prompt v2-boundary-conventions (SHA-256)",
+  "value": "3f2e95c25f265ff24776ae9eaf27c919bb4b75bbc1c8b6dcf45d75c17982ba6a",
+  "status": "by design",
+  "where": "labeling/prompts.py",
+  "note": ""
+ },
+ {
+  "area": "LLM labelling",
+  "name": "ensemble models and list prices (USD per million tokens)",
+  "value": "{\"anthropic/claude-haiku-5.5\": {\"usd_per_m_in\": 0.1, \"usd_per_m_out\": 0.5}, \"openai/gpt-5.4-mini\": {\"usd_per_m_in\": 0.75, \"usd_per_m_out\": 4.5}, \"qwen/qwen3.8-flash\": {\"usd_per_m_in\": 0.15, \"usd_per_m_out\": 0.47}}",
+  "status": "starting value",
+  "where": "labeling/run.py",
+  "note": "final models are registered before the test is opened"
+ },
+ {
+  "area": "LLM labelling",
+  "name": "span alignment threshold (IoU, unit)",
+  "value": "[0.5, \"char\"]",
+  "status": "by design",
+  "where": "labeling/consensus.py",
+  "note": ""
+ },
+ {
+  "area": "LLM labelling",
+  "name": "majority rule",
+  "value": "ceil(2n/3) of the configured models",
+  "status": "by design",
+  "where": "labeling/consensus.py",
+  "note": ""
+ },
+ {
+  "area": "LLM labelling",
+  "name": "accept two-of-three automatically",
+  "value": "false",
+  "status": "decided",
+  "where": "labeling/consensus.py",
+  "note": "off until checked on gold (2026-11-18)"
+ },
+ {
+  "area": "LLM labelling",
+  "name": "verifier policy",
+  "value": "{\"overlap\": \"allow_cross_label\", \"reanchor_on_offset_mismatch\": false, \"strip_code_fence\": false}",
+  "status": "decided",
+  "where": "labeling/verify.py",
+  "note": "cross-label overlap allowed per guideline 6.9"
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "fivetag version",
+  "value": "0.1.0",
+  "status": "by design",
+  "where": "fivetag/__init__.py",
+  "note": ""
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "lexicon v1 (SHA-256)",
+  "value": "dadafcd01247411643ef5f9402cee245717ab560179e52a8bc125987f4439416",
+  "status": "by design",
+  "where": "fivetag/lexicons/v1/",
+  "note": ""
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "lexicon v2 (SHA-256)",
+  "value": "e026212f872080a985d443d9ab26698bacf146210da659144e4ac40fae46c808",
+  "status": "by design",
+  "where": "fivetag/lexicons/v2/",
+  "note": ""
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "lexicon v3 (SHA-256)",
+  "value": "07492a1b2cf4eed44bfc8daf7df8c0b2ec1f4ba2eaedc2d0e23067f38291611f",
+  "status": "by design",
+  "where": "fivetag/lexicons/v3/",
+  "note": ""
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "default lexicon of fivetag",
+  "value": "v1",
+  "status": "decided",
+  "where": "fivetag/lexicon.py",
+  "note": "v1 kept as default so earlier numbers stay reproducible"
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "E0 rules version",
+  "value": "e0-rules-v1",
+  "status": "by design",
+  "where": "fivetag/e0_rules.py",
+  "note": ""
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "E0 rule scores (dictionary / activity / head / verb / suffix)",
+  "value": "[1.0, 0.9, 0.7, 0.6, 0.6]",
+  "status": "starting value",
+  "where": "fivetag/e0_rules.py",
+  "note": "fixed confidences, not probabilities; the router reads them"
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "E1/E2 encoder defaults",
+  "value": "{\"batch_size\": 16, \"condition\": \"E1\", \"dropout\": 0.1, \"epochs\": 20, \"head_lr\": 0.001, \"lr\": 3e-05, \"max_length\": 128, \"model_name\": \"xlm-roberta-base\", \"patience\": 0, \"scheme\": \"layered-BIO\", \"seed\": 42, \"warmup_ratio\": 0.1, \"weight_decay\": 0.01}",
+  "status": "starting value",
+  "where": "fivetag/encoder.py",
+  "note": "20 epochs after EXP-015; the epoch count for the real gold is chosen on dev"
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "E3 GLiNER model / threshold / labels",
+  "value": "[\"urchade/gliner_multi-v2.1\", 0.5, \"gliner-labels-v1\"]",
+  "status": "starting value",
+  "where": "fivetag/gliner_adapter.py",
+  "note": ""
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "typing version",
+  "value": "typing-v1",
+  "status": "by design",
+  "where": "fivetag/typing_d.py",
+  "note": ""
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "D2 fuzzy threshold / minimum length / cue window",
+  "value": "[0.9, 5, 4]",
+  "status": "starting value",
+  "where": "fivetag/typing_d.py",
+  "note": "the proposal calls for a frozen threshold: freeze it on dev"
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "E6 router thresholds",
+  "value": "{\"complex_min_conjunctions\": 2, \"disagreement_iou\": 0.5, \"merge\": \"llm_replaces\", \"uncertain_high\": 0.75, \"uncertain_low\": 0.4}",
+  "status": "starting value",
+  "where": "fivetag/router.py",
+  "note": "to be tuned on the dev split"
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "E6 router version",
+  "value": "router-v1",
+  "status": "by design",
+  "where": "fivetag/router.py",
+  "note": ""
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "D1/D2 conflict routing version",
+  "value": "d3-routing-v1",
+  "status": "registered",
+  "where": "docs/experiments/PREREG_d3_conflict_routing.md",
+  "note": ""
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "conflict routing: high-risk statuses",
+  "value": "[\"kandidat_tinjauan\", \"siap_ditelaah_formal\"]",
+  "status": "registered",
+  "where": "docs/experiments/PREREG_d3_conflict_routing.md",
+  "note": ""
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "conflict routing: audit sample size / seed",
+  "value": "[150, 20261119]",
+  "status": "registered",
+  "where": "docs/experiments/PREREG_d3_conflict_routing.md",
+  "note": ""
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "adjudicator acceptance: accept at / borderline at (lower bound)",
+  "value": "[0.8, 0.667]",
+  "status": "registered",
+  "where": "docs/experiments/PREREG_d3_conflict_routing.md",
+  "note": "agreed by the promotor, 2026-11-19"
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "adjudicator model",
+  "value": "not registered (provisional: qwen/qwen3.8-flash)",
+  "status": "starting value",
+  "where": "docs/experiments/EXPERIMENT_LOG.md",
+  "note": "EXP-020; confirm on pilot gold"
+ },
+ {
+  "area": "Competency layers",
+  "name": "competency version",
+  "value": "0.1.0",
+  "status": "by design",
+  "where": "competency/__init__.py",
+  "note": ""
+ },
+ {
+  "area": "Competency layers",
+  "name": "roles of the five tags",
+  "value": "competencies are built from SH only; TT attached by shared sentence; SS and WB attached by shared postings, with share and lift",
+  "status": "decided",
+  "where": "competency/__init__.py",
+  "note": "the researcher, 2026-11-19"
+ },
+ {
+  "area": "Competency layers",
+  "name": "what a competency is",
+  "value": "an operational verb (placed on the taxonomy by the verb table) plus the knowledge it acts on; the statement names no tool",
+  "status": "decided",
+  "where": "competency/structure.py",
+  "note": "the researcher, 2026-11-20"
+ },
+ {
+  "area": "Competency layers",
+  "name": "how the knowledge of a competency is read from its phrases",
+  "value": "{\"highest_level_floor\": 0.2, \"keep_longer_form_at\": 0.5, \"max_items\": 8, \"max_object_words\": 4, \"min_item_postings\": 2, \"min_vocabulary_postings\": 3}",
+  "status": "starting value",
+  "where": "competency/structure.py",
+  "note": "the shared head of the objects; a word-order rule, no part-of-speech tagger"
+ },
+ {
+  "area": "Competency layers",
+  "name": "KNOWLEDGE-tagged terms asked for in the same postings",
+  "value": "listed beside a competency as other knowledge, with share and lift",
+  "status": "starting value",
+  "where": "competency/__init__.py",
+  "note": "the developer's reading; shown, never part of the statement"
+ },
+ {
+  "area": "Competency layers",
+  "name": "cognitive level of a competency",
+  "value": "read from the verbs the postings use (the level most postings ask for; C1-C6); never from a default verb supplied by the method",
+  "status": "decided",
+  "where": "competency/structure.py",
+  "note": "the researcher's correction, 2026-11-20; a test holds it"
+ },
+ {
+  "area": "Competency layers",
+  "name": "cluster map of knowledge and technology",
+  "value": "{\"max_terms_per_tag\": 250, \"min_postings\": 5, \"n_clusters\": null, \"perplexity\": 30.0, \"seed\": 20261120, \"svd_dims\": 32, \"tags\": [\"KN\", \"TT\"]}",
+  "status": "starting value",
+  "where": "competency/termmap.py",
+  "note": "the number of clusters is a setting, not a discovery"
+ },
+ {
+  "area": "Competency layers",
+  "name": "cluster map version",
+  "value": "termmap-v1",
+  "status": "by design",
+  "where": "competency/termmap.py",
+  "note": ""
+ },
+ {
+  "area": "Competency layers",
+  "name": "role of the KKNI level",
+  "value": "information for the reader only; never part of the status or the order",
+  "status": "decided",
+  "where": "competency/contract.py",
+  "note": "the researcher, 2026-11-19; a test holds it"
+ },
+ {
+  "area": "Competency layers",
+  "name": "grounding check for generator statements",
+  "value": "the generator's own evidence filter, not the lexical share",
+  "status": "starting value",
+  "where": "competency/contract.py",
+  "note": "the developer's choice; see EXP-026"
+ },
+ {
+  "area": "Competency layers",
+  "name": "grouping settings",
+  "value": "{\"attach_threshold\": 0.75, \"cohesion_threshold\": 0.55, \"competency_tags\": [\"SH\"], \"core_min_postings\": 1, \"embedder_model\": \"sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2\", \"max_profile_items\": 8, \"max_samples\": 5, \"max_technologies\": 8, \"min_postings_per_phrase\": 1, \"min_profile_postings\": 2, \"min_technology_postings\": 2, \"version\": \"grouping-v1\"}",
+  "status": "starting value",
+  "where": "competency/grouping.py",
+  "note": "cohesion floor carried over from the pre-approval clusterer"
+ },
+ {
+  "area": "Competency layers",
+  "name": "verb table",
+  "value": "verbs-v1-unreviewed",
+  "status": "starting value",
+  "where": "competency/statement.py",
+  "note": "Krathwohl levels assigned by the developer; no expert review yet"
+ },
+ {
+  "area": "Competency layers",
+  "name": "grounding measure",
+  "value": "grounding-lexical-v1",
+  "status": "by design",
+  "where": "competency/statement.py",
+  "note": ""
+ },
+ {
+  "area": "Competency layers",
+  "name": "technologies an LLM statement may name",
+  "value": "3",
+  "status": "starting value",
+  "where": "competency/statement.py",
+  "note": "the short LLM writer of EXP-019 only; out of step with the decision that a statement names no tool, and superseded by the earlier generator"
+ },
+ {
+  "area": "Competency layers",
+  "name": "contract: minimum postings / minimum grounding",
+  "value": "[5, 0.8]",
+  "status": "starting value",
+  "where": "competency/contract.py",
+  "note": "to be agreed with the promotor before any release"
+ },
+ {
+  "area": "Competency layers",
+  "name": "KKNI step",
+  "value": "kkni-nearest-descriptor-v1",
+  "status": "starting value",
+  "where": "competency/mapping.py",
+  "note": "confident on 1 of 445 statements (EXP-024); needs another method"
+ },
+ {
+  "area": "Competency layers",
+  "name": "coverage thresholds (partial / covered)",
+  "value": "[0.45, 0.65]",
+  "status": "starting value",
+  "where": "competency/coverage.py",
+  "note": "not calibrated against expert judgement"
+ },
+ {
+  "area": "Competency layers",
+  "name": "time analysis settings",
+  "value": "{\"fdr_alpha\": 0.05, \"min_item_postings\": 20, \"min_postings_per_window\": 200, \"min_windows_for_trend\": 3, \"step_months\": 6, \"top_n\": 50, \"volatility_cv_high\": 0.5, \"volatility_cv_medium\": 0.25, \"weight_prevalence\": 0.5, \"weight_prior\": 0.25, \"weight_trend\": 0.25, \"window_months\": 6}",
+  "status": "starting value",
+  "where": "competency/temporal.py",
+  "note": "the proposal requires expert validation of these"
+ },
+ {
+  "area": "Competency layers",
+  "name": "time analysis version",
+  "value": "temporal-v1",
+  "status": "by design",
+  "where": "competency/temporal.py",
+  "note": ""
+ },
+ {
+  "area": "Competency layers",
+  "name": "delta rule version",
+  "value": "delta-v1",
+  "status": "by design",
+  "where": "competency/delta.py",
+  "note": "'mengurangi penekanan' capped at eksploratif by the proposal"
+ },
+ {
+  "area": "Competency layers",
+  "name": "profile: same-competency overlap (Jaccard)",
+  "value": "0.5",
+  "status": "starting value",
+  "where": "competency/profile.py",
+  "note": ""
+ },
+ {
+  "area": "Competency layers",
+  "name": "end-to-end models (extraction / statements)",
+  "value": "[\"qwen/qwen3.8-flash\", \"openai/gpt-5.4-mini\"]",
+  "status": "starting value",
+  "where": "competency/endtoend.py",
+  "note": "rehearsal choices, not registered"
+ },
+ {
+  "area": "Corpus collection",
+  "name": "monthly roster version",
+  "value": "monthly-roster-v1",
+  "status": "by design",
+  "where": "acquisition/configs/monthly_roster.json",
+  "note": ""
+ },
+ {
+  "area": "Corpus collection",
+  "name": "limits for detail-fetch platforms",
+  "value": "{\"detail_fetch_cooldown_hours\": 24, \"detail_fetch_max_queries_per_session\": 25, \"max_hours_old\": 2160}",
+  "status": "decided",
+  "where": "docs/corpus/ACQUISITION_CADENCE.md",
+  "note": "standing constraints; not to be raised"
+ },
+ {
+  "area": "Corpus collection",
+  "name": "sources and cadence (days)",
+  "value": "{\"glints-id\": 28, \"indeed-asean\": 56, \"indeed-id\": 28, \"indeed-oecd\": 56, \"jobstreet-id\": 28, \"kalibrr-id\": 84, \"kemnaker-id\": 28, \"kitalulus-id\": 28}",
+  "status": "decided",
+  "where": "docs/corpus/SOURCE_AUDIT.md",
+  "note": "each source has a recorded Kn decision"
+ }
+]

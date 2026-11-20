@@ -116,6 +116,8 @@ class Statement:
     grounding: float = 0.0
     ungrounded: list[str] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
+    object_source: str = "phrase"       # phrase | knowledge (the object the phrases share)
+    krathwohl_source: str = "statement verb"   # postings | statement verb | none
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -133,7 +135,8 @@ def grounding(statement_text: str, group: Group, verb: str = "", verb_source: st
     vocab: set[str] = set()
     for m in group.members:
         vocab.update(_words(m["text"]))
-    for t in group.technologies + group.knowledge_context:
+    for t in (group.technologies + group.knowledge_context
+              + list(getattr(group, "knowledge_objects", []))):
         vocab.update(_words(t["text"]))
     vocab |= {base_verb(w) or w for w in list(vocab)}
     words = [w for w in _words(statement_text) if w not in _STOP]
@@ -152,28 +155,76 @@ def _join(names: list[str], language: str) -> str:
     return ", ".join(names[:-1]) + conj + names[-1]
 
 
-def deterministic_statement(group: Group, max_technologies: int = 3) -> Statement:
-    """The P1 statement: built only from what the postings wrote."""
+_JOINERS = ("and", "or", "dan", "atau", "&", "/")
+_ID_MARKS = {"dan", "yang", "untuk", "dengan", "dalam", "atau", "serta", "pada", "memiliki",
+             "mampu", "minimal", "pengalaman", "kami", "anda", "sebagai", "lulusan", "bidang",
+             "menguasai", "kemampuan", "bekerja", "di", "dari", "akan", "tim"}
+_EN_MARKS = {"and", "the", "of", "with", "to", "in", "for", "experience", "our", "you", "we",
+             "is", "are", "as", "or", "will", "team", "work", "on", "a", "an"}
+
+
+def split_verb_object(text: str) -> tuple[list[str], str]:
+    """'design, develop and test web apps' -> (['design', 'develop', 'test'], 'web apps').
+    A phrase that does not open with a verb of the table, or has nothing after
+    the verbs, comes back as ([], the phrase)."""
+    words = text.split()
+    whole = text.strip(" ,.")
+    first = base_verb(words[0].strip(",.")) if words else None
+    if not first or len(words) < 2:
+        return [], whole
+    verbs, k = [first], 1
+    while k < len(words):
+        w = words[k].strip(",.")
+        b = base_verb(w)
+        if b:
+            if b not in verbs:
+                verbs.append(b)
+        elif w.lower() not in _JOINERS:
+            break
+        k += 1
+    obj = " ".join(words[k:]).strip(" ,.")
+    return (verbs, obj) if obj else ([], whole)
+
+
+def _mostly_indonesian(texts) -> bool | None:
+    """True/False by a vote of function words over the sentences; None when
+    there is nothing to vote on."""
+    idn = eng = 0
+    for t in texts:
+        for w in _words(t):
+            idn += w in _ID_MARKS
+            eng += w in _EN_MARKS
+    return None if idn + eng == 0 else idn > eng
+
+
+def deterministic_statement(group: Group, max_technologies: int = 0) -> Statement:
+    """The P1 statement: built only from what the postings wrote.
+
+    The statement is a VERB and its OBJECT and nothing else (the researcher,
+    2026-11-20: "Perform programming", not "Perform programming using Python,
+    PHP and JavaScript"). The tools and technology of a competency are listed
+    beside it, with the soft skills and work behaviours; they are not part of
+    what the competency is. `max_technologies` above 0 puts tool names back,
+    for an ablation only.
+
+    The object is the knowledge the group's phrases share
+    (`group.knowledge_objects`, set by `competency.structure`): a competency is
+    a verb plus a knowledge. The verb is the one most used with that object.
+    Without that list (a group never passed through `structure.annotate`) the
+    most frequent literal object of the most frequent verb is used."""
     verbs: Counter = Counter()
     objects: dict[str, Counter] = {}
     verb_led_evidence = 0
     for m in group.members:
-        words = m["text"].split()
         # only an action or soft-skill phrase can open with a verb: the
         # knowledge term "design patterns" is not the verb "design"
-        base = (base_verb(words[0].strip(",.")) if words and m["tag"] in ("SH", "SS") else None)
-        if base and len(words) >= 2:
-            # skip a coordinated verb group: "design, develop and test web apps"
-            k = 1
-            while k < len(words) and (base_verb(words[k].strip(",.")) or words[k].lower() in (
-                    "and", "or", "dan", "atau", "&")):
-                k += 1
-            obj = " ".join(words[k:]).strip(" ,.")
-            if obj:
-                verbs[base] += m["n_postings"]
-                objects.setdefault(base, Counter())[obj] += m["n_postings"]
-                verb_led_evidence += m["n_evidence"]
+        found, obj = split_verb_object(m["text"]) if m["tag"] in ("SH", "SS") else ([], "")
+        if found:
+            verbs[found[0]] += m["n_postings"]
+            objects.setdefault(found[0], Counter())[obj] += m["n_postings"]
+            verb_led_evidence += m["n_evidence"]
     notes: list[str] = []
+    object_source = "phrase"
     # The statement must speak for the group. Verb-led phrases set it only when
     # they are at least half of the group's evidence; otherwise the group is
     # mostly nouns ("programming", "code reviews") and its most frequent phrase
@@ -182,12 +233,28 @@ def deterministic_statement(group: Group, max_technologies: int = 3) -> Statemen
         verb = sorted(verbs, key=lambda v: (-verbs[v], v))[0]
         obj = sorted(objects[verb], key=lambda o: (-objects[verb][o], o))[0]
         source = "evidence"
+        known = [k for k in getattr(group, "knowledge_objects", []) if k.get("verbs")]
+        if known:
+            # of the verbs used with that object, the one on the level the
+            # postings ask for: the verb of a statement signals its level
+            wanted = (getattr(group, "cognitive", None) or {}).get("level")
+            on_level = [v for v in known[0]["verbs"] if VERBS.get(v) == wanted]
+            obj, verb, object_source = known[0]["text"], (on_level or known[0]["verbs"])[0], \
+                "knowledge"
+            notes.append(f"the object is shared by {known[0]['n_postings']} of the group's "
+                         f"{group.n_postings} postings ({known[0]['share']:.0%})")
     else:
         top = group.members[0]
         obj = top["text"]
         id_words = {"dan", "yang", "untuk", "dengan", "struktur", "konsep", "prinsip", "kerja"}
         indonesian = any(w in id_words for w in _words(obj)) and not any(
             w in ("and", "of", "the") for w in _words(obj))
+        # a one-word label ("pemrograman") says nothing about its language:
+        # ask the sentences it was taken from
+        vote = _mostly_indonesian(s.get("sentence_text", "") for s in group.samples)
+        if vote is not None and not indonesian and not any(
+                w in ("and", "of", "the") for w in _words(obj)):
+            indonesian = vote
         default = {"SH": ("perform", "melakukan"), "KN": ("explain", "menjelaskan"),
                    "SS": ("demonstrate", "menunjukkan")}[top["tag"]]
         verb = default[1] if indonesian else default[0]
@@ -204,8 +271,21 @@ def deterministic_statement(group: Group, max_technologies: int = 3) -> Statemen
         techs = []
     if techs and group.stream == "technical":
         text += (" menggunakan " if language == "id" else " using ") + _join(techs, language)
-    st = Statement(text, verb, obj, techs, VERBS[verb], language, "deterministic-v1", source,
-                   notes=notes)
+    # The level is what the postings' verbs ask for. A default verb is the
+    # method's wording, so its level is never reported as the level demanded.
+    read = (getattr(group, "cognitive", None) or {}).get("level")
+    if read:
+        level, level_source = read, "postings"
+        if VERBS[verb] != read:
+            notes.append(f"the statement's verb '{verb}' is on the level '{VERBS[verb]}'; the "
+                         f"postings' verbs ask for '{read}'")
+    elif source == "default":
+        level, level_source = "not stated", "none"
+        notes.append("no cognitive level: the postings of this group use no verb")
+    else:
+        level, level_source = VERBS[verb], "statement verb"
+    st = Statement(text, verb, obj, techs, level, language, "deterministic-v1", source,
+                   notes=notes, object_source=object_source, krathwohl_source=level_source)
     st.grounding, st.ungrounded = grounding(text, group, verb, source)
     return st
 

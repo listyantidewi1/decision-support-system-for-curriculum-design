@@ -173,8 +173,9 @@ Current, passing, and the part of the repo you can trust:
 | `test_after_annotation` | 20 | `.venv-ml` |
 | `test_gold_to_models` | 10 | `.venv-ml` |
 | `test_fivetag` | 73 | `.venv-ml` |
-| `test_competency` | 39 | `.venv-ml` |
-| `test_dashboard_v3` | 6 | `.venv-ml` |
+| `test_competency` | 52 | `.venv-ml` |
+| `test_config_registry` | 5 | `.venv-ml` |
+| `test_dashboard_v3` | 7 | `.venv-ml` |
 | `test_acquisition_monthly` | 11 | `.venv-ml` |
 | `test_annotation_server` | 23 | **`.venv`** |
 
@@ -309,6 +310,35 @@ ditelaah formal" is unreachable without three facts set by a person
 (`contract.StudyFacts`). Lexicon `v2` (v1 + O*NET-derived technology names) is
 what this pipeline uses; `fivetag`'s default is still `v1`.
 
+**A competency is a verb plus a knowledge, and its statement names no tool.**
+The researcher's decision of 2026-11-20 ("Perform programming", not "Perform
+programming using Python, PHP and JavaScript"). `competency/structure.py` reads
+the verbs and the shared object out of the group's hard-skill phrases;
+`deterministic_statement` joins them and leaves the tools in the list beside
+the competency. Do not put "using <tools>" back as the default (a test holds
+it), and do not try to find the knowledge through the KNOWLEDGE tag: under 1%
+of hard-skill phrases contain a KNOWLEDGE-tagged term, because the extractor
+tags a governed noun phrase as part of the hard skill (EXP-028). The cognitive
+level (C1–C6) is read from the verbs the postings use
+(`structure.cognitive_profile`); a default verb such as "perform" is the
+method's wording and must never set the level (her correction of 2026-11-20;
+a test holds it). `--reuse-v2-from <run>` takes over generator statements
+already paid for instead of calling the model again.
+
+**Competencies are built from SKILL_HARD only, and KKNI never decides anything.**
+Both are the researcher's decisions of 2026-11-19. Tools and technology are
+attached to a competency by sharing a sentence; soft skills, work behaviours
+and KNOWLEDGE-tagged terms by sharing postings, each with a share and a lift
+(that last list is the developer's reading). Do not put
+KNOWLEDGE or SKILL_SOFT back into `GroupingConfig.competency_tags` as the
+default, and do not let the KKNI level into `contract.decide` or
+`delta.priority_order`: tests hold both. The good statement writer is the
+pre-approval generator, reached through `competency/v2_generator.py` (paid,
+capped); the short rule statements are the free fallback. On the whole corpus
+the grouping runs in two stages (`core_min_postings`, `attach_threshold`); a
+flat attach threshold and an audit that counted attached phrases both went
+wrong once (experiment log, EXP-027).
+
 **If you are new here, read `docs/HANDOFF.md` first.** It says where every part
 stands, what is decided, what is open and what was in progress when the last
 session ended. `docs/experiments/EXPERIMENT_LOG.md` has every run with its
@@ -328,12 +358,26 @@ not run it with `--go` as a side effect of something else, and do not raise the
 limits in `configs/monthly_roster.json` (25 queries per session and 24 h rest
 for detail-fetch platforms): they are the standing constraints of §6.
 
-**`plot_aggregated.bat` is broken and is not the pattern.** Still tracked at the
-repo root (mtime 2026-03-05), it calls bare `python` — no ML packages since the
-2026-05-12 venv migration — and `aggregate_results.py`, which now lives in
-`legacy/`. It was missed when its two siblings were quarantined. Its presence
-next to `run.ps1` misreads as evidence that bare-`python` root launchers are
-current. They are not: `run.ps1` is the model.
+**Bare-`python` root launchers are not the pattern; `run.ps1` is.** The last one,
+`plot_aggregated.bat`, was moved to `legacy/` on 2026-11-19 with its two
+siblings: it called bare `python` (no ML packages since the 2026-05-12 venv
+migration) and `aggregate_results.py`, which was already in `legacy/`.
+
+**A clean-up audit on 2026-11-19 found almost nothing else to move, and that is
+the correct result.** Of 250 tracked code files, 10 were pre-approval, unnamed
+in the plan and unreachable from live code; after reading them only
+`plot_aggregated.bat` was certainly dead. The roughly twenty old-looking scripts
+at the repo root are still launched by `pipeline_orchestrator.py`, which
+`dashboard/app.py` imports (first trap of this section). They can go only when
+the researcher agrees that `dashboard/` and `dashboard_v2/` are retired in
+favour of `dashboard_v3/`. **She decided on 2026-11-19 to keep the old
+dashboards** ("might still be useful"), so the old orchestrator and everything
+it launches stay LIVE. Do not quarantine them.
+Of the two entry-point scripts that were unsure: `ingest_future_domains.py`
+stays, because it is the generator of `future_domains.csv` (plan-named, and read
+by `competency/temporal.py`) and holds its source citations;
+`skill_trend_holdout_validation.py` went to `legacy/` after the researcher
+confirmed she does not run it (it reads the pre-approval `results/` files).
 
 **No CI exists.** No `.github/`, no Makefile. Nothing is "run by CI", so that
 can never be the reason a file is live.
@@ -351,10 +395,10 @@ Authoritative detail is in `docs/IMPLEMENTATION_PLAN.md` §0. Orientation only:
 | 2 — gold standard | **`gold_standard/`** (pool, sampling, splits, IAA, seal; and the post-annotation kit: `after_annotation` = one command, `gate`, `calibration`, `adjudicate`, and `materialise` = seal the test labels and export train/dev for the models — see `docs/RUNBOOK_after_annotation.md`), `annotation_server/`, `gold_labeling_ui/` | **current work** |
 | 2b — silver labels | `labeling/` (verifier, alignment, consensus, guideline-only prompt pack, OpenRouter runner with a hard spending cap, a SYNTHETIC guideline-conformance set and a SkillSpan probe for measuring prompt changes; output goes to the gitignored `DATA/labeling/`, never under `DATA/gold_standard/`), `gold_standard/metrics.py` (the one shared evaluation engine) | NEW, **current work** |
 | 3 — extraction | **`fivetag/`** (every condition of proposal §3.3.1–3.3.3 behind one interface: E0 rules + versioned lexicon, E1/E2 encoder with layered BIO and the DAPT script, E3 GLiNER adapter, E4/E5 LLM with retrieval, E6 router, D1–D3 classifiers, `benchmark`; see `fivetag/README.md`), `baseline_versions/` (pre-approval benchmark material), `extraction_typing.py` (v1 classifier, still feeds the v1 competency stages), `llm_client_router.py` | NEW, **current work** / ADAPT |
-| 4–5 — competency | **`competency/`** (five-tag evidence table → groups with the six validity statuses → grounded statement → KKNI / okupasi → status contract; one command, `python -m competency.pipeline`; plus `temporal` (windows, trend, volatility, persistence), `coverage` (four statuses against SKKNI or an uploaded curriculum), `delta` (five recommendation kinds), `endtoend` (P1–P3 and the two ablations); see `competency/README.md`). It REUSES `clustering/`, `pipeline_scientific_audits.py`, `competency_kkni_labeller.py`, `occupation_mapper.py`. `competency_generator_v2.py` and `competency_evidence_repair.py` are the pre-approval chain, still driven by `scripts/run_full_v2_pipeline.py` for the old dashboard | NEW, **current work** / REUSE |
+| 4–5 — competency | **`competency/`** (five-tag evidence table → groups with the six validity statuses → grounded statement → KKNI / okupasi → status contract; one command, `python -m competency.pipeline`; plus `temporal` (windows, trend, volatility, persistence), `coverage` (four statuses against SKKNI or an uploaded curriculum), `delta` (five recommendation kinds), `endtoend` (P1–P3 and the two ablations), `structure` (the verbs and the knowledge of a competency), `termmap` (cluster map of knowledge terms and technologies); see `competency/README.md`). It REUSES `clustering/`, `pipeline_scientific_audits.py`, `competency_kkni_labeller.py`, `occupation_mapper.py`. `competency_generator_v2.py` and `competency_evidence_repair.py` are the pre-approval chain, still driven by `scripts/run_full_v2_pipeline.py` for the old dashboard | NEW, **current work** / REUSE |
 | 6 — labels & refs | `competency_kkni_labeller.py`, `occupation_mapper.py`, `kkni.py`, `DATA/skema_okupasi_*`, `DATA/spektrum_keahlian/` | ADAPT |
 | 7 — trends | `skill_time_trend_analysis.py`, `future_weight_mapping.py`, `future_domains.csv` | ADAPT |
-| 8 — delivery | **`dashboard_v3/`** (`public.py` reads a published profile and audits an uploaded curriculum; `admin.py` shows runs, works the two human review queues and publishes profiles; both read-only towards collection, paid models and the gold standard), `competency/profile.py` (versioned profile), `competency/figures.py` (every chart, from the output files). Pre-approval and still wired to the old chain: `scripts/build_*_package.py`, `dashboard_v2/app.py`, `dashboard/`, `expert_review.py` | NEW, **current work** / ADAPT |
+| 8 — delivery | **`dashboard_v3/`** (`public.py` reads a published profile, shows the cluster map (`termmap_view.py`) and audits an uploaded curriculum; `admin.py` shows runs, works the two human review queues and publishes profiles; both read-only towards collection, paid models and the gold standard), `competency/profile.py` (versioned profile), `competency/figures.py` (every chart, from the output files). Pre-approval and still wired to the old chain: `scripts/build_*_package.py`, `dashboard_v2/app.py`, `dashboard/`, `expert_review.py` | NEW, **current work** / ADAPT |
 | chassis | `scripts/run_full_v2_pipeline.py` | ADAPT |
 
 `gold_standard/` is the most current and best-tested part of the repo
@@ -429,6 +473,11 @@ deliberately under the plan — not to import it.
   registration before results exist.
 - Adversarial review findings go in `docs/experiments/*_findings.md` with a
   resolution log. Findings that stay open are listed as open.
+- **`docs/CONFIG_REGISTRY.md` is generated, never edited.** It lists every
+  version, prompt hash, dictionary hash and threshold with its status
+  (registered / decided / by design / starting value). After changing any of
+  them run `python -m governance.config_registry`; `tests/test_config_registry.py`
+  fails until you do.
 - **Every experiment gets an entry in `docs/experiments/EXPERIMENT_LOG.md` on
   the day it is run** (researcher's instruction, 2026-11-19: she writes the
   dissertation from it). An experiment is anything that produces a number
