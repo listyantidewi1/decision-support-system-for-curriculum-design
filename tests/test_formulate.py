@@ -462,6 +462,32 @@ def test_a_fitting_qualifier_is_written_and_what_is_not_work_or_mixed_is_marked(
     assert w["statement_en"] == "Develop web applications"
 
 
+def test_a_statement_is_carried_over_only_when_the_formulation_input_is_the_same():
+    """--carry-from (EXP-035): after a re-run of the chain, a competency whose input to
+    the writer did not change keeps its statement instead of being paid for again."""
+    prof = Q.profile(_competency(), _rows())
+    chosen = F.choose_qualifiers(prof)
+    fp = F.input_fingerprint(prof, chosen)
+    assert fp == F.input_fingerprint(Q.profile(_competency(), _rows()), F.choose_qualifiers(prof))
+    assert len(fp) == 16
+    longer = _rows() + [{"text": "Write clean, efficient web applications code", "posting_id": "p9",
+                         "sentence_text": "Write clean, efficient web applications code.",
+                         "start": 0, "end": 44}]
+    c = _competency()
+    c["evidence"] = {**c["evidence"], "members": c["evidence"]["members"]
+                     + [{"text": "Write clean, efficient web applications code"}]}
+    other = Q.profile(c, longer)
+    assert F.input_fingerprint(other, F.choose_qualifiers(other)) != fp       # a new phrase
+    lower = Q.profile(_competency(level="apply", code="C3"), _rows())
+    assert F.input_fingerprint(lower, F.choose_qualifiers(lower)) != fp       # another level
+    # the loose fingerprint keeps only what the statement is made of: a new supporting
+    # phrase does not change it, another level or other qualifiers do
+    loose = F.input_fingerprint(prof, chosen, strict=False)
+    assert F.input_fingerprint(other, F.choose_qualifiers(other), strict=False) == loose \
+        or F.choose_qualifiers(other) != chosen
+    assert F.input_fingerprint(lower, F.choose_qualifiers(lower), strict=False) != loose
+
+
 def test_the_checker_reads_the_work_before_its_qualifiers_and_the_glossary_verbs():
     from competency.statement import read_phrase
     # the qualifier clause is not the work: 'according to ...' hid 'testing' (C5) behind 'perform'

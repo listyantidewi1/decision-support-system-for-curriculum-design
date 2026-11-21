@@ -56,6 +56,12 @@ Expected spans found, on the SkillSpan sentences you reviewed (74 and 120 spans)
 | E3 GLiNER, no training, threshold 0.5 | 9 | 56 |
 | E3 GLiNER, no training, threshold 0.3 | 13 | 73 |
 
+E0 rules v2 (2026-11-21, EXP-035) gives exactly these numbers too, item by
+item: these sets hold no list of qualities or verbs broken by commas, which is
+all v2 changes ("Write clean, efficient, maintainable code" is no longer cut
+at the first comma). Over the whole pool it changes 6,673 of 662,248
+sentences; three judges found 103 of 120 sampled changes better and 9 worse.
+
 How to read this:
 
 - E0 looks strong on batch 2 because that batch is mostly technology names and

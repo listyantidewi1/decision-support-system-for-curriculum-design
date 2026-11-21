@@ -1715,6 +1715,169 @@ credit); round 3: 7 agents, about 910,000 tokens, 17.5 minutes.
 - **Limits:** only the 40 of the check were judged; the marker's agreement with
   people is unmeasured (the reviewers are models); the competencies come from
   an engineering run.
+- **The order of the list is not the order of demand** (the researcher's
+  question, 2026-11-21). The profile orders by status, then the persistence
+  weight (`competency/temporal.py`: 0.50 × percentile of the share of postings
+  in the latest window + 0.25 × percentile of its relative slope + 0.25 × the
+  future-domain prior; starting values), then postings; the weight is nearly
+  unique per competency, so postings almost never decide. Among the 599
+  candidates of draft 7 the rank correlation with postings is 0.918
+  (Spearman); the most demanded, "Melakukan pemrograman" (5,040 postings), is
+  69th; 191 candidates have no weight (too few dated postings) and come last in
+  their status. Since 2026-11-21 the public dashboard offers both orders
+  ("Prioritas" or "Jumlah lowongan terbanyak") and shows the weight.
+- **High demand held back by the okupasi rule** (seen in the demand order): 46
+  "eksploratif" competencies have 100 postings or more; 32 of them are blocked
+  by `okupasi_unmapped` (no occupation mapped), e.g. "Perform debugging",
+  1,832 postings, C4; 14 by `statement_is_a_fragment`, 3 by grounding. Only
+  "kandidat tinjauan" competencies were formulated, so these have no
+  formulated statement. Whether a missing okupasi should keep a competency out
+  of review is the researcher's decision (the contract's thresholds are
+  starting values).
+
+---
+
+## EXP-035 — Extractor rules v2: a comma inside a list of qualities or verbs no longer cuts the phrase
+
+- **Date / status:** 2026-11-21 · DEVELOPMENT (E0 is one of the study's
+  extraction conditions; this changes it before the gold standard exists).
+- **Why:** the researcher, on the dashboard: "what is this 'write clean'. It
+  keeps showing since years ago no matter what kind of pipeline we built."
+  The E0 rules ended a verb's object at the first comma
+  (`fivetag/e0_rules.py`), which cut two frequent patterns before their noun:
+  a list of qualities ("Write clean, efficient, maintainable, and well-tested
+  code" -> "Write clean") and a verb list that goes on with a verb the lexicon
+  lacks ("Design, develop, and manage databases" -> "Design, develop"). In run
+  `e0_pool_all_v8` the 97 statements held back as fragments (EXP-033) hold
+  about 4,900 postings counted per statement; 88% of their evidence stops
+  right before a comma. "Write clean" alone: 676 postings. Those postings never
+  counted for the real competencies. The researcher approved the repair on
+  2026-11-21 ("yes, do it").
+- **What changed (`e0-rules-v2`):** (1) when everything in an object so far is
+  a quality word (`QUALITY_MODIFIERS`, built from the words that ended the cut
+  phrases) and a comma follows, the rule reads on through the listed
+  qualities to the noun; (2) a verb list continues through words that look
+  like verbs of the same form (an -ing word in an -ing list; a meN-/ber- word
+  in Indonesian; in English a plain word without a noun ending) when the list
+  ends with a conjunction and a verb that has an object. Everything else is as
+  in v1: an object that already holds a noun still ends at its comma.
+- **Reference sets:** conformance 128/135 spans, SkillSpan batch 1 41/74,
+  batch 2 106/120 — identical to v1, item by item (the sets contain no such
+  list, so they show nothing got worse but cannot show the gain). Tests:
+  `test_fivetag` 73/73.
+- **The whole pool, v1 against v2** (`e0_v1_v2_diff.py`, lexicon v2, before
+  the sentence filter): 662,248 sentences, 6,721 changed (1.0%); hard-skill
+  spans 166,182 -> 167,668; 5,274 spans lengthened, 1,641 new, 49 lost.
+- **Independent check, stated before its results:** a seeded random sample of
+  120 changed spans (seed 20261121) goes to three Claude subagents, each alone,
+  who judge v2 against v1 in its sentence: better, same, or worse. The rules
+  go into the competency run only if the majority calls at most 12 of the 120
+  (10%) worse; otherwise the worse cases are read and the rules fixed first.
+
+### The judges' verdict
+
+- Workflow `wf_a9c96a76-99a`, 3 Claude subagents, about 213,000 tokens, 13
+  minutes. Each judge: 103 better; 7, 5, 5 same; 10, 12, 12 worse. They agree
+  almost perfectly: Fleiss' kappa 0.912 (observed 0.978).
+- **Majority: 103 better, 5 same, 12 worse: the bar is met, exactly at its
+  limit.** The worse cases, in the judges' words: the new verb-list rule fires
+  in recruitment and marketing prose and makes spans with no object of work
+  ("apply, and believe", "build, solve, and operate", "create, innovate and
+  make an impact on the world"); noun modifiers read as verbs ("test scripts",
+  "monitoring, logging, and alerting systems"); a span that runs across a
+  lost bullet boundary ("...compassionate care Optimising the use of digital
+  technology"); new cut fragments where a modifier is not on the quality list
+  ("Design, prepare and execute functional").
+- **One tightening after the verdict:** when a verb list made longer by v2
+  finds no object, the rule falls back exactly to v1 (a list of verbs is no
+  hard skill). On the 120 judged cases it removes exactly 3 spans, all three
+  judged worse ("apply, and believe", "build, solve, and operate", "defining,
+  evolving and advocating"), and changes nothing else; so the final rules
+  stand at 103 better, 5 same, 9 worse (7.5%) on this sample. That figure is
+  computed from the judges' verdicts, not judged again. Tests 74/74; the
+  reference sets unchanged. The whole pool with the final rules: 6,673
+  sentences changed; hard-skill spans 166,182 -> 167,623; 5,271 lengthened,
+  1,596 new, 49 lost (`DATA/competency/runs/e0_rules_v2_final/diff_summary.json`).
+- **Downstream:** most remaining worse cases are in sentences the sentence
+  filter removes before counting (recruitment, mission text), or are cut
+  fragments the fragment rule holds back (EXP-033).
+- **Files:** `DATA/competency/runs/e0_rules_v2_check/` (`diff_sample.json`,
+  `diff_summary.json`, `journal.jsonl`, `judges_summary.json`, the workflow and
+  the comparison script).
+
+### The competency chain with rules v2 (`e0_pool_all_v9`)
+
+Same command and settings as v8 (`competency.pipeline e0 --all --tag
+e0_pool_all_v9`: lexicon v2, whole pool, sentence filter, merge at 0.90); only
+the extractor rules differ. 13 minutes.
+
+| | v8 (rules v1) | v9 (rules v2) |
+|---|---|---|
+| Evidence units (hard-skill) | 424,873 (147,161) | 425,837 (148,495) |
+| Families / competencies | 447 / 998 | 412 / 943 |
+| Kandidat tinjauan / eksploratif | 599 / 399 | 606 / 337 |
+| Held back as a fragment | 97 | **40** |
+| "Write clean" | 676 postings, held back | gone |
+| "Write code" (C6, kandidat tinjauan) | 579 postings | **1,178 postings** |
+
+Fewer families because cut pieces now join the family of their work. The 40
+fragments left hold 650 postings (counted per statement; v8: about 4,900):
+mostly verb lists whose sentence gives no object ("Perform Design, develop",
+99; "Perform Develop, maintain", 91), "Build robust" (70), and statements built
+as "Perform <verb> and <verb> ..." ("Perform Develop and maintain automated
+tests", 16; "Perform Troubleshoot and debug", 15): the latter is a fault of the
+rule statement builder on verb lists, not of extraction, and is still open.
+
+### Statements for v9: carried over, or written (the researcher's choice)
+
+- **What changed for the writer:** of the 606 candidates, 231 have exactly the
+  same input as in v8 (rule statement, level, qualifiers offered, top objects,
+  main verbs, example phrases) and take their v8 statement over
+  (`--carry-from`, no call). 162 have the same rule statement, level and
+  qualifiers but other supporting evidence; 153 are new competencies (a rule
+  statement or level v8 did not have); 61 have other qualifiers (e.g. "Write
+  code"). Writing all 375 that differ would cost about $1.72 of the $1.79 of
+  credit left, more than the developer had estimated ("probably well under
+  $1"), so the researcher was asked. **Her choice (2026-11-21): write the new
+  ones and those with other qualifiers (213), hard cap $1.00; the 162 with only
+  other supporting evidence keep their v8 statement, shown in the dashboard as
+  carried over.**
+- **Run:** a free carry-over pass (393: 231 exact, 162 with changed supporting
+  evidence), then the 213 in three parallel parts, most demanded first,
+  interleaved; caps by the callers' list-price estimates: writer 3 × $0.273,
+  marker 3 × $0.055, confirmation 3 × $0.005 = $1.00, so the provider's charge
+  stays below $1.00.
+- **A setting error (the developer's):** the confirmation cap of $0.005 per
+  part was smaller than two of its worst-case reservations (about $0.004 per
+  call, hidden reasoning included), so each part stopped at its 3rd or 4th
+  "same as SKKNI" call: 52 of the 213 written (10 + 37 + 5; 49 accepted), $0.31
+  by the callers' estimates. The rest went into a second, single run in
+  demand order with the $0.69 left under the cap, split by expected use
+  (writer $0.54, marker $0.12, confirmation $0.03).
+- **Result:** the second run wrote 123 before the writer's cap stopped it, as
+  planned: **175 of the 213 written** (162 accepted, 13 refused). The 38 not
+  written are the least demanded (at most 14 postings, median 11) and show
+  their rule statement. In all, run v9 has 568 entries for its 606 candidates
+  (231 carried exactly, 162 carried with changed supporting evidence, 175
+  written) and **533 accepted statements**; 7 in SKKNI wording; marks: 100 not
+  work, 198 mixed, 250 marked in all. "Write code" (1,178 postings) became
+  "Menulis kode sesuai best practices".
+- **Cost, provider-reported:** writer $0.6476 (234 calls), confirmation
+  $0.0067 (19), marker $0.1734 (193): **$0.8276**, within the $1.00 cap.
+  Account usage $94.0381 afterwards (from $93.2058): $0.8323. Credit left
+  about $0.96.
+- **Draft profile `2026-0-draf8`** (from `e0_pool_all_v9`): 943
+  recommendations (606 kandidat tinjauan, 337 eksploratif), 533 with a
+  formulated statement (154 carried with changed evidence, shown as such),
+  7 in SKKNI wording. Change log against draft 7: 21 up, 17 down, 191 new,
+  246 gone (the repair regrouped families). The public dashboard renders it
+  without an error (checked headless), hides "Eksploratif" until asked for
+  (the researcher's approval, 2026-11-21), offers both orders, and runs on
+  127.0.0.1:8511.
+- **Files:** `DATA/competency/runs/e0_pool_all_v9/` (`formulated.json`/`.csv`,
+  `formulated_carried_only.json`, `formulated_v9_part{1..4}.*` with their call
+  logs, `scripts/merge_v9_parts.py`); the run's console output was not kept
+  beyond its summary lines.
 
 ---
 
@@ -1733,8 +1896,9 @@ credit); round 3: 7 agents, about 910,000 tokens, 17.5 minutes.
 | EXP-031 (unit writer, two trials of 5; read from the account) | $0.0693 |
 | EXP-032 (statement formulation, try 1 to v4.3, both samples; provider-reported per call) | $1.0225 |
 | EXP-034 (formulation v5: dry runs, check of 40, full run of 559; provider-reported, one dry run estimated) | $2.7152 |
-| **Total recorded (metered runs)** | **$6.9326** |
-| **Upper bound including EXP-026** | **$7.5109** |
+| EXP-035 (statements for run v9 after the extractor repair: 175 written, 393 carried over; provider-reported) | $0.8276 |
+| **Total recorded (metered runs)** | **$7.7602** |
+| **Upper bound including EXP-026** | **$8.3385** |
 
 "Charged" is an upper estimate (see the shared settings). The provider's own
 balance is the authority.

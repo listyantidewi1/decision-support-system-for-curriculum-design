@@ -198,7 +198,7 @@ That was not what was meant, and the unit writer was removed.
 
 ## Two clean-ups of the competency list (EXP-033)
 
-- **Fragments are held back.** A statement whose phrases were cut before
+- **Fragments are held back.** (Since 2026-11-21 the extractor no longer cuts a phrase at a comma inside a list of qualities or verbs, which removed most of them: 97 -> 40, EXP-035.) A statement whose phrases were cut before
   their object ("Write clean", "Design scalable", "Perform Design, develop")
   names no work; `statement.is_fragment` finds it (no plain noun after the
   verb; only verb forms, or a trailing quality word or participle) and the

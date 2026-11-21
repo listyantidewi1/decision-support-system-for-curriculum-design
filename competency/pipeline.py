@@ -540,7 +540,7 @@ def main() -> None:
     args = ap.parse_args()
 
     if args.cmd == "e0":
-        from fivetag.e0_rules import E0Rules
+        from fivetag.e0_rules import RULES_VERSION, E0Rules
         sentences = pool_sentences(None if args.all else args.n_sentences, args.seed,
                                    args.indonesian_only, stratum=args.stratum)
         extractor = E0Rules(version=args.lexicon)
@@ -553,7 +553,7 @@ def main() -> None:
         grouping_cfg = GroupingConfig(core_min_postings=core,
                                       attach_threshold=args.attach_threshold,
                                       merge_threshold=merge)
-        source = (f"E0 rules, lexicon {args.lexicon}, "
+        source = (f"E0 rules ({RULES_VERSION}), lexicon {args.lexicon}, "
                   + ("whole pool" if args.all else f"pool sample seed {args.seed}")
                   + ("" if args.no_zone_filter else ", duty and requirement sentences only")
                   + (f", stratum {args.stratum}" if args.stratum else ""))

@@ -25,6 +25,8 @@ def runs_dir() -> Path:
 STATUS_LABEL = {"eksploratif": "Eksploratif", "kandidat_tinjauan": "Kandidat tinjauan",
                 "siap_ditelaah_formal": "Siap ditelaah formal"}
 STATUS_ORDER = ["siap_ditelaah_formal", "kandidat_tinjauan", "eksploratif"]
+# what the public list shows before the reader chooses: not the exploratory ones
+DEFAULT_STATUSES = ["siap_ditelaah_formal", "kandidat_tinjauan"]
 COVERAGE_LABEL = {"tercakup_jelas": "Tercakup jelas", "tercakup_sebagian": "Tercakup sebagian",
                   "belum_tercakup": "Belum tercakup",
                   "masukan_pembaruan": "Berpotensi menjadi masukan pembaruan"}
@@ -53,6 +55,43 @@ def statement_text(rec: dict) -> str:
     profile has one, else the rule statement of the pipeline."""
     f = rec.get("formulated") or {}
     return f.get("pernyataan") or rec["statement"]["text"]
+
+
+# How the list is ordered (the researcher asked on 2026-11-21 whether the order
+# shows the highest demand: it does not quite, so both orders are offered).
+ORDER_LABEL = {"prioritas": "Prioritas (status, lalu bobot persistensi)",
+               "lowongan": "Jumlah lowongan terbanyak"}
+
+
+def sort_recommendations(recs: list[dict], order: str) -> list[dict]:
+    """'prioritas': the profile's own order (status, then the persistence weight, then
+    postings: competency.delta.priority_order). 'lowongan': most postings first,
+    whatever the status; ties keep the priority order."""
+    if order == "lowongan":
+        return sorted(recs, key=lambda r: (-r["n_postings"], r["rank"]))
+    return sorted(recs, key=lambda r: r["rank"])
+
+
+def weight_text(rec: dict) -> str:
+    w = (rec.get("temporal") or {}).get("persistence_weight")
+    return f"{w:.2f}" if w is not None else "—"
+
+
+def order_caption(order: str, n_shown: int, n_all: int) -> str:
+    """What the reader is told about the order, with the weights the time analysis uses."""
+    from competency.temporal import TemporalConfig
+    tc = TemporalConfig()
+    head = f"{n_shown} dari {n_all} rekomendasi. "
+    if order == "lowongan":
+        return head + ("Urutan: jumlah lowongan yang meminta kompetensi ini, terbanyak dulu; "
+                       "semua status yang dipilih digabung. Kolom # tetap menunjukkan peringkat "
+                       "prioritas.")
+    return head + (f"Urutan: status, lalu bobot persistensi, lalu jumlah lowongan. Bobot "
+                   f"persistensi = {tc.weight_prevalence:.0%} pangsa lowongan pada periode "
+                   f"terakhir, {tc.weight_trend:.0%} laju kenaikannya, {tc.weight_prior:.0%} "
+                   f"bobot bidang masa depan (nilai awal, belum disepakati). Bobot hanya "
+                   f"mengurutkan; tidak menaikkan status. Kompetensi tanpa bobot (data waktunya "
+                   f"belum cukup) berada di akhir statusnya.")
 
 
 # Marks the formulation puts beside a statement (competency.formulate). They

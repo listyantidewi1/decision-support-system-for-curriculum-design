@@ -92,6 +92,37 @@ def test_e0_is_an_extractor_and_is_deterministic():
     assert m["lexicon_sha256"] == lex.load("v1").sha256 and m["rules_version"]
 
 
+def test_e0_rules_v2_read_through_a_list_of_qualities_or_verbs_to_the_object():
+    """Rules v2 (EXP-035): in v1 a comma ended a verb's object, which cut 97
+    competencies of the whole-pool run before their noun ("Write clean")."""
+    from fivetag.e0_rules import RULES_VERSION
+    assert RULES_VERSION == "e0-rules-v2"
+    e0 = E0Rules(version="v2")
+
+    def sh(s):
+        return [s[p.start:p.end] for p in e0.extract(s) if p.label == "SH"]
+    # a list of qualities in front of the object belongs to the object
+    assert sh("Write clean, efficient, maintainable, and well-tested code.") == \
+        ["Write clean, efficient, maintainable, and well-tested code"]
+    assert sh("Build scalable, reusable, and maintainable application components.") == \
+        ["Build scalable, reusable, and maintainable application components"]
+    assert sh("deliver high‑quality, scalable web applications.") == \
+        ["deliver high‑quality, scalable web applications"]
+    # a verb list goes on with verbs the lexicon lacks, in the list's own form
+    assert sh("Design, develop, and manage databases to support data integrity.")[0] == \
+        "Design, develop, and manage databases"
+    assert sh("Experience in designing, developing, extending, and supporting custom tools.") == \
+        ["designing, developing, extending, and supporting custom tools"]
+    assert sh("Tim ini merancang, mengimplementasikan, dan mengevaluasi proses QA internal.") == \
+        ["merancang, mengimplementasikan, dan mengevaluasi proses QA internal"]
+    # unchanged from v1: an object that already holds a noun ends at its comma; no noun,
+    # no continuation; a noun is not taken for a verb of the list
+    assert sh("Develop web applications, APIs, and microservices.") == ["Develop web applications"]
+    assert sh("Write clean.") == ["Write clean"]
+    assert sh("Keep the code clean, and test it often.") == []
+    assert sh("Design, develop, documentation and testing of systems.") == ["Design, develop"]
+
+
 def test_e0_offsets_always_match_the_text():
     for row in synthetic.generate(150, seed=7):
         for p in E0.extract(row["text"]):

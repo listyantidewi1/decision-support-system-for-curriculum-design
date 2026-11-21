@@ -172,13 +172,13 @@ Current, passing, and the part of the repo you can trust:
 | `test_gold_standard_pipeline` | 11 | `.venv-ml` |
 | `test_after_annotation` | 20 | `.venv-ml` |
 | `test_gold_to_models` | 10 | `.venv-ml` |
-| `test_fivetag` | 73 | `.venv-ml` |
+| `test_fivetag` | 74 | `.venv-ml` |
 | `test_competency` | 60 | `.venv-ml` |
 | `test_zoning` | 6 | `.venv-ml` |
-| `test_formulate` | 14 | `.venv-ml` |
+| `test_formulate` | 15 | `.venv-ml` |
 | `test_skkni` | 27 | `.venv-ml` |
 | `test_config_registry` | 5 | `.venv-ml` |
-| `test_dashboard_v3` | 9 | `.venv-ml` |
+| `test_dashboard_v3` | 10 | `.venv-ml` |
 | `test_acquisition_monthly` | 11 | `.venv-ml` |
 | `test_annotation_server` | 23 | **`.venv`** |
 
@@ -300,6 +300,11 @@ model (`fivetag.tiny`) that exists to prove the training loop runs. The router's
 thresholds (`RouterConfig`) are starting values and must be fixed on the dev
 split before the test split is opened. `labeling.versus_gold` and
 `gold_standard.materialise` both refuse sealed test sentences; keep it that way.
+E0 rules are at `e0-rules-v2` (2026-11-21, EXP-035): a comma inside a list of
+qualities ("Write clean, efficient, maintainable code") or inside a verb list
+that goes on with a verb missing from the lexicon no longer cuts the phrase.
+"Write clean" had been a top fragment in every run; do not return to cutting
+an object at the first comma. Judged on 120 changed spans: 103 better, 9 worse.
 
 **A `competency.pipeline` run is an engineering run until the extractor behind it
 has been measured.** The first one (2026-11-19, E0 evidence, 581 postings) gave

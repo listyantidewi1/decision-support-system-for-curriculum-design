@@ -25,6 +25,7 @@ from streamlit.testing.v1 import AppTest                                   # noq
 from competency import profile as PF                                       # noqa: E402
 
 PUBLIC = str(PROJECT_ROOT / "dashboard_v3" / "public.py")
+ALL_STATUSES = ("siap_ditelaah_formal", "kandidat_tinjauan", "eksploratif")
 ADMIN = str(PROJECT_ROOT / "dashboard_v3" / "admin.py")
 
 
@@ -168,7 +169,9 @@ def test_public_dashboard_shows_related_competencies_per_level_and_filters_by_le
     assert "Tingkat kognitif: **C6 mencipta**" in text and "dari 14 lowongan rumpun" in text
     assert "Kompetensi serumpun, per tingkat kognitif" in text
     assert "A paragraph for the whole family." in text
-    # an institution keeps only the levels it teaches to
+    # an institution keeps only the levels it teaches to (here the C3 one is exploratory,
+    # which the list hides until it is asked for)
+    at.sidebar.multiselect[0].set_value(list(ALL_STATUSES)).run(timeout=90)
     at.sidebar.multiselect[2].set_value(["C3"]).run(timeout=90)
     _ok(at)
     assert any("1 dari 2 rekomendasi" in c.value for c in at.caption)
@@ -185,7 +188,8 @@ def test_public_dashboard_shows_the_formulated_statement_and_its_skkni_match():
                "skkni": {"kode": "J.620100.032.01", "judul": "Menerapkan Code Review",
                          "tahun": "2016", "hubungan": "sama", "kode_tingkat_judul": "C3",
                          "tingkat_sama": False},
-               "flags": ["keluarga_campuran: objek utama hanya 7 dari 101 lowongan"]},
+               "flags": ["keluarga_campuran: objek utama hanya 7 dari 101 lowongan"],
+               "carried_from": {"run": "run_old", "competency_id": "c1", "exact": False}},
         "c2": {"accepted": False, "problems": ["x"]}}}), encoding="utf-8")
     PF.build(run, "2026-1", profiles_dir=root / "profiles")
     at = AppTest.from_file(PUBLIC).run(timeout=90)
@@ -199,6 +203,8 @@ def test_public_dashboard_shows_the_formulated_statement_and_its_skkni_match():
     # a mark is shown, readably, and the competency stays in the list (marked, not left out)
     assert any("Kelompok campuran: objek utama hanya 7 dari 101 lowongan" in w.value for w in at.warning)
     assert any("Tanda tidak mengubah status" in c.value for c in at.caption)
+    # a statement carried over from the previous draft says so (EXP-035)
+    assert any("dibawa dari draf sebelumnya" in c.value for c in at.caption)
     # a competency without an accepted formulation keeps the rule statement
     from dashboard_v3 import common as CM
     assert CM.statement_text({"statement": {"text": "Perform unit testing"}}) == "Perform unit testing"
@@ -213,9 +219,43 @@ def test_public_filters_narrow_the_list():
     root, run = _env()
     PF.build(run, "2026-1", profiles_dir=root / "profiles")
     at = AppTest.from_file(PUBLIC).run(timeout=60)
+    _ok(at)
+    # exploratory competencies are hidden until asked for (a cut phrase such as
+    # "Write clean" is exploratory; the researcher, 2026-11-21)
+    assert any(c.value.startswith("1 dari 2 rekomendasi") for c in at.caption)
+    assert at.sidebar.multiselect[0].value == ["siap_ditelaah_formal", "kandidat_tinjauan"]
+    at.sidebar.multiselect[0].set_value(list(ALL_STATUSES)).run(timeout=60)
+    assert any(c.value.startswith("2 dari 2 rekomendasi") for c in at.caption)
     at.text_input[0].set_value("unit testing").run(timeout=60)
     _ok(at)
     assert any(c.value.startswith("1 dari 2 rekomendasi") for c in at.caption)
+
+
+def test_public_list_can_be_ordered_by_priority_or_by_demand():
+    """The researcher asked (2026-11-21) whether the order shows the highest demand. The
+    priority order does not quite (status and the persistence weight come first), so
+    the reader chooses."""
+    root, run = _env()
+    comps = json.loads((run / "competencies.json").read_text(encoding="utf-8"))
+    comps[1]["n_postings"] = 30                       # exploratory, but asked for more often
+    (run / "competencies.json").write_text(json.dumps(comps), encoding="utf-8")
+    PF.build(run, "2026-1", profiles_dir=root / "profiles")
+    at = AppTest.from_file(PUBLIC).run(timeout=60)
+    _ok(at)
+    pick = lambda: next(s for s in at.selectbox if s.label == "Pilih pernyataan")   # noqa: E731
+    at.sidebar.multiselect[0].set_value(list(ALL_STATUSES)).run(timeout=60)
+    assert pick().options[0].startswith("1. Develop REST APIs")            # priority: status first
+    assert any("Bobot persistensi = 50% pangsa lowongan" in c.value for c in at.caption)
+    at.sidebar.radio[0].set_value("lowongan").run(timeout=60)
+    _ok(at)
+    assert pick().options[0].startswith("2. Perform unit testing")          # 30 postings first; # stays
+    assert any(c.value.startswith("2 dari 2 rekomendasi. Urutan: jumlah lowongan") for c in at.caption)
+    from dashboard_v3 import common as CM
+    recs = [{"rank": 1, "n_postings": 5}, {"rank": 2, "n_postings": 50}, {"rank": 3, "n_postings": 50}]
+    assert [r["rank"] for r in CM.sort_recommendations(recs, "lowongan")] == [2, 3, 1]
+    assert [r["rank"] for r in CM.sort_recommendations(list(reversed(recs)), "prioritas")] == [1, 2, 3]
+    assert CM.weight_text({"temporal": {"persistence_weight": 0.8516}}) == "0.85"
+    assert CM.weight_text({}) == "—"
 
 
 def test_admin_pages_render_and_a_profile_can_be_published_as_a_draft():

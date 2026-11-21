@@ -34,7 +34,7 @@ from dataclasses import dataclass
 from .base import Pred, dedupe, make_pred
 from .lexicon import DEFAULT_VERSION, Lexicon, load
 
-RULES_VERSION = "e0-rules-v1"
+RULES_VERSION = "e0-rules-v2"
 
 SCORE_DICT = 1.0
 SCORE_ACTIVITY = 0.9
@@ -54,6 +54,39 @@ BASE_CONTEXT = {"to", "will", "can", "must", "should", "you'll", "we'll", "you",
 # ... and after which an -ing form is ("experience in developing")
 ING_CONTEXT = BASE_CONTEXT | {"for", "in", "of", "with", "by", "on", "experience",
                               "including", "like", "while", "when"}
+
+# Rules v2 (EXP-035). In v1 a comma ended a verb's object, which cut two frequent
+# patterns before their noun: a list of qualities ("Write clean, efficient,
+# maintainable, and well-tested code" -> "Write clean") and a list of verbs that
+# goes on with a verb the lexicon lacks ("Design, develop, and manage databases"
+# -> "Design, develop"). 97 competencies of run e0_pool_all_v8 were such cut phrases.
+# The quality words a listed object may open with; the most frequent were taken
+# from the words that ended those cut phrases.
+QUALITY_MODIFIERS = {
+    "clean", "scalable", "secure", "high-quality", "robust", "reliable", "responsive",
+    "high-performance", "high-performing", "performant", "intuitive", "efficient", "modular",
+    "quality", "fast", "flexible", "large-scale", "user-centric", "user-centered",
+    "user-centred", "seamless", "reusable", "user-friendly", "available", "highly-available",
+    "maintainable", "clear", "testable", "readable", "well-tested", "well-documented",
+    "well-structured", "well-designed", "well-architected", "resilient", "fault-tolerant",
+    "extensible", "stable", "accessible", "interactive", "dynamic", "lightweight", "elegant",
+    "consistent", "simple", "concise", "idiomatic", "compliant", "cost-effective",
+    "cost-efficient", "cloud-native", "production-ready", "production-grade",
+    "enterprise-grade", "mission-critical", "data-driven", "real-time", "cross-platform",
+    "mobile-friendly", "pixel-perfect", "beautiful", "engaging", "innovative", "modern",
+    "optimized", "optimised", "automated", "distributed", "low-latency", "end-to-end",
+    "full-stack", "custom", "complex", "critical", "new", "existing", "efficient", "secure",
+    "safe", "smooth", "visually", "appealing", "polished", "delightful", "inclusive"}
+# noun endings: a word with one is not taken for an unlisted verb in a verb list
+_NOUNISH = ("tion", "sion", "ment", "ness", "ity", "ance", "ence", "ship", "ware", "ics",
+            "ism", "ist", "or", "er")
+# an Indonesian verb: the meN- or ber- prefix ("mengevaluasi", "mengelola", "berkolaborasi")
+_ID_VERB = re.compile(r"^(?:me|ber)[a-z]{4,}$")
+
+
+def _plain(word: str) -> str:
+    return word.replace("‑", "-").replace("‐", "-")
+
 
 _TOKEN = re.compile(r"\S+")
 _OPEN = "([{\"'“‘"
@@ -210,6 +243,85 @@ class E0Rules:
             return True
         return kind == "ing" and prev.low in ING_CONTEXT
 
+    @staticmethod
+    def _quality(toks: list[Tok], x: int) -> bool:
+        """A quality word, or an intensifier in front of one ("highly scalable")."""
+        if _plain(toks[x].low) in QUALITY_MODIFIERS:
+            return True
+        return (toks[x].low.endswith("ly") and not toks[x].breaks and x + 1 < len(toks)
+                and _plain(toks[x + 1].low) in QUALITY_MODIFIERS)
+
+    def _past_qualities(self, toks: list[Tok], first: int, k: int) -> int | None:
+        """Rules v2. The object toks[first..k] ends in a comma. When it is only quality
+        words ("Write clean, efficient, maintainable, and well-tested code"), the index
+        of the first word after the listed qualities (where the noun starts); None when
+        the object is not such a list or no noun follows (then the comma ends it, as in v1)."""
+        n = len(toks)
+        if not all(self._quality(toks, x) for x in range(first, k + 1)):
+            return None
+        m = k + 1
+        for _ in range(10):
+            if m >= n:
+                return None
+            tk = toks[m]
+            if tk.punct or tk.opens or tk.low in self._stops:
+                return None
+            if tk.low in CONJ:
+                # "clean, and test it": a verb after the conjunction starts a new action
+                if m + 1 < n and toks[m + 1].low in self._any_verb \
+                        and not self._quality(toks, m + 1):
+                    return None
+                m += 1
+                continue
+            if self._quality(toks, m):
+                if tk.breaks and tk.trail != ",":    # the clause ends on a quality: no noun
+                    return None
+                m += 1
+                continue
+            return m
+        return None
+
+    def _verb_like(self, tk: Tok, kind: str) -> bool:
+        """Can this word be one more verb of a coordinated verb list of this form?"""
+        w = tk.low
+        if tk.punct or tk.opens or not w.isalpha() or w in self._stops or w in self._function \
+                or w in self._known or w in self._heads:
+            return False
+        if w in self._any_verb:
+            return True
+        if kind == "ing":
+            return w.endswith("ing") and len(w) > 5
+        if kind == "any":                             # Indonesian
+            return bool(_ID_VERB.match(w))
+        if kind == "base":
+            return (len(w) >= 3 and not w.endswith(("ing", "s"))
+                    and not any(w.endswith(e) and len(w) > len(e) + 2 for e in _NOUNISH))
+        return False
+
+    def _verb_series(self, toks: list[Tok], j: int, kind: str) -> int | None:
+        """Rules v2. toks[j], a verb of the list, ends with a comma and the next word is
+        not a verb of the lexicon. When the list goes on with verb-like words and ends
+        with a conjunction and a verb ("design, develop, and manage databases";
+        "designing, developing, extending, and supporting custom tools"; "merancang,
+        mengimplementasikan, dan mengevaluasi proses"), the index of its last verb."""
+        n, m = len(toks), j + 1
+        for _ in range(6):
+            final = m < n and toks[m].low in CONJ
+            if final:
+                m += 1
+            if m >= n or not self._verb_like(toks[m], kind):
+                return None
+            if final:
+                return None if toks[m].breaks else m   # its object must follow
+            if toks[m].trail == ",":                   # "..., extending, ..."
+                m += 1
+                continue
+            if not toks[m].trail and m + 1 < n and toks[m + 1].low in CONJ:   # "extend and ship"
+                m += 1
+                continue
+            return None
+        return None
+
     def _verb_led(self, sentence: str, toks: list[Tok], forms: dict[str, str], label: str,
                   rule: str, verb_tokens: set[int], activity_starts: set[int]) -> list[_Cand]:
         out, n, i, last_end = [], len(toks), 0, -9
@@ -219,6 +331,7 @@ class E0Rules:
                 i += 1
                 continue
             j = i                                     # the verb group: "design, develop and test"
+            j_known = None                            # v2: where the group of known verbs ended
             while True:
                 nxt = j + 1
                 if nxt < n and toks[j].trail in ("", ",") and toks[nxt].low in CONJ \
@@ -228,11 +341,15 @@ class E0Rules:
                 if nxt < n and toks[j].trail == "," and toks[nxt].low in forms:
                     j = nxt
                     continue
+                if toks[j].trail == ",":                  # v2: the list goes on with
+                    last = self._verb_series(toks, j, forms[t.low])   # verbs not listed
+                    if last is not None:
+                        j_known, j = j, last
                 break
             end = None
             if not toks[j].breaks:
-                k = j + 1
-                while k < n and k - j <= MAX_OBJECT_TOKENS:
+                k, limit = j + 1, j + MAX_OBJECT_TOKENS
+                while k < n and k <= limit:
                     tk = toks[k]
                     if tk.punct or tk.opens or tk.low in self._stops:
                         break
@@ -244,13 +361,23 @@ class E0Rules:
                         break
                     end = k
                     if tk.breaks:
-                        break
+                        # v2: a comma inside a list of qualities does not end the object
+                        head = self._past_qualities(toks, j + 1, k) if tk.trail == "," else None
+                        if head is None:
+                            break
+                        limit += head - k                 # the list does not count
+                        k = head
+                        continue
                     k += 1
                 while end is not None and end > j and (toks[end].low in self._function
                                                        or toks[end].low in CONJ):
                     end -= 1
                 if end is not None and end <= j:
                     end = None
+            if end is None and j_known is not None:
+                # v2's longer verb list found no object: a list of verbs is no hard skill
+                # ("apply, and believe", "build, solve, and operate"), so back to v1
+                j = j_known
             if end is None and j > i:
                 end = j                               # "developing and deploying": verbs alone
             if (end is not None and forms[t.low] == "ing" and j == i

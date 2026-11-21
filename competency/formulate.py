@@ -788,6 +788,49 @@ def mark_flags(marks: dict | None) -> list[str]:
            ([f"keluarga_campuran: {reason}"] if marks.get("keluarga_campuran") else [])
 
 
+def input_fingerprint(prof: dict, chosen: Sequence[dict], strict: bool = True) -> str:
+    """What the writer and the SKKNI search read of a competency (its rule statement,
+    level, qualifiers offered, top objects, main verbs, example phrases). Two
+    competencies with the same fingerprint get the same prompt, so a statement written
+    for one may be carried over to the other (`--carry-from`, EXP-035).
+    strict=False keeps only what the statement is made of (rule statement, level,
+    qualifiers offered): the supporting evidence may differ."""
+    import hashlib
+    key = {"statement": prof["statement"], "level": prof.get("level"),
+           "qualifiers": sorted(q["text"] for q in chosen)}
+    if strict:
+        key.update(objects=sorted(o["text"] for o in prof["objects"][:4]),
+                   verbs=sorted(main_verbs(prof)), phrases=sorted(prof["example_phrases"][:8]))
+    blob = json.dumps(key, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    return hashlib.sha1(blob).hexdigest()[:16]
+
+
+def carried_entries(run_dir: Path, cfg: FormulateConfig) -> tuple[dict, dict]:
+    """For every competency another run formulated with this version:
+    (strict fingerprint -> entry, loose fingerprint -> [(entry, evidence words)])."""
+    from .qualifiers import load_run
+    store = json.loads((Path(run_dir) / "formulated.json").read_text(encoding="utf-8"))
+    comps, rows = load_run(Path(run_dir))
+    by_id = {c["competency_id"]: c for c in comps}
+    exact: dict[str, dict] = {}
+    loose: dict[str, list] = {}
+    for cid, entry in store["statements"].items():
+        if entry.get("version") != FORMULATE_VERSION or cid not in by_id \
+                or is_fragment(by_id[cid]["statement"]["text"]):
+            continue
+        prof = profile(by_id[cid], rows[cid])
+        chosen = choose_qualifiers(prof, cfg)
+        exact[input_fingerprint(prof, chosen)] = entry
+        loose.setdefault(input_fingerprint(prof, chosen, strict=False), []).append(
+            (entry, _evidence_words(prof)))
+    return exact, loose
+
+
+def _evidence_words(prof: dict) -> set[str]:
+    return {x.lower() for x in prof["example_phrases"][:8]} | \
+           {o["text"].lower() for o in prof["objects"][:4]} | set(main_verbs(prof))
+
+
 def repeated_sentences(rows: Sequence[dict], cfg: FormulateConfig) -> str | None:
     """A mark when the competency's postings share very few distinct sentences:
     the evidence is then one employer's text repeated (a company description, a
@@ -928,6 +971,12 @@ def main(argv=None) -> int:
     ap.add_argument("--mark-max-usd", type=float, default=0.30)
     ap.add_argument("--skip-existing", action="store_true",
                     help="leave out competencies the output file already holds (no second payment)")
+    ap.add_argument("--carry-from", default=None,
+                    help="another run's directory: a competency whose formulation input is the "
+                         "same as one formulated there takes that entry over, with no call")
+    ap.add_argument("--carry-level", choices=["exact", "statement"], default="exact",
+                    help="'statement': also carry over when only the supporting evidence "
+                         "differs (same rule statement, level and qualifiers offered)")
     args = ap.parse_args(argv)
     from fivetag.llm import capped_caller
     from labeling.run import DEFAULT_MODELS, BudgetError
@@ -963,14 +1012,39 @@ def main(argv=None) -> int:
     marker = capped_caller(args.mark_model, DEFAULT_MODELS[args.mark_model],
                            args.mark_max_usd, max_tokens=cfg.confirm_max_tokens,
                            log_path=run_dir / f"{args.out}_mark_log.jsonl")
-    n_done = 0
+    exact, loose = carried_entries(Path(args.carry_from), cfg) if args.carry_from else ({}, {})
+    n_done = n_carried = n_carried_loose = 0
     for c in chosen:
+        if exact and not is_fragment(c["statement"]["text"]):
+            prof = profile(c, rows[c["competency_id"]])
+            qual = choose_qualifiers(prof, cfg)
+            old_entry, is_exact = exact.get(input_fingerprint(prof, qual)), True
+            if old_entry is None and args.carry_level == "statement":
+                options = loose.get(input_fingerprint(prof, qual, strict=False), [])
+                if options:                          # the one whose evidence is most alike
+                    words = _evidence_words(prof)
+                    old_entry = max(options, key=lambda o: len(o[1] & words)
+                                    / max(1, len(o[1] | words)))[0]
+                    is_exact = False
+            if old_entry is not None:
+                r = {**json.loads(json.dumps(old_entry)), "competency_id": c["competency_id"],
+                     "n_postings": c["n_postings"],
+                     "carried_from": {"run": Path(args.carry_from).name,
+                                      "competency_id": old_entry["competency_id"],
+                                      "exact": is_exact}}
+                store["statements"][c["competency_id"]] = r
+                n_carried += 1
+                n_carried_loose += 0 if is_exact else 1
+                continue
         try:
             r = formulate_one(c, rows[c["competency_id"]], index, call, cfg, confirm=confirm,
                               mark=marker)
         except BudgetError as exc:
             print(f"stopped: {exc}")
             break
+        if not r.get("skipped"):
+            prof = profile(c, rows[c["competency_id"]])
+            r["masukan"] = input_fingerprint(prof, choose_qualifiers(prof, cfg))
         store["statements"][c["competency_id"]] = r
         n_done += 1
         s = r.get("skkni") or {}
@@ -986,7 +1060,9 @@ def main(argv=None) -> int:
               + (" {MIXED}" if t.get("keluarga_campuran") else "")
               + (f" {{mark unreadable: {t['masalah']}}}" if t.get("masalah") else ""))
     vals = list(store["statements"].values())
-    this_call = {"version": FORMULATE_VERSION, "n": n_done,
+    this_call = {"version": FORMULATE_VERSION, "n": n_done, "n_carried": n_carried,
+                 "n_carried_supporting_evidence_changed": n_carried_loose,
+                 "carried_from": Path(args.carry_from).name if args.carry_from else None,
                  "spent_usd_estimate": round(call.spent(), 6), "n_calls": call.n_calls,
                  "confirm_spent_usd_estimate": round(confirm.spent(), 6),
                  "confirm_n_calls": confirm.n_calls,

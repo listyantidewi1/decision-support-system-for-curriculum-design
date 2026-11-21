@@ -44,8 +44,14 @@ with st.sidebar:
     profile = C.load_json(chosen["path"])
     recs = profile["recommendations"]
     st.header("Saring")
-    status = st.multiselect("Status kelayakan", C.STATUS_ORDER, default=C.STATUS_ORDER,
-                            format_func=lambda s: C.STATUS_LABEL[s])
+    # "Eksploratif" is not a recommendation yet (too little evidence, a cut phrase, no
+    # okupasi): hidden unless asked for, so a school does not read it as one (the
+    # researcher's decision of 2026-11-21, after "Write clean" showed in the list)
+    status = st.multiselect("Status kelayakan", C.STATUS_ORDER, default=C.DEFAULT_STATUSES,
+                            format_func=lambda s: C.STATUS_LABEL[s],
+                            help="Eksploratif disembunyikan pada awalnya: belum memenuhi syarat "
+                                 "bukti (misalnya frasa terpotong atau okupasi belum terpetakan). "
+                                 "Pilih bila ingin melihatnya.")
     stream = st.multiselect("Jenis", ["technical", "soft"], default=["technical", "soft"],
                             format_func=lambda s: "Teknis" if s == "technical" else "Penunjang (soft skill)")
     level_options = [c for c in C.LEVEL_CODES + [C.NO_LEVEL]
@@ -56,6 +62,10 @@ with st.sidebar:
              "Pilih tingkat yang sesuai dengan jenjang lembaga Anda.") if level_options else []
     min_postings = st.number_input("Minimal jumlah lowongan", min_value=0, value=0, step=1)
     query = st.text_input("Cari dalam pernyataan")
+    st.header("Urutkan")
+    order = st.radio("Urutan daftar", list(C.ORDER_LABEL), format_func=lambda k: C.ORDER_LABEL[k],
+                     help="Prioritas memakai bobot persistensi (permintaan terkini, tren, bidang "
+                          "masa depan). Jumlah lowongan mengurutkan menurut permintaan saja.")
 
 ident, corpus = profile["identity"], profile["corpus"]
 st.title(ident["title"])
@@ -72,6 +82,7 @@ shown = [r for r in recs
          and r["n_postings"] >= min_postings
          and (C.level_code(r) is None or C.level_code(r) in levels)
          and (not query or query.lower() in (C.statement_text(r) + " " + r["statement"]["text"]).lower())]
+shown = C.sort_recommendations(shown, order)
 
 tab_list, tab_map, tab_summary, tab_curriculum, tab_changes, tab_about = st.tabs(
     ["Rekomendasi", "Peta pengetahuan & teknologi", "Ringkasan", "Kurikulum Anda",
@@ -87,13 +98,13 @@ with tab_map:
                 "dari run yang memuat `term_map.json` untuk melihatnya.")
 
 with tab_list:
-    st.caption(f"{len(shown)} dari {len(recs)} rekomendasi. Urutan: status, lalu bobot "
-               f"persistensi, lalu jumlah lowongan. Bobot hanya mengurutkan; tidak menaikkan status.")
+    st.caption(C.order_caption(order, len(shown), len(recs)))
     table = [{"#": r["rank"], "Pernyataan kompetensi": C.statement_text(r),
               "Tanda": ", ".join(C.mark_labels(r)),
               "SKKNI": ((r.get("formulated") or {}).get("skkni") or {}).get("kode") or "",
               "Status": C.STATUS_LABEL[r["contract"]["status"]],
               "Lowongan": r["n_postings"], "Pangsa": f"{r['share_of_postings']:.1%}",
+              "Bobot persistensi": C.weight_text(r),
               "Tingkat kognitif": C.level_text(r.get("cognitive")),
               "KKNI (usulan)": (f"{r['kkni']['level']}" + ("" if r["kkni"].get("confident") else " ?"))
               if r.get("kkni") and r["kkni"].get("level") else "",
@@ -111,6 +122,9 @@ with tab_list:
             st.markdown(f"**{C.statement_text(pick)}**")
             if fm:
                 st.caption(f"{fm.get('statement_en', '')} · rumusan: {fm.get('sumber_rumusan', '')}")
+                if (fm.get("carried_from") or {}).get("exact") is False:
+                    st.caption("Rumusan ini dibawa dari draf sebelumnya: bukti pendukungnya sedikit "
+                               "berubah setelah perbaikan ekstraksi, rumusannya belum ditulis ulang.")
                 if fm.get("kualifikasi"):
                     st.write("Standar, mutu, dan hasil yang diminta lowongan: " + "; ".join(
                         f"{q['text']} ({q['n_postings']} lowongan)" for q in fm["kualifikasi"]))

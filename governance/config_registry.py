@@ -107,6 +107,10 @@ def collect() -> list[dict]:
     add(area, "default lexicon of fivetag", lexicon.DEFAULT_VERSION, DECIDED, "fivetag/lexicon.py",
         "v1 kept as default so earlier numbers stay reproducible")
     add(area, "E0 rules version", e0_rules.RULES_VERSION, DESIGN, "fivetag/e0_rules.py")
+    add(area, "E0 rules v2: quality words a listed object may open with",
+        f"{len(e0_rules.QUALITY_MODIFIERS)} words", STARTING, "fivetag/e0_rules.py",
+        "the developer's list, its most frequent words taken from the words that ended the cut "
+        "phrases of run e0_pool_all_v8 (EXP-035)")
     add(area, "E0 rule scores (dictionary / activity / head / verb / suffix)",
         [e0_rules.SCORE_DICT, e0_rules.SCORE_ACTIVITY, e0_rules.SCORE_HEAD, e0_rules.SCORE_VERB,
          e0_rules.SCORE_SUFFIX], STARTING, "fivetag/e0_rules.py",

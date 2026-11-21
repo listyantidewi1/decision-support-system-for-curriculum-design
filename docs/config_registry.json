@@ -194,10 +194,18 @@
  {
   "area": "Extraction and typing",
   "name": "E0 rules version",
-  "value": "e0-rules-v1",
+  "value": "e0-rules-v2",
   "status": "by design",
   "where": "fivetag/e0_rules.py",
   "note": ""
+ },
+ {
+  "area": "Extraction and typing",
+  "name": "E0 rules v2: quality words a listed object may open with",
+  "value": "83 words",
+  "status": "starting value",
+  "where": "fivetag/e0_rules.py",
+  "note": "the developer's list, its most frequent words taken from the words that ended the cut phrases of run e0_pool_all_v8 (EXP-035)"
  },
  {
   "area": "Extraction and typing",
